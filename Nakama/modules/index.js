@@ -4,25 +4,42 @@ var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
+    initializer.registerRpc("turnManager", turnManager);
     initializer.registerMatch(MatchModuleName, {
         matchInit: matchInit,
         matchJoinAttempt: matchJoinAttempt,
         matchJoin: matchJoin,
         matchLeave: matchLeave,
         matchLoop: matchLoop,
-        matchTerminate: matchTerminate
+        matchTerminate: matchTerminate,
+        matchSignal: matchSignal
     });
     logger.info(LogicLoadedLoggerInfo);
 }
 var joinOrCreateMatch = function (context, logger, nakama, payload) {
     var matches;
     var MatchesLimit = 1;
-    var MinimumPlayers = 0;
+    var MinimumPlayers = 1;
     var label = { open: true };
-    matches = nakama.matchList(MatchesLimit, true, JSON.stringify(label), MinimumPlayers, MaxPlayers - 1);
+    matches = nakama.matchList(MatchesLimit, true, JSON.stringify(label), MinimumPlayers, MaxPlayers);
     if (matches.length > 0)
         return matches[0].matchId;
     return nakama.matchCreate(MatchModuleName);
+};
+var turnManager = function (context, logger, nakama, payload) {
+    var users = new Array(2);
+    if (users.some(function (e) { return e === payload; })) {
+        return "";
+    }
+    users.push(payload);
+    logger.info(payload + " $$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+    if (users.length >= 2) {
+        var User = users.pop();
+        users.length = 0;
+        logger.info(User + " User Name Send");
+        return User;
+    }
+    return "";
 };
 var matchInit = function (context, logger, nakama, params) {
     var label = { open: true };
@@ -74,7 +91,7 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
 };
 var matchLoop = function (context, logger, nakama, dispatcher, tick, state, messages) {
     var gameState = state;
-    processMessages(messages, gameState, dispatcher);
+    processMessages(messages, gameState, dispatcher, nakama);
     processMatchLoop(gameState, nakama, dispatcher, logger);
     return gameState.endMatch ? null : { state: gameState };
 };
@@ -92,12 +109,15 @@ var matchLeave = function (context, logger, nakama, dispatcher, tick, state, pre
 var matchTerminate = function (context, logger, nakama, dispatcher, tick, state, graceSeconds) {
     return { state: state };
 };
-function processMessages(messages, gameState, dispatcher) {
+var matchSignal = function (context, logger, nk, dispatcher, tick, state, data) {
+    return { state: state };
+};
+function processMessages(messages, gameState, dispatcher, nakama) {
     for (var _i = 0, messages_1 = messages; _i < messages_1.length; _i++) {
         var message = messages_1[_i];
         var opCode = message.opCode;
         if (MessagesLogic.hasOwnProperty(opCode))
-            MessagesLogic[opCode](message, gameState, dispatcher);
+            MessagesLogic[opCode](message, gameState, dispatcher, nakama);
         else
             messagesDefaultLogic(message, gameState, dispatcher);
     }
@@ -176,10 +196,10 @@ function matchLoopRoundResults(gameState, nakama, dispatcher) {
         }
     }
 }
-function playerWon(message, gameState, dispatcher) {
+function playerWon(message, gameState, dispatcher, nakama) {
     if (gameState.scene != 4 /* Battle */ || gameState.countdown > 0)
         return;
-    var data = JSON.parse(message.data);
+    var data = JSON.parse(nakama.binaryToString(message.data));
     var tick = data.tick;
     var playerNumber = data.playerNumber;
     if (gameState.roundDeclaredWins[tick] == undefined)
@@ -193,10 +213,10 @@ function playerWon(message, gameState, dispatcher) {
     gameState.countdown = DurationBattleEnding * TickRate;
     dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);
 }
-function draw(message, gameState, dispatcher) {
+function draw(message, gameState, dispatcher, nakama) {
     if (gameState.scene != 4 /* Battle */ || gameState.countdown > 0)
         return;
-    var data = JSON.parse(message.data);
+    var data = JSON.parse(nakama.binaryToString(message.data));
     var tick = data.tick;
     if (gameState.roundDeclaredDraw[tick] == undefined)
         gameState.roundDeclaredDraw[tick] = 0;
@@ -245,7 +265,7 @@ var DurationLobby = 10;
 var DurationRoundResults = 5;
 var DurationBattleEnding = 3;
 var NecessaryWins = 3;
-var MaxPlayers = 4;
+var MaxPlayers = 2;
 var PlayerNotFound = -1;
 var CollectionUser = "User";
 var KeyTrophies = "Trophies";

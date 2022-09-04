@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Nakama;
+using Nakama.Helpers;
 using NinjaBattle.Game;
 using UnityEngine;
 
@@ -43,9 +45,10 @@ namespace NinjaBattle.General
             UpdateStatus();
         }
 
-        private void PlayerJoined(PlayerData player)
+        private async void PlayerJoined(PlayerData player)
         {
             UpdateStatus();
+         
         }
 
         private void UpdateStatus()
@@ -53,6 +56,7 @@ namespace NinjaBattle.General
             bool gameStarting = playersManager.PlayersCount > 1;
             waitingText.SetActive(!gameStarting);
             timer.gameObject.SetActive(gameStarting);
+
             if (gameStarting)
                 timer.ResetTimer();
         }

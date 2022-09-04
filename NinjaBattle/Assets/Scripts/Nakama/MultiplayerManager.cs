@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NinjaBattle.Game;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Nakama.Helpers
@@ -27,6 +29,9 @@ namespace Nakama.Helpers
         public event Action onMatchJoin = null;
         public event Action onMatchLeave = null;
         public event Action onLocalTick = null;
+        public event Action onTurnMe = null;
+
+        public bool isTurn;
 
         #endregion
 
@@ -36,6 +41,7 @@ namespace Nakama.Helpers
         public IUserPresence Self { get => match == null ? null : match.Self; }
         public bool IsOnMatch { get => match != null; }
 
+        public NakamaUserManager players;
         #endregion
 
         #region BEHAVIORS
@@ -64,6 +70,12 @@ namespace Nakama.Helpers
             string matchId = rpcResult.Payload;
             match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId);
             onMatchJoin?.Invoke();
+         
+        }
+        public async Task<string> SendRpc(string rpc, string payload)
+        {
+            IApiRpc rpcResult = await NakamaManager.Instance.SendRPC(rpc, payload);
+            return (rpcResult.Payload);
         }
 
         private void Disconnected()
@@ -106,7 +118,7 @@ namespace Nakama.Helpers
             NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, bytes);
         }
 
-        private void Receive(IMatchState newState)
+        private async void Receive(IMatchState newState)
         {
             if (enableLog)
             {
@@ -114,12 +126,29 @@ namespace Nakama.Helpers
                 var json = encoding.GetString(newState.State);
                 LogData(ReceivedDataLog, newState.OpCode, json);
             }
-
+            SendTurn();
             MultiplayerMessage multiplayerMessage = new MultiplayerMessage(newState);
             if (onReceiveData.ContainsKey(multiplayerMessage.DataCode))
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);
+          
         }
 
+        public async void SendTurn()
+        {
+           
+            IApiRpc turneMe =  await NakamaManager.Instance.SendRPC("turnManager", players.User.Id.ToString());
+            Debug.Log(turneMe.Payload + "   "+players.User.Id.ToString());
+            if (turneMe.Payload == "")
+                return;
+
+           
+            if (turneMe.Payload == players.User.Id.ToString())
+            {
+                onTurnMe?.Invoke();
+                isTurn=true;
+                Debug.Log(turneMe.Payload + "Tu");
+            }
+        }
         public void Subscribe(Code code, Action<MultiplayerMessage> action)
         {
             if (!onReceiveData.ContainsKey(code))
@@ -138,6 +167,8 @@ namespace Nakama.Helpers
         {
             Debug.Log(string.Format(LogFormat, description, (Code)dataCode, json));
         }
+
+        
 
         #endregion
     }

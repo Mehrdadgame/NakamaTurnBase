@@ -80,6 +80,7 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
     return { state: gameState };
 }
 
+
 let matchTerminate: nkruntime.MatchTerminateFunction = function (context: nkruntime.Context, logger: nkruntime.Logger, nakama: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, graceSeconds: number)
 {
     return { state };
