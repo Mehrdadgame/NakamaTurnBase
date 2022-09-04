@@ -51,6 +51,8 @@ let matchJoin: nkruntime.MatchJoinFunction = function (context: nkruntime.Contex
         dispatcher.broadcastMessage(OperationCode.PlayerJoined, JSON.stringify(player), presencesOnMatch);
         presencesOnMatch.push(presence);
     }
+   
+  
 
     dispatcher.broadcastMessage(OperationCode.Players, JSON.stringify(gameState.players), presences);
     gameState.countdown = DurationLobby * TickRate;
@@ -60,7 +62,7 @@ let matchJoin: nkruntime.MatchJoinFunction = function (context: nkruntime.Contex
 let matchLoop: nkruntime.MatchLoopFunction = function (context: nkruntime.Context, logger: nkruntime.Logger, nakama: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, messages: nkruntime.MatchMessage[])
 {
     let gameState = state as GameState;
-    processMessages(messages, gameState, dispatcher, nakama);
+    processMessages(messages, gameState, dispatcher, nakama,logger);
     processMatchLoop(gameState, nakama, dispatcher, logger);
     return gameState.endMatch ? null : { state: gameState };
 }
@@ -91,16 +93,40 @@ let matchSignal: nkruntime.MatchSignalFunction = function (context: nkruntime.Co
     return { state };
 }
 
-function processMessages(messages: nkruntime.MatchMessage[], gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama): void
+function processMessages(messages: nkruntime.MatchMessage[], gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama, logger : nkruntime.Logger): void
 {
     for (let message of messages)
     {
         let opCode: number = message.opCode;
-        if (MessagesLogic.hasOwnProperty(opCode))
-            MessagesLogic[opCode](message, gameState, dispatcher, nakama);
+        if (MessagesLogic.hasOwnProperty(opCode)){
+            MessagesLogic[opCode](message, gameState, dispatcher, nakama,logger);
+            logger.info(message.sender.userId +" TTTTTTTTTTTTTTTTTTTTTTT");
+        }
+            
         else
             messagesDefaultLogic(message, gameState, dispatcher);
     }
+}
+
+function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
+    logger.info( message.sender.userId + " &&&&&&&&&&&&&&&&&&&&&&&");
+
+ for (let index = 0; index < gameState.players.length; index++) {
+    if (gameState.players[index].presence.userId == message.sender.userId)
+     {
+        logger.info( message.sender.userId + " &&&&&&&&&&&&&&&&&&&&&&&");
+        logger.info( index + " PPPPPPPPPPPPPPPPPPPPP");
+        if (index == 1) {
+           
+            dispatcher.broadcastMessage(OperationCode.ChosseTurn,gameState.players[index+1].presence.userId);
+        }
+        else{
+            dispatcher.broadcastMessage(OperationCode.ChosseTurn,gameState.players[index-1].presence.userId);
+        }
+    }
+    
+ }
+
 }
 
 function messagesDefaultLogic(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher): void
@@ -144,6 +170,7 @@ function matchLoopLobby(gameState: GameState, nakama: nkruntime.Nakama, dispatch
             gameState.scene = Scene.Battle;
             dispatcher.broadcastMessage(OperationCode.ChangeScene, JSON.stringify(gameState.scene));
             dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
+            dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(gameState.players[0].presence.userId));
         }
     }
 }

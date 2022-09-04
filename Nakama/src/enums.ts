@@ -16,5 +16,7 @@ const enum OperationCode
     PlayerInput = 2,
     PlayerWon = 3,
     Draw = 4,
-    ChangeScene = 5
+    ChangeScene = 5,
+    TurnMe=6,
+    ChosseTurn=7
 }

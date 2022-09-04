@@ -4,7 +4,6 @@ var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
-    initializer.registerRpc("turnManager", turnManager);
     initializer.registerMatch(MatchModuleName, {
         matchInit: matchInit,
         matchJoinAttempt: matchJoinAttempt,
@@ -22,24 +21,10 @@ var joinOrCreateMatch = function (context, logger, nakama, payload) {
     var MinimumPlayers = 1;
     var label = { open: true };
     matches = nakama.matchList(MatchesLimit, true, JSON.stringify(label), MinimumPlayers, MaxPlayers);
-    if (matches.length > 0)
+    if (matches.length > 0) {
         return matches[0].matchId;
+    }
     return nakama.matchCreate(MatchModuleName);
-};
-var turnManager = function (context, logger, nakama, payload) {
-    var users = new Array(2);
-    if (users.some(function (e) { return e === payload; })) {
-        return "";
-    }
-    users.push(payload);
-    logger.info(payload + " $$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-    if (users.length >= 2) {
-        var User = users.pop();
-        users.length = 0;
-        logger.info(User + " User Name Send");
-        return User;
-    }
-    return "";
 };
 var matchInit = function (context, logger, nakama, params) {
     var label = { open: true };
@@ -91,7 +76,7 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
 };
 var matchLoop = function (context, logger, nakama, dispatcher, tick, state, messages) {
     var gameState = state;
-    processMessages(messages, gameState, dispatcher, nakama);
+    processMessages(messages, gameState, dispatcher, nakama, logger);
     processMatchLoop(gameState, nakama, dispatcher, logger);
     return gameState.endMatch ? null : { state: gameState };
 };
@@ -112,14 +97,31 @@ var matchTerminate = function (context, logger, nakama, dispatcher, tick, state,
 var matchSignal = function (context, logger, nk, dispatcher, tick, state, data) {
     return { state: state };
 };
-function processMessages(messages, gameState, dispatcher, nakama) {
+function processMessages(messages, gameState, dispatcher, nakama, logger) {
     for (var _i = 0, messages_1 = messages; _i < messages_1.length; _i++) {
         var message = messages_1[_i];
         var opCode = message.opCode;
-        if (MessagesLogic.hasOwnProperty(opCode))
-            MessagesLogic[opCode](message, gameState, dispatcher, nakama);
+        if (MessagesLogic.hasOwnProperty(opCode)) {
+            MessagesLogic[opCode](message, gameState, dispatcher, nakama, logger);
+            logger.info(message.sender.userId + " TTTTTTTTTTTTTTTTTTTTTTT");
+        }
         else
             messagesDefaultLogic(message, gameState, dispatcher);
+    }
+}
+function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
+    logger.info(message.sender.userId + " &&&&&&&&&&&&&&&&&&&&&&&");
+    for (var index = 0; index < gameState.players.length; index++) {
+        if (gameState.players[index].presence.userId == message.sender.userId) {
+            logger.info(message.sender.userId + " &&&&&&&&&&&&&&&&&&&&&&&");
+            logger.info(index + " PPPPPPPPPPPPPPPPPPPPP");
+            if (index == 1) {
+                dispatcher.broadcastMessage(7 /* ChosseTurn */, gameState.players[index + 1].presence.userId);
+            }
+            else {
+                dispatcher.broadcastMessage(7 /* ChosseTurn */, gameState.players[index - 1].presence.userId);
+            }
+        }
     }
 }
 function messagesDefaultLogic(message, gameState, dispatcher) {
@@ -157,6 +159,7 @@ function matchLoopLobby(gameState, nakama, dispatcher) {
             gameState.scene = 4 /* Battle */;
             dispatcher.broadcastMessage(5 /* ChangeScene */, JSON.stringify(gameState.scene));
             dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
+            dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
         }
     }
 }
@@ -270,6 +273,7 @@ var PlayerNotFound = -1;
 var CollectionUser = "User";
 var KeyTrophies = "Trophies";
 var MessagesLogic = {
+    2: ChooseTurnPlayer,
     3: playerWon,
-    4: draw
+    4: draw,
 };

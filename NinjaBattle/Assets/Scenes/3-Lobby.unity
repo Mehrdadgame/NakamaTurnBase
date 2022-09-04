@@ -872,7 +872,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4098537980838475737, guid: 9723d9d9ecdb3493db3624f82cb7452f, type: 3}
       propertyPath: duration
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4098537980838475737, guid: 9723d9d9ecdb3493db3624f82cb7452f, type: 3}
       propertyPath: autoStart

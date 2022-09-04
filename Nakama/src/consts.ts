@@ -9,8 +9,10 @@ const PlayerNotFound = -1;
 const CollectionUser = "User";
 const KeyTrophies = "Trophies";
 
-const MessagesLogic: { [opCode: number]: (message: nkruntime.MatchMessage, state: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama) => void } =
+const MessagesLogic: { [opCode: number]: (message: nkruntime.MatchMessage, state: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) => void } =
 {
+    2: ChooseTurnPlayer,
     3: playerWon,
-    4: draw
+    4: draw,
+   
 }

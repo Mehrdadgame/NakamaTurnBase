@@ -70,13 +70,9 @@ namespace Nakama.Helpers
             string matchId = rpcResult.Payload;
             match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId);
             onMatchJoin?.Invoke();
-         
+           
         }
-        public async Task<string> SendRpc(string rpc, string payload)
-        {
-            IApiRpc rpcResult = await NakamaManager.Instance.SendRPC(rpc, payload);
-            return (rpcResult.Payload);
-        }
+     
 
         private void Disconnected()
         {
@@ -126,18 +122,17 @@ namespace Nakama.Helpers
                 var json = encoding.GetString(newState.State);
                 LogData(ReceivedDataLog, newState.OpCode, json);
             }
-            SendTurn();
+         
             MultiplayerMessage multiplayerMessage = new MultiplayerMessage(newState);
             if (onReceiveData.ContainsKey(multiplayerMessage.DataCode))
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);
-          
         }
 
         public async void SendTurn()
         {
            
-            IApiRpc turneMe =  await NakamaManager.Instance.SendRPC("turnManager", players.User.Id.ToString());
-            Debug.Log(turneMe.Payload + "   "+players.User.Id.ToString());
+            IApiRpc turneMe =  await NakamaManager.Instance.SendRPC("turnManager");
+            Debug.Log(turneMe.Payload + "   !"+players.User.Id.ToString());
             if (turneMe.Payload == "")
                 return;
 

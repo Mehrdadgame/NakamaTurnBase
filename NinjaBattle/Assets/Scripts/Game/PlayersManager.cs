@@ -23,7 +23,7 @@ namespace NinjaBattle.Game
         public event Action<PlayerData> onPlayerJoined;
         public event Action<PlayerData> onPlayerLeft;
         public event Action<PlayerData, int> onLocalPlayerObtained;
-
+        public event Action<bool> IsTurn;
         #endregion
 
         #region PROPERTIES
@@ -52,6 +52,8 @@ namespace NinjaBattle.Game
             multiplayerManager.Subscribe(MultiplayerManager.Code.Players, SetPlayers);
             multiplayerManager.Subscribe(MultiplayerManager.Code.PlayerJoined, PlayerJoined);
             multiplayerManager.Subscribe(MultiplayerManager.Code.ChangeScene, MatchStarted);
+            multiplayerManager.Subscribe(MultiplayerManager.Code.TurnMe, SetTurn);
+            multiplayerManager.Subscribe(MultiplayerManager.Code.ChosseTurn, ChosseTurnPlayer);
         }
 
         private void OnDestroy()
@@ -61,6 +63,29 @@ namespace NinjaBattle.Game
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.Players, SetPlayers);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.PlayerJoined, PlayerJoined);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.ChangeScene, MatchStarted);
+            multiplayerManager.Unsubscribe(MultiplayerManager.Code.TurnMe, SetTurn);
+            multiplayerManager.Unsubscribe(MultiplayerManager.Code.ChosseTurn, ChosseTurnPlayer);
+        }
+        public void SetTurn(MultiplayerMessage message)
+        {
+            if (message.GetData<string>() == multiplayerManager.players.User.Id)
+            {
+                multiplayerManager.isTurn = true;
+            }
+           
+        }
+        private void ChosseTurnPlayer(MultiplayerMessage message)
+        {
+
+            if(message.GetData<string>() != multiplayerManager.players.User.Id)
+            {
+                IsTurn?.Invoke(true);
+            }
+            else
+            {
+                IsTurn?.Invoke(false);
+            }
+           
         }
 
         private void SetPlayers(MultiplayerMessage message)
