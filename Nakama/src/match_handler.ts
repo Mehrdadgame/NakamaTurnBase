@@ -107,26 +107,48 @@ function processMessages(messages: nkruntime.MatchMessage[], gameState: GameStat
             messagesDefaultLogic(message, gameState, dispatcher);
     }
 }
-
+let array3DPlayerFirst:any[][];
+let array3DPlayerSecend:any[][];
 function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
-    logger.info( message.sender.userId + " &&&&&&&&&&&&&&&&&&&&&&&");
-
- for (let index = 0; index < gameState.players.length; index++) {
-    if (gameState.players[index].presence.userId == message.sender.userId)
-     {
-        logger.info( message.sender.userId + " &&&&&&&&&&&&&&&&&&&&&&&");
-        logger.info( index + " PPPPPPPPPPPPPPPPPPPPP");
-        if (index == 1) {
-           
-            dispatcher.broadcastMessage(OperationCode.ChosseTurn,gameState.players[index+1].presence.userId);
-        }
-        else{
-            dispatcher.broadcastMessage(OperationCode.ChosseTurn,gameState.players[index-1].presence.userId);
-        }
-    }
+    let data : DataSend = JSON.parse(nakama.binaryToString(message.data));
+    data.resultRow = ".";
+    data.resulyLine = ".";
+ if(data.userId == gameState.players[0].presence.userId){
+    array3DPlayerFirst[data.numberLine][data.numberRow] =(data.numberTile);
+  
+    var resultTile = CalcaturArray(array3DPlayerSecend,data.numberLine,data.numberRow,data.numberTile);
     
+if (resultTile!=".") {
+    data.resultRow = resultTile.toString();
+    data.resulyLine = data.numberLine.toString();
+    array3DPlayerFirst[Number (data.resulyLine)][Number( data.resultRow)] =-1;
+}
  }
+ else{
+    array3DPlayerSecend[data.numberLine][data.numberRow] =(data.numberTile);
+    var resultTile2 = CalcaturArray(array3DPlayerFirst,data.numberLine,data.numberRow,data.numberTile);
+    if (resultTile2!=".") {
+        data.resultRow =resultTile2.toString();
+        data.resulyLine = data.numberLine.toString();
+        array3DPlayerSecend[Number( data.numberLine)][Number( data.resultRow)] = -1;
+    }
+   
+}
+   dispatcher.broadcastMessage(OperationCode.ChosseTurn,JSON.stringify(data));
 
+}
+
+function CalcaturArray(array1:number[][],x:number,y:number,input:number):string
+{
+
+ for (let index2 = 0; index2 < y; index2++) {
+      if ( array1[x][index2] == input) {
+
+        return index2.toString();
+       }
+   
+    }
+    return ".";
 }
 
 function messagesDefaultLogic(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher): void

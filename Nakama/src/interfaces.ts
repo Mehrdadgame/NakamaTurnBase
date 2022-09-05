@@ -30,6 +30,15 @@ interface PlayerWonData
     tick: number
     playerNumber: number
 }
+interface DataSend{
+    userId : string
+    numberTile :number
+    nameTile:string
+    numberLine:number
+    numberRow : number
+    resulyLine:string
+    resultRow:string
+}
 
 interface DrawData
 {

@@ -25,6 +25,8 @@ namespace NinjaBattle.Game
         public event Action<PlayerData, int> onLocalPlayerObtained;
         public event Action<bool> IsTurn;
         public event Action<DataPlayer> onSetDataInTurn;
+        public event Action<string, string> onSetDataInRowMe;
+        public event Action<string, string> onSetDataInRowOpp;
         #endregion
 
         #region PROPERTIES
@@ -84,11 +86,22 @@ namespace NinjaBattle.Game
             Debug.Log(message.GetData<string>());
             if(multiplayerManager.players.User.Id != data.UserId)
             {
-                onSetDataInTurn(data);
+
+                onSetDataInTurn?.Invoke(data);
                 IsTurn?.Invoke(true);
+
+                if (data.ResultRow != ".")
+                {
+                    onSetDataInRowMe(data.ResultRow, data.ResultLine);
+                }
+
             }
             else
             {
+                if (data.ResultRow != ".")
+                {
+                    onSetDataInRowOpp(data.ResultRow, data.ResultLine);
+                }
                 IsTurn?.Invoke(false);
             }
            

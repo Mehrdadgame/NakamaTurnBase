@@ -109,20 +109,39 @@ function processMessages(messages, gameState, dispatcher, nakama, logger) {
             messagesDefaultLogic(message, gameState, dispatcher);
     }
 }
+var array3DPlayerFirst;
+var array3DPlayerSecend;
 function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
-    logger.info(message.sender.userId + " &&&&&&&&&&&&&&&&&&&&&&&");
-    for (var index = 0; index < gameState.players.length; index++) {
-        if (gameState.players[index].presence.userId == message.sender.userId) {
-            logger.info(message.sender.userId + " &&&&&&&&&&&&&&&&&&&&&&&");
-            logger.info(index + " PPPPPPPPPPPPPPPPPPPPP");
-            if (index == 1) {
-                dispatcher.broadcastMessage(7 /* ChosseTurn */, gameState.players[index + 1].presence.userId);
-            }
-            else {
-                dispatcher.broadcastMessage(7 /* ChosseTurn */, gameState.players[index - 1].presence.userId);
-            }
+    var data = JSON.parse(nakama.binaryToString(message.data));
+    data.resultRow = ".";
+    data.resulyLine = ".";
+    if (data.userId == gameState.players[0].presence.userId) {
+        array3DPlayerFirst[data.numberLine][data.numberRow] = (data.numberTile);
+        var resultTile = CalcaturArray(array3DPlayerSecend, data.numberLine, data.numberRow, data.numberTile);
+        if (resultTile != ".") {
+            data.resultRow = resultTile.toString();
+            data.resulyLine = data.numberLine.toString();
+            array3DPlayerFirst[Number(data.resulyLine)][Number(data.resultRow)] = -1;
         }
     }
+    else {
+        array3DPlayerSecend[data.numberLine][data.numberRow] = (data.numberTile);
+        var resultTile2 = CalcaturArray(array3DPlayerFirst, data.numberLine, data.numberRow, data.numberTile);
+        if (resultTile2 != ".") {
+            data.resultRow = resultTile2.toString();
+            data.resulyLine = data.numberLine.toString();
+            array3DPlayerSecend[Number(data.numberLine)][Number(data.resultRow)] = -1;
+        }
+    }
+    dispatcher.broadcastMessage(7 /* ChosseTurn */, JSON.stringify(data));
+}
+function CalcaturArray(array1, x, y, input) {
+    for (var index2 = 0; index2 < y; index2++) {
+        if (array1[x][index2] == input) {
+            return index2.toString();
+        }
+    }
+    return ".";
 }
 function messagesDefaultLogic(message, gameState, dispatcher) {
     dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);

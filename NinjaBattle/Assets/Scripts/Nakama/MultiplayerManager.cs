@@ -128,22 +128,7 @@ namespace Nakama.Helpers
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);
         }
 
-        public async void SendTurn()
-        {
-           
-            IApiRpc turneMe =  await NakamaManager.Instance.SendRPC("turnManager");
-            Debug.Log(turneMe.Payload + "   !"+players.User.Id.ToString());
-            if (turneMe.Payload == "")
-                return;
-
-           
-            if (turneMe.Payload == players.User.Id.ToString())
-            {
-                onTurnMe?.Invoke();
-                isTurn=true;
-                Debug.Log(turneMe.Payload + "Tu");
-            }
-        }
+       
         public void Subscribe(Code code, Action<MultiplayerMessage> action)
         {
             if (!onReceiveData.ContainsKey(code))
@@ -163,13 +148,15 @@ namespace Nakama.Helpers
             Debug.Log(string.Format(LogFormat, description, (Code)dataCode, json));
         }
 
-        public void SendTurn(string nameTile, int number)
+        public void SendTurn(string nameTile, int number , int line,int row)
         {
             var data = new DataPlayer()
             {
                 UserId = players.User.Id,
                 NameTile = nameTile,
-                NumberTile = number
+                NumberTile = number,
+                NumberRow = row,
+                NumberLine = line
             };
             string jsonData = JSONExtensions.Serialize(data);
             Send(Code.ChosseTurn, jsonData);
