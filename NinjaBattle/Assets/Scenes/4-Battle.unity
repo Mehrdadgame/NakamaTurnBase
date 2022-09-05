@@ -498,6 +498,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dicRollButton: {fileID: 1468879580}
   idText: {fileID: 930770060}
+  dicesSprite: []
+  transformOpp: {fileID: 2041228185}
 --- !u!114 &757218806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1267,6 +1269,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3160785755496875212, guid: 1d93d9438c3f2ed4a8b14cc6024196a1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160785755496875212, guid: 1d93d9438c3f2ed4a8b14cc6024196a1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3160785755496875212, guid: 1d93d9438c3f2ed4a8b14cc6024196a1, type: 3}
@@ -1288,6 +1294,14 @@ PrefabInstance:
     - target: {fileID: 3160785755496875212, guid: 1d93d9438c3f2ed4a8b14cc6024196a1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: UiManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160785755496875212, guid: 1d93d9438c3f2ed4a8b14cc6024196a1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 1468879580}
+    - target: {fileID: 3160785755496875212, guid: 1d93d9438c3f2ed4a8b14cc6024196a1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.UI.Button, UnityEngine.UI
       objectReference: {fileID: 0}
     - target: {fileID: 3160785755496875212, guid: 1d93d9438c3f2ed4a8b14cc6024196a1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -1722,62 +1736,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1981963844
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+--- !u!224 &2041228185 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3160785754427936729, guid: 1d93d9438c3f2ed4a8b14cc6024196a1, type: 3}
+  m_PrefabInstance: {fileID: 860195048}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1981963846}
-  - component: {fileID: 1981963845}
-  m_Layer: 0
-  m_Name: DicRoller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1981963845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981963844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20477eb61f0b08d48bd072970f5617d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Dice:
-  - {fileID: 21300000, guid: 6a9e1cffd17db8e4aba7456174648287, type: 3}
-  - {fileID: 21300000, guid: 6f6ad7611f031bd4fb501bdb6456708c, type: 3}
-  - {fileID: 21300000, guid: f07eb0def06add74ab5ae5dd4c08aa68, type: 3}
-  - {fileID: 21300000, guid: 844500d84836d164eb3db1d5a8016ed9, type: 3}
-  - {fileID: 21300000, guid: 2c08312a0350ba44e9258e952e72ea3e, type: 3}
-  - {fileID: 21300000, guid: 93ef7d0de85712b4ab2adb33d0b9e48b, type: 3}
-  rolls: 0
-  rollValue: 0
-  total: 0
-  totalValue: 010000000200000003000000040000000500000006000000
-  currrentDie: 0
---- !u!4 &1981963846
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981963844}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 346.4159, y: 878.213, z: 8.371694}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2078376390
 GameObject:
   m_ObjectHideFlags: 0

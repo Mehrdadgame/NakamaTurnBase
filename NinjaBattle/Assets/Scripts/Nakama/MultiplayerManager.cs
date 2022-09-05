@@ -163,7 +163,18 @@ namespace Nakama.Helpers
             Debug.Log(string.Format(LogFormat, description, (Code)dataCode, json));
         }
 
-        
+        public void SendTurn(string nameTile, int number)
+        {
+            var data = new DataPlayer()
+            {
+                UserId = players.User.Id,
+                NameTile = nameTile,
+                NumberTile = number
+            };
+            string jsonData = JSONExtensions.Serialize(data);
+            Send(Code.ChosseTurn, jsonData);
+           
+        }
 
         #endregion
     }

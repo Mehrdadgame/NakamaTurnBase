@@ -12,10 +12,13 @@ public class UiManager : MonoBehaviour
 
    [SerializeField] private Button dicRollButton;
     [SerializeField] private TextMeshProUGUI idText;
+    [SerializeField] private Sprite[] dicesSprite;
+    [SerializeField] private Transform transformOpp;
+
     void Start()
     {
-
-      
+       GameManager.Instance.diceRoller = GameObject.Find("DieImage").GetComponent<DiceRoller>();
+        PlayersManager.Instance.onSetDataInTurn += Instance_SetDataInTurn;
         MultiplayerManager.Instance.onTurnMe += Instance_onTurnMe;
         idText.text = MultiplayerManager.Instance.players.User.Id;
 
@@ -25,6 +28,13 @@ public class UiManager : MonoBehaviour
             dicRollButton.interactable = true;
         }
     }
+
+    private void Instance_SetDataInTurn(DataPlayer obj)
+    {
+     
+        transformOpp.Find(obj.NameTile).GetComponentsInChildren<Image>()[1].sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
+    }
+
     private void OnDestroy()
     {
         PlayersManager.Instance.IsTurn -= Instance_IsTurn;
@@ -35,10 +45,12 @@ public class UiManager : MonoBehaviour
         if (obj)
         {
             dicRollButton.interactable = true;
+            MultiplayerManager.Instance.isTurn=true;
         }
         else
         {
             dicRollButton.interactable = false;
+            MultiplayerManager.Instance.isTurn = false;
         }
     }
 
@@ -46,11 +58,6 @@ public class UiManager : MonoBehaviour
     {
         dicRollButton.interactable = true;
     }
-    public void SendTurn()
-    {
-        MultiplayerManager.Instance.Send(MultiplayerManager.Code.ChosseTurn,MultiplayerManager.Instance.players.User.Id);
-        Debug.Log(MultiplayerManager.Instance.players.User.Id);
-        dicRollButton.interactable = false;
-    }
+  
 
 }

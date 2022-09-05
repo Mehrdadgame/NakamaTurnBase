@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Nakama.Helpers;
+
 public class DiceRoller : MonoBehaviour
 {
     public Sprite[] Dice;
@@ -27,7 +29,7 @@ public class DiceRoller : MonoBehaviour
 
         // moved this here because there is no need  to continually get the same object
         die = GameObject.Find("DieImage").GetComponent<Image>();
-        UpdateRolls();
+
         Init();
     }
 
@@ -69,7 +71,7 @@ public class DiceRoller : MonoBehaviour
         }
     }
 
-    public void DieImage_Click()
+    public void DieImage_Click(Button button)
     {
         if (!dieRolled)
         {
@@ -81,7 +83,7 @@ public class DiceRoller : MonoBehaviour
             Init();
             isRolling = true;
         }
-
+        button.interactable = false;
 
     }
 
@@ -99,13 +101,13 @@ public class DiceRoller : MonoBehaviour
         animator.Play("DiePanelClose");
         rolls = 0;
         total = 0;
-        UpdateRolls();
+      
     }
 
     public void AddRolls(int newRollValue)
     {
         rolls += newRollValue;
-        UpdateRolls();
+  
     }
 
     // removed the parameter because AddTotal() is called from wone place with same parameter
@@ -116,13 +118,9 @@ public class DiceRoller : MonoBehaviour
         totalValue[currrentDie] += value; // add value to totalValue of current die
         total += value;                   // add value to total
         die.GetComponent<RectTransform>().eulerAngles = Vector3.zero;
-        UpdateRolls();
 
-     // await  GameManager.instance.SendMatchStateAsync(1, value.ToString());
+     
     }
 
-    void UpdateRolls()
-    {
-       
-    }
+   
 }

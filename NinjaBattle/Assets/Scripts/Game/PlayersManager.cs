@@ -24,6 +24,7 @@ namespace NinjaBattle.Game
         public event Action<PlayerData> onPlayerLeft;
         public event Action<PlayerData, int> onLocalPlayerObtained;
         public event Action<bool> IsTurn;
+        public event Action<DataPlayer> onSetDataInTurn;
         #endregion
 
         #region PROPERTIES
@@ -71,14 +72,19 @@ namespace NinjaBattle.Game
             if (message.GetData<string>() == multiplayerManager.players.User.Id)
             {
                 multiplayerManager.isTurn = true;
+                IsTurn?.Invoke(true);
             }
            
         }
         private void ChosseTurnPlayer(MultiplayerMessage message)
         {
-
-            if(message.GetData<string>() != multiplayerManager.players.User.Id)
+            Debug.Log(message.GetData<string>() + " "+ multiplayerManager.players.User.Id);
+            var data = JSONExtensions.Deserialize<DataPlayer>(message.GetData<string>());
+       
+            Debug.Log(message.GetData<string>());
+            if(multiplayerManager.players.User.Id != data.UserId)
             {
+                onSetDataInTurn(data);
                 IsTurn?.Invoke(true);
             }
             else

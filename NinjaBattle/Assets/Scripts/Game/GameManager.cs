@@ -19,6 +19,8 @@ namespace NinjaBattle.Game
         public int[] PlayersWins { get; private set; } = new int[4];
         public int? Winner { get; private set; } = 0;
 
+        public DiceRoller diceRoller;
+
         #endregion
 
         #region BEHAVIORS
@@ -46,6 +48,8 @@ namespace NinjaBattle.Game
             MultiplayerManager.Instance.onMatchLeave -= LeavedMatch;
         }
 
+      
+
         private void ReceivedPlayerWonRound(MultiplayerMessage message)
         {
             PlayerWonData playerWonData = message.GetData<PlayerWonData>();
@@ -61,6 +65,7 @@ namespace NinjaBattle.Game
         private void ReceivedChangeScene(MultiplayerMessage message)
         {
             SceneManager.LoadScene(message.GetData<int>());
+            
         }
 
         private void JoinedMatch()
