@@ -11,4 +11,3 @@ let joinOrCreateMatch: nkruntime.RpcFunction = function (context: nkruntime.Cont
        
     return nakama.matchCreate(MatchModuleName);
 } 
-

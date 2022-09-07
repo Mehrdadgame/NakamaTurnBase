@@ -4,6 +4,7 @@ using System.Linq;
 using Nakama;
 using Nakama.Helpers;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace NinjaBattle.Game
 {
@@ -25,8 +26,8 @@ namespace NinjaBattle.Game
         public event Action<PlayerData, int> onLocalPlayerObtained;
         public event Action<bool> IsTurn;
         public event Action<DataPlayer> onSetDataInTurn;
-        public event Action<string, string> onSetDataInRowMe;
-        public event Action<string, string> onSetDataInRowOpp;
+        public event Action<int, int> onSetDataInRowMe;
+        public event Action<int, int> onSetDataInRowOpp;
         #endregion
 
         #region PROPERTIES
@@ -80,27 +81,40 @@ namespace NinjaBattle.Game
         }
         private void ChosseTurnPlayer(MultiplayerMessage message)
         {
-            Debug.Log(message.GetData<string>() + " "+ multiplayerManager.players.User.Id);
-            var data = JSONExtensions.Deserialize<DataPlayer>(message.GetData<string>());
-       
-            Debug.Log(message.GetData<string>());
+         
+            var data = message.GetData<DataPlayer>();
+            onSetDataInTurn?.Invoke(data);
+            Debug.Log(data);
             if(multiplayerManager.players.User.Id != data.UserId)
             {
 
-                onSetDataInTurn?.Invoke(data);
-                IsTurn?.Invoke(true);
 
-                if (data.ResultRow != ".")
+                IsTurn?.Invoke(true);
+                Debug.Log(data.Score);
+                if (data.ResultRow.Length >0)
                 {
-                    onSetDataInRowMe(data.ResultRow, data.ResultLine);
+                    for (int i = 0; i < data.ResultRow.Length; i++)
+                    {
+                        Debug.Log(data.ResultRow[i] + data.ResultLine);
+                        onSetDataInRowMe(data.ResultLine, data.ResultRow[i]);
+                    }
+                  
                 }
 
             }
             else
             {
-                if (data.ResultRow != ".")
+                Debug.Log(data.Score);
+                if (data.ResultRow.Length >0)
                 {
-                    onSetDataInRowOpp(data.ResultRow, data.ResultLine);
+                    for (int i = 0; i < data.ResultRow.Length; i++)
+                    {
+                        
+                       
+                        onSetDataInRowOpp(data.ResultLine, data.ResultRow[i]);
+                       
+                    }
+                  
                 }
                 IsTurn?.Invoke(false);
             }

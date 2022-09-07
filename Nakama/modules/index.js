@@ -112,17 +112,35 @@ function processMessages(messages, gameState, dispatcher, nakama, logger) {
 }
 var array3DPlayerFirst = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
 var array3DPlayerSecend = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
-var ScoreFirstPlayer;
-var ScoreSecendPlayer;
 function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
     var NumberLine = dataPlayer.NumberLine;
     var NumberRow = dataPlayer.NumberRow;
+    var scoreC = { ScoreF: 0 };
+    logger.info(" StorageReadRequest " + scoreC.ScoreF);
+    array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
+    var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, scoreC.ScoreF);
+    scoreC.ScoreF = score;
     if (message.sender.userId == gameState.players[0].presence.userId) {
-        array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
-        var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, ScoreFirstPlayer);
-        ScoreFirstPlayer = score;
-        dataPlayer.Score = ScoreFirstPlayer;
+        var storagReadRequestsFirst = [{
+                collection: CollectionUser,
+                key: "Score",
+                userId: message.sender.userId,
+            }];
+        var resultScore = nakama.storageRead(storagReadRequestsFirst);
+        for (var _i = 0, resultScore_1 = resultScore; _i < resultScore_1.length; _i++) {
+            var storageObject = resultScore_1[_i];
+            scoreC = storageObject.value;
+            break;
+        }
+        var storageWriteRequests = [{
+                collection: CollectionUser,
+                key: "Score",
+                userId: message.sender.userId,
+                value: scoreC
+            }];
+        nakama.storageWrite(storageWriteRequests);
+        logger.info(score + " Score");
         var resultTile = CalculatorArray2D(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
         logger.info(resultTile.length + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         for (var index = 0; index < 3; index++) {
@@ -142,9 +160,27 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     else {
         array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
         var resultTile2 = CalculatorArray2D(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
-        var score = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, ScoreSecendPlayer);
-        ScoreSecendPlayer = score;
-        dataPlayer.Score = ScoreSecendPlayer;
+        logger.info(scoreC.ScoreF + " ScoreOPP");
+        var score_1 = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, scoreC.ScoreF);
+        scoreC.ScoreF = score_1;
+        var storagReadRequestsFirst = [{
+                collection: CollectionUser,
+                key: "Score",
+                userId: message.sender.userId,
+            }];
+        var resultScore = nakama.storageRead(storagReadRequestsFirst);
+        for (var _a = 0, resultScore_2 = resultScore; _a < resultScore_2.length; _a++) {
+            var storageObject = resultScore_2[_a];
+            scoreC = storageObject.value;
+            break;
+        }
+        var storageWriteRequests2 = [{
+                collection: CollectionUser,
+                key: "Score",
+                userId: message.sender.userId,
+                value: scoreC
+            }];
+        nakama.storageWrite(storageWriteRequests2);
         for (var index = 0; index < 3; index++) {
             for (var index1 = 0; index1 < 3; index1++) {
                 logger.info(array3DPlayerSecend[index][index1].toString());
@@ -159,8 +195,10 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             resultTile2 = [];
         }
     }
+    dataPlayer.Score = scoreC.ScoreF;
     var dataSendToClint = JSON.stringify(dataPlayer);
     dispatcher.broadcastMessage(message.opCode, dataSendToClint, null, message.sender);
+    dataPlayer.Score = 0;
     //    if(arrayResult.length>0){
     //        arrayResult.splice(0,arrayResult.length);
     //    }
@@ -187,10 +225,10 @@ function CalculatorScore(array1, x, input, scoreSaved) {
         }
     });
     if (countNumber > 0) {
-        powScore = Math.pow(input, countNumber);
+        powScore = Math.pow(input + 1, countNumber);
         return powScore + scoreSaved;
     }
-    return scoreSaved + input;
+    return scoreSaved + (input + 1);
 }
 function messagesDefaultLogic(message, gameState, dispatcher) {
     dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);
@@ -333,6 +371,12 @@ function getNextPlayerNumber(players) {
 function playerNumberIsUsed(players, playerNumber) {
     return players[playerNumber] != undefined;
 }
+var ScoreCalss = /** @class */ (function () {
+    function ScoreCalss() {
+        this.ScoreF = 0;
+    }
+    return ScoreCalss;
+}());
 var TickRate = 16;
 var DurationLobby = 10;
 var DurationRoundResults = 5;
@@ -342,6 +386,8 @@ var MaxPlayers = 2;
 var PlayerNotFound = -1;
 var CollectionUser = "User";
 var KeyTrophies = "Trophies";
+var ScoreFirstPlayer = 0;
+var ScoreSecendPlayer = 0;
 var MessagesLogic = {
     7: ChooseTurnPlayer
 };

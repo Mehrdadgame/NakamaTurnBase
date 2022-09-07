@@ -12,6 +12,8 @@ interface GameState
     scene: Scene
     countdown: number
     endMatch: boolean
+
+  
 }
 
 interface Player
@@ -30,15 +32,19 @@ interface PlayerWonData
     tick: number
     playerNumber: number
 }
-interface DataSend{
-    userId : string
-    numberTile :number
-    nameTile:string
-    numberLine:number
-    numberRow : number
-    resulyLine:string
-    resultRow:string
+interface DataPlayer{
+    UserId : string
+    Score:number
+    NumberTile :number
+    NameTile:string
+    NumberLine:number
+    NumberRow : number
+    ResultLine:number
+    ResultRow:number[]
+
 }
+
+
 
 interface DrawData
 {

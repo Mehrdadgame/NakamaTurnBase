@@ -11,20 +11,20 @@ public class UiManager : MonoBehaviour
     // Start is called before the first frame update
 
    [SerializeField] private Button dicRollButton;
-    [SerializeField] private TextMeshProUGUI idText;
     [SerializeField] private Transform transformOpp;
     [SerializeField] private List<TileDataOpp> tileDataOpps = new List<TileDataOpp>();
     [SerializeField] private List<ClickInCell> tileDataMe = new List<ClickInCell>();
-
+    [SerializeField] private TextMeshProUGUI ScoreTextMe;
+    [SerializeField] private TextMeshProUGUI ScoreTextOpp;
 
     void Start()
     {
        GameManager.Instance.diceRoller = GameObject.Find("DieImage").GetComponent<DiceRoller>();
-        PlayersManager.Instance.onSetDataInTurn += Instance_SetDataInTurn;
+       PlayersManager.Instance.onSetDataInTurn += Instance_SetDataInTurn;
         MultiplayerManager.Instance.onTurnMe += Instance_onTurnMe;
         PlayersManager.Instance.onSetDataInRowMe += Instance_onSetDataInRowMe;
         PlayersManager.Instance.onSetDataInRowOpp += Instance_onSetDataInRowOpp;
-        idText.text = MultiplayerManager.Instance.players.User.Id;
+   
 
         PlayersManager.Instance.IsTurn += Instance_IsTurn;
         if (MultiplayerManager.Instance.isTurn)
@@ -33,26 +33,38 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    private void Instance_onSetDataInRowOpp(string arg1, string arg2)
+    private void Instance_onSetDataInRowOpp(int arg1, int arg2)
     {
-       var clone= tileDataOpps.Find(e=>e.line == int.Parse(arg2) && e.row == int.Parse(arg1));
+        Debug.Log(arg1 + " " + arg2);
+       var clone= tileDataOpps.Find(e=>e.line == arg1 && e.row == arg2);
         clone.GetComponentsInChildren<Image>()[1].sprite = null;
     }
 
-    private void Instance_onSetDataInRowMe(string arg1, string arg2)
+    private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
-
-        var meCell =tileDataMe.Find(r =>  r.numberRow == int.Parse(arg1) && r.numberLine == int.Parse(arg2));
+        Debug.Log(arg1 + " " + arg2);
+        var meCell =tileDataMe.Find(r =>  r.numberLine == arg1 && r.numberRow == arg2);
         meCell.GetComponentsInChildren<Image>()[1].sprite = null;
+        meCell.isLock = false;
     }
 
     private void Instance_SetDataInTurn(DataPlayer obj)
     {
+        Debug.Log(obj.UserId);
+        if (obj.UserId == MultiplayerManager.Instance.players.User.Id)
+        {
+            ScoreTextMe.text = obj.Score.ToString();
+            transformOpp.Find(obj.NameTile).GetComponentsInChildren<Image>()[1].sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
+        }
+        else
+        {
+            ScoreTextOpp.text = obj.Score.ToString();
 
-          var imageTile=  tileDataOpps.Find(e => e.line == int.Parse( obj.ResultLine) && e.row == int.Parse( obj.ResultRow));
-            imageTile.GetComponentsInChildren<Image>()[1].sprite = null;
+        }
+
+      
        
-        transformOpp.Find(obj.NameTile).GetComponentsInChildren<Image>()[1].sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
+       
     }
 
     private void OnDestroy()

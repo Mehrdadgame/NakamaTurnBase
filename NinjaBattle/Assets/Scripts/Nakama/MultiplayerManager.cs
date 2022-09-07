@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+
 namespace Nakama.Helpers
 {
     public partial class MultiplayerManager : MonoBehaviour
@@ -150,16 +151,21 @@ namespace Nakama.Helpers
 
         public void SendTurn(string nameTile, int number , int line,int row)
         {
+
             var data = new DataPlayer()
             {
                 UserId = players.User.Id,
                 NameTile = nameTile,
                 NumberTile = number,
                 NumberRow = row,
-                NumberLine = line
+                NumberLine = line,
+                ResultLine = -1,
+                ResultRow = new int[0],
+                
+
             };
-            string jsonData = JSONExtensions.Serialize(data);
-            Send(Code.ChosseTurn, jsonData);
+          
+            Send(Code.ChosseTurn, data);
            
         }
 

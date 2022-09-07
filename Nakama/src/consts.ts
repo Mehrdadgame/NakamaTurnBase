@@ -8,11 +8,11 @@ const MaxPlayers = 2;
 const PlayerNotFound = -1;
 const CollectionUser = "User";
 const KeyTrophies = "Trophies";
+let ScoreFirstPlayer = 0;
+let ScoreSecendPlayer =0;
 
 const MessagesLogic: { [opCode: number]: (message: nkruntime.MatchMessage, state: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) => void } =
 {
-    2: ChooseTurnPlayer,
-    3: playerWon,
-    4: draw,
+    7: ChooseTurnPlayer
    
 }
