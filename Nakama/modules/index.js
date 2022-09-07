@@ -35,7 +35,7 @@ var matchInit = function (context, logger, nakama, params) {
         roundDeclaredDraw: [],
         scene: 3 /* Lobby */,
         countdown: DurationLobby * TickRate,
-        endMatch: false
+        endMatch: false,
     };
     return {
         state: gameState,
@@ -101,47 +101,96 @@ function processMessages(messages, gameState, dispatcher, nakama, logger) {
     for (var _i = 0, messages_1 = messages; _i < messages_1.length; _i++) {
         var message = messages_1[_i];
         var opCode = message.opCode;
-        if (MessagesLogic.hasOwnProperty(opCode)) {
-            MessagesLogic[opCode](message, gameState, dispatcher, nakama, logger);
+        // if (MessagesLogic.hasOwnProperty(opCode))
+        {
             logger.info(message.sender.userId + " TTTTTTTTTTTTTTTTTTTTTTT");
+            MessagesLogic[opCode](message, gameState, dispatcher, nakama, logger);
         }
-        else
-            messagesDefaultLogic(message, gameState, dispatcher);
+        // else
+        //     messagesDefaultLogic(message, gameState, dispatcher);
     }
 }
-var array3DPlayerFirst;
-var array3DPlayerSecend;
+var array3DPlayerFirst = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+var array3DPlayerSecend = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+var ScoreFirstPlayer;
+var ScoreSecendPlayer;
 function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
-    var data = JSON.parse(nakama.binaryToString(message.data));
-    data.resultRow = ".";
-    data.resulyLine = ".";
-    if (data.userId == gameState.players[0].presence.userId) {
-        array3DPlayerFirst[data.numberLine][data.numberRow] = (data.numberTile);
-        var resultTile = CalcaturArray(array3DPlayerSecend, data.numberLine, data.numberRow, data.numberTile);
-        if (resultTile != ".") {
-            data.resultRow = resultTile.toString();
-            data.resulyLine = data.numberLine.toString();
-            array3DPlayerFirst[Number(data.resulyLine)][Number(data.resultRow)] = -1;
+    var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
+    var NumberLine = dataPlayer.NumberLine;
+    var NumberRow = dataPlayer.NumberRow;
+    if (message.sender.userId == gameState.players[0].presence.userId) {
+        array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
+        var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, ScoreFirstPlayer);
+        ScoreFirstPlayer = score;
+        dataPlayer.Score = ScoreFirstPlayer;
+        var resultTile = CalculatorArray2D(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
+        logger.info(resultTile.length + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        for (var index = 0; index < 3; index++) {
+            for (var index1 = 0; index1 < 3; index1++) {
+                logger.info(array3DPlayerFirst[index][index1].toString());
+            }
+        }
+        if (resultTile.length > 0) {
+            dataPlayer.ResultRow = resultTile;
+            for (var index = 0; index < resultTile.length; index++) {
+                dataPlayer.ResultLine = dataPlayer.NumberLine;
+                array3DPlayerSecend[dataPlayer.ResultLine][dataPlayer.ResultRow[resultTile[index]]] = -1;
+            }
+            resultTile = [];
         }
     }
     else {
-        array3DPlayerSecend[data.numberLine][data.numberRow] = (data.numberTile);
-        var resultTile2 = CalcaturArray(array3DPlayerFirst, data.numberLine, data.numberRow, data.numberTile);
-        if (resultTile2 != ".") {
-            data.resultRow = resultTile2.toString();
-            data.resulyLine = data.numberLine.toString();
-            array3DPlayerSecend[Number(data.numberLine)][Number(data.resultRow)] = -1;
+        array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
+        var resultTile2 = CalculatorArray2D(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
+        var score = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, ScoreSecendPlayer);
+        ScoreSecendPlayer = score;
+        dataPlayer.Score = ScoreSecendPlayer;
+        for (var index = 0; index < 3; index++) {
+            for (var index1 = 0; index1 < 3; index1++) {
+                logger.info(array3DPlayerSecend[index][index1].toString());
+            }
+        }
+        if (resultTile2.length > 0) {
+            dataPlayer.ResultRow = resultTile2;
+            dataPlayer.ResultLine = dataPlayer.NumberLine;
+            for (var index = 0; index < resultTile2.length; index++) {
+                array3DPlayerFirst[dataPlayer.NumberLine][resultTile2[index]] = -1;
+            }
+            resultTile2 = [];
         }
     }
-    dispatcher.broadcastMessage(7 /* ChosseTurn */, JSON.stringify(data));
+    var dataSendToClint = JSON.stringify(dataPlayer);
+    dispatcher.broadcastMessage(message.opCode, dataSendToClint, null, message.sender);
+    //    if(arrayResult.length>0){
+    //        arrayResult.splice(0,arrayResult.length);
+    //    }
 }
-function CalcaturArray(array1, x, y, input) {
-    for (var index2 = 0; index2 < y; index2++) {
-        if (array1[x][index2] == input) {
-            return index2.toString();
+function CalculatorArray2D(array1, x, y, input, logger) {
+    var arrayResult = [];
+    array1[x].forEach(function (element, index) {
+        if (element == input) {
+            logger.info(index + " " + element + " " + input + " " + x);
+            arrayResult.push(index);
         }
+    });
+    if (arrayResult.length > 0) {
+        return arrayResult;
     }
-    return ".";
+    return [];
+}
+function CalculatorScore(array1, x, input, scoreSaved) {
+    var countNumber = 0;
+    var powScore = 0;
+    array1[x].forEach(function (element) {
+        if (element == input) {
+            countNumber++;
+        }
+    });
+    if (countNumber > 0) {
+        powScore = Math.pow(input, countNumber);
+        return powScore + scoreSaved;
+    }
+    return scoreSaved + input;
 }
 function messagesDefaultLogic(message, gameState, dispatcher) {
     dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);
@@ -219,6 +268,7 @@ function matchLoopRoundResults(gameState, nakama, dispatcher) {
     }
 }
 function playerWon(message, gameState, dispatcher, nakama) {
+    console.log("fffffffffffffffffffffffffffffffffffffff");
     if (gameState.scene != 4 /* Battle */ || gameState.countdown > 0)
         return;
     var data = JSON.parse(nakama.binaryToString(message.data));
@@ -235,7 +285,8 @@ function playerWon(message, gameState, dispatcher, nakama) {
     gameState.countdown = DurationBattleEnding * TickRate;
     dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);
 }
-function draw(message, gameState, dispatcher, nakama) {
+function draw(message, gameState, dispatcher, nakama, logger) {
+    logger.info("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
     if (gameState.scene != 4 /* Battle */ || gameState.countdown > 0)
         return;
     var data = JSON.parse(nakama.binaryToString(message.data));
@@ -292,7 +343,5 @@ var PlayerNotFound = -1;
 var CollectionUser = "User";
 var KeyTrophies = "Trophies";
 var MessagesLogic = {
-    2: ChooseTurnPlayer,
-    3: playerWon,
-    4: draw,
+    7: ChooseTurnPlayer
 };
