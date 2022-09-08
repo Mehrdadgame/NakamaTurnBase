@@ -71,6 +71,7 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
         presencesOnMatch.push(presence);
     }
     dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players), presences);
+    dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
     gameState.countdown = DurationLobby * TickRate;
     return { state: gameState };
 };
@@ -114,14 +115,12 @@ var array3DPlayerFirst = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
 var array3DPlayerSecend = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
 function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
-    var NumberLine = dataPlayer.NumberLine;
-    var NumberRow = dataPlayer.NumberRow;
     var scoreC = { ScoreF: 0 };
     var ScoreFirst = 0;
     var scoreSecend = 0;
-    logger.info(" StorageReadRequest " + scoreC.ScoreF);
     if (message.sender.userId == gameState.players[0].presence.userId) {
-        array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
+        array3DPlayerFirst[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
+        logger.info(dataPlayer.NumberLine + " " + dataPlayer.NumberRow);
         var storagReadRequestsFirst = [{
                 collection: CollectionUser,
                 key: "Score",
@@ -147,18 +146,19 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         logger.info(dataPlayer.Score + " Score");
         var resultTile = CalculatorArray2D(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
         logger.info(resultTile.length + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-        for (var index = 0; index < 3; index++) {
-            for (var index1 = 0; index1 < 3; index1++) {
-                logger.info(array3DPlayerFirst[index][index1].toString());
-            }
-        }
         if (resultTile.length > 0) {
             dataPlayer.ResultRow = resultTile;
             for (var index = 0; index < resultTile.length; index++) {
                 dataPlayer.ResultLine = dataPlayer.NumberLine;
-                array3DPlayerSecend[dataPlayer.ResultLine][dataPlayer.ResultRow[resultTile[index]]] = -1;
+                logger.info(dataPlayer.ResultLine + " /" + resultTile[index]);
+                array3DPlayerSecend[dataPlayer.ResultLine][resultTile[index]] = (-1);
             }
             resultTile = [];
+        }
+        for (var index = 0; index < 3; index++) {
+            for (var index1 = 0; index1 < 3; index1++) {
+                logger.info(array3DPlayerFirst[index][index1].toString());
+            }
         }
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
         if (dataPlayer.EndGame == true) {
@@ -174,17 +174,25 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
                     collection: CollectionUser
                 }];
             nakama.storageDelete(storageDelete);
+            var storageDelete1 = [{
+                    key: "Score",
+                    userId: gameState.players[1].presence.userId,
+                    collection: CollectionUser
+                }];
+            nakama.storageDelete(storageDelete1);
         }
     }
     else {
         array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
+        logger.info(dataPlayer.NumberLine + " " + dataPlayer.NumberRow);
         var resultTile2 = CalculatorArray2D(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
         logger.info(resultTile2 + " resultTile2");
         if (resultTile2.length > 0) {
             dataPlayer.ResultRow = resultTile2;
             for (var index = 0; index < resultTile2.length; index++) {
                 dataPlayer.ResultLine = dataPlayer.NumberLine;
-                array3DPlayerSecend[dataPlayer.ResultLine][dataPlayer.ResultRow[resultTile2[index]]] = -1;
+                logger.info(dataPlayer.ResultLine + " /" + resultTile2[index]);
+                array3DPlayerFirst[dataPlayer.ResultLine][resultTile2[index]] = (-1);
             }
             resultTile2 = [];
         }
@@ -230,6 +238,12 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
                     collection: CollectionUser
                 }];
             nakama.storageDelete(storageDelete);
+            var storageDelete1 = [{
+                    key: "Score",
+                    userId: gameState.players[0].presence.userId,
+                    collection: CollectionUser
+                }];
+            nakama.storageDelete(storageDelete1);
         }
     }
     var dataSendToClint = JSON.stringify(dataPlayer);
@@ -247,9 +261,9 @@ function ActionWinPlayer(array1) {
                 count++;
             }
         }
-        if (count == 0) {
-            return true;
-        }
+    }
+    if (count == 0) {
+        return true;
     }
     return false;
 }
@@ -316,7 +330,6 @@ function matchLoopLobby(gameState, nakama, dispatcher) {
             gameState.scene = 4 /* Battle */;
             dispatcher.broadcastMessage(5 /* ChangeScene */, JSON.stringify(gameState.scene));
             dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
-            dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
         }
     }
 }
@@ -357,7 +370,6 @@ function matchLoopRoundResults(gameState, nakama, dispatcher) {
     }
 }
 function playerWon(message, gameState, dispatcher, nakama) {
-    console.log("fffffffffffffffffffffffffffffffffffffff");
     if (gameState.scene != 4 /* Battle */ || gameState.countdown > 0)
         return;
     var data = JSON.parse(nakama.binaryToString(message.data));
@@ -375,7 +387,6 @@ function playerWon(message, gameState, dispatcher, nakama) {
     dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);
 }
 function draw(message, gameState, dispatcher, nakama, logger) {
-    logger.info("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
     if (gameState.scene != 4 /* Battle */ || gameState.countdown > 0)
         return;
     var data = JSON.parse(nakama.binaryToString(message.data));

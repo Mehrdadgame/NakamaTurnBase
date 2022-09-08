@@ -102,6 +102,10 @@ public class UiManager : MonoBehaviour
 
 
     }
+    public void Leave()
+    {
+        MultiplayerManager.Instance.LeaveMatchAsync();
+    }
   
 
 }

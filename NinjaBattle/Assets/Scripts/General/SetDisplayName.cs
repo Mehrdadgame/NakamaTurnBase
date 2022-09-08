@@ -32,7 +32,7 @@ namespace NinjaBattle.General
         private void OnDestroy()
         {
             inputField.onValueChanged.RemoveListener(ValueChanged);
-            nakamaUserManager.onLoaded -= ObtainName;
+           // nakamaUserManager.onLoaded -= ObtainName;
         }
 
         private void ObtainName()

@@ -54,8 +54,8 @@ let matchJoin: nkruntime.MatchJoinFunction = function (context: nkruntime.Contex
     }
    
   
-
     dispatcher.broadcastMessage(OperationCode.Players, JSON.stringify(gameState.players), presences);
+    dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(gameState.players[0].presence.userId));
     gameState.countdown = DurationLobby * TickRate;
     return { state: gameState };
 }
@@ -115,20 +115,14 @@ let array3DPlayerSecend:number[][] = [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
 
 function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
     let dataPlayer : DataPlayer = JSON.parse(nakama.binaryToString(message.data));
-    let NumberLine:number = dataPlayer.NumberLine;
-    let NumberRow:number = dataPlayer.NumberRow;
     var scoreC :ScoreCalss = {ScoreF :0 } ;
    var ScoreFirst:number =0;
    var scoreSecend:number =0;
-    logger.info(" StorageReadRequest " +scoreC .ScoreF);
-    
-    
-    
-   
     
     
     if(message.sender.userId == gameState.players[0].presence.userId){
-        array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
+        array3DPlayerFirst[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
+        logger.info(dataPlayer.NumberLine + " "+ dataPlayer.NumberRow);
         let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
             collection: CollectionUser,
             key: "Score",
@@ -159,20 +153,21 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
  
     var resultTile = CalculatorArray2D(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile,logger);
     logger.info(resultTile.length + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    if (resultTile.length>0) {
+        dataPlayer.ResultRow = resultTile;
+        for (let index = 0; index < resultTile.length; index++) {
+            dataPlayer.ResultLine = dataPlayer.NumberLine;
+            logger.info(dataPlayer.ResultLine + " /"+ resultTile[index]);
+            array3DPlayerSecend[dataPlayer.ResultLine][resultTile[index]] = (-1);
+        }
+        resultTile=[];
+    }
     for (let index = 0; index <3; index++) {
       for (let index1 = 0; index1 < 3; index1++) {
        logger.info(array3DPlayerFirst[index][index1].toString());
         
       }
         
-    }
-    if (resultTile.length>0) {
-        dataPlayer.ResultRow = resultTile;
-        for (let index = 0; index < resultTile.length; index++) {
-            dataPlayer.ResultLine = dataPlayer.NumberLine;
-            array3DPlayerSecend[dataPlayer.ResultLine][ dataPlayer.ResultRow[ resultTile[index]]] =-1;
-        }
-        resultTile=[];
     }
     dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
 
@@ -183,6 +178,7 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
         else{
             dataPlayer.PlayerWin =gameState.players[1].presence.userId;
         }
+
         let storageDelete: nkruntime.StorageDeleteRequest[]=[{
             key:"Score",
             userId: message.sender.userId,
@@ -190,12 +186,19 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
         }];
         nakama.storageDelete(storageDelete);
       
+        let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
+            key:"Score",
+            userId: gameState.players[1].presence.userId,
+            collection:CollectionUser
+        }];
+        nakama.storageDelete(storageDelete1);
       }
  }
  else{
 
 
      array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] =(dataPlayer.NumberTile);
+     logger.info(dataPlayer.NumberLine + " "+ dataPlayer.NumberRow);
      var resultTile2 = CalculatorArray2D(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile, logger);
      logger.info(resultTile2  + " resultTile2");
      if (resultTile2.length>0) {
@@ -205,7 +208,8 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
      
           
             dataPlayer.ResultLine = dataPlayer.NumberLine;
-            array3DPlayerSecend[dataPlayer.ResultLine][ dataPlayer.ResultRow[ resultTile2[index]]] =-1;
+            logger.info(dataPlayer.ResultLine + " /"+ resultTile2[index]);
+            array3DPlayerFirst[dataPlayer.ResultLine][ resultTile2[index]] =(-1);
         }
         resultTile2=[];
      }
@@ -242,7 +246,7 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
           
       }
         dataPlayer.ResultLine = dataPlayer.NumberLine;
-      dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend );
+        dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend );
       if(dataPlayer.EndGame == true){
         if (dataPlayer.Score> ScoreFirst) {
             dataPlayer.PlayerWin = message.sender.userId;
@@ -256,7 +260,13 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
             collection:CollectionUser
         }];
         nakama.storageDelete(storageDelete);
-      
+        let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
+            key:"Score",
+            userId: gameState.players[0].presence.userId,
+            collection:CollectionUser
+        }];
+
+        nakama.storageDelete(storageDelete1);
       }
 
    
@@ -274,17 +284,15 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
 
 function ActionWinPlayer(array1:number[][] ) : boolean {
     let count :number=0;
-for (let index = 0; index < array1.length; index++) {
+for (let index = 0; index <array1.length; index++) {
    for (let index1 = 0; index1 < array1[index].length; index1++) {
  if(array1[index][index1] == -1){
     count++;
  }
- }
-    
-  if(count==0){
-    return true;
-  }
-    
+}
+}
+if(count==0){
+  return true;
 }
 
     return false;
@@ -368,7 +376,7 @@ function matchLoopLobby(gameState: GameState, nakama: nkruntime.Nakama, dispatch
             gameState.scene = Scene.Battle;
             dispatcher.broadcastMessage(OperationCode.ChangeScene, JSON.stringify(gameState.scene));
             dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
-            dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(gameState.players[0].presence.userId));
+          
         }
     }
 }
@@ -421,7 +429,6 @@ function matchLoopRoundResults(gameState: GameState, nakama: nkruntime.Nakama, d
 
 function playerWon(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama): void 
 {
-    console.log("fffffffffffffffffffffffffffffffffffffff");
     if (gameState.scene != Scene.Battle || gameState.countdown > 0)
         return;
 
@@ -446,7 +453,6 @@ function playerWon(message: nkruntime.MatchMessage, gameState: GameState, dispat
 
 function draw(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama ,logger:nkruntime.Logger) : void
 {
-    logger.info("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
     
     if (gameState.scene != Scene.Battle || gameState.countdown > 0)

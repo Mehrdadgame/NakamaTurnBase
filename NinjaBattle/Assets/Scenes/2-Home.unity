@@ -978,11 +978,11 @@ MonoBehaviour:
   - Silent
   - Black
   secondPart:
-  - Ninja
-  - Fox
+  - Ali
+  - Ahid
   - Shadow
-  - Shinobi
-  - Killer
+  - Gopo
+  - Mamad
 --- !u!1 &1138228554
 GameObject:
   m_ObjectHideFlags: 0

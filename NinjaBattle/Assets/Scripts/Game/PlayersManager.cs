@@ -81,6 +81,10 @@ namespace NinjaBattle.Game
                 multiplayerManager.isTurn = true;
                 IsTurn?.Invoke(true);
             }
+            else
+            {
+                IsTurn?.Invoke(false);
+            }
            
         }
         private void ChosseTurnPlayer(MultiplayerMessage message)
@@ -91,23 +95,7 @@ namespace NinjaBattle.Game
             Debug.Log(data);
             if(multiplayerManager.players.User.Id != data.UserId)
             {
-                if (data.EndGame == true)
-                {
-                     
-                    if (data.PlayerWin == multiplayerManager.players.User.Id)
-                    {
-                       
-                        Debug.Log("Win Me");
-                    }
-                    else
-                    {
-                        Debug.Log("Win Opp");
-                    }
-                }
                 ScoreMe = data.Score;
-                onSetScoreMe.Invoke(data.Score);
-                IsTurn?.Invoke(true);
-                Debug.Log(data.Score);
              
                 if (data.ResultRow.Length > 0)
                 {
@@ -118,27 +106,31 @@ namespace NinjaBattle.Game
                     }
                   
                 }
+                IsTurn?.Invoke(true);
 
+                if (data.EndGame == true)
+                {
+                     
+                    if (data.PlayerWin == multiplayerManager.players.User.Id)
+                    {
+                        ShowResultEndGame("You Win",ScoreMe, ScoreOpp);
+
+                    }
+                    else
+                    {
+                        ShowResultEndGame("You Loss",  ScoreOpp, ScoreMe);
+                    }
+                    multiplayerManager.isTurn = false;
+                    IsTurn?.Invoke(false);
+                }
+                onSetScoreMe.Invoke(data.Score);
+                Debug.Log(data.Score);
             }
             else
             {
                 ScoreOpp = data.Score;
                 Debug.Log(data.Score);
                 onSetScoreOpp?.Invoke(data.Score);
-                if (data.EndGame == true)
-                {
-                    if (data.PlayerWin == multiplayerManager.players.User.Id)
-                    {
-                        ShowResultEndGame("You Win",ScoreMe,ScoreOpp);
-                        Debug.Log("Win Me");
-                    }
-                    else
-                    {
-                        ShowResultEndGame("You Loss", ScoreMe, ScoreOpp);
-                        Debug.Log("Win Opp");
-                    }
-                }
-
                 if (data.ResultRow.Length >0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
@@ -151,6 +143,22 @@ namespace NinjaBattle.Game
                   
                 }
                 IsTurn?.Invoke(false);
+                if (data.EndGame == true)
+                {
+                    if (data.PlayerWin == multiplayerManager.players.User.Id)
+                    {
+                        ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
+                        Debug.Log("Win Me");
+                    }
+                    else
+                    {
+                        ShowResultEndGame("You Loos", ScoreOpp,ScoreMe);
+                        Debug.Log("Win Opp");
+                    }
+                    multiplayerManager.isTurn = false;
+                    IsTurn?.Invoke(false);
+                }
+
             }
            
         }
