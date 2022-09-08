@@ -26,8 +26,10 @@ namespace NinjaBattle.Game
         public event Action<PlayerData, int> onLocalPlayerObtained;
         public event Action<bool> IsTurn;
         public event Action<DataPlayer> onSetDataInTurn;
-        public event Action<int, int> onSetDataInRowMe;
-        public event Action<int, int> onSetDataInRowOpp;
+        public event Action<int, int > onSetDataInRowMe;
+        public event Action<int, int > onSetDataInRowOpp;
+        public event Action<int> onSetScoreMe;
+        public event Action<int > onSetScoreOpp;
         #endregion
 
         #region PROPERTIES
@@ -38,6 +40,8 @@ namespace NinjaBattle.Game
         public PlayerData CurrentPlayer { get; private set; } = null;
         public int CurrentPlayerNumber { get; private set; } = -1;
 
+        public int ScoreMe;
+        public int ScoreOpp;
         #endregion
 
         #region BEHAVIORS
@@ -87,16 +91,30 @@ namespace NinjaBattle.Game
             Debug.Log(data);
             if(multiplayerManager.players.User.Id != data.UserId)
             {
-
-
+                if (data.EndGame == true)
+                {
+                     
+                    if (data.PlayerWin == multiplayerManager.players.User.Id)
+                    {
+                       
+                        Debug.Log("Win Me");
+                    }
+                    else
+                    {
+                        Debug.Log("Win Opp");
+                    }
+                }
+                ScoreMe = data.Score;
+                onSetScoreMe.Invoke(data.Score);
                 IsTurn?.Invoke(true);
                 Debug.Log(data.Score);
-                if (data.ResultRow.Length >0)
+             
+                if (data.ResultRow.Length > 0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
                     {
                         Debug.Log(data.ResultRow[i] + data.ResultLine);
-                        onSetDataInRowMe(data.ResultLine, data.ResultRow[i]);
+                        onSetDataInRowMe(data.ResultLine, data.ResultRow[i] );
                     }
                   
                 }
@@ -104,7 +122,23 @@ namespace NinjaBattle.Game
             }
             else
             {
+                ScoreOpp = data.Score;
                 Debug.Log(data.Score);
+                onSetScoreOpp?.Invoke(data.Score);
+                if (data.EndGame == true)
+                {
+                    if (data.PlayerWin == multiplayerManager.players.User.Id)
+                    {
+                        ShowResultEndGame("You Win",ScoreMe,ScoreOpp);
+                        Debug.Log("Win Me");
+                    }
+                    else
+                    {
+                        ShowResultEndGame("You Loss", ScoreMe, ScoreOpp);
+                        Debug.Log("Win Opp");
+                    }
+                }
+
                 if (data.ResultRow.Length >0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
@@ -162,6 +196,13 @@ namespace NinjaBattle.Game
         {
             nakamaManager.Socket.ReceivedMatchPresence += PlayersChanged;
             GetCurrentPlayer();
+        }
+        private void ShowResultEndGame(string resutlText , int score1 , int score2)
+        {
+            ActionEndGame.instance.ResultPanel.SetActive(true);
+            ActionEndGame.instance.ScoreMe.text = score1.ToString();
+            ActionEndGame.instance.ScoreOpp.text = score2.ToString();
+            ActionEndGame.instance.ResultText.text = resutlText;
         }
 
         private void GetCurrentPlayer()

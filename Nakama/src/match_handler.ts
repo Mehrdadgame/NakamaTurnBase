@@ -118,39 +118,43 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
     let NumberLine:number = dataPlayer.NumberLine;
     let NumberRow:number = dataPlayer.NumberRow;
     var scoreC :ScoreCalss = {ScoreF :0 } ;
-   
+   var ScoreFirst:number =0;
+   var scoreSecend:number =0;
     logger.info(" StorageReadRequest " +scoreC .ScoreF);
     
     
     
-    array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
+   
     
     
-    var score=  CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,scoreC.ScoreF );
-    scoreC.ScoreF = score;
     if(message.sender.userId == gameState.players[0].presence.userId){
+        array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
         let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
             collection: CollectionUser,
             key: "Score",
             userId: message.sender.userId,
-    
+            
         }];
-    
+        
         let resultScore: nkruntime.StorageObject[] = nakama.storageRead(storagReadRequestsFirst);
-    
+        
         for (let storageObject of resultScore)
         {
             scoreC = <ScoreCalss>storageObject.value;
             break;
         }
+        var score=  CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,scoreC.ScoreF );
+        scoreC.ScoreF = score;
+        dataPlayer.Score = scoreC.ScoreF;
     let storageWriteRequests: nkruntime.StorageWriteRequest[] = [{
         collection: CollectionUser,
         key: "Score",
         userId: message.sender.userId,
         value: scoreC
     }];
+    ScoreFirst =scoreC.ScoreF;
     nakama.storageWrite(storageWriteRequests);
-    logger.info(score + " Score");
+    logger.info( dataPlayer.Score  + " Score");
     
  
     var resultTile = CalculatorArray2D(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile,logger);
@@ -165,41 +169,64 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
     if (resultTile.length>0) {
         dataPlayer.ResultRow = resultTile;
         for (let index = 0; index < resultTile.length; index++) {
-     
-          
             dataPlayer.ResultLine = dataPlayer.NumberLine;
             array3DPlayerSecend[dataPlayer.ResultLine][ dataPlayer.ResultRow[ resultTile[index]]] =-1;
         }
         resultTile=[];
     }
-   
- 
+    dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
+
+    if(dataPlayer.EndGame == true){
+        if (dataPlayer.Score> scoreSecend) {
+            dataPlayer.PlayerWin = message.sender.userId;
+        }
+        else{
+            dataPlayer.PlayerWin =gameState.players[1].presence.userId;
+        }
+        let storageDelete: nkruntime.StorageDeleteRequest[]=[{
+            key:"Score",
+            userId: message.sender.userId,
+            collection:CollectionUser
+        }];
+        nakama.storageDelete(storageDelete);
+      
+      }
  }
  else{
 
 
      array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] =(dataPlayer.NumberTile);
      var resultTile2 = CalculatorArray2D(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile, logger);
+     logger.info(resultTile2  + " resultTile2");
+     if (resultTile2.length>0) {
+        dataPlayer.ResultRow = resultTile2;
+
+        for (let index = 0; index < resultTile2.length; index++) {
      
-     logger.info(scoreC.ScoreF + " ScoreOPP");
-     let score= CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,  scoreC.ScoreF);
-     scoreC.ScoreF = score;
+          
+            dataPlayer.ResultLine = dataPlayer.NumberLine;
+            array3DPlayerSecend[dataPlayer.ResultLine][ dataPlayer.ResultRow[ resultTile2[index]]] =-1;
+        }
+        resultTile2=[];
+     }
      let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
          collection: CollectionUser,
          key: "Score",
          userId: message.sender.userId,
- 
-     }];
- 
-     let resultScore: nkruntime.StorageObject[] = nakama.storageRead(storagReadRequestsFirst);
- 
-     for (let storageObject of resultScore)
-     {
-         scoreC = <ScoreCalss>storageObject.value;
-         break;
-     }
-
-    let storageWriteRequests2: nkruntime.StorageWriteRequest[] = [{
+         
+        }];
+        scoreSecend = scoreC.ScoreF;
+        let resultScore: nkruntime.StorageObject[] = nakama.storageRead(storagReadRequestsFirst);
+        
+        for (let storageObject of resultScore)
+        {
+            scoreC = <ScoreCalss>storageObject.value;
+            break;
+        }
+        let score= CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,scoreC.ScoreF);
+        scoreC.ScoreF = score;
+        dataPlayer.Score = scoreC.ScoreF;
+        let storageWriteRequests2: nkruntime.StorageWriteRequest[] = [{
         collection: CollectionUser,
         key: "Score",
         userId: message.sender.userId,
@@ -214,36 +241,60 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
         }
           
       }
-      if(resultTile2.length>0){
-        dataPlayer.ResultRow =resultTile2;
         dataPlayer.ResultLine = dataPlayer.NumberLine;
-        for (let index = 0; index < resultTile2.length; index++) {
-            array3DPlayerFirst[dataPlayer.NumberLine][resultTile2[index]] = -1;
-          }
-          resultTile2=[];
+      dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend );
+      if(dataPlayer.EndGame == true){
+        if (dataPlayer.Score> ScoreFirst) {
+            dataPlayer.PlayerWin = message.sender.userId;
+        }
+        else{
+            dataPlayer.PlayerWin =  gameState.players[0].presence.userId;
+        }
+        let storageDelete: nkruntime.StorageDeleteRequest[]=[{
+            key:"Score",
+            userId: message.sender.userId,
+            collection:CollectionUser
+        }];
+        nakama.storageDelete(storageDelete);
+      
       }
-    
 
    
 }
-dataPlayer.Score = scoreC.ScoreF;
-    var dataSendToClint = JSON.stringify(dataPlayer);
 
-    
+    var dataSendToClint = JSON.stringify(dataPlayer);
    dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
-   dataPlayer.Score = 0;
+  // dataPlayer.Score = 0;
 
 //    if(arrayResult.length>0){
 
 //        arrayResult.splice(0,arrayResult.length);
 //    }
 }
+
+function ActionWinPlayer(array1:number[][] ) : boolean {
+    let count :number=0;
+for (let index = 0; index < array1.length; index++) {
+   for (let index1 = 0; index1 < array1[index].length; index1++) {
+ if(array1[index][index1] == -1){
+    count++;
+ }
+ }
+    
+  if(count==0){
+    return true;
+  }
+    
+}
+
+    return false;
+}
 function CalculatorArray2D(array1:number[][],x:number,y:number,input:number , logger : nkruntime.Logger):number[]
 {
     let arrayResult : number[] =[];
     array1[x].forEach((element, index) => {
-        if (element == input) {
-        logger.info(index + " "+ element + " "+ input + " "+ x);
+        if (element === input) {
+        logger.info(index + " "+ element + " "+ input + " "+ x+ "FFFFFFFFFFFFFFFFFFFFEEE");
         arrayResult.push(index);
     }
    
@@ -252,7 +303,7 @@ function CalculatorArray2D(array1:number[][],x:number,y:number,input:number , lo
  if(arrayResult.length>0){
     return arrayResult;
  }
-
+ arrayResult=[];
     return [];
 }
 

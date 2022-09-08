@@ -33,6 +33,7 @@ namespace Nakama.Helpers
         public event Action onTurnMe = null;
 
         public bool isTurn;
+       
 
         #endregion
 
@@ -161,7 +162,7 @@ namespace Nakama.Helpers
                 NumberLine = line,
                 ResultLine = -1,
                 ResultRow = new int[0],
-                
+                PlayerWin = ""
 
             };
           

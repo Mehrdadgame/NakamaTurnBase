@@ -117,11 +117,11 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     var NumberLine = dataPlayer.NumberLine;
     var NumberRow = dataPlayer.NumberRow;
     var scoreC = { ScoreF: 0 };
+    var ScoreFirst = 0;
+    var scoreSecend = 0;
     logger.info(" StorageReadRequest " + scoreC.ScoreF);
-    array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
-    var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, scoreC.ScoreF);
-    scoreC.ScoreF = score;
     if (message.sender.userId == gameState.players[0].presence.userId) {
+        array3DPlayerFirst[NumberLine][NumberRow] = (dataPlayer.NumberTile);
         var storagReadRequestsFirst = [{
                 collection: CollectionUser,
                 key: "Score",
@@ -133,14 +133,18 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             scoreC = storageObject.value;
             break;
         }
+        var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, scoreC.ScoreF);
+        scoreC.ScoreF = score;
+        dataPlayer.Score = scoreC.ScoreF;
         var storageWriteRequests = [{
                 collection: CollectionUser,
                 key: "Score",
                 userId: message.sender.userId,
                 value: scoreC
             }];
+        ScoreFirst = scoreC.ScoreF;
         nakama.storageWrite(storageWriteRequests);
-        logger.info(score + " Score");
+        logger.info(dataPlayer.Score + " Score");
         var resultTile = CalculatorArray2D(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
         logger.info(resultTile.length + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         for (var index = 0; index < 3; index++) {
@@ -156,24 +160,49 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             }
             resultTile = [];
         }
+        dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
+        if (dataPlayer.EndGame == true) {
+            if (dataPlayer.Score > scoreSecend) {
+                dataPlayer.PlayerWin = message.sender.userId;
+            }
+            else {
+                dataPlayer.PlayerWin = gameState.players[1].presence.userId;
+            }
+            var storageDelete = [{
+                    key: "Score",
+                    userId: message.sender.userId,
+                    collection: CollectionUser
+                }];
+            nakama.storageDelete(storageDelete);
+        }
     }
     else {
         array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
         var resultTile2 = CalculatorArray2D(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
-        logger.info(scoreC.ScoreF + " ScoreOPP");
-        var score_1 = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, scoreC.ScoreF);
-        scoreC.ScoreF = score_1;
+        logger.info(resultTile2 + " resultTile2");
+        if (resultTile2.length > 0) {
+            dataPlayer.ResultRow = resultTile2;
+            for (var index = 0; index < resultTile2.length; index++) {
+                dataPlayer.ResultLine = dataPlayer.NumberLine;
+                array3DPlayerSecend[dataPlayer.ResultLine][dataPlayer.ResultRow[resultTile2[index]]] = -1;
+            }
+            resultTile2 = [];
+        }
         var storagReadRequestsFirst = [{
                 collection: CollectionUser,
                 key: "Score",
                 userId: message.sender.userId,
             }];
+        scoreSecend = scoreC.ScoreF;
         var resultScore = nakama.storageRead(storagReadRequestsFirst);
         for (var _a = 0, resultScore_2 = resultScore; _a < resultScore_2.length; _a++) {
             var storageObject = resultScore_2[_a];
             scoreC = storageObject.value;
             break;
         }
+        var score_1 = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, scoreC.ScoreF);
+        scoreC.ScoreF = score_1;
+        dataPlayer.Score = scoreC.ScoreF;
         var storageWriteRequests2 = [{
                 collection: CollectionUser,
                 key: "Score",
@@ -186,34 +215,56 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
                 logger.info(array3DPlayerSecend[index][index1].toString());
             }
         }
-        if (resultTile2.length > 0) {
-            dataPlayer.ResultRow = resultTile2;
-            dataPlayer.ResultLine = dataPlayer.NumberLine;
-            for (var index = 0; index < resultTile2.length; index++) {
-                array3DPlayerFirst[dataPlayer.NumberLine][resultTile2[index]] = -1;
+        dataPlayer.ResultLine = dataPlayer.NumberLine;
+        dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend);
+        if (dataPlayer.EndGame == true) {
+            if (dataPlayer.Score > ScoreFirst) {
+                dataPlayer.PlayerWin = message.sender.userId;
             }
-            resultTile2 = [];
+            else {
+                dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+            }
+            var storageDelete = [{
+                    key: "Score",
+                    userId: message.sender.userId,
+                    collection: CollectionUser
+                }];
+            nakama.storageDelete(storageDelete);
         }
     }
-    dataPlayer.Score = scoreC.ScoreF;
     var dataSendToClint = JSON.stringify(dataPlayer);
     dispatcher.broadcastMessage(message.opCode, dataSendToClint, null, message.sender);
-    dataPlayer.Score = 0;
+    // dataPlayer.Score = 0;
     //    if(arrayResult.length>0){
     //        arrayResult.splice(0,arrayResult.length);
     //    }
 }
+function ActionWinPlayer(array1) {
+    var count = 0;
+    for (var index = 0; index < array1.length; index++) {
+        for (var index1 = 0; index1 < array1[index].length; index1++) {
+            if (array1[index][index1] == -1) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            return true;
+        }
+    }
+    return false;
+}
 function CalculatorArray2D(array1, x, y, input, logger) {
     var arrayResult = [];
     array1[x].forEach(function (element, index) {
-        if (element == input) {
-            logger.info(index + " " + element + " " + input + " " + x);
+        if (element === input) {
+            logger.info(index + " " + element + " " + input + " " + x + "FFFFFFFFFFFFFFFFFFFFEEE");
             arrayResult.push(index);
         }
     });
     if (arrayResult.length > 0) {
         return arrayResult;
     }
+    arrayResult = [];
     return [];
 }
 function CalculatorScore(array1, x, input, scoreSaved) {

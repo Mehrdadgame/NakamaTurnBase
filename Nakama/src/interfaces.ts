@@ -41,6 +41,8 @@ interface DataPlayer{
     NumberRow : number
     ResultLine:number
     ResultRow:number[]
+    EndGame:boolean
+     PlayerWin :string
 
 }
 

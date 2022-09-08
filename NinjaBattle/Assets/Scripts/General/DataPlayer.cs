@@ -13,6 +13,8 @@ public class DataPlayer
     public int NumberRow;
     public int ResultLine;
     public int[] ResultRow;
+    public bool EndGame;
+    public string PlayerWin;
 
 
 }
