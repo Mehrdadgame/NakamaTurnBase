@@ -43,7 +43,10 @@ interface DataPlayer{
     ResultLine:number
     ResultRow:number[]
     EndGame:boolean
-     PlayerWin :string
+    PlayerWin :string
+    ScoreOtherPlayer:number
+    MinesScore:boolean
+    ValueMines:number
 
 }
 

@@ -116,39 +116,20 @@ let array3DPlayerSecend:number[][] = [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
 
 function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
     let dataPlayer : DataPlayer = JSON.parse(nakama.binaryToString(message.data));
-    var scoreC :ScoreCalss = {ScoreF :0 } 
 
+    dataPlayer.MinesScore =false;
     
     if(message.sender.userId == gameState.players[0].presence.userId)
     {
         array3DPlayerFirst[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
-        logger.info(dataPlayer.NumberLine + " "+ dataPlayer.NumberRow);
-        let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
-            collection: CollectionUser,
-            key: "Score",
-            userId: message.sender.userId,
-            
-        }];
-        
-        let resultScore: nkruntime.StorageObject[] = nakama.storageRead(storagReadRequestsFirst);
-        
-        for (let storageObject of resultScore)
-        {
-            scoreC = <ScoreCalss>storageObject.value;
-            break;
-        }
-        var score=  CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,scoreC.ScoreF );
-        scoreC.ScoreF = score-minesScore1;
-        dataPlayer.Score = scoreC.ScoreF;
-    let storageWriteRequests: nkruntime.StorageWriteRequest[] = [{
-        collection: CollectionUser,
-        key: "Score",
-        userId: message.sender.userId,
-        value: scoreC
-    }];
-    gameState.players[0].ScorePlayer =scoreC.ScoreF;
-    nakama.storageWrite(storageWriteRequests);
-    logger.info( dataPlayer.Score  + " Score");
+
+        let readc=  ReadScore(message.sender.userId,nakama);
+      
+        var score=  CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,readc.ScoreF );
+        readc.ScoreF = score;
+        dataPlayer.Score =  readc.ScoreF;
+      
+        SaveScore(message.sender.userId,0,nakama,readc);
     
  
     var resultTile = CalculatorArray2D(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile,logger);
@@ -162,16 +143,18 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
             array3DPlayerSecend[dataPlayer.ResultLine][resultTile[index]] = (-1);
             coutPow++;
         }
-        minesScore2= Math.pow(dataPlayer.NumberLine+1,coutPow);
+       let Read= ReadScore(gameState.players[1].presence.userId,nakama);
+       logger.info(Read.ScoreF + " read");
+       let miness = Math.pow(dataPlayer.NumberTile+1,coutPow);
+       logger.info(miness + " miness");
+       let resultSave= SaveScore(gameState.players[1].presence.userId, miness,nakama,Read);
+dataPlayer.ValueMines = miness;
+       logger.info(resultSave + " miness");
+       dataPlayer.ScoreOtherPlayer = resultSave;
         resultTile=[];
+        dataPlayer.MinesScore =true;
     }
-    for (let index = 0; index <3; index++) {
-      for (let index1 = 0; index1 < 3; index1++) {
-       logger.info(array3DPlayerFirst[index][index1].toString());
-        
-      }
-        
-    }
+   
     dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
 
     if(dataPlayer.EndGame == true){
@@ -199,13 +182,19 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
         }];
         nakama.storageDelete(storageDelete1);
       }
-      dataPlayer.Score -= minesScore1;
+  
  }
  else{
 
 
      array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] =(dataPlayer.NumberTile);
      logger.info(dataPlayer.NumberLine + " "+ dataPlayer.NumberRow);
+
+     let read=   ReadScore(message.sender.userId,nakama);
+     let score= CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,read.ScoreF);
+     read.ScoreF = score;
+     dataPlayer.Score =read.ScoreF;
+     SaveScore(message.sender.userId,0,nakama,read);
      var resultTile2 = CalculatorArray2D(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile, logger);
      logger.info(resultTile2  + " resultTile2");
      if (resultTile2.length>0) {
@@ -213,46 +202,23 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
          let countPow=0;
         for (let index = 0; index < resultTile2.length; index++) {
      
-          
+             countPow++;
             dataPlayer.ResultLine = dataPlayer.NumberLine;
-            logger.info(dataPlayer.ResultLine + " /"+ resultTile2[index]);
             array3DPlayerFirst[dataPlayer.ResultLine][ resultTile2[index]] =(-1);
         }
-        minesScore1= Math.pow(dataPlayer.NumberLine+1,countPow);
+        let read1 =  ReadScore( gameState.players[0].presence.userId,nakama);
+        logger.info(read1.ScoreF + " read1");
+        let miness= Math.pow(dataPlayer.NumberTile+1,countPow);
+        dataPlayer.ValueMines = miness;
+        logger.info(miness + " miness");
+       let resultSave= SaveScore(gameState.players[0].presence.userId, miness ,nakama,read1);
+       dataPlayer.ScoreOtherPlayer = resultSave;
+       dataPlayer.MinesScore =true;
         resultTile2=[];
      }
-     let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
-         collection: CollectionUser,
-         key: "Score",
-         userId: message.sender.userId,
-         
-        }];
-        gameState.players[1].ScorePlayer  = scoreC.ScoreF;
-        let resultScore: nkruntime.StorageObject[] = nakama.storageRead(storagReadRequestsFirst);
-        
-        for (let storageObject of resultScore)
-        {
-            scoreC = <ScoreCalss>storageObject.value;
-            break;
-        }
-        let score= CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,scoreC.ScoreF);
-        scoreC.ScoreF = score - minesScore2;
-        dataPlayer.Score = scoreC.ScoreF;
-        let storageWriteRequests2: nkruntime.StorageWriteRequest[] = [{
-        collection: CollectionUser,
-        key: "Score",
-        userId: message.sender.userId,
-        value: scoreC
-    }];
-    nakama.storageWrite(storageWriteRequests2);
-  
-    for (let index = 0; index <3; index++) {
-        for (let index1 = 0; index1 < 3; index1++) {
-         logger.info(array3DPlayerSecend[index][index1].toString());
-          
-        }
-          
-      }
+     
+
+     
         dataPlayer.ResultLine = dataPlayer.NumberLine;
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend );
       if(dataPlayer.EndGame == true){
@@ -280,19 +246,48 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
 
         nakama.storageDelete(storageDelete1);
       }
-      dataPlayer.Score-=minesScore2;
-   
+  
 }
 
     var dataSendToClint = JSON.stringify(dataPlayer);
    dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
-  // dataPlayer.Score = 0;
-
-//    if(arrayResult.length>0){
-
-//        arrayResult.splice(0,arrayResult.length);
-//    }
+ 
 }
+
+ function SaveScore(id:string,mines:number ,nakama:nkruntime.Nakama, Scorecalss:ScoreCalss): number{
+    Scorecalss.ScoreF -= mines;
+    let storageWriteRequests2: nkruntime.StorageWriteRequest[] = [{
+        collection: CollectionUser,
+        key: "Score",
+        userId:id,
+        value: Scorecalss
+    }];
+  
+    nakama.storageWrite(storageWriteRequests2);
+    return Scorecalss.ScoreF
+    
+ }
+ function ReadScore(id:string  ,nakama:nkruntime.Nakama ):ScoreCalss{
+    var score1:ScoreCalss=new ScoreCalss;
+    let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
+        collection: CollectionUser,
+        key: "Score",
+        userId:id,
+        
+       }];
+
+       let resultScore: nkruntime.StorageObject[] = nakama.storageRead(storagReadRequestsFirst);
+       
+       for (let storageObject of resultScore)
+       {
+        score1 = <ScoreCalss>storageObject.value;
+           break;
+       }
+      
+    
+
+    return score1;
+ }
 
 function ActionWinPlayer(array1:number[][] ) : boolean {
     let count :number=0;
