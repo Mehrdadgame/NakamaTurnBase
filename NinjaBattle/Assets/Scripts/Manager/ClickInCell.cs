@@ -19,8 +19,10 @@ public class ClickInCell : MonoBehaviour,IPointerDownHandler
             return;
 
         MultiplayerManager.Instance.SendTurn(name, GameManager.Instance.diceRoller.currrentDie, numberLine, numberRow);
-        
-        GetComponentsInChildren<Image>()[1].sprite = GameManager.Instance.diceRoller.Dice[GameManager.Instance.diceRoller.currrentDie];
+        var tile = GetComponentsInChildren<Image>()[1];
+        tile.enabled = true;
+
+        tile.sprite = GameManager.Instance.diceRoller.Dice[GameManager.Instance.diceRoller.currrentDie];
         MultiplayerManager.Instance.isTurn=false;
         GameManager.Instance.diceRoller.currrentDie = -1;
         isLock=true;

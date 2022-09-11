@@ -18,6 +18,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ScoreTextOpp;
     [SerializeField] private Animator TextTurn;
     [SerializeField] private Animator TextValueMines;
+    [SerializeField] private Sprite[] DiceRollsSprite;
     void OnEnable()
     {
        GameManager.Instance.diceRoller = GameObject.Find("DieImage").GetComponent<DiceRoller>();
@@ -33,11 +34,13 @@ public class UiManager : MonoBehaviour
         if (MultiplayerManager.Instance.isTurn)
         {
             dicRollButton.interactable = true;
+            dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
             TextTurn.Play("TuenText", 0, 0);
             TextTurn.GetComponent<TextMeshProUGUI>().text = "Your Turn";
         }
         else
         {
+            dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[1];
             TextTurn.Play("TuenText", 0, 0);
             TextTurn.GetComponent<TextMeshProUGUI>().text = "Opponent's Turn";
         }
@@ -78,16 +81,16 @@ public class UiManager : MonoBehaviour
         Debug.Log(arg1 + " " + arg2);
        var clone= tileDataOpps.Find(e=>e.line == arg1 && e.row == arg2);
         clone.GetComponentsInChildren<Image>()[1].sprite = null;
-
+        clone.enabled = false;
     }
 
     private void Instance_onSetDataInRowMe(int arg1, int arg2 )
     {
         Debug.Log(arg1 + " " + arg2);
         var meCell =tileDataMe.Find(r =>  r.numberLine == arg1 && r.numberRow == arg2);
+        meCell.enabled =false;
         meCell.GetComponentsInChildren<Image>()[1].sprite = null;
         meCell.isLock = false;
-          
     }
 
     private void Instance_SetDataInTurn(DataPlayer obj)
@@ -97,7 +100,9 @@ public class UiManager : MonoBehaviour
         Debug.Log(transformOpp);
         if (obj.UserId != MultiplayerManager.Instance.players.User.Id)
         {
-            transformOpp.Find(obj.NameTile).GetComponentsInChildren<Image>()[1].sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
+            var tile = transformOpp.Find(obj.NameTile).GetComponentsInChildren<Image>()[1];
+            tile.enabled = true;
+            tile.sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
             TextTurn.Play("TuenText", 0, 0);
             TextTurn.GetComponent<TextMeshProUGUI>().text = "Opponent's Turn";
         }
@@ -116,6 +121,7 @@ public class UiManager : MonoBehaviour
         if (obj)
         {
             dicRollButton.interactable = true;
+            dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
             MultiplayerManager.Instance.isTurn=true;
             TextTurn.Play("TuenText", 0, 0);
             TextTurn.GetComponent<TextMeshProUGUI>().text = "Your Turn";
@@ -124,6 +130,7 @@ public class UiManager : MonoBehaviour
         else
         {
             TextTurn.Play("TuenText", 0, 0);
+            dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[1];
             TextTurn.GetComponent<TextMeshProUGUI>().text = "Opponent's Turn";
             dicRollButton.interactable = false;
             MultiplayerManager.Instance.isTurn = false;
@@ -133,6 +140,7 @@ public class UiManager : MonoBehaviour
     private void Instance_onTurnMe()
     {
         dicRollButton.interactable = true;
+       // dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
         TextTurn.Play("TuenText", 0, 0);
         TextTurn.GetComponent<TextMeshProUGUI>().text = "Your Turn";
 
