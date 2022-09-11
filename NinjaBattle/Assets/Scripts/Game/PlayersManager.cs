@@ -28,8 +28,8 @@ namespace NinjaBattle.Game
         public event Action<DataPlayer> onSetDataInTurn;
         public event Action<int, int > onSetDataInRowMe;
         public event Action<int, int > onSetDataInRowOpp;
-        public event Action<int> onSetScoreMe;
-        public event Action<int > onSetScoreOpp;
+        public event Action<int, int> onSetScoreMe;
+        public event Action<int,int > onSetScoreOpp;
         #endregion
 
         #region PROPERTIES
@@ -68,6 +68,7 @@ namespace NinjaBattle.Game
         {
             multiplayerManager.onMatchJoin -= MatchJoined;
             multiplayerManager.onMatchLeave -= ResetLeaved;
+            nakamaManager.Socket.ReceivedMatchPresence -= PlayersChanged;
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.Players, SetPlayers);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.PlayerJoined, PlayerJoined);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.ChangeScene, MatchStarted);
@@ -76,7 +77,7 @@ namespace NinjaBattle.Game
         }
         public void SetTurn(MultiplayerMessage message)
         {
-            if (message.GetData<string>() == multiplayerManager.players.User.Id)
+            if (message.GetData<string>() == multiplayerManager.Self.UserId)
             {
                 multiplayerManager.isTurn = true;
                 IsTurn?.Invoke(true);
@@ -93,10 +94,8 @@ namespace NinjaBattle.Game
             var data = message.GetData<DataPlayer>();
             onSetDataInTurn?.Invoke(data);
             Debug.Log(data);
-            if(multiplayerManager.players.User.Id != data.UserId)
+            if(multiplayerManager.Self.UserId != data.UserId)
             {
-                ScoreMe = data.Score;
-             
                 if (data.ResultRow.Length > 0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
@@ -107,30 +106,37 @@ namespace NinjaBattle.Game
                   
                 }
                 IsTurn?.Invoke(true);
+                ScoreMe = data.Score;
+                //ScoreOpp = data.ScoreOtherPlayer;
+                if(data.MinesScore)
+                onSetScoreOpp?.Invoke(data.ScoreOtherPlayer,data.ValueMines);
+                Debug.Log(data.ScoreOtherPlayer + "other");
 
                 if (data.EndGame == true)
                 {
-                     
-                    if (data.PlayerWin == multiplayerManager.players.User.Id)
+                    Debug.Log(data.PlayerWin + " " + multiplayerManager.Self.UserId);
+                    if (ScoreMe<ScoreOpp)
                     {
-                        ShowResultEndGame("You Win",ScoreMe, ScoreOpp);
+                        ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
 
+                    }
+                    else if(ScoreMe > ScoreOpp)
+                    {
+                        ShowResultEndGame("You Loss",  ScoreOpp, ScoreMe);
                     }
                     else
                     {
-                        ShowResultEndGame("You Loss",  ScoreOpp, ScoreMe);
+                        ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;
                     IsTurn?.Invoke(false);
                 }
-                onSetScoreMe.Invoke(data.Score);
+                onSetScoreMe.Invoke(data.Score,0);
                 Debug.Log(data.Score);
             }
             else
             {
-                ScoreOpp = data.Score;
-                Debug.Log(data.Score);
-                onSetScoreOpp?.Invoke(data.Score);
+               // ScoreMe = data.ScoreOtherPlayer;
                 if (data.ResultRow.Length >0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
@@ -142,22 +148,33 @@ namespace NinjaBattle.Game
                     }
                   
                 }
-                IsTurn?.Invoke(false);
+                if (data.MinesScore)
+                    onSetScoreMe.Invoke(data.ScoreOtherPlayer,data.ValueMines);
+                Debug.Log(data.ScoreOtherPlayer + "other");
+                ScoreOpp = data.Score;
+                Debug.Log(data.Score);
+                onSetScoreOpp?.Invoke(data.Score ,0);
                 if (data.EndGame == true)
                 {
-                    if (data.PlayerWin == multiplayerManager.players.User.Id)
+                       Debug.Log(data.PlayerWin + " " + multiplayerManager.Self.UserId);
+                    if (ScoreMe<ScoreOpp)
                     {
-                        ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
+                        ShowResultEndGame("You Win",  ScoreOpp, ScoreMe);
                         Debug.Log("Win Me");
+                    }
+                    else if(ScoreMe > ScoreOpp)
+                    {
+                        ShowResultEndGame("You Loos",  ScoreOpp, ScoreMe);
+                        Debug.Log("Win Opp");
                     }
                     else
                     {
-                        ShowResultEndGame("You Loos", ScoreOpp,ScoreMe);
-                        Debug.Log("Win Opp");
+                        ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;
-                    IsTurn?.Invoke(false);
+                   
                 }
+                IsTurn?.Invoke(false);
 
             }
            

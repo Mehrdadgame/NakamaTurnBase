@@ -27,16 +27,22 @@ namespace NinjaBattle.Game
 
         private void Awake()
         {
-            Instance = this;
+          
         }
-
         private void Start()
         {
-            MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.PlayerWon, ReceivedPlayerWonRound);
-            MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.Draw, ReceivedDrawRound);
             MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.ChangeScene, ReceivedChangeScene);
             MultiplayerManager.Instance.onMatchJoin += JoinedMatch;
             MultiplayerManager.Instance.onMatchLeave += LeavedMatch;
+        }
+
+        private void OnEnable()
+        {
+            Instance = this;
+            // MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.PlayerWon, ReceivedPlayerWonRound);
+            //  MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.Draw, ReceivedDrawRound);
+
+
         }
 
         private void OnDestroy()

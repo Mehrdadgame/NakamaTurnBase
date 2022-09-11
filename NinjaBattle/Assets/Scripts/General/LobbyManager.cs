@@ -19,7 +19,7 @@ namespace NinjaBattle.General
 
         #region BEHAVIORS
 
-        private void Start()
+        private void OnEnable()
         {
             playersManager = PlayersManager.Instance;
             playersManager.onPlayerJoined += PlayerJoined;

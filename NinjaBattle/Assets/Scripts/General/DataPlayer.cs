@@ -15,7 +15,9 @@ public class DataPlayer
     public int[] ResultRow;
     public bool EndGame;
     public string PlayerWin;
-
+    public int ScoreOtherPlayer;
+    public bool MinesScore;
+    public int ValueMines;
 
 }
 

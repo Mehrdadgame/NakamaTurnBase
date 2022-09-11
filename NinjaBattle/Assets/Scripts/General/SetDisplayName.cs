@@ -20,7 +20,8 @@ namespace NinjaBattle.General
 
         #region BEHAVIORS
 
-        private void Start()
+       
+        private void OnEnable()
         {
             nakamaUserManager = NakamaUserManager.Instance;
             nakamaUserManager.onLoaded += ObtainName;
@@ -32,7 +33,7 @@ namespace NinjaBattle.General
         private void OnDestroy()
         {
             inputField.onValueChanged.RemoveListener(ValueChanged);
-           // nakamaUserManager.onLoaded -= ObtainName;
+            nakamaUserManager.onLoaded -= ObtainName;
         }
 
         private void ObtainName()

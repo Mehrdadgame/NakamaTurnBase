@@ -16,9 +16,9 @@ public class UiManager : MonoBehaviour
     [SerializeField] private List<ClickInCell> tileDataMe = new List<ClickInCell>();
     [SerializeField] private TextMeshProUGUI ScoreTextMe;
     [SerializeField] private TextMeshProUGUI ScoreTextOpp;
-
-
-    void Start()
+    [SerializeField] private Animator TextTurn;
+    [SerializeField] private Animator TextValueMines;
+    void OnEnable()
     {
        GameManager.Instance.diceRoller = GameObject.Find("DieImage").GetComponent<DiceRoller>();
        PlayersManager.Instance.onSetDataInTurn += Instance_SetDataInTurn;
@@ -33,17 +33,44 @@ public class UiManager : MonoBehaviour
         if (MultiplayerManager.Instance.isTurn)
         {
             dicRollButton.interactable = true;
+            TextTurn.Play("TuenText", 0, 0);
+            TextTurn.GetComponent<TextMeshProUGUI>().text = "Your Turn";
+        }
+        else
+        {
+            TextTurn.Play("TuenText", 0, 0);
+            TextTurn.GetComponent<TextMeshProUGUI>().text = "Opponent's Turn";
+        }
+    }
+    void OnDestroy()
+    {
+        PlayersManager.Instance.onSetDataInTurn -= Instance_SetDataInTurn;
+        MultiplayerManager.Instance.onTurnMe -= Instance_onTurnMe;
+        PlayersManager.Instance.onSetDataInRowMe -= Instance_onSetDataInRowMe;
+        PlayersManager.Instance.onSetDataInRowOpp -= Instance_onSetDataInRowOpp;
+        PlayersManager.Instance.onSetScoreOpp -= Instance_onSetScoreOpp;
+        PlayersManager.Instance.onSetScoreMe -= Instance_onSetScoreMe;
+        PlayersManager.Instance.IsTurn -= Instance_IsTurn;
+    }
+
+    private void Instance_onSetScoreMe(int obj,int mines)
+    {
+        ScoreTextMe.text = obj.ToString();
+        if (mines>0)
+        {
+            TextValueMines.GetComponent<TextMeshProUGUI>().text = "-" + mines;
+            TextValueMines.Play("Mines", 0, 0);
         }
     }
 
-    private void Instance_onSetScoreMe(int obj)
-    {
-        ScoreTextMe.text = obj.ToString();
-    }
-
-    private void Instance_onSetScoreOpp(int obj)
+    private void Instance_onSetScoreOpp(int obj ,int mines)
     {
         ScoreTextOpp.text = obj.ToString();
+        if (mines > 0)
+        {
+            TextValueMines.GetComponent<TextMeshProUGUI>().text = "-" + mines;
+            TextValueMines.Play("Mines", 0, 0);
+        }
     }
 
     private void Instance_onSetDataInRowOpp(int arg1, int arg2 )
@@ -65,19 +92,24 @@ public class UiManager : MonoBehaviour
 
     private void Instance_SetDataInTurn(DataPlayer obj)
     {
-      
+      Debug.Log(GameManager.Instance);
+        Debug.Log(GameManager.Instance.diceRoller);
+        Debug.Log(transformOpp);
         if (obj.UserId != MultiplayerManager.Instance.players.User.Id)
         {
             transformOpp.Find(obj.NameTile).GetComponentsInChildren<Image>()[1].sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
-          
+            TextTurn.Play("TuenText", 0, 0);
+            TextTurn.GetComponent<TextMeshProUGUI>().text = "Opponent's Turn";
+        }
+        else
+        {
+            TextTurn.Play("TuenText", 0, 0);
+            TextTurn.GetComponent<TextMeshProUGUI>().text = "Your Turn";
         }
       
     }
 
-    private void OnDestroy()
-    {
-        PlayersManager.Instance.IsTurn -= Instance_IsTurn;
-    }
+   
 
     private void Instance_IsTurn(bool obj)
     {
@@ -85,12 +117,14 @@ public class UiManager : MonoBehaviour
         {
             dicRollButton.interactable = true;
             MultiplayerManager.Instance.isTurn=true;
+            TextTurn.Play("TuenText", 0, 0);
+            TextTurn.GetComponent<TextMeshProUGUI>().text = "Your Turn";
 
-           
         }
         else
         {
-          
+            TextTurn.Play("TuenText", 0, 0);
+            TextTurn.GetComponent<TextMeshProUGUI>().text = "Opponent's Turn";
             dicRollButton.interactable = false;
             MultiplayerManager.Instance.isTurn = false;
         }
@@ -99,7 +133,8 @@ public class UiManager : MonoBehaviour
     private void Instance_onTurnMe()
     {
         dicRollButton.interactable = true;
-
+        TextTurn.Play("TuenText", 0, 0);
+        TextTurn.GetComponent<TextMeshProUGUI>().text = "Your Turn";
 
     }
     public void Leave()

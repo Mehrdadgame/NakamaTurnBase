@@ -50,10 +50,11 @@ namespace Nakama.Helpers
 
         private void Awake()
         {
+           
             Instance = this;
         }
 
-        private void Start()
+        private void OnEnable()
         {
             InvokeRepeating(nameof(LocalTickPassed), SendRate, SendRate);
         }
