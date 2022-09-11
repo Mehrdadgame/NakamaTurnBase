@@ -20,6 +20,7 @@ interface Player
 {
     presence: nkruntime.Presence
     displayName: string
+    ScorePlayer:number
 }
 
 interface TimeRemainingData

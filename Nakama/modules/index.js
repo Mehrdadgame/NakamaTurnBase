@@ -62,7 +62,8 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
         var account = nakama.accountGetId(presence.userId);
         var player = {
             presence: presence,
-            displayName: account.user.displayName
+            displayName: account.user.displayName,
+            ScorePlayer: 0
         };
         var nextPlayerNumber = getNextPlayerNumber(gameState.players);
         gameState.players[nextPlayerNumber] = player;
@@ -116,8 +117,6 @@ var array3DPlayerSecend = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
 function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
     var scoreC = { ScoreF: 0 };
-    var ScoreFirst = 0;
-    var scoreSecend = 0;
     if (message.sender.userId == gameState.players[0].presence.userId) {
         array3DPlayerFirst[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
         logger.info(dataPlayer.NumberLine + " " + dataPlayer.NumberRow);
@@ -141,18 +140,21 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
                 userId: message.sender.userId,
                 value: scoreC
             }];
-        ScoreFirst = scoreC.ScoreF;
+        gameState.players[0].ScorePlayer = scoreC.ScoreF;
         nakama.storageWrite(storageWriteRequests);
         logger.info(dataPlayer.Score + " Score");
         var resultTile = CalculatorArray2D(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
         logger.info(resultTile.length + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         if (resultTile.length > 0) {
+            var coutPow = 0;
             dataPlayer.ResultRow = resultTile;
             for (var index = 0; index < resultTile.length; index++) {
                 dataPlayer.ResultLine = dataPlayer.NumberLine;
                 logger.info(dataPlayer.ResultLine + " /" + resultTile[index]);
                 array3DPlayerSecend[dataPlayer.ResultLine][resultTile[index]] = (-1);
+                coutPow++;
             }
+            gameState.players[1].ScorePlayer -= Math.pow(dataPlayer.NumberLine + 1, coutPow);
             resultTile = [];
         }
         for (var index = 0; index < 3; index++) {
@@ -162,11 +164,13 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         }
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
         if (dataPlayer.EndGame == true) {
-            if (dataPlayer.Score > scoreSecend) {
-                dataPlayer.PlayerWin = message.sender.userId;
+            if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
+                dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+            }
+            else if (gameState.players[1].ScorePlayer > gameState.players[0].ScorePlayer) {
+                dataPlayer.PlayerWin = gameState.players[1].presence.userId;
             }
             else {
-                dataPlayer.PlayerWin = gameState.players[1].presence.userId;
             }
             var storageDelete = [{
                     key: "Score",
@@ -189,11 +193,13 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         logger.info(resultTile2 + " resultTile2");
         if (resultTile2.length > 0) {
             dataPlayer.ResultRow = resultTile2;
+            var countPow = 0;
             for (var index = 0; index < resultTile2.length; index++) {
                 dataPlayer.ResultLine = dataPlayer.NumberLine;
                 logger.info(dataPlayer.ResultLine + " /" + resultTile2[index]);
                 array3DPlayerFirst[dataPlayer.ResultLine][resultTile2[index]] = (-1);
             }
+            gameState.players[0].ScorePlayer -= Math.pow(dataPlayer.NumberLine + 1, countPow);
             resultTile2 = [];
         }
         var storagReadRequestsFirst = [{
@@ -201,7 +207,7 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
                 key: "Score",
                 userId: message.sender.userId,
             }];
-        scoreSecend = scoreC.ScoreF;
+        gameState.players[1].ScorePlayer = scoreC.ScoreF;
         var resultScore = nakama.storageRead(storagReadRequestsFirst);
         for (var _a = 0, resultScore_2 = resultScore; _a < resultScore_2.length; _a++) {
             var storageObject = resultScore_2[_a];
@@ -226,11 +232,13 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         dataPlayer.ResultLine = dataPlayer.NumberLine;
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend);
         if (dataPlayer.EndGame == true) {
-            if (dataPlayer.Score > ScoreFirst) {
-                dataPlayer.PlayerWin = message.sender.userId;
+            if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
+                dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+            }
+            else if (gameState.players[1].ScorePlayer > gameState.players[0].ScorePlayer) {
+                dataPlayer.PlayerWin = gameState.players[1].presence.userId;
             }
             else {
-                dataPlayer.PlayerWin = gameState.players[0].presence.userId;
             }
             var storageDelete = [{
                     key: "Score",
