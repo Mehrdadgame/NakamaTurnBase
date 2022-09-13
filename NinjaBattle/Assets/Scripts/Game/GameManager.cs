@@ -1,5 +1,6 @@
 using Nakama.Helpers;
 using NinjaBattle.General;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -68,16 +69,31 @@ namespace NinjaBattle.Game
             Winner = null;
         }
 
-        private void ReceivedChangeScene(MultiplayerMessage message)
+        private async void ReceivedChangeScene(MultiplayerMessage message)
         {
-            SceneManager.LoadScene(message.GetData<int>());
-            
+            // SceneManager.LoadScene(message.GetData<int>());
+
+            AniamtionManager.instance.AnimIconOpp.enabled = false;
+            AniamtionManager.instance.PageMatchMaking.gameObject.SetActive(false);
+            await Task.Delay(2000);
+            AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
+            AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
+            await Task.Delay(750);
+            FindObjectOfType<UiManager>().enabled = true;
+            FindObjectOfType<ActionEndGame>().enabled = true;
+            AniamtionManager.instance.AnimGoToUpMe.enabled = false;
+            AniamtionManager.instance.AnimGoToUpOpp.enabled = false;
+            AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconMe;
+            AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconOpp;
+            AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         }
 
-        private void JoinedMatch()
+        private async void JoinedMatch()
         {
             ResetPlayerWins();
-            GoToLobby();
+         
+             GoToLobby();
         }
 
         private void LeavedMatch()
@@ -87,7 +103,7 @@ namespace NinjaBattle.Game
 
         private void ResetPlayerWins()
         {
-            PlayersWins = new int[4];
+            PlayersWins = new int[2];
         }
 
         private void GoToHome()
@@ -97,7 +113,7 @@ namespace NinjaBattle.Game
 
         private void GoToLobby()
         {
-            SceneManager.LoadScene((int)Scenes.Lobby);
+            SceneManager.LoadScene((int)Scenes.Battle);
         }
 
         #endregion

@@ -89,8 +89,6 @@ var matchLeave = function (context, logger, nakama, dispatcher, tick, state, pre
         var playerNumber = getPlayerNumber(gameState.players, presence.sessionId);
         delete gameState.players[playerNumber];
     }
-    if (getPlayersCount(gameState.players) == 0)
-        return null;
     return { state: gameState };
 };
 var matchTerminate = function (context, logger, nakama, dispatcher, tick, state, graceSeconds) {
@@ -112,55 +110,45 @@ function processMessages(messages, gameState, dispatcher, nakama, logger) {
         //     messagesDefaultLogic(message, gameState, dispatcher);
     }
 }
-var array3DPlayerFirst = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
-var array3DPlayerSecend = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+var array3DPlayerFirst = [[null, null, null], [null, null, null], [null, null, null]];
+var array3DPlayerSecend = [[null, null, null], [null, null, null], [null, null, null]];
 function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
-    var scoreC = { ScoreF: 0 };
+    var valuMines = 0;
+    dataPlayer.MinesScore = false;
     if (message.sender.userId == gameState.players[0].presence.userId) {
+        dataPlayer.master = true;
         array3DPlayerFirst[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
-        logger.info(dataPlayer.NumberLine + " " + dataPlayer.NumberRow);
-        var storagReadRequestsFirst = [{
-                collection: CollectionUser,
-                key: "Score",
-                userId: message.sender.userId,
-            }];
-        var resultScore = nakama.storageRead(storagReadRequestsFirst);
-        for (var _i = 0, resultScore_1 = resultScore; _i < resultScore_1.length; _i++) {
-            var storageObject = resultScore_1[_i];
-            scoreC = storageObject.value;
-            break;
-        }
-        var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, scoreC.ScoreF);
-        scoreC.ScoreF = score;
-        dataPlayer.Score = scoreC.ScoreF;
-        var storageWriteRequests = [{
-                collection: CollectionUser,
-                key: "Score",
-                userId: message.sender.userId,
-                value: scoreC
-            }];
-        gameState.players[0].ScorePlayer = scoreC.ScoreF;
-        nakama.storageWrite(storageWriteRequests);
-        logger.info(dataPlayer.Score + " Score");
+        var readc = ReadScore(message.sender.userId, nakama);
+        var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, readc.ScoreF, logger)[0];
+        dataPlayer.sumRow1[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, readc.ScoreF, logger)[1];
+        logger.info(dataPlayer.sumRow1[dataPlayer.NumberLine].toString() + " SumRow1");
+        readc.ScoreF = score;
+        dataPlayer.Score = readc.ScoreF;
+        SaveScore(message.sender.userId, 0, nakama, readc);
         var resultTile = CalculatorArray2D(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
-        logger.info(resultTile.length + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         if (resultTile.length > 0) {
             var coutPow = 0;
             dataPlayer.ResultRow = resultTile;
             for (var index = 0; index < resultTile.length; index++) {
                 dataPlayer.ResultLine = dataPlayer.NumberLine;
                 logger.info(dataPlayer.ResultLine + " /" + resultTile[index]);
-                array3DPlayerSecend[dataPlayer.ResultLine][resultTile[index]] = (-1);
+                array3DPlayerSecend[dataPlayer.ResultLine][resultTile[index]] = (null);
                 coutPow++;
             }
-            gameState.players[1].ScorePlayer -= Math.pow(dataPlayer.NumberLine + 1, coutPow);
+            var Read = ReadScore(gameState.players[1].presence.userId, nakama);
+            logger.info(Read.ScoreF + " read");
+            valuMines = dataPlayer.NumberTile + 1;
+            var miness = (valuMines * coutPow) * coutPow;
+            logger.info(miness + " miness");
+            var resultSave = SaveScore(gameState.players[1].presence.userId, miness, nakama, Read);
+            // dataPlayer.sumRow2[dataPlayer.NumberLine] -= miness;
+            dataPlayer.ValueMines = miness;
+            logger.info(resultSave + " miness");
+            //  dataPlayer.sumRow1[dataPlayer.NumberLine] -=  miness;
+            dataPlayer.ScoreOtherPlayer = resultSave;
             resultTile = [];
-        }
-        for (var index = 0; index < 3; index++) {
-            for (var index1 = 0; index1 < 3; index1++) {
-                logger.info(array3DPlayerFirst[index][index1].toString());
-            }
+            dataPlayer.MinesScore = true;
         }
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
         if (dataPlayer.EndGame == true) {
@@ -171,6 +159,7 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
                 dataPlayer.PlayerWin = gameState.players[1].presence.userId;
             }
             else {
+                dataPlayer.PlayerWin = "";
             }
             var storageDelete = [{
                     key: "Score",
@@ -187,47 +176,41 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         }
     }
     else {
+        dataPlayer.master = false;
         array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
         logger.info(dataPlayer.NumberLine + " " + dataPlayer.NumberRow);
+        // dataPlayer.sumRow2 = [0,0,0];
+        var read = ReadScore(message.sender.userId, nakama);
+        logger.info(read.ScoreF + "read.ScoreF");
+        var score_1 = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, read.ScoreF, logger)[0];
+        dataPlayer.sumRow2[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, read.ScoreF, logger)[1];
+        read.ScoreF = score_1;
+        dataPlayer.Score = read.ScoreF;
+        SaveScore(message.sender.userId, 0, nakama, read);
         var resultTile2 = CalculatorArray2D(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
+        // dataPlayer.sumRow2[dataPlayer.NumberLine] += CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,read.ScoreF,logger)[1];
+        //     var totalRow = array3DPlayerSecend.map(r => r.reduce((a, b) => a + b));
         logger.info(resultTile2 + " resultTile2");
         if (resultTile2.length > 0) {
             dataPlayer.ResultRow = resultTile2;
             var countPow = 0;
             for (var index = 0; index < resultTile2.length; index++) {
+                countPow++;
                 dataPlayer.ResultLine = dataPlayer.NumberLine;
-                logger.info(dataPlayer.ResultLine + " /" + resultTile2[index]);
-                array3DPlayerFirst[dataPlayer.ResultLine][resultTile2[index]] = (-1);
+                array3DPlayerFirst[dataPlayer.ResultLine][resultTile2[index]] = (null);
             }
-            gameState.players[0].ScorePlayer -= Math.pow(dataPlayer.NumberLine + 1, countPow);
+            var read1 = ReadScore(gameState.players[0].presence.userId, nakama);
+            logger.info(read1.ScoreF + " read1");
+            valuMines = dataPlayer.NumberTile + 1;
+            var miness = (valuMines * countPow) * countPow;
+            dataPlayer.ValueMines = miness;
+            //dataPlayer.sumRow1[dataPlayer.NumberLine] -= miness;
+            logger.info(miness + " miness");
+            var resultSave = SaveScore(gameState.players[0].presence.userId, miness, nakama, read1);
+            // dataPlayer.sumRow2[dataPlayer.NumberLine] -= miness;
+            dataPlayer.ScoreOtherPlayer = resultSave;
+            dataPlayer.MinesScore = true;
             resultTile2 = [];
-        }
-        var storagReadRequestsFirst = [{
-                collection: CollectionUser,
-                key: "Score",
-                userId: message.sender.userId,
-            }];
-        gameState.players[1].ScorePlayer = scoreC.ScoreF;
-        var resultScore = nakama.storageRead(storagReadRequestsFirst);
-        for (var _a = 0, resultScore_2 = resultScore; _a < resultScore_2.length; _a++) {
-            var storageObject = resultScore_2[_a];
-            scoreC = storageObject.value;
-            break;
-        }
-        var score_1 = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, scoreC.ScoreF);
-        scoreC.ScoreF = score_1;
-        dataPlayer.Score = scoreC.ScoreF;
-        var storageWriteRequests2 = [{
-                collection: CollectionUser,
-                key: "Score",
-                userId: message.sender.userId,
-                value: scoreC
-            }];
-        nakama.storageWrite(storageWriteRequests2);
-        for (var index = 0; index < 3; index++) {
-            for (var index1 = 0; index1 < 3; index1++) {
-                logger.info(array3DPlayerSecend[index][index1].toString());
-            }
         }
         dataPlayer.ResultLine = dataPlayer.NumberLine;
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend);
@@ -239,6 +222,7 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
                 dataPlayer.PlayerWin = gameState.players[1].presence.userId;
             }
             else {
+                dataPlayer.PlayerWin = "";
             }
             var storageDelete = [{
                     key: "Score",
@@ -254,18 +238,42 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             nakama.storageDelete(storageDelete1);
         }
     }
+    // var rowSum1 = array3DPlayerFirst.map(r =>r.reduce((a, b) => a+1 + b+1));
+    // var rowsum2  = array3DPlayerSecend.map(r => r.reduce((a, b) => a+1 + b+1));
     var dataSendToClint = JSON.stringify(dataPlayer);
     dispatcher.broadcastMessage(message.opCode, dataSendToClint, null, message.sender);
-    // dataPlayer.Score = 0;
-    //    if(arrayResult.length>0){
-    //        arrayResult.splice(0,arrayResult.length);
-    //    }
+}
+function SaveScore(id, mines, nakama, Scorecalss) {
+    Scorecalss.ScoreF -= mines;
+    var storageWriteRequests2 = [{
+            collection: CollectionUser,
+            key: "Score",
+            userId: id,
+            value: Scorecalss
+        }];
+    nakama.storageWrite(storageWriteRequests2);
+    return Scorecalss.ScoreF;
+}
+function ReadScore(id, nakama) {
+    var score1 = new ScoreCalss;
+    var storagReadRequestsFirst = [{
+            collection: CollectionUser,
+            key: "Score",
+            userId: id,
+        }];
+    var resultScore = nakama.storageRead(storagReadRequestsFirst);
+    for (var _i = 0, resultScore_1 = resultScore; _i < resultScore_1.length; _i++) {
+        var storageObject = resultScore_1[_i];
+        score1 = storageObject.value;
+        break;
+    }
+    return score1;
 }
 function ActionWinPlayer(array1) {
     var count = 0;
     for (var index = 0; index < array1.length; index++) {
         for (var index1 = 0; index1 < array1[index].length; index1++) {
-            if (array1[index][index1] == -1) {
+            if (array1[index][index1] == null) {
                 count++;
             }
         }
@@ -289,19 +297,22 @@ function CalculatorArray2D(array1, x, y, input, logger) {
     arrayResult = [];
     return [];
 }
-function CalculatorScore(array1, x, input, scoreSaved) {
+function CalculatorScore(array1, x, input, scoreSaved, logger) {
     var countNumber = 0;
     var powScore = 0;
+    var i = 0;
     array1[x].forEach(function (element) {
         if (element == input) {
             countNumber++;
         }
     });
     if (countNumber > 0) {
-        powScore = Math.pow(input + 1, countNumber);
-        return powScore + scoreSaved;
+        i = input + 1;
+        powScore = (i * countNumber) * countNumber;
+        logger.info(powScore + "  logger : count !!!! " + i);
+        return [powScore + scoreSaved, powScore];
     }
-    return scoreSaved + (input + 1);
+    return [scoreSaved + (input + 1), input + 1];
 }
 function messagesDefaultLogic(message, gameState, dispatcher) {
     dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);

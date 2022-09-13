@@ -18,6 +18,9 @@ public class DataPlayer
     public int ScoreOtherPlayer;
     public bool MinesScore;
     public int ValueMines;
+    public int[] sumRow1= new int [3];
+    public int[] sumRow2 = new int[3];
+    public bool master;
 
 }
 

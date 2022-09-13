@@ -6,4 +6,5 @@ public class TileDataOpp : MonoBehaviour
 {
     public int line;
     public int row;
+    public int ValueTile;
 }

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Numerics;
+using System.Threading.Tasks;
 using Nakama;
 using Nakama.Helpers;
 using NinjaBattle.Game;
@@ -19,6 +21,8 @@ namespace NinjaBattle.General
 
         #region BEHAVIORS
 
+
+     
         private void OnEnable()
         {
             playersManager = PlayersManager.Instance;
@@ -26,6 +30,7 @@ namespace NinjaBattle.General
             playersManager.onPlayerLeft += PlayerLeft;
             playersManager.onPlayersReceived += PlayersReceived;
             UpdateStatus();
+            
         }
 
         private void OnDestroy()
@@ -37,6 +42,8 @@ namespace NinjaBattle.General
 
         private void PlayersReceived(List<PlayerData> players)
         {
+            if(!PlayerPrefs.HasKey("Opp"))
+        
             UpdateStatus();
         }
 
@@ -45,20 +52,30 @@ namespace NinjaBattle.General
             UpdateStatus();
         }
 
-        private async void PlayerJoined(PlayerData player)
+        private  void PlayerJoined(PlayerData player)
         {
+            
+           
             UpdateStatus();
          
         }
 
-        private void UpdateStatus()
+        private async void UpdateStatus()
         {
             bool gameStarting = playersManager.PlayersCount > 1;
-            waitingText.SetActive(!gameStarting);
-            timer.gameObject.SetActive(gameStarting);
-
+          
+           
             if (gameStarting)
-                timer.ResetTimer();
+            {
+                // timer.ResetTimer();
+                // waitingText.SetActive(!gameStarting);
+                // timer.gameObject.SetActive(gameStarting);
+            
+
+               
+             gameStarting = false;
+            }
+               
         }
 
         #endregion

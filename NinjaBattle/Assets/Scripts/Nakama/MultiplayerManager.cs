@@ -66,6 +66,7 @@ namespace Nakama.Helpers
 
         public async void JoinMatchAsync()
         {
+            PlayerPrefs.DeleteKey("Opp");
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             NakamaManager.Instance.Socket.ReceivedMatchState += Receive;
             NakamaManager.Instance.onDisconnected += Disconnected;
@@ -78,12 +79,19 @@ namespace Nakama.Helpers
       
      
 
-        private void Disconnected()
+        private async void Disconnected()
         {
             NakamaManager.Instance.onDisconnected -= Disconnected;
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             match = null;
             onMatchLeave?.Invoke();
+            await NakamaManager.Instance.Client.DeleteStorageObjectsAsync(NakamaManager.Instance.Session, new[] {
+  new StorageObjectId {
+    Collection = "User",
+    Key = "Score",
+    UserId = Self.UserId
+  }
+});
         }
 
         public async void LeaveMatchAsync()
@@ -91,6 +99,8 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onDisconnected -= Disconnected;
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             await NakamaManager.Instance.Socket.LeaveMatchAsync(match);
+          
+
             match = null;
             onMatchLeave?.Invoke();
         }
@@ -126,10 +136,13 @@ namespace Nakama.Helpers
                 var json = encoding.GetString(newState.State);
                 LogData(ReceivedDataLog, newState.OpCode, json);
             }
-         
-            MultiplayerMessage multiplayerMessage = new MultiplayerMessage(newState);
+            
+           
+          MultiplayerMessage multiplayerMessage = new MultiplayerMessage(newState);
             if (onReceiveData.ContainsKey(multiplayerMessage.DataCode))
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);
+
+           
         }
 
        
@@ -162,10 +175,12 @@ namespace Nakama.Helpers
                 NumberTile = number,
                 NumberRow = row,
                 NumberLine = line,
-                ResultLine = -1,
+                ResultLine = 0,
                 ResultRow = new int[0],
-                PlayerWin = ""
-
+                PlayerWin = "",
+                sumRow1 =  new int[3],   
+                sumRow2 = new int[3] ,
+                
             };
           
             Send(Code.ChosseTurn, data);
@@ -173,5 +188,18 @@ namespace Nakama.Helpers
         }
 
         #endregion
+        private async void OnApplicationQuit()
+        {
+            if (NakamaManager.Instance == null)
+                return;
+         await NakamaManager.Instance.Client.DeleteStorageObjectsAsync(NakamaManager.Instance.Session, new[] {
+  new StorageObjectId {
+    Collection = "User",
+    Key = "Score",
+    UserId = Self.UserId
+  }
+});
+        }
     }
+    
 }

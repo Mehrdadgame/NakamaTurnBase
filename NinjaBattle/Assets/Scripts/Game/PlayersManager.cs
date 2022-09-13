@@ -4,7 +4,6 @@ using System.Linq;
 using Nakama;
 using Nakama.Helpers;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace NinjaBattle.Game
 {
@@ -28,8 +27,8 @@ namespace NinjaBattle.Game
         public event Action<DataPlayer> onSetDataInTurn;
         public event Action<int, int > onSetDataInRowMe;
         public event Action<int, int > onSetDataInRowOpp;
-        public event Action<int, int> onSetScoreMe;
-        public event Action<int,int > onSetScoreOpp;
+        public event Action<int, int , DataPlayer> onSetScoreMe;
+        public event Action<int,int, DataPlayer > onSetScoreOpp;
         #endregion
 
         #region PROPERTIES
@@ -92,7 +91,7 @@ namespace NinjaBattle.Game
         {
          
             var data = message.GetData<DataPlayer>();
-            onSetDataInTurn?.Invoke(data);
+
             Debug.Log(data);
             if(multiplayerManager.Self.UserId != data.UserId)
             {
@@ -109,7 +108,7 @@ namespace NinjaBattle.Game
                 ScoreMe = data.Score;
                 //ScoreOpp = data.ScoreOtherPlayer;
                 if(data.MinesScore)
-                onSetScoreOpp?.Invoke(data.ScoreOtherPlayer,data.ValueMines);
+                onSetScoreOpp?.Invoke(data.ScoreOtherPlayer,data.ValueMines,data);
                 Debug.Log(data.ScoreOtherPlayer + "other");
 
                 if (data.EndGame == true)
@@ -131,12 +130,21 @@ namespace NinjaBattle.Game
                     multiplayerManager.isTurn = false;
                     IsTurn?.Invoke(false);
                 }
-                onSetScoreMe.Invoke(data.Score,0);
+                onSetScoreMe.Invoke(data.Score,0,data);
                 Debug.Log(data.Score);
             }
             else
             {
-               // ScoreMe = data.ScoreOtherPlayer;
+           
+                for (int i = 0; i < data.sumRow1.Length; i++)
+                {
+                    Debug.Log(data.sumRow1[i]);
+                }
+                for (int i = 0; i < data.sumRow2.Length; i++)
+                {
+                    Debug.Log(data.sumRow2[i]);
+                }
+                // ScoreMe = data.ScoreOtherPlayer;
                 if (data.ResultRow.Length >0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
@@ -149,11 +157,11 @@ namespace NinjaBattle.Game
                   
                 }
                 if (data.MinesScore)
-                    onSetScoreMe.Invoke(data.ScoreOtherPlayer,data.ValueMines);
+                    onSetScoreMe.Invoke(data.ScoreOtherPlayer,data.ValueMines,data);
                 Debug.Log(data.ScoreOtherPlayer + "other");
                 ScoreOpp = data.Score;
                 Debug.Log(data.Score);
-                onSetScoreOpp?.Invoke(data.Score ,0);
+                onSetScoreOpp?.Invoke(data.Score ,0,data);
                 if (data.EndGame == true)
                 {
                        Debug.Log(data.PlayerWin + " " + multiplayerManager.Self.UserId);
@@ -178,11 +186,13 @@ namespace NinjaBattle.Game
 
             }
            
+            onSetDataInTurn?.Invoke(data);
         }
 
         private void SetPlayers(MultiplayerMessage message)
         {
             Players = message.GetData<List<PlayerData>>();
+            PlayerPrefs.SetString("Opp", Players.Find(e => e != CurrentPlayer).DisplayName);
             onPlayersReceived?.Invoke(Players);
             GetCurrentPlayer();
         }
@@ -194,8 +204,13 @@ namespace NinjaBattle.Game
             if (index > -1)
                 Players[index] = player;
             else
+            {
                 Players.Add(player);
+                PlayerPrefs.SetString("Opp", player.DisplayName);
+            }
+              
 
+          
             onPlayerJoined?.Invoke(player);
         }
 
@@ -217,10 +232,11 @@ namespace NinjaBattle.Game
             }
         }
 
-        private void MatchJoined()
+        private  void MatchJoined()
         {
             nakamaManager.Socket.ReceivedMatchPresence += PlayersChanged;
             GetCurrentPlayer();
+          
         }
         private void ShowResultEndGame(string resutlText , int score1 , int score2)
         {
@@ -243,7 +259,10 @@ namespace NinjaBattle.Game
 
             CurrentPlayer = Players.Find(player => player.Presence.SessionId == multiplayerManager.Self.SessionId);
             CurrentPlayerNumber = Players.IndexOf(CurrentPlayer);
+           
             onLocalPlayerObtained?.Invoke(CurrentPlayer, CurrentPlayerNumber);
+           
+           
         }
 
         private void ResetLeaved()
@@ -253,11 +272,14 @@ namespace NinjaBattle.Game
             Players = null;
             CurrentPlayer = null;
             CurrentPlayerNumber = -1;
+
         }
 
-        public void MatchStarted(MultiplayerMessage message)
+        public  void MatchStarted(MultiplayerMessage message)
         {
             blockJoinsAndLeaves = true;
+         
+           
         }
 
         #endregion

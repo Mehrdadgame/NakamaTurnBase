@@ -76,11 +76,11 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
     {
         let playerNumber: number = getPlayerNumber(gameState.players, presence.sessionId);
         delete gameState.players[playerNumber];
+
+      
     }
 
-    if (getPlayersCount(gameState.players) == 0)
-        return null;
-
+  
     return { state: gameState };
 }
 
@@ -111,24 +111,23 @@ function processMessages(messages: nkruntime.MatchMessage[], gameState: GameStat
         //     messagesDefaultLogic(message, gameState, dispatcher);
     }
 }
-let array3DPlayerFirst:number[][] = [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
-let array3DPlayerSecend:number[][] = [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
+let array3DPlayerFirst:any[][] = [[null,null,null],[null,null,null],[null,null,null]];
+let array3DPlayerSecend:any[][] = [[null,null,null],[null,null,null],[null,null,null]];
 
 function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
     let dataPlayer : DataPlayer = JSON.parse(nakama.binaryToString(message.data));
-
+let valuMines = 0;
     dataPlayer.MinesScore =false;
-    
     if(message.sender.userId == gameState.players[0].presence.userId)
     {
+        dataPlayer.master=true;
         array3DPlayerFirst[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
-
         let readc=  ReadScore(message.sender.userId,nakama);
-      
-        var score=  CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,readc.ScoreF );
+        var score=  CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,readc.ScoreF,logger)[0];
+        dataPlayer.sumRow1[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,readc.ScoreF,logger)[1];
+        logger.info(  dataPlayer.sumRow1[dataPlayer.NumberLine].toString() + " SumRow1")
         readc.ScoreF = score;
         dataPlayer.Score =  readc.ScoreF;
-      
         SaveScore(message.sender.userId,0,nakama,readc);
     
  
@@ -140,16 +139,19 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
         for (let index = 0; index < resultTile.length; index++) {
             dataPlayer.ResultLine = dataPlayer.NumberLine;
             logger.info(dataPlayer.ResultLine + " /"+ resultTile[index]);
-            array3DPlayerSecend[dataPlayer.ResultLine][resultTile[index]] = (-1);
+            array3DPlayerSecend[dataPlayer.ResultLine][resultTile[index]] = (null);
             coutPow++;
         }
        let Read= ReadScore(gameState.players[1].presence.userId,nakama);
        logger.info(Read.ScoreF + " read");
-       let miness = Math.pow(dataPlayer.NumberTile+1,coutPow);
+       valuMines =dataPlayer.NumberTile+1; 
+       let miness = (valuMines*coutPow)*coutPow;
        logger.info(miness + " miness");
        let resultSave= SaveScore(gameState.players[1].presence.userId, miness,nakama,Read);
-dataPlayer.ValueMines = miness;
+   // dataPlayer.sumRow2[dataPlayer.NumberLine] -= miness;
+       dataPlayer.ValueMines = miness;
        logger.info(resultSave + " miness");
+     //  dataPlayer.sumRow1[dataPlayer.NumberLine] -=  miness;
        dataPlayer.ScoreOtherPlayer = resultSave;
         resultTile=[];
         dataPlayer.MinesScore =true;
@@ -165,7 +167,7 @@ dataPlayer.ValueMines = miness;
             dataPlayer.PlayerWin =gameState.players[1].presence.userId;
         }
         else{
-           
+            dataPlayer.PlayerWin="";
         }
 
         let storageDelete: nkruntime.StorageDeleteRequest[]=[{
@@ -186,16 +188,21 @@ dataPlayer.ValueMines = miness;
  }
  else{
 
-
+    dataPlayer.master=false;
      array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] =(dataPlayer.NumberTile);
      logger.info(dataPlayer.NumberLine + " "+ dataPlayer.NumberRow);
-
+    // dataPlayer.sumRow2 = [0,0,0];
      let read=   ReadScore(message.sender.userId,nakama);
-     let score= CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,read.ScoreF);
+     logger.info(read.ScoreF + "read.ScoreF");
+     let score= CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,read.ScoreF,logger)[0];
+     dataPlayer.sumRow2[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,read.ScoreF,logger)[1];
      read.ScoreF = score;
      dataPlayer.Score =read.ScoreF;
      SaveScore(message.sender.userId,0,nakama,read);
      var resultTile2 = CalculatorArray2D(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile, logger);
+    // dataPlayer.sumRow2[dataPlayer.NumberLine] += CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,read.ScoreF,logger)[1];
+//     var totalRow = array3DPlayerSecend.map(r => r.reduce((a, b) => a + b));
+
      logger.info(resultTile2  + " resultTile2");
      if (resultTile2.length>0) {
         dataPlayer.ResultRow = resultTile2;
@@ -204,14 +211,18 @@ dataPlayer.ValueMines = miness;
      
              countPow++;
             dataPlayer.ResultLine = dataPlayer.NumberLine;
-            array3DPlayerFirst[dataPlayer.ResultLine][ resultTile2[index]] =(-1);
+            array3DPlayerFirst[dataPlayer.ResultLine][ resultTile2[index]] =(null);
         }
         let read1 =  ReadScore( gameState.players[0].presence.userId,nakama);
         logger.info(read1.ScoreF + " read1");
-        let miness= Math.pow(dataPlayer.NumberTile+1,countPow);
+        valuMines = dataPlayer.NumberTile+1;
+        let miness= (valuMines*countPow)*countPow;
+
         dataPlayer.ValueMines = miness;
+        //dataPlayer.sumRow1[dataPlayer.NumberLine] -= miness;
         logger.info(miness + " miness");
        let resultSave= SaveScore(gameState.players[0].presence.userId, miness ,nakama,read1);
+      // dataPlayer.sumRow2[dataPlayer.NumberLine] -= miness;
        dataPlayer.ScoreOtherPlayer = resultSave;
        dataPlayer.MinesScore =true;
         resultTile2=[];
@@ -231,6 +242,7 @@ dataPlayer.ValueMines = miness;
             dataPlayer.PlayerWin =  gameState.players[1].presence.userId;
         }
         else{
+            dataPlayer.PlayerWin="";
         }
         let storageDelete: nkruntime.StorageDeleteRequest[]=[{
             key:"Score",
@@ -243,13 +255,18 @@ dataPlayer.ValueMines = miness;
             userId: gameState.players[0].presence.userId,
             collection:CollectionUser
         }];
+        
 
         nakama.storageDelete(storageDelete1);
       }
   
 }
+// var rowSum1 = array3DPlayerFirst.map(r =>r.reduce((a, b) => a+1 + b+1));
+// var rowsum2  = array3DPlayerSecend.map(r => r.reduce((a, b) => a+1 + b+1));
+
 
     var dataSendToClint = JSON.stringify(dataPlayer);
+    
    dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
  
 }
@@ -293,7 +310,7 @@ function ActionWinPlayer(array1:number[][] ) : boolean {
     let count :number=0;
 for (let index = 0; index <array1.length; index++) {
    for (let index1 = 0; index1 < array1[index].length; index1++) {
- if(array1[index][index1] == -1){
+ if(array1[index][index1] == null){
     count++;
  }
 }
@@ -322,9 +339,10 @@ function CalculatorArray2D(array1:number[][],x:number,y:number,input:number , lo
     return [];
 }
 
-function CalculatorScore(array1:number[][],x:number,input:number,scoreSaved:number):number{
+function CalculatorScore(array1:number[][],x:number,input:number,scoreSaved:number,logger : nkruntime.Logger):[number ,number]{
     let countNumber:number=0;
     let powScore:number =0;
+    var i=0
     array1[x].forEach((element) => {
         if (element == input) {
             countNumber++;
@@ -333,12 +351,14 @@ function CalculatorScore(array1:number[][],x:number,input:number,scoreSaved:numb
  });
 
  if(countNumber>0){
-    powScore = Math.pow(input+1,countNumber);
-    return powScore+scoreSaved;
+     i = input+1;
+    powScore = (i*countNumber)*countNumber;
+    logger.info(powScore + "  logger : count !!!! " + i);
+    return [powScore+scoreSaved, powScore];
  }
 
 
-return scoreSaved+(input+1);
+return [scoreSaved+(input+1),input+1];
 
 }
 

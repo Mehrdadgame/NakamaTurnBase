@@ -10,8 +10,7 @@ const CollectionUser = "User";
 const KeyTrophies = "Trophies";
 let ScoreFirstPlayer = 0;
 let ScoreSecendPlayer =0;
-var minesScore1 =0;
-var minesScore2=0;
+
 
 const MessagesLogic: { [opCode: number]: (message: nkruntime.MatchMessage, state: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) => void } =
 {

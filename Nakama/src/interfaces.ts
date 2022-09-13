@@ -47,6 +47,10 @@ interface DataPlayer{
     ScoreOtherPlayer:number
     MinesScore:boolean
     ValueMines:number
+    sumRow1: number[]
+    sumRow2:number[] 
+    master:boolean
+
 
 }
 
