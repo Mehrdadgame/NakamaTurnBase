@@ -24,7 +24,8 @@ public class UiManager : MonoBehaviour
     public TextMeshProUGUI[] arryRowSumMe;
     public TextMeshProUGUI[] arryRowSumOpp;
     public TextMeshProUGUI NameOpp;
-
+    public ParticleSystem WowPar;
+  
     private void Start()
     {
         if (MultiplayerManager.Instance.isTurn)
@@ -53,10 +54,11 @@ public class UiManager : MonoBehaviour
         PlayersManager.Instance.onSetDataInRowOpp += Instance_onSetDataInRowOpp;
         PlayersManager.Instance.onSetScoreOpp += Instance_onSetScoreOpp;
         PlayersManager.Instance.onSetScoreMe += Instance_onSetScoreMe;
-   
 
         PlayersManager.Instance.IsTurn += Instance_IsTurn;
+        GameManager.Instance.diceRoller.RollUp += ShowHighLight; 
     }
+
     void OnDestroy()
     {
         PlayersManager.Instance.onSetDataInTurn -= Instance_SetDataInTurn;
@@ -67,6 +69,24 @@ public class UiManager : MonoBehaviour
         PlayersManager.Instance.onSetScoreMe -= Instance_onSetScoreMe;
         PlayersManager.Instance.IsTurn -= Instance_IsTurn;
     }
+    private void ShowHighLight(bool obj)
+    {
+          var list= tileDataMe.FindAll(e => e.isLock == false);
+        if (obj)
+        {
+            foreach (var item in list)
+            {
+                item.GetComponentInChildren<ParticleSystem>().Play();
+            }
+        }
+        else
+        {
+            foreach (var item in list)
+            {
+                item.GetComponentInChildren<ParticleSystem>().Stop();
+            }
+        }
+    }
 
     private void Instance_onSetScoreMe(int obj,int mines, DataPlayer data)
     {
@@ -75,8 +95,8 @@ public class UiManager : MonoBehaviour
         {
             TextValueMines.GetComponent<TextMeshProUGUI>().text = "-" + mines;
             TextValueMines.Play("Mines", 0, 0);
-          
 
+            WowPar.Play();
             var total = int.Parse(arryRowSumOpp[data.NumberLine].text) - mines;
             arryRowSumOpp[data.NumberLine].text = total.ToString();
             mines = 0;
@@ -90,8 +110,8 @@ public class UiManager : MonoBehaviour
         {
             TextValueMines.GetComponent<TextMeshProUGUI>().text = "-" + mines;
             TextValueMines.Play("Mines", 0, 0);
-       
-           var total = int.Parse(arryRowSumMe[data.NumberLine].text) - mines;
+            WowPar.Play();
+            var total = int.Parse(arryRowSumMe[data.NumberLine].text) - mines;
             arryRowSumMe[data.NumberLine].text = total.ToString();
             mines =0;
         }

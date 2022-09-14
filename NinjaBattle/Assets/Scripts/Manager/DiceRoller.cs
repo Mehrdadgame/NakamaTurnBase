@@ -4,9 +4,14 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Nakama.Helpers;
-
+using System;
+/// <summary>
+/// This Calss for DiceRoller 
+/// </summary>
 public class DiceRoller : MonoBehaviour
 {
+
+    public Action<bool> RollUp;
     public Sprite[] Dice;
     public int rolls;
     public int rollValue;
@@ -52,8 +57,8 @@ public class DiceRoller : MonoBehaviour
             if (intervalTime >= 0.1f)
             {
                 //change die & rotation
-                currrentDie = Random.Range(0, 6);
-                die.transform.Rotate(0, 0, Random.Range(0, 360));
+                currrentDie = UnityEngine. Random.Range(0, 6);
+                die.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360));
 
                 //set image to selected die
                 die.sprite = Dice[currrentDie];
@@ -84,7 +89,7 @@ public class DiceRoller : MonoBehaviour
             isRolling = true;
         }
         button.interactable = false;
-
+       
     }
 
     public void PanelTestButton_Click()
@@ -118,8 +123,10 @@ public class DiceRoller : MonoBehaviour
         totalValue[currrentDie] += value; // add value to totalValue of current die
         total += value;                   // add value to total
         die.GetComponent<RectTransform>().eulerAngles = Vector3.zero;
+        RollUp?.Invoke(true);
 
-     
+
+
     }
 
    

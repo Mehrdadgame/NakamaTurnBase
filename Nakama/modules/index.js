@@ -87,6 +87,12 @@ var matchLeave = function (context, logger, nakama, dispatcher, tick, state, pre
     for (var _i = 0, presences_2 = presences; _i < presences_2.length; _i++) {
         var presence = presences_2[_i];
         var playerNumber = getPlayerNumber(gameState.players, presence.sessionId);
+        var storageDelete1 = [{
+                key: "Score",
+                userId: gameState.players[playerNumber].presence.userId,
+                collection: "User"
+            }];
+        nakama.storageDelete(storageDelete1);
         delete gameState.players[playerNumber];
     }
     return { state: gameState };
@@ -161,18 +167,18 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             else {
                 dataPlayer.PlayerWin = "";
             }
-            var storageDelete = [{
-                    key: "Score",
-                    userId: message.sender.userId,
-                    collection: CollectionUser
-                }];
-            nakama.storageDelete(storageDelete);
-            var storageDelete1 = [{
-                    key: "Score",
-                    userId: gameState.players[1].presence.userId,
-                    collection: CollectionUser
-                }];
-            nakama.storageDelete(storageDelete1);
+            // let storageDelete: nkruntime.StorageDeleteRequest[]=[{
+            //     key:"Score",
+            //     userId: message.sender.userId,
+            //     collection:CollectionUser
+            // }];
+            // nakama.storageDelete(storageDelete);
+            // let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
+            //     key:"Score",
+            //     userId: gameState.players[1].presence.userId,
+            //     collection:CollectionUser
+            // }];
+            // nakama.storageDelete(storageDelete1);
         }
     }
     else {
@@ -224,18 +230,18 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             else {
                 dataPlayer.PlayerWin = "";
             }
-            var storageDelete = [{
-                    key: "Score",
-                    userId: message.sender.userId,
-                    collection: CollectionUser
-                }];
-            nakama.storageDelete(storageDelete);
-            var storageDelete1 = [{
-                    key: "Score",
-                    userId: gameState.players[0].presence.userId,
-                    collection: CollectionUser
-                }];
-            nakama.storageDelete(storageDelete1);
+            //  let storageDelete: nkruntime.StorageDeleteRequest[]=[{
+            //     key:"Score",
+            //     userId: message.sender.userId,
+            //     collection:CollectionUser
+            // }];
+            // nakama.storageDelete(storageDelete);
+            // let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
+            //     key:"Score",
+            //     userId: gameState.players[0].presence.userId,
+            //     collection:CollectionUser
+            // }];
+            // nakama.storageDelete(storageDelete1);
         }
     }
     // var rowSum1 = array3DPlayerFirst.map(r =>r.reduce((a, b) => a+1 + b+1));

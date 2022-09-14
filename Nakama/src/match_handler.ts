@@ -75,8 +75,13 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
     for (let presence of presences)
     {
         let playerNumber: number = getPlayerNumber(gameState.players, presence.sessionId);
+        let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
+            key:"Score",
+            userId: gameState.players[playerNumber].presence.userId,
+            collection:"User"
+        }];
+        nakama.storageDelete(storageDelete1);
         delete gameState.players[playerNumber];
-
       
     }
 
@@ -170,19 +175,19 @@ let valuMines = 0;
             dataPlayer.PlayerWin="";
         }
 
-        let storageDelete: nkruntime.StorageDeleteRequest[]=[{
-            key:"Score",
-            userId: message.sender.userId,
-            collection:CollectionUser
-        }];
-        nakama.storageDelete(storageDelete);
+        // let storageDelete: nkruntime.StorageDeleteRequest[]=[{
+        //     key:"Score",
+        //     userId: message.sender.userId,
+        //     collection:CollectionUser
+        // }];
+        // nakama.storageDelete(storageDelete);
       
-        let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
-            key:"Score",
-            userId: gameState.players[1].presence.userId,
-            collection:CollectionUser
-        }];
-        nakama.storageDelete(storageDelete1);
+        // let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
+        //     key:"Score",
+        //     userId: gameState.players[1].presence.userId,
+        //     collection:CollectionUser
+        // }];
+        // nakama.storageDelete(storageDelete1);
       }
   
  }
@@ -244,20 +249,20 @@ let valuMines = 0;
         else{
             dataPlayer.PlayerWin="";
         }
-        let storageDelete: nkruntime.StorageDeleteRequest[]=[{
-            key:"Score",
-            userId: message.sender.userId,
-            collection:CollectionUser
-        }];
-        nakama.storageDelete(storageDelete);
-        let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
-            key:"Score",
-            userId: gameState.players[0].presence.userId,
-            collection:CollectionUser
-        }];
+      //  let storageDelete: nkruntime.StorageDeleteRequest[]=[{
+        //     key:"Score",
+        //     userId: message.sender.userId,
+        //     collection:CollectionUser
+        // }];
+        // nakama.storageDelete(storageDelete);
+        // let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
+        //     key:"Score",
+        //     userId: gameState.players[0].presence.userId,
+        //     collection:CollectionUser
+        // }];
         
 
-        nakama.storageDelete(storageDelete1);
+        // nakama.storageDelete(storageDelete1);
       }
   
 }

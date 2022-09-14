@@ -49,7 +49,11 @@ namespace Nakama.Helpers
         private void OnApplicationQuit()
         {
             if (socket != null)
+            {
                 socket.CloseAsync();
+
+            }
+                
         }
 
         public void LoginWithUdid()
@@ -104,6 +108,7 @@ namespace Nakama.Helpers
         private void Disconnected()
         {
             onDisconnected?.Invoke();
+
         }
 
         public async Task<IApiRpc> SendRPC(string rpc, string payload = "{}")

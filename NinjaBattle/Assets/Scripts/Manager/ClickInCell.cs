@@ -13,6 +13,12 @@ public class ClickInCell : MonoBehaviour,IPointerDownHandler
     public int numberRow;
     public bool isLock;
     public int ValueTile;
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="eventData"></param>
     public  void OnPointerDown(PointerEventData eventData)
     {
 
@@ -28,6 +34,8 @@ public class ClickInCell : MonoBehaviour,IPointerDownHandler
         MultiplayerManager.Instance.isTurn=false;
         GameManager.Instance.diceRoller.currrentDie = -1;
         isLock=true;
+        GetComponentInChildren<ParticleSystem>().Stop();
+        GameManager.Instance.diceRoller.RollUp?.Invoke(false);
     }
 
 

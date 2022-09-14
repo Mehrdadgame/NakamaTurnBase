@@ -57,7 +57,10 @@ namespace Nakama.Helpers
         private void OnEnable()
         {
             InvokeRepeating(nameof(LocalTickPassed), SendRate, SendRate);
+           
         }
+
+     
 
         private void LocalTickPassed()
         {
@@ -79,19 +82,12 @@ namespace Nakama.Helpers
       
      
 
-        private async void Disconnected()
+        private  void Disconnected()
         {
             NakamaManager.Instance.onDisconnected -= Disconnected;
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             match = null;
             onMatchLeave?.Invoke();
-            await NakamaManager.Instance.Client.DeleteStorageObjectsAsync(NakamaManager.Instance.Session, new[] {
-  new StorageObjectId {
-    Collection = "User",
-    Key = "Score",
-    UserId = Self.UserId
-  }
-});
         }
 
         public async void LeaveMatchAsync()
@@ -188,18 +184,11 @@ namespace Nakama.Helpers
         }
 
         #endregion
-        private async void OnApplicationQuit()
-        {
-            if (NakamaManager.Instance == null)
-                return;
-         await NakamaManager.Instance.Client.DeleteStorageObjectsAsync(NakamaManager.Instance.Session, new[] {
-  new StorageObjectId {
-    Collection = "User",
-    Key = "Score",
-    UserId = Self.UserId
-  }
-});
-        }
+    
+
+       
     }
+
+   
     
 }
