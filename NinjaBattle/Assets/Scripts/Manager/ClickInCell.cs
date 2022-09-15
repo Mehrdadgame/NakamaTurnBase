@@ -2,6 +2,7 @@ using Nakama.Helpers;
 using NinjaBattle.Game;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -22,20 +23,24 @@ public class ClickInCell : MonoBehaviour,IPointerDownHandler
     public  void OnPointerDown(PointerEventData eventData)
     {
 
-        if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie==-1 || isLock)
+        if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie==-1 || isLock )
             return;
-        ValueTile = GameManager.Instance.diceRoller.currrentDie + 1;
+  
         MultiplayerManager.Instance.SendTurn(name, GameManager.Instance.diceRoller.currrentDie, numberLine, numberRow);
         var tile = GetComponentsInChildren<Image>()[1];
         tile.GetComponent<Animator>().Play("DiceRoot", 0, 0);
         tile.enabled = true;
-
+        ValueTile = GameManager.Instance.diceRoller.currrentDie + 1;
         tile.sprite = GameManager.Instance.diceRoller.Dice[GameManager.Instance.diceRoller.currrentDie];
-        MultiplayerManager.Instance.isTurn=false;
-        GameManager.Instance.diceRoller.currrentDie = -1;
-        isLock=true;
         GetComponentInChildren<ParticleSystem>().Stop();
         GameManager.Instance.diceRoller.RollUp?.Invoke(false);
+
+       // UiManager.instance.RowSum();
+
+        GameManager.Instance.diceRoller.Rotation(true);
+        MultiplayerManager.Instance.isTurn = false;
+        GameManager.Instance.diceRoller.currrentDie = -1;
+        isLock = true;
     }
 
 

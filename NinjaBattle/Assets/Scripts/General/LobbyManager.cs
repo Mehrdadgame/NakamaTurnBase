@@ -62,19 +62,19 @@ namespace NinjaBattle.General
 
         private async void UpdateStatus()
         {
-            bool gameStarting = playersManager.PlayersCount > 1;
+            //bool gameStarting = playersManager.PlayersCount > 1;
           
            
-            if (gameStarting)
-            {
-                // timer.ResetTimer();
-                // waitingText.SetActive(!gameStarting);
-                // timer.gameObject.SetActive(gameStarting);
+            //if (gameStarting)
+            //{
+            //    // timer.ResetTimer();
+            //    // waitingText.SetActive(!gameStarting);
+            //    // timer.gameObject.SetActive(gameStarting);
             
 
                
-             gameStarting = false;
-            }
+            // gameStarting = false;
+            //}
                
         }
 

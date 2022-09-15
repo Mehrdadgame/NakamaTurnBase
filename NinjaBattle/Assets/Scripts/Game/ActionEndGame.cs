@@ -10,6 +10,8 @@ public class ActionEndGame : MonoBehaviour
     public TextMeshProUGUI ResultText;
     public TextMeshProUGUI ScoreMe;
     public TextMeshProUGUI ScoreOpp;
+    public Animator IconMe;
+    public Animator IconOpp;
     public Button BackToHome;
 
     private void Start()

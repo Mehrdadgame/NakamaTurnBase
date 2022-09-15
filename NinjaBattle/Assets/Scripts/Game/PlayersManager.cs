@@ -91,10 +91,16 @@ namespace NinjaBattle.Game
         {
          
             var data = message.GetData<DataPlayer>();
-
-            Debug.Log(data);
+            onSetDataInTurn?.Invoke(data);
             if(multiplayerManager.Self.UserId != data.UserId)
             {
+                if (data.MinesScore)
+                    onSetScoreOpp?.Invoke(data.ScoreOtherPlayer,data.ValueMines,data);
+
+                onSetScoreMe.Invoke(data.Score,0,data);
+                ScoreMe = data.Score;
+                if(data.ScoreOtherPlayer>0)
+                ScoreOpp = data.ScoreOtherPlayer;
                 if (data.ResultRow.Length > 0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
@@ -105,15 +111,10 @@ namespace NinjaBattle.Game
                   
                 }
                 IsTurn?.Invoke(true);
-                ScoreMe = data.Score;
-                //ScoreOpp = data.ScoreOtherPlayer;
-                if(data.MinesScore)
-                onSetScoreOpp?.Invoke(data.ScoreOtherPlayer,data.ValueMines,data);
-                Debug.Log(data.ScoreOtherPlayer + "other");
 
                 if (data.EndGame == true)
                 {
-                    Debug.Log(data.PlayerWin + " " + multiplayerManager.Self.UserId);
+              
                     if (ScoreMe<ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
@@ -130,50 +131,40 @@ namespace NinjaBattle.Game
                     multiplayerManager.isTurn = false;
                     IsTurn?.Invoke(false);
                 }
-                onSetScoreMe.Invoke(data.Score,0,data);
-                Debug.Log(data.Score);
+         
             }
             else
             {
-           
-                for (int i = 0; i < data.sumRow1.Length; i++)
-                {
-                    Debug.Log(data.sumRow1[i]);
-                }
-                for (int i = 0; i < data.sumRow2.Length; i++)
-                {
-                    Debug.Log(data.sumRow2[i]);
-                }
-                // ScoreMe = data.ScoreOtherPlayer;
+
+                if (data.MinesScore)
+                    onSetScoreMe.Invoke(data.ScoreOtherPlayer,data.ValueMines,data);
+                onSetScoreOpp?.Invoke(data.Score, 0, data);
+                ScoreOpp = data.Score;
+                if (data.ScoreOtherPlayer > 0)
+                ScoreMe = data.ScoreOtherPlayer;
+
                 if (data.ResultRow.Length >0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
                     {
-                        
-                       
                         onSetDataInRowOpp(data.ResultLine, data.ResultRow[i]);
-                       
                     }
                   
                 }
-                if (data.MinesScore)
-                    onSetScoreMe.Invoke(data.ScoreOtherPlayer,data.ValueMines,data);
-                Debug.Log(data.ScoreOtherPlayer + "other");
-                ScoreOpp = data.Score;
-                Debug.Log(data.Score);
-                onSetScoreOpp?.Invoke(data.Score ,0,data);
+               
+             
                 if (data.EndGame == true)
                 {
-                       Debug.Log(data.PlayerWin + " " + multiplayerManager.Self.UserId);
+                      
                     if (ScoreMe<ScoreOpp)
                     {
                         ShowResultEndGame("You Win",  ScoreOpp, ScoreMe);
-                        Debug.Log("Win Me");
+                      
                     }
                     else if(ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loos",  ScoreOpp, ScoreMe);
-                        Debug.Log("Win Opp");
+                      
                     }
                     else
                     {
@@ -183,10 +174,10 @@ namespace NinjaBattle.Game
                    
                 }
                 IsTurn?.Invoke(false);
+              
 
             }
            
-            onSetDataInTurn?.Invoke(data);
         }
 
         private void SetPlayers(MultiplayerMessage message)
@@ -244,6 +235,13 @@ namespace NinjaBattle.Game
             ActionEndGame.instance.ScoreMe.text = score1.ToString();
             ActionEndGame.instance.ScoreOpp.text = score2.ToString();
             ActionEndGame.instance.ResultText.text = resutlText;
+            ActionEndGame.instance.IconMe.transform.parent = FindObjectOfType<Canvas>().transform;
+            ActionEndGame.instance.IconOpp.transform.parent = FindObjectOfType<Canvas>().transform;
+            ActionEndGame.instance.IconMe.enabled=true;
+            ActionEndGame.instance.IconOpp.enabled=true;
+            ActionEndGame.instance.IconMe.Play("EndGamePlayer1Icon");
+            ActionEndGame.instance.IconOpp.Play("EndGamePlater2Icon");
+
         }
 
         private void GetCurrentPlayer()

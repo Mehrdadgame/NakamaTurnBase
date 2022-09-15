@@ -12,7 +12,8 @@ interface GameState
     scene: Scene
     countdown: number
     endMatch: boolean
-
+    CountTurnPlayer1:any
+    CountTurnPlayer2:any
   
 }
 
@@ -53,6 +54,7 @@ interface DataPlayer{
 
 
 }
+
 
 
 

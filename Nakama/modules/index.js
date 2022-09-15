@@ -22,8 +22,14 @@ var joinOrCreateMatch = function (context, logger, nakama, payload) {
     var label = { open: true };
     matches = nakama.matchList(MatchesLimit, true, JSON.stringify(label), MinimumPlayers, MaxPlayers);
     if (matches.length > 0) {
+        var s = new ScoreCalss;
+        s.ScoreF = 0;
+        SaveScore(context.userId, 0, nakama, s);
         return matches[0].matchId;
     }
+    var s = new ScoreCalss;
+    s.ScoreF = 0;
+    SaveScore(context.userId, 0, nakama, s);
     return nakama.matchCreate(MatchModuleName);
 };
 var matchInit = function (context, logger, nakama, params) {
@@ -36,6 +42,8 @@ var matchInit = function (context, logger, nakama, params) {
         scene: 3 /* Lobby */,
         countdown: DurationLobby * TickRate,
         endMatch: false,
+        CountTurnPlayer1: 0,
+        CountTurnPlayer2: 0
     };
     return {
         state: gameState,
@@ -87,12 +95,13 @@ var matchLeave = function (context, logger, nakama, dispatcher, tick, state, pre
     for (var _i = 0, presences_2 = presences; _i < presences_2.length; _i++) {
         var presence = presences_2[_i];
         var playerNumber = getPlayerNumber(gameState.players, presence.sessionId);
-        var storageDelete1 = [{
-                key: "Score",
-                userId: gameState.players[playerNumber].presence.userId,
-                collection: "User"
-            }];
-        nakama.storageDelete(storageDelete1);
+        // let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
+        //     key:"Score",
+        //     userId: gameState.players[playerNumber].presence.userId,
+        //     collection:"User"
+        // }];
+        // if(storageDelete1[0])
+        //  nakama.storageDelete( storageDelete1);
         delete gameState.players[playerNumber];
     }
     return { state: gameState };
@@ -126,12 +135,12 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         dataPlayer.master = true;
         array3DPlayerFirst[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
         var readc = ReadScore(message.sender.userId, nakama);
-        var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, readc.ScoreF, logger)[0];
-        dataPlayer.sumRow1[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, readc.ScoreF, logger)[1];
-        logger.info(dataPlayer.sumRow1[dataPlayer.NumberLine].toString() + " SumRow1");
+        var score = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, logger, readc.ScoreF)[0];
+        dataPlayer.sumRow1[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberTile, logger)[1];
         readc.ScoreF = score;
         dataPlayer.Score = readc.ScoreF;
         SaveScore(message.sender.userId, 0, nakama, readc);
+        gameState.CountTurnPlayer1++;
         var resultTile = CalculatorArray2D(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
         if (resultTile.length > 0) {
             var coutPow = 0;
@@ -148,16 +157,14 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             var miness = (valuMines * coutPow) * coutPow;
             logger.info(miness + " miness");
             var resultSave = SaveScore(gameState.players[1].presence.userId, miness, nakama, Read);
-            // dataPlayer.sumRow2[dataPlayer.NumberLine] -= miness;
             dataPlayer.ValueMines = miness;
             logger.info(resultSave + " miness");
-            //  dataPlayer.sumRow1[dataPlayer.NumberLine] -=  miness;
             dataPlayer.ScoreOtherPlayer = resultSave;
             resultTile = [];
             dataPlayer.MinesScore = true;
         }
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
-        if (dataPlayer.EndGame == true) {
+        if (dataPlayer.EndGame == true && gameState.CountTurnPlayer1 == gameState.CountTurnPlayer2) {
             if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
                 dataPlayer.PlayerWin = gameState.players[0].presence.userId;
             }
@@ -167,29 +174,20 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             else {
                 dataPlayer.PlayerWin = "";
             }
-            // let storageDelete: nkruntime.StorageDeleteRequest[]=[{
-            //     key:"Score",
-            //     userId: message.sender.userId,
-            //     collection:CollectionUser
-            // }];
-            // nakama.storageDelete(storageDelete);
-            // let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
-            //     key:"Score",
-            //     userId: gameState.players[1].presence.userId,
-            //     collection:CollectionUser
-            // }];
-            // nakama.storageDelete(storageDelete1);
+            logger.info(gameState.CountTurnPlayer2 + "  dataPlayer.CountTurnPlayer2");
+            logger.info(gameState.CountTurnPlayer1 + "  dataPlayer.CountTurnPlayer1");
         }
     }
     else {
         dataPlayer.master = false;
+        gameState.CountTurnPlayer2++;
         array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
         logger.info(dataPlayer.NumberLine + " " + dataPlayer.NumberRow);
         // dataPlayer.sumRow2 = [0,0,0];
         var read = ReadScore(message.sender.userId, nakama);
         logger.info(read.ScoreF + "read.ScoreF");
-        var score_1 = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, read.ScoreF, logger)[0];
-        dataPlayer.sumRow2[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, read.ScoreF, logger)[1];
+        var score_1 = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, logger, read.ScoreF)[0];
+        dataPlayer.sumRow2[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberTile, logger)[1];
         read.ScoreF = score_1;
         dataPlayer.Score = read.ScoreF;
         SaveScore(message.sender.userId, 0, nakama, read);
@@ -206,21 +204,21 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
                 array3DPlayerFirst[dataPlayer.ResultLine][resultTile2[index]] = (null);
             }
             var read1 = ReadScore(gameState.players[0].presence.userId, nakama);
-            logger.info(read1.ScoreF + " read1");
             valuMines = dataPlayer.NumberTile + 1;
             var miness = (valuMines * countPow) * countPow;
             dataPlayer.ValueMines = miness;
             //dataPlayer.sumRow1[dataPlayer.NumberLine] -= miness;
-            logger.info(miness + " miness");
             var resultSave = SaveScore(gameState.players[0].presence.userId, miness, nakama, read1);
             // dataPlayer.sumRow2[dataPlayer.NumberLine] -= miness;
             dataPlayer.ScoreOtherPlayer = resultSave;
             dataPlayer.MinesScore = true;
             resultTile2 = [];
         }
+        logger.info(gameState.CountTurnPlayer2 + "  dataPlayer.CountTurnPlayer2");
+        logger.info(gameState.CountTurnPlayer1 + "  dataPlayer.CountTurnPlayer1");
         dataPlayer.ResultLine = dataPlayer.NumberLine;
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend);
-        if (dataPlayer.EndGame == true) {
+        if (dataPlayer.EndGame == true && gameState.CountTurnPlayer1 == gameState.CountTurnPlayer2) {
             if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
                 dataPlayer.PlayerWin = gameState.players[0].presence.userId;
             }
@@ -303,7 +301,8 @@ function CalculatorArray2D(array1, x, y, input, logger) {
     arrayResult = [];
     return [];
 }
-function CalculatorScore(array1, x, input, scoreSaved, logger) {
+function CalculatorScore(array1, x, input, logger, scoreSaved) {
+    if (scoreSaved === void 0) { scoreSaved = null; }
     var countNumber = 0;
     var powScore = 0;
     var i = 0;
@@ -312,11 +311,16 @@ function CalculatorScore(array1, x, input, scoreSaved, logger) {
             countNumber++;
         }
     });
-    if (countNumber > 0) {
+    if (countNumber > 1) {
         i = input + 1;
         powScore = (i * countNumber) * countNumber;
         logger.info(powScore + "  logger : count !!!! " + i);
-        return [powScore + scoreSaved, powScore];
+        if (countNumber == 2)
+            return [powScore + scoreSaved - (i), powScore];
+        if (countNumber == 3) {
+            logger.info(powScore + " " + scoreSaved + " " + i);
+            return [powScore + scoreSaved - (i * 4), powScore];
+        }
     }
     return [scoreSaved + (input + 1), input + 1];
 }
