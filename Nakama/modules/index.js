@@ -163,8 +163,11 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             resultTile = [];
             dataPlayer.MinesScore = true;
         }
+        logger.info(gameState.CountTurnPlayer2 + "  dataPlayer.CountTurnPlayer2");
+        logger.info(gameState.CountTurnPlayer1 + "  dataPlayer.CountTurnPlayer1");
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
-        if (dataPlayer.EndGame == true && gameState.CountTurnPlayer1 == gameState.CountTurnPlayer2) {
+        var end = Number(gameState.CountTurnPlayer1) == Number(gameState.CountTurnPlayer2);
+        if (dataPlayer.EndGame == true && end === true) {
             if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
                 dataPlayer.PlayerWin = gameState.players[0].presence.userId;
             }
@@ -174,8 +177,6 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             else {
                 dataPlayer.PlayerWin = "";
             }
-            logger.info(gameState.CountTurnPlayer2 + "  dataPlayer.CountTurnPlayer2");
-            logger.info(gameState.CountTurnPlayer1 + "  dataPlayer.CountTurnPlayer1");
         }
     }
     else {
@@ -218,7 +219,8 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         logger.info(gameState.CountTurnPlayer1 + "  dataPlayer.CountTurnPlayer1");
         dataPlayer.ResultLine = dataPlayer.NumberLine;
         dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend);
-        if (dataPlayer.EndGame == true && gameState.CountTurnPlayer1 == gameState.CountTurnPlayer2) {
+        var end = Number(gameState.CountTurnPlayer1) === Number(gameState.CountTurnPlayer2);
+        if (dataPlayer.EndGame == true && end === true) {
             if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
                 dataPlayer.PlayerWin = gameState.players[0].presence.userId;
             }

@@ -19,43 +19,40 @@ public class CalculterRowScore : MonoBehaviour
         instance = this;
     }
 
-    public int TilesOpp(List<TileDataOpp> ts)
+    public int TilesOpp(List<TileDataOpp> cell)
     {
         var total = 0;
 
-        Dictionary<int, int> freqMap = ts.GroupBy(x => x.ValueTile).ToDictionary(x => x.Key, x => x.Count());
-        for (int i = 0; i < ts.Count; i++)
-        {
-            Debug.Log("[Value, Count]: " + String.Join(",", freqMap) + ts[i].line + " " + ts[i].row);
-        }
-    
+        Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
+                                            .Where(g => g.Count() > 1)
+                                            .ToDictionary(x => x.Key, x => x.Count());
+      
+
         foreach (var item in freqMap)
         {
 
+           
             if (item.Value > 2)
             {
 
-                return freqMap.Sum(c => c.Key) * 9;
+                return item.Key * 9;
 
             }
             else if (item.Value == 2)
             {
-                var dif = ts.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
-
+              
+                var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
+               
                 total = item.Key * 4;
-                Debug.Log(dif[0].Key + " 1 dif Me " + total + " Key" + item.Key);
+
 
                 return total + dif[0].Key;
 
             }
-            else
-            {
-                return freqMap.Sum(c => c.Key);
 
-            }
 
         }
-        return 0;
+        return cell.Sum(c => c.ValueTile);
 
     }
 
@@ -63,36 +60,39 @@ public class CalculterRowScore : MonoBehaviour
     {
         var total = 0;
 
-        Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile).ToDictionary(x => x.Key, x => x.Count());
-
+        Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
+                                            .Where(g => g.Count() > 1)
+                                            .ToDictionary(x => x.Key, x => x.Count());
+     
 
         foreach (var item in freqMap)
         {
 
-            if (item.Value > 2 )
+           
+            if (item.Value > 2)
             {
-               
+
                 return item.Key * 9;
 
             }
             else if (item.Value == 2)
             {
+              
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
-
+             
                 total = item.Key * 4;
-                Debug.Log(dif[0].Key + " 1 dif Me "+ total + " Key"+ item.Key);
+              
 
                 return total + dif[0].Key;
 
             }
-            else
-            {
-                return freqMap.Sum(c => c.Key);
 
-            }
 
         }
-        return 0;
+      
+            return cell.Sum(c => c.ValueTile);
+
+      
 
 
     }
