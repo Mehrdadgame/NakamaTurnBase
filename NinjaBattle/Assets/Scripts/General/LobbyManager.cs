@@ -22,7 +22,7 @@ namespace NinjaBattle.General
         #region BEHAVIORS
 
 
-     
+
         private void OnEnable()
         {
             playersManager = PlayersManager.Instance;
@@ -30,7 +30,7 @@ namespace NinjaBattle.General
             playersManager.onPlayerLeft += PlayerLeft;
             playersManager.onPlayersReceived += PlayersReceived;
             UpdateStatus();
-            
+
         }
 
         private void OnDestroy()
@@ -42,9 +42,9 @@ namespace NinjaBattle.General
 
         private void PlayersReceived(List<PlayerData> players)
         {
-            if(!PlayerPrefs.HasKey("Opp"))
-        
-            UpdateStatus();
+            if (!PlayerPrefs.HasKey("Opp"))
+
+                UpdateStatus();
         }
 
         private void PlayerLeft(PlayerData player)
@@ -52,30 +52,30 @@ namespace NinjaBattle.General
             UpdateStatus();
         }
 
-        private  void PlayerJoined(PlayerData player)
+        private void PlayerJoined(PlayerData player)
         {
-            
-           
+
+
             UpdateStatus();
-         
+
         }
 
         private async void UpdateStatus()
         {
             //bool gameStarting = playersManager.PlayersCount > 1;
-          
-           
+
+
             //if (gameStarting)
             //{
             //    // timer.ResetTimer();
             //    // waitingText.SetActive(!gameStarting);
             //    // timer.gameObject.SetActive(gameStarting);
-            
 
-               
+
+
             // gameStarting = false;
             //}
-               
+
         }
 
         #endregion

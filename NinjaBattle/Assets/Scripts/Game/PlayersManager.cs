@@ -25,10 +25,11 @@ namespace NinjaBattle.Game
         public event Action<PlayerData, int> onLocalPlayerObtained;
         public event Action<bool> IsTurn;
         public event Action<DataPlayer> onSetDataInTurn;
-        public event Action<int, int > onSetDataInRowMe;
-        public event Action<int, int > onSetDataInRowOpp;
-        public event Action<int, int , DataPlayer> onSetScoreMe;
-        public event Action<int,int, DataPlayer > onSetScoreOpp;
+        public event Action<int, int> onSetDataInRowMe;
+        public event Action<int, int> onSetDataInRowOpp;
+        public event Action<int, int, DataPlayer> onSetScoreMe;
+        public event Action<int, int, DataPlayer> onSetScoreOpp;
+        public event Action<RematchData> onRematch;
         #endregion
 
         #region PROPERTIES
@@ -61,6 +62,7 @@ namespace NinjaBattle.Game
             multiplayerManager.Subscribe(MultiplayerManager.Code.ChangeScene, MatchStarted);
             multiplayerManager.Subscribe(MultiplayerManager.Code.TurnMe, SetTurn);
             multiplayerManager.Subscribe(MultiplayerManager.Code.ChosseTurn, ChosseTurnPlayer);
+            multiplayerManager.Subscribe(MultiplayerManager.Code.Rematch, RematchEvent);
         }
 
         private void OnDestroy()
@@ -73,6 +75,15 @@ namespace NinjaBattle.Game
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.ChangeScene, MatchStarted);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.TurnMe, SetTurn);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.ChosseTurn, ChosseTurnPlayer);
+            multiplayerManager.Unsubscribe(MultiplayerManager.Code.Rematch, RematchEvent);
+        }
+
+        public void RematchEvent(MultiplayerMessage message)
+        {
+            var data = message.GetData<RematchData>();
+            onRematch?.Invoke(data);
+           
+          
         }
         public void SetTurn(MultiplayerMessage message)
         {
@@ -85,99 +96,101 @@ namespace NinjaBattle.Game
             {
                 IsTurn?.Invoke(false);
             }
-           
+
         }
         private void ChosseTurnPlayer(MultiplayerMessage message)
         {
-         
+
             var data = message.GetData<DataPlayer>();
             onSetDataInTurn?.Invoke(data);
-            if(multiplayerManager.Self.UserId != data.UserId)
+            if (multiplayerManager.Self.UserId != data.UserId)
             {
                 if (data.MinesScore)
-                    onSetScoreOpp?.Invoke(data.ScoreOtherPlayer,data.ValueMines,data);
+                    onSetScoreOpp?.Invoke(data.ScoreOtherPlayer, data.ValueMines, data);
 
-                onSetScoreMe.Invoke(data.Score,0,data);
+                onSetScoreMe.Invoke(data.Score, 0, data);
                 ScoreMe = data.Score;
-                if(data.ScoreOtherPlayer>0)
-                ScoreOpp = data.ScoreOtherPlayer;
+                if (data.ScoreOtherPlayer > 0)
+                    ScoreOpp = data.ScoreOtherPlayer;
                 if (data.ResultRow.Length > 0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
                     {
                         Debug.Log(data.ResultRow[i] + data.ResultLine);
-                        onSetDataInRowMe(data.ResultLine, data.ResultRow[i] );
+                        onSetDataInRowMe(data.ResultLine, data.ResultRow[i]);
                     }
-                  
+
                 }
                 IsTurn?.Invoke(true);
 
                 if (data.EndGame == true)
                 {
-              
-                    if (ScoreMe<ScoreOpp)
+
+                    if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
 
                     }
-                    else if(ScoreMe > ScoreOpp)
+                    else if (ScoreMe > ScoreOpp)
                     {
-                        ShowResultEndGame("You Loss",  ScoreOpp, ScoreMe);
+                        ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
                     }
                     else
                     {
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;
-                    IsTurn?.Invoke(false);
+                    if (data.EndGame != true)
+                        IsTurn?.Invoke(false);
                 }
-         
+
             }
             else
             {
 
                 if (data.MinesScore)
-                    onSetScoreMe.Invoke(data.ScoreOtherPlayer,data.ValueMines,data);
+                    onSetScoreMe.Invoke(data.ScoreOtherPlayer, data.ValueMines, data);
                 onSetScoreOpp?.Invoke(data.Score, 0, data);
                 ScoreOpp = data.Score;
                 if (data.ScoreOtherPlayer > 0)
-                ScoreMe = data.ScoreOtherPlayer;
+                    ScoreMe = data.ScoreOtherPlayer;
 
-                if (data.ResultRow.Length >0)
+                if (data.ResultRow.Length > 0)
                 {
                     for (int i = 0; i < data.ResultRow.Length; i++)
                     {
                         onSetDataInRowOpp(data.ResultLine, data.ResultRow[i]);
                     }
-                  
+
                 }
-               
-             
+
+
                 if (data.EndGame == true)
                 {
-                      
-                    if (ScoreMe<ScoreOpp)
+
+                    if (ScoreMe < ScoreOpp)
                     {
-                        ShowResultEndGame("You Win",  ScoreOpp, ScoreMe);
-                      
+                        ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
+
                     }
-                    else if(ScoreMe > ScoreOpp)
+                    else if (ScoreMe > ScoreOpp)
                     {
-                        ShowResultEndGame("You Loos",  ScoreOpp, ScoreMe);
-                      
+                        ShowResultEndGame("You Loos", ScoreOpp, ScoreMe);
+
                     }
                     else
                     {
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;
-                   
+
                 }
-                IsTurn?.Invoke(false);
-              
+                if (data.EndGame != true)
+                    IsTurn?.Invoke(false);
+
 
             }
-           
+
         }
 
         private void SetPlayers(MultiplayerMessage message)
@@ -199,9 +212,9 @@ namespace NinjaBattle.Game
                 Players.Add(player);
                 PlayerPrefs.SetString("Opp", player.DisplayName);
             }
-              
 
-          
+
+
             onPlayerJoined?.Invoke(player);
         }
 
@@ -223,13 +236,13 @@ namespace NinjaBattle.Game
             }
         }
 
-        private  void MatchJoined()
+        private void MatchJoined()
         {
             nakamaManager.Socket.ReceivedMatchPresence += PlayersChanged;
             GetCurrentPlayer();
-          
+
         }
-        private void ShowResultEndGame(string resutlText , int score1 , int score2)
+        private void ShowResultEndGame(string resutlText, int score1, int score2)
         {
             ActionEndGame.instance.ResultPanel.SetActive(true);
             ActionEndGame.instance.ScoreMe.text = score1.ToString();
@@ -237,8 +250,8 @@ namespace NinjaBattle.Game
             ActionEndGame.instance.ResultText.text = resutlText;
             ActionEndGame.instance.IconMe.transform.parent = FindObjectOfType<Canvas>().transform;
             ActionEndGame.instance.IconOpp.transform.parent = FindObjectOfType<Canvas>().transform;
-            ActionEndGame.instance.IconMe.enabled=true;
-            ActionEndGame.instance.IconOpp.enabled=true;
+            ActionEndGame.instance.IconMe.enabled = true;
+            ActionEndGame.instance.IconOpp.enabled = true;
             ActionEndGame.instance.IconMe.Play("EndGamePlayer1Icon");
             ActionEndGame.instance.IconOpp.Play("EndGamePlater2Icon");
 
@@ -257,10 +270,10 @@ namespace NinjaBattle.Game
 
             CurrentPlayer = Players.Find(player => player.Presence.SessionId == multiplayerManager.Self.SessionId);
             CurrentPlayerNumber = Players.IndexOf(CurrentPlayer);
-           
+
             onLocalPlayerObtained?.Invoke(CurrentPlayer, CurrentPlayerNumber);
-           
-           
+
+
         }
 
         private void ResetLeaved()
@@ -273,11 +286,11 @@ namespace NinjaBattle.Game
 
         }
 
-        public  void MatchStarted(MultiplayerMessage message)
+        public void MatchStarted(MultiplayerMessage message)
         {
             blockJoinsAndLeaves = true;
-         
-           
+
+
         }
 
         #endregion

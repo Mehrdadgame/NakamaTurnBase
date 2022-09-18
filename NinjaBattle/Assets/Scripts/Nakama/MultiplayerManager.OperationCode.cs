@@ -11,7 +11,8 @@ namespace Nakama.Helpers
             Draw = 4,
             ChangeScene = 5,
             TurnMe = 6,
-            ChosseTurn=7
+            ChosseTurn=7,
+            Rematch = 8,
         }
     }
 }

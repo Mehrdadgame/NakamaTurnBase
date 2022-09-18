@@ -1,8 +1,7 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System;
 
 public class CalculterRowScore : MonoBehaviour
 {
@@ -26,12 +25,12 @@ public class CalculterRowScore : MonoBehaviour
         Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
                                             .Where(g => g.Count() > 1)
                                             .ToDictionary(x => x.Key, x => x.Count());
-      
+
 
         foreach (var item in freqMap)
         {
 
-           
+
             if (item.Value > 2)
             {
 
@@ -40,9 +39,9 @@ public class CalculterRowScore : MonoBehaviour
             }
             else if (item.Value == 2)
             {
-              
+
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
-               
+
                 total = item.Key * 4;
 
 
@@ -63,12 +62,12 @@ public class CalculterRowScore : MonoBehaviour
         Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
                                             .Where(g => g.Count() > 1)
                                             .ToDictionary(x => x.Key, x => x.Count());
-     
+
 
         foreach (var item in freqMap)
         {
 
-           
+
             if (item.Value > 2)
             {
 
@@ -77,11 +76,11 @@ public class CalculterRowScore : MonoBehaviour
             }
             else if (item.Value == 2)
             {
-              
+
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
-             
+
                 total = item.Key * 4;
-              
+
 
                 return total + dif[0].Key;
 
@@ -89,10 +88,10 @@ public class CalculterRowScore : MonoBehaviour
 
 
         }
-      
-            return cell.Sum(c => c.ValueTile);
 
-      
+        return cell.Sum(c => c.ValueTile);
+
+
 
 
     }

@@ -11,7 +11,8 @@ let matchInit: nkruntime.MatchInitFunction = function (context: nkruntime.Contex
         countdown: DurationLobby * TickRate,
         endMatch: false,
 CountTurnPlayer1:0,
-CountTurnPlayer2:0
+CountTurnPlayer2:0,
+namesForrematch :[]
     }
 
     return {
@@ -177,6 +178,7 @@ var end = Number (gameState.CountTurnPlayer1) == Number( gameState.CountTurnPlay
             dataPlayer.PlayerWin="";
         }
 
+
       }
   
  }
@@ -238,32 +240,78 @@ var end = Number (gameState.CountTurnPlayer1) == Number( gameState.CountTurnPlay
         else{
             dataPlayer.PlayerWin="";
         }
-      //  let storageDelete: nkruntime.StorageDeleteRequest[]=[{
-        //     key:"Score",
-        //     userId: message.sender.userId,
-        //     collection:CollectionUser
-        // }];
-        // nakama.storageDelete(storageDelete);
-        // let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
-        //     key:"Score",
-        //     userId: gameState.players[0].presence.userId,
-        //     collection:CollectionUser
-        // }];
-        
-
-        // nakama.storageDelete(storageDelete1);
+    
       }
   
 }
-// var rowSum1 = array3DPlayerFirst.map(r =>r.reduce((a, b) => a+1 + b+1));
-// var rowsum2  = array3DPlayerSecend.map(r => r.reduce((a, b) => a+1 + b+1));
+
 
 
     var dataSendToClint = JSON.stringify(dataPlayer);
     
    dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
- 
+ dataPlayer.EndGame=false;
 }
+
+function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
+   
+    let dataPlayer : IReMatch = JSON.parse(nakama.binaryToString(message.data));
+  //  if(gameState.namesForrematch.some(e=> e!= dataPlayer.userId))
+    gameState.namesForrematch.push(dataPlayer.userId);
+  
+    logger.info( getPlayersCount(gameState.players) + "   count player");
+    if ( getPlayersCount(gameState.players)==1) {
+        dataPlayer.Answer ="left"
+        var dataSendToClint = JSON.stringify(dataPlayer);
+        dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
+        
+    }
+    
+    if(gameState.namesForrematch.length>1)
+    {
+        if(dataPlayer.Answer == "no")
+        {
+            dataPlayer.Answer = "no";
+            var dataSendToClint = JSON.stringify(dataPlayer);
+            dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
+            return;
+        }
+
+     else if(  dataPlayer.Answer == "yes"){
+
+         dataPlayer.Answer = "yes";
+         var dataSendToClint = JSON.stringify(dataPlayer);
+         dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
+         dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(gameState.players[0].presence.userId));
+         for (let index = 0; index < array3DPlayerFirst.length; index++) {
+           for (let index1 = 0; index1 < array3DPlayerFirst[index].length; index1++) {
+             array3DPlayerFirst[index][index1] = null;
+             array3DPlayerSecend[index][index1]=null;
+           }
+             
+         }
+       
+         gameState.CountTurnPlayer1=0;
+         gameState.CountTurnPlayer2=0;
+ 
+      var s= new ScoreCalss;
+     s.ScoreF=0;
+     for (let index = 0; index < gameState.players.length; index++) {
+     
+         
+         SaveScore(gameState.players[index].presence.userId,0,nakama,s);
+     }
+    }
+    }
+     if(dataPlayer.Answer =="send"){
+       dataPlayer.userId = message.sender.userId;
+       dataPlayer.Answer ="req";
+       var send = JSON.stringify(dataPlayer);
+        dispatcher.broadcastMessage(message.opCode,send,null,message.sender);
+    }
+  
+}
+
 
  function SaveScore(id:string,mines:number ,nakama:nkruntime.Nakama, Scorecalss:ScoreCalss): number{
     Scorecalss.ScoreF -= mines;

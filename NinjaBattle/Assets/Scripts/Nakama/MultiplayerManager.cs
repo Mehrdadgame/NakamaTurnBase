@@ -33,7 +33,7 @@ namespace Nakama.Helpers
         public event Action onTurnMe = null;
 
         public bool isTurn;
-       
+
 
         #endregion
 
@@ -50,17 +50,17 @@ namespace Nakama.Helpers
 
         private void Awake()
         {
-           
+
             Instance = this;
         }
 
         private void OnEnable()
         {
             InvokeRepeating(nameof(LocalTickPassed), SendRate, SendRate);
-           
+
         }
 
-     
+
 
         private void LocalTickPassed()
         {
@@ -77,12 +77,12 @@ namespace Nakama.Helpers
             string matchId = rpcResult.Payload;
             match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId);
             onMatchJoin?.Invoke();
-           
-        }
-      
-     
 
-        private  void Disconnected()
+        }
+
+
+
+        private void Disconnected()
         {
             NakamaManager.Instance.onDisconnected -= Disconnected;
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
@@ -95,7 +95,7 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onDisconnected -= Disconnected;
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             await NakamaManager.Instance.Socket.LeaveMatchAsync(match);
-          
+
 
             match = null;
             onMatchLeave?.Invoke();
@@ -132,16 +132,16 @@ namespace Nakama.Helpers
                 var json = encoding.GetString(newState.State);
                 LogData(ReceivedDataLog, newState.OpCode, json);
             }
-            
-           
-          MultiplayerMessage multiplayerMessage = new MultiplayerMessage(newState);
+
+
+            MultiplayerMessage multiplayerMessage = new MultiplayerMessage(newState);
             if (onReceiveData.ContainsKey(multiplayerMessage.DataCode))
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);
 
-           
+
         }
 
-       
+
         public void Subscribe(Code code, Action<MultiplayerMessage> action)
         {
             if (!onReceiveData.ContainsKey(code))
@@ -161,7 +161,7 @@ namespace Nakama.Helpers
             Debug.Log(string.Format(LogFormat, description, (Code)dataCode, json));
         }
 
-        public void SendTurn(string nameTile, int number , int line,int row)
+        public void SendTurn(string nameTile, int number, int line, int row)
         {
 
             var data = new DataPlayer()
@@ -174,21 +174,21 @@ namespace Nakama.Helpers
                 ResultLine = 0,
                 ResultRow = new int[0],
                 PlayerWin = "",
-                sumRow1 =  new int[3],   
-                sumRow2 = new int[3] ,
-                
+                sumRow1 = new int[3],
+                sumRow2 = new int[3],
+
             };
-          
+
             Send(Code.ChosseTurn, data);
-           
+
         }
 
         #endregion
-    
 
-       
+
+
     }
 
-   
-    
+
+
 }

@@ -119,10 +119,10 @@ TextureImporter:
       name: Sprite-Dice_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1848
-        width: 176
-        height: 188
+        x: 27
+        y: 1884
+        width: 142
+        height: 141
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,10 +140,10 @@ TextureImporter:
       name: Sprite-Dice_1
       rect:
         serializedVersion: 2
-        x: 184
-        y: 1848
-        width: 180
-        height: 188
+        x: 206
+        y: 1885
+        width: 142
+        height: 141
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,10 +161,10 @@ TextureImporter:
       name: Sprite-Dice_2
       rect:
         serializedVersion: 2
-        x: 372
-        y: 1848
-        width: 176
-        height: 188
+        x: 384
+        y: 1884
+        width: 142
+        height: 141
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,10 +182,10 @@ TextureImporter:
       name: Sprite-Dice_3
       rect:
         serializedVersion: 2
-        x: 556
-        y: 1848
-        width: 176
-        height: 188
+        x: 564
+        y: 1884
+        width: 140
+        height: 144
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,10 +203,10 @@ TextureImporter:
       name: Sprite-Dice_4
       rect:
         serializedVersion: 2
-        x: 744
-        y: 1848
-        width: 176
-        height: 188
+        x: 743
+        y: 1886
+        width: 142
+        height: 139
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,10 +224,10 @@ TextureImporter:
       name: Sprite-Dice_5
       rect:
         serializedVersion: 2
-        x: 928
-        y: 1848
-        width: 176
-        height: 188
+        x: 922
+        y: 1886
+        width: 142
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -269,7 +269,7 @@ TextureImporter:
         x: 1133
         y: 15
         width: 915
-        height: 1898
+        height: 2028
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -308,10 +308,10 @@ TextureImporter:
       name: Sprite-Dice_9
       rect:
         serializedVersion: 2
-        x: 589
-        y: 1724
-        width: 117
-        height: 77
+        x: 592
+        y: 1722
+        width: 111
+        height: 80
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -329,10 +329,10 @@ TextureImporter:
       name: Sprite-Dice_11
       rect:
         serializedVersion: 2
-        x: 753
-        y: 1445
-        width: 313
-        height: 313
+        x: 740
+        y: 1424
+        width: 340
+        height: 334
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -371,10 +371,10 @@ TextureImporter:
       name: Sprite-Dice_13
       rect:
         serializedVersion: 2
-        x: 8
-        y: 1440
-        width: 312
-        height: 114
+        x: 340
+        y: 1496
+        width: 180
+        height: 188
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -392,10 +392,10 @@ TextureImporter:
       name: Sprite-Dice_14
       rect:
         serializedVersion: 2
-        x: 24
-        y: 1080
-        width: 344
-        height: 336
+        x: 8
+        y: 1440
+        width: 312
+        height: 114
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -413,10 +413,10 @@ TextureImporter:
       name: Sprite-Dice_15
       rect:
         serializedVersion: 2
-        x: 380
+        x: 24
         y: 1080
         width: 344
-        height: 335
+        height: 336
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -434,10 +434,10 @@ TextureImporter:
       name: Sprite-Dice_16
       rect:
         serializedVersion: 2
-        x: 752
-        y: 1104
-        width: 317
-        height: 312
+        x: 380
+        y: 1080
+        width: 344
+        height: 335
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -455,10 +455,10 @@ TextureImporter:
       name: Sprite-Dice_17
       rect:
         serializedVersion: 2
-        x: 0
-        y: 716
-        width: 800
-        height: 335
+        x: 736
+        y: 1080
+        width: 344
+        height: 336
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -477,9 +477,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 360
+        y: 716
         width: 800
-        height: 334
+        height: 335
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -498,9 +498,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 4
+        y: 360
         width: 800
-        height: 335
+        height: 334
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -515,34 +515,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sprite-Dice_10
-      rect:
-        serializedVersion: 2
-        x: 1466
-        y: 1972
-        width: 281
-        height: 70
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 32d6285150cdbf442ae1a83f70ba47fe
-      internalID: -951485281
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Sprite-Dice_20
       rect:
         serializedVersion: 2
-        x: 1180
-        y: 1972
-        width: 281
-        height: 70
+        x: 0
+        y: 4
+        width: 800
+        height: 335
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -552,48 +531,6 @@ TextureImporter:
       bones: []
       spriteID: 5a6f4163c416d9445abbbf27df65b070
       internalID: -433552895
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sprite-Dice_21
-      rect:
-        serializedVersion: 2
-        x: 1825
-        y: 1932
-        width: 106
-        height: 110
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6acebd5312ba8844888a36e6702709af
-      internalID: -199314680
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sprite-Dice_22
-      rect:
-        serializedVersion: 2
-        x: 1934
-        y: 1932
-        width: 106
-        height: 110
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0440fe4353475eb4e8f03a7c3d06d57c
-      internalID: 1173832352
       vertices: []
       indices: 
       edges: []
@@ -614,7 +551,6 @@ TextureImporter:
       Sprite-Dice_20: -433552895
       Sprite-Dice_0: 1370055252
       Sprite-Dice_18: 1128260888
-      Sprite-Dice_22: 1173832352
       Sprite-Dice_16: 59390910
       Sprite-Dice_8: 565265153
       Sprite-Dice_7: -1969049315
@@ -630,7 +566,6 @@ TextureImporter:
       Sprite-Dice_5: -148237162
       Sprite-Dice_15: 1096310087
       Sprite-Dice_2: -439411673
-      Sprite-Dice_21: -199314680
       Sprite-Dice_10: -951485281
   spritePackingTag: 
   pSDRemoveMatte: 0

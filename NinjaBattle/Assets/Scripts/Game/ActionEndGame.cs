@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Nakama.Helpers;
+
 public class ActionEndGame : MonoBehaviour
 {
     public static ActionEndGame instance;
@@ -10,6 +12,7 @@ public class ActionEndGame : MonoBehaviour
     public TextMeshProUGUI ResultText;
     public TextMeshProUGUI ScoreMe;
     public TextMeshProUGUI ScoreOpp;
+    public TextMeshProUGUI NameOpp;
     public Animator IconMe;
     public Animator IconOpp;
     public Button BackToHome;
@@ -17,5 +20,6 @@ public class ActionEndGame : MonoBehaviour
     private void Start()
     {
         instance = this;
+        NameOpp.text = PlayerPrefs.GetString("Opp");
     }
 }

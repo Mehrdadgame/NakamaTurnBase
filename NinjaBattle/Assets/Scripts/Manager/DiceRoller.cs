@@ -78,7 +78,7 @@ public class DiceRoller : MonoBehaviour
 
         if (isRootDice)
         {
-            die.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360) * Time.deltaTime * 4);
+            die.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360) * Time.deltaTime * 2);
             currrentDie = UnityEngine.Random.Range(0, 6);
             die.sprite = Dice[currrentDie];
         }

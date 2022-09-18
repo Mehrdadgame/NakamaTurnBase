@@ -24,3 +24,9 @@ public class DataPlayer
 
 }
 
+public class RematchData
+{
+    public string UserId;
+    public string Answer;
+}
+

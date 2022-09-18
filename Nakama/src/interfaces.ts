@@ -14,7 +14,7 @@ interface GameState
     endMatch: boolean
     CountTurnPlayer1:any
     CountTurnPlayer2:any
-  
+  namesForrematch:string[]
 }
 
 interface Player
@@ -53,6 +53,11 @@ interface DataPlayer{
     master:boolean
 
 
+}
+
+interface IReMatch{
+    userId:string,
+    Answer:string
 }
 
 

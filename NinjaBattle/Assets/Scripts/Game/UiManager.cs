@@ -1,12 +1,9 @@
 using Nakama.Helpers;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using NinjaBattle.Game;
-using Unity.Mathematics;
-using System;
 using System.Threading.Tasks;
 
 public class UiManager : MonoBehaviour
@@ -23,6 +20,14 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Animator TextTurnOpp;
     [SerializeField] private Animator TextValueMines;
     [SerializeField] private Sprite[] DiceRollsSprite;
+    [SerializeField] private GameObject rematchPanle;
+    [SerializeField] private TextMeshProUGUI messageLeftPalyerInRematch;
+    [SerializeField] private Button rematchButton;
+
+    [SerializeField] private Button acceptRematchButton;
+    [SerializeField] private Button exitRematchButton;
+    [SerializeField] private Button exitButton;
+    [SerializeField] private Image loading;
     public TextMeshProUGUI[] arryRowSumMe;
     public TextMeshProUGUI[] arryRowSumOpp;
     public TextMeshProUGUI NameOpp;
@@ -58,10 +63,11 @@ public class UiManager : MonoBehaviour
         MultiplayerManager.Instance.onTurnMe += Instance_onTurnMe;
         PlayersManager.Instance.onSetDataInRowMe += Instance_onSetDataInRowMe;
         PlayersManager.Instance.onSetDataInRowOpp += Instance_onSetDataInRowOpp;
-
+        PlayersManager.Instance.onRematch += Instance_onRematch;
         PlayersManager.Instance.IsTurn += Instance_IsTurn;
         GameManager.Instance.diceRoller.RollUp += ShowHighLight;
     }
+
 
     void OnDestroy()
     {
@@ -72,6 +78,106 @@ public class UiManager : MonoBehaviour
         PlayersManager.Instance.onSetDataInRowMe -= Instance_onSetDataInRowMe;
         PlayersManager.Instance.onSetDataInRowOpp -= Instance_onSetDataInRowOpp;
         PlayersManager.Instance.IsTurn -= Instance_IsTurn;
+        PlayersManager.Instance.onRematch -= Instance_onRematch;
+    }
+    private void Instance_onRematch(RematchData obj)
+    {
+        //if (obj.UserId == MultiplayerManager.Instance.Self.UserId)
+        //    return;
+        Debug.Log(obj.Answer);
+        if (obj.Answer == "req")
+        {
+            rematchPanle.SetActive(true);
+            AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
+            AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
+        }
+        if (obj.Answer == "yes")
+        {
+            rematchPanle.SetActive(false);
+            ActionEndGame.instance.ResultPanel.SetActive(false);
+            _ = Task.Delay(1000);
+            ResetGame();
+        }
+        if (obj.Answer == "left")
+        {
+            messageLeftPalyerInRematch.text = "Player is Left";
+            acceptRematchButton.gameObject.SetActive(true);
+            acceptRematchButton.gameObject.SetActive( false);
+            exitRematchButton.gameObject.SetActive(false);
+            exitButton.gameObject.SetActive(true);
+            ActionEndGame.instance.ResultPanel.SetActive(false);
+            loading.gameObject.SetActive(false);
+            //  rematchButton.interactable = false;
+            // AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
+            // AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(true);
+            // _ = Task.Delay(1000);
+            //// rematchPanle.SetActive(false);
+        }
+        if (obj.Answer == "no")
+        {
+            messageLeftPalyerInRematch.text = "Player dont accept";
+            loading.gameObject.SetActive(false);
+            //  rematchButton.interactable = false;
+            exitButton.gameObject.SetActive(true);
+            AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
+            AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(true);
+            //_ = Task.Delay(1000);
+            //rematchPanle.SetActive(false);
+        }
+    }
+
+    public void SendAcceptForRematch(string answerOpp)
+    {
+        rematchPanle.SetActive(true);
+        var answer = new RematchData
+        {
+            Answer = answerOpp,
+            UserId = MultiplayerManager.Instance.Self.UserId
+
+        };
+        if (answer.Answer == "send")
+        {
+            acceptRematchButton.gameObject.SetActive(false);
+            exitRematchButton.gameObject.SetActive(false);
+            loading.gameObject.SetActive(true);
+        }
+        else if(answer.Answer == "req")
+        {
+            loading.gameObject.SetActive(true);
+           // rematchPanle.SetActive(false);
+            ActionEndGame.instance.ResultPanel.SetActive(false);
+
+        }
+        ResetGame();
+        MultiplayerManager.Instance.Send(MultiplayerManager.Code.Rematch, answer);
+    }
+
+    private void ResetGame()
+    {
+        foreach (var opp in tileDataOpps)
+        {
+            opp.SpriteDice.transform.parent.gameObject.SetActive(false);
+            opp.ValueTile = 0;
+        }
+        foreach (var me in tileDataMe)
+        {
+            me.isLock = false;
+            me.ValueTile = 0;
+            me.SpriteDice.transform.parent.gameObject.SetActive(false);
+        }
+        ScoreTextMe.text = "0";
+        ScoreTextOpp.text="0";
+        RowSum();
+        _ = Task.Delay(750);
+        AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
+        AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(true);
+        AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
+        AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
+        _= Task.Delay(750);
+        AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconMe;
+        AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconOpp;
+        AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
     private void ShowHighLight(bool obj)
     {
@@ -90,7 +196,7 @@ public class UiManager : MonoBehaviour
                 item.GetComponentInChildren<ParticleSystem>().Stop();
             }
         }
-            RowSum();
+        RowSum();
     }
 
     private void Instance_onSetScoreMe(int obj, int mines, DataPlayer data)
@@ -105,7 +211,7 @@ public class UiManager : MonoBehaviour
             mines = 0;
         }
         ScoreTextMe.text = obj.ToString();
-        
+
 
     }
 
@@ -120,7 +226,7 @@ public class UiManager : MonoBehaviour
             mines = 0;
         }
         ScoreTextOpp.text = obj.ToString();
-    
+
     }
     [ContextMenu("sum")]
     public void RowSum()
@@ -136,22 +242,22 @@ public class UiManager : MonoBehaviour
 
     private void Instance_onSetDataInRowOpp(int arg1, int arg2)
     {
-        Debug.Log(arg1 + " " + arg2);
+
         var clone = tileDataOpps.Find(e => e.line == arg1 && e.row == arg2);
-        clone.GetComponentsInChildren<Image>()[1].sprite = null;
-        clone.GetComponentsInChildren<Image>()[1].enabled = false;
-        clone.GetComponentInParent<TileDataOpp>().ValueTile = 0;
+        clone.SpriteDice.sprite = null;
+        clone.ValueTile = 0;
+        clone.SpriteDice.transform.parent.gameObject.SetActive(false);
         RowSum();
     }
 
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
-        Debug.Log(arg1 + " " + arg2);
+
         var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2);
-        meCell.GetComponentsInChildren<Image>()[1].sprite = null;
-        meCell.GetComponentInParent<ClickInCell>().ValueTile = 0;
-        meCell.GetComponentsInChildren<Image>()[1].enabled = false;
+        meCell.SpriteDice.sprite = null;
+        meCell.ValueTile = 0;
         meCell.isLock = false;
+        meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
         RowSum();
     }
 
@@ -166,19 +272,20 @@ public class UiManager : MonoBehaviour
             _ = Task.Delay(200);
             GameManager.Instance.diceRoller.GetComponent<Image>().sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
             GameManager.Instance.diceRoller.currrentDie = -1;
-            var tile = transformOpp.Find(obj.NameTile).GetComponentsInChildren<Image>()[1];
-            tile.enabled = true;
-            tile.GetComponent<Animator>().Play("DiceRoot", 0, 0);
-            tile.GetComponentInParent<TileDataOpp>().ValueTile = obj.NumberTile + 1;
-            tile.sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
-            TextTurnYou.Play("YouTurn", 0, 0);
+            var tile = transformOpp.Find(obj.NameTile).GetComponentInChildren<TileDataOpp>();
+            tile.SpriteDice.transform.parent.gameObject.SetActive(true);
+            tile.SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
+            tile.ValueTile = obj.NumberTile + 1;
+            tile.SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
+            if (!obj.EndGame)
+                TextTurnYou.Play("YouTurn", 0, 0);
 
 
         }
         else
         {
-
-            TextTurnOpp.Play("OppTurn", 0, 0);
+            if (!obj.EndGame)
+                TextTurnOpp.Play("OppTurn", 0, 0);
         }
         RowSum();
 
@@ -194,6 +301,7 @@ public class UiManager : MonoBehaviour
             dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
             MultiplayerManager.Instance.isTurn = true;
             TextTurnYou.Play("YouTurn", 0, 0);
+            GameManager.Instance.diceRoller.Rotation(false);
 
 
         }
@@ -201,7 +309,6 @@ public class UiManager : MonoBehaviour
         {
             TextTurnOpp.Play("OppTurn", 0, 0);
             dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[1];
-
             dicRollButton.interactable = false;
             MultiplayerManager.Instance.isTurn = false;
 
@@ -213,8 +320,9 @@ public class UiManager : MonoBehaviour
     {
 
         dicRollButton.interactable = true;
-        // dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
+         dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
         TextTurnYou.Play("YouTurn", 0, 0);
+        GameManager.Instance.diceRoller.Rotation(false);
 
 
     }

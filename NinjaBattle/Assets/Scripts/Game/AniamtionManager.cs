@@ -18,6 +18,7 @@ public class AniamtionManager : MonoBehaviour
     {
         instance = this;
         AnimIconOpp.Play("IconMatchMaking", 0, 0);
+        //AnimGoToUpOpp.GetComponent<Animator>().Play("ScleIcon",0,0);
     }
 
  
