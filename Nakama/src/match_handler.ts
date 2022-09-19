@@ -165,17 +165,23 @@ let valuMines = 0;
    
     logger.info(gameState.CountTurnPlayer2 + "  dataPlayer.CountTurnPlayer2");
     logger.info(gameState.CountTurnPlayer1 + "  dataPlayer.CountTurnPlayer1");
-    dataPlayer.EndGame = ActionWinPlayer(array3DPlayerFirst);
-var end = Number (gameState.CountTurnPlayer1) == Number( gameState.CountTurnPlayer2);
-    if(dataPlayer.EndGame == true && end ===true){
-        if (gameState.players[1].ScorePlayer< gameState.players[0].ScorePlayer) {
-            dataPlayer.PlayerWin = gameState.players[0].presence.userId;
-        }
-        else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer){
-            dataPlayer.PlayerWin =gameState.players[1].presence.userId;
-        }
-        else{
-            dataPlayer.PlayerWin="";
+    var checkEnd1 = ActionWinPlayer(array3DPlayerFirst);
+    var checkEnd2 = ActionWinPlayer(array3DPlayerSecend);
+var end = parseInt (gameState.CountTurnPlayer1) == parseInt( gameState.CountTurnPlayer2);
+logger.info(end + "  dataPlayer.End");
+    if(checkEnd1 == true || checkEnd2 ==true ){
+        if(end ==true){
+
+            if (gameState.players[1].ScorePlayer< gameState.players[0].ScorePlayer) {
+                dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+            }
+            else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer){
+                dataPlayer.PlayerWin =gameState.players[1].presence.userId;
+            }
+            else{
+                dataPlayer.PlayerWin="";
+            }
+            dataPlayer.EndGame =true;
         }
 
 
@@ -226,20 +232,28 @@ var end = Number (gameState.CountTurnPlayer1) == Number( gameState.CountTurnPlay
      logger.info(gameState.CountTurnPlayer1 + "  dataPlayer.CountTurnPlayer1");
      
         dataPlayer.ResultLine = dataPlayer.NumberLine;
-        dataPlayer.EndGame = ActionWinPlayer(array3DPlayerSecend );
-        var end=  Number( gameState.CountTurnPlayer1) === Number( gameState.CountTurnPlayer2);
-      if(dataPlayer.EndGame == true && end === true ){
+       var checkEnd1 = ActionWinPlayer(array3DPlayerSecend );
+       var checkEnd2 = ActionWinPlayer(array3DPlayerFirst );
+        var end=  parseInt( gameState.CountTurnPlayer1) === parseInt( gameState.CountTurnPlayer2);
+        logger.info(end + "  dataPlayer.End");
+      if(checkEnd1 == true ||checkEnd2 ==true  )
+      {
+if(end == true)
+{
 
-        if (gameState.players[1].ScorePlayer< gameState.players[0].ScorePlayer) {
-            dataPlayer.PlayerWin = gameState.players[0].presence.userId;
-        }
-        else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer){
+    if (gameState.players[1].ScorePlayer< gameState.players[0].ScorePlayer) {
+        dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+    }
+    else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer){
+    
+        dataPlayer.PlayerWin =  gameState.players[1].presence.userId;
+    }
+    else{
+        dataPlayer.PlayerWin="";
+    }
+    dataPlayer.EndGame=true;
+}
 
-            dataPlayer.PlayerWin =  gameState.players[1].presence.userId;
-        }
-        else{
-            dataPlayer.PlayerWin="";
-        }
     
       }
   

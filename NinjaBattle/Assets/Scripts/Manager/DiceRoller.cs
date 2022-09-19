@@ -101,7 +101,7 @@ public class DiceRoller : MonoBehaviour
             isRolling = true;
         }
         button.interactable = false;
-
+      
     }
 
     public void PanelTestButton_Click()

@@ -125,15 +125,16 @@ namespace NinjaBattle.Game
 
                 if (data.EndGame == true)
                 {
-
+                    TimerTurn.instance.TimerPause = true;
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-
+                      
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
+
                     }
                     else
                     {
@@ -167,7 +168,7 @@ namespace NinjaBattle.Game
 
                 if (data.EndGame == true)
                 {
-
+                    TimerTurn.instance.TimerPause = true;
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
@@ -175,7 +176,7 @@ namespace NinjaBattle.Game
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
-                        ShowResultEndGame("You Loos", ScoreOpp, ScoreMe);
+                        ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
 
                     }
                     else

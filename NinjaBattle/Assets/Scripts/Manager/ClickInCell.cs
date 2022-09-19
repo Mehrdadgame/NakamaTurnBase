@@ -21,24 +21,26 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
 
         if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie == -1 || isLock)
             return;
+        SetDataInCell();
+    }
+
+    public void SetDataInCell()
+    {
 
         MultiplayerManager.Instance.SendTurn(name, GameManager.Instance.diceRoller.currrentDie, numberLine, numberRow);
         var tile = SpriteDice.transform.parent;
-        tile.gameObject.SetActive( true);
+        tile.gameObject.SetActive(true);
         SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
-        ValueTile =   GameManager.Instance.diceRoller.currrentDie + 1;
+        ValueTile = GameManager.Instance.diceRoller.currrentDie + 1;
         SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[GameManager.Instance.diceRoller.currrentDie];
         GetComponentInChildren<ParticleSystem>().Stop();
         GameManager.Instance.diceRoller.RollUp?.Invoke(false);
-
-        // UiManager.instance.RowSum();
-
         GameManager.Instance.diceRoller.Rotation(true);
         MultiplayerManager.Instance.isTurn = false;
         GameManager.Instance.diceRoller.currrentDie = -1;
         isLock = true;
+       
     }
-
 
 
 
