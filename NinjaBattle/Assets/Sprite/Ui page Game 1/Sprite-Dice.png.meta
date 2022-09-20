@@ -455,10 +455,10 @@ TextureImporter:
       name: Sprite-Dice_17
       rect:
         serializedVersion: 2
-        x: 736
-        y: 1080
-        width: 344
-        height: 336
+        x: 752
+        y: 1098
+        width: 314
+        height: 318
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

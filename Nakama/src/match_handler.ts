@@ -98,11 +98,52 @@ let matchTerminate: nkruntime.MatchTerminateFunction = function (context: nkrunt
     return { state };
 }
 
+/**
+ * "The match signal function is called when a match signal is received from the server."
+ * 
+ * The match signal function is called when a match signal is received from the server
+ * @param context - The context of the match.
+ * @param logger - A logger object that can be used to log messages to the server console.
+ * @param nk - The Nakama server instance.
+ * @param dispatcher - The match dispatcher.
+ * @param {number} tick - The current tick of the match.
+ * @param state - The current state of the match.
+ * @param {string} data - The data sent from the client.
+ * @returns The state of the match.
+ */
 let matchSignal: nkruntime.MatchSignalFunction = function (context: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, data: string)
 {
     return { state };
 }
 
+/**
+ * ProcessMessages(messages: nkruntime.MatchMessage[], gameState: GameState, dispatcher:
+ * nkruntime.MatchDispatcher, nakama: nkruntime.Nakama, logger : nkruntime.Logger): void
+ * 
+ * The above function is called every time a message is sent to the server. 
+ * 
+ * The messages parameter is an array of messages sent to the server. 
+ * 
+ * The gameState parameter is the current state of the game. 
+ * 
+ * The dispatcher parameter is used to send messages to the client. 
+ * 
+ * The nakama parameter is used to access the Nakama server. 
+ * 
+ * The logger parameter is used to log messages to the Nakama server. 
+ * 
+ * The above function is called every time a message is sent to the server. 
+ * 
+ * The messages parameter is an array of messages sent to the server. 
+ * 
+ * The gameState parameter is the current state of
+ * @param {nkruntime.MatchMessage[]} messages - nkruntime.MatchMessage[]
+ * @param {GameState} gameState - This is the state of the game. It's a JSON object that you can use to
+ * store any data you want.
+ * @param dispatcher - This is the object that you use to send messages to the client.
+ * @param nakama - nkruntime.Nakama
+ * @param logger - nkruntime.Logger
+ */
 function processMessages(messages: nkruntime.MatchMessage[], gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama, logger : nkruntime.Logger): void
 {
     for (let message of messages)
@@ -110,7 +151,6 @@ function processMessages(messages: nkruntime.MatchMessage[], gameState: GameStat
         let opCode: number = message.opCode;
        // if (MessagesLogic.hasOwnProperty(opCode))
        {
-        logger.info(message.sender.userId +" TTTTTTTTTTTTTTTTTTTTTTT");
             MessagesLogic[opCode](message, gameState, dispatcher, nakama,logger);
     
         }
@@ -119,10 +159,20 @@ function processMessages(messages: nkruntime.MatchMessage[], gameState: GameStat
         //     messagesDefaultLogic(message, gameState, dispatcher);
     }
 }
+/* Creating a 3D array. */
 let array3DPlayerFirst:any[][] = [[null,null,null],[null,null,null],[null,null,null]];
 let array3DPlayerSecend:any[][] = [[null,null,null],[null,null,null],[null,null,null]];
 
 
+/*  */
+/**
+ * The above function is used to choose the turn of the player.
+ * @param message - The message that was sent to the server.
+ * @param {GameState} gameState - The current state of the game.
+ * @param dispatcher - The match dispatcher.
+ * @param nakama - The Nakama server instance.
+ * @param logger - A logger object that you can use to log messages to the server console.
+ */
 function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
     let dataPlayer : DataPlayer = JSON.parse(nakama.binaryToString(message.data));
 let valuMines = 0;
@@ -267,6 +317,15 @@ if(end == true)
  dataPlayer.EndGame=false;
 }
 
+/**
+ * *|CURSOR_MARCADOR|*
+ * @param message - nkruntime.MatchMessage
+ * @param {GameState} gameState - This is the state of the game. It's a JSON object that you can store
+ * any data in.
+ * @param dispatcher - The match dispatcher.
+ * @param nakama - nkruntime.Nakama
+ * @param logger - A logger object that can be used to log messages to the server console.
+ */
 function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
    
     let dataPlayer : IReMatch = JSON.parse(nakama.binaryToString(message.data));
@@ -327,6 +386,16 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
 }
 
 
+ /**
+  * It takes in a string, a number, a Nakama object, and a ScoreCalss object. It subtracts the number
+  * from the ScoreCalss object's ScoreF property, then writes the ScoreCalss object to Nakama's
+  * storage. It then returns the ScoreCalss object's ScoreF property
+  * @param {string} id - The user ID of the player.
+  * @param {number} mines - number - The number of mines to add to the player's score.
+  * @param nakama - nkruntime.Nakama
+  * @param {ScoreCalss} Scorecalss - is a class that contains the score and the name of the player
+  * @returns The return value is the value of the ScoreF property of the ScoreCalss object.
+  */
  function SaveScore(id:string,mines:number ,nakama:nkruntime.Nakama, Scorecalss:ScoreCalss): number{
     Scorecalss.ScoreF -= mines;
     let storageWriteRequests2: nkruntime.StorageWriteRequest[] = [{
@@ -342,6 +411,12 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
     return Scorecalss.ScoreF
     
  }
+ /**
+  * It reads the score of the user from the database and returns it
+  * @param {string} id - The user ID of the player.
+  * @param nakama - nkruntime.Nakama
+  * @returns ScoreCalss
+  */
  function ReadScore(id:string  ,nakama:nkruntime.Nakama ):ScoreCalss{
     var score1:ScoreCalss=new ScoreCalss;
     let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
@@ -364,6 +439,11 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
     return score1;
  }
 
+/**
+ * It returns true if the array is full of numbers, and false if it's not.
+ * @param {number[][]} array1 - the array that contains the game board
+ * @returns A boolean value.
+ */
 function ActionWinPlayer(array1:number[][] ) : boolean {
     let count :number=0;
 for (let index = 0; index <array1.length; index++) {
@@ -379,6 +459,16 @@ if(count==0){
 
     return false;
 }
+/**
+ * It takes an array of arrays, a number, a number, a number, and a logger, and returns an array of
+ * numbers
+ * @param {number[][]} array1 - the array you want to search
+ * @param {number} x - the row number
+ * @param {number} y - the row number
+ * @param {number} input - the number you want to find
+ * @param logger - nkruntime.Logger
+ * @returns An array of numbers
+ */
 function CalculatorArray2D(array1:number[][],x:number,y:number,input:number , logger : nkruntime.Logger):number[]
 {
     let arrayResult : number[] =[];
@@ -397,6 +487,16 @@ function CalculatorArray2D(array1:number[][],x:number,y:number,input:number , lo
     return [];
 }
 
+/**
+ * It takes an array of arrays, an index, an input, a logger, and an optional scoreSaved parameter. It
+ * returns an array of two numbers
+ * @param {number[][]} array1 - the array of arrays that you want to check
+ * @param {number} x - the row number of the array
+ * @param {number} input - the number of the player's choice
+ * @param logger - nkruntime.Logger
+ * @param {any} [scoreSaved=null] - The score of the player before the current turn.
+ * @returns an array of two numbers.
+ */
 function CalculatorScore(array1:number[][],x:number,input:number,logger : nkruntime.Logger ,scoreSaved:any =null):[number ,number]{
     let countNumber:number=0;
     let powScore:number =0;
@@ -600,6 +700,13 @@ function getPlayerNumber(players: Player[], sessionId: string): number
 }
 
 
+/**
+ * "Return the first unused player number, or -1 if all player numbers are used."
+ * 
+ * The function is a bit more complicated than that, but it's still pretty simple
+ * @param {Player[]} players - Player[]
+ * @returns The next available player number.
+ */
 function getNextPlayerNumber(players: Player[]): number
 {
     for (let playerNumber = 0; playerNumber < MaxPlayers; playerNumber++)

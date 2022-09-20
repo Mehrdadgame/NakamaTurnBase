@@ -104,11 +104,6 @@ Library: lib_burst_generated
 --compilation-defines=ENABLE_MONO
 --compilation-defines=NET_STANDARD_2_0
 --compilation-defines=NET_STANDARD
---compilation-defines=DEVELOPMENT_BUILD
---compilation-defines=ENABLE_PROFILER
---compilation-defines=DEBUG
---compilation-defines=TRACE
---compilation-defines=UNITY_ASSERTIONS
 --compilation-defines=ENABLE_CUSTOM_RENDER_TEXTURE
 --compilation-defines=ENABLE_DIRECTOR
 --compilation-defines=ENABLE_LOCALIZATION
@@ -128,7 +123,6 @@ Library: lib_burst_generated
 --compilation-defines=ENABLE_ANIMATION_BURST
 --compilation-defines=ENABLE_SPRITESHAPE_BURST
 --generate-link-xml=Temp\burst.link.xml
---debug=Full
 --output=C:\NakamaEx\ninja-battle-nakama\NinjaBattle\Temp\StagingArea\tempburstlibs\armeabi-v7a\lib_burst_generated
 --root-assembly=C:\NakamaEx\ninja-battle-nakama\NinjaBattle\Temp\StagingArea\Data\Managed\UnityEngine.UI.dll
 --root-assembly=C:\NakamaEx\ninja-battle-nakama\NinjaBattle\Temp\StagingArea\Data\Managed\Unity.Services.Core.Telemetry.dll

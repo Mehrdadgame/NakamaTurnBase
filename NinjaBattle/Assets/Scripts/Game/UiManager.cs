@@ -116,15 +116,16 @@ public class UiManager : MonoBehaviour
             exitButton.gameObject.SetActive(true);
             ActionEndGame.instance.ResultPanel.SetActive(false);
             loading.gameObject.SetActive(false);
-
+            AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
+            AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
         }
         if (obj.Answer == "no")
         {
             messageLeftPalyerInRematch.text = "Player dont accept";
             loading.gameObject.SetActive(false);
             exitButton.gameObject.SetActive(true);
-            AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
-            AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(true);
+            AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
+            AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
 
         }
     }

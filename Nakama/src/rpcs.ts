@@ -1,3 +1,11 @@
+/**
+ * If there are any open matches, join the first one. If there are no open matches, create a new one.
+ * @param context - The context of the RPC call.
+ * @param logger - A logger object that can be used to log messages to the server console.
+ * @param nakama - nkruntime.Nakama - The Nakama runtime object.
+ * @param {string} payload - string - The payload sent from the client.
+ * @returns The match ID.
+ */
 let joinOrCreateMatch: nkruntime.RpcFunction = function (context: nkruntime.Context, logger: nkruntime.Logger, nakama: nkruntime.Nakama, payload: string): string
 {
     let matches: nkruntime.Match[];
