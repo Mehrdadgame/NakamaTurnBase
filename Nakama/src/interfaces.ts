@@ -3,6 +3,7 @@ interface MatchLabel
     open: boolean
 }
 
+/* Defining the type of the variable `GameState` */
 interface GameState
 {
     players: Player[]
@@ -34,6 +35,7 @@ interface PlayerWonData
     tick: number
     playerNumber: number
 }
+/* Defining a type. */
 interface DataPlayer{
     UserId : string
     Score:number

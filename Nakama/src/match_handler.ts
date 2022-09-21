@@ -77,13 +77,8 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
     for (let presence of presences)
     {
         let playerNumber: number = getPlayerNumber(gameState.players, presence.sessionId);
-        // let storageDelete1: nkruntime.StorageDeleteRequest[]=[{
-        //     key:"Score",
-        //     userId: gameState.players[playerNumber].presence.userId,
-        //     collection:"User"
-        // }];
-        // if(storageDelete1[0])
-        //  nakama.storageDelete( storageDelete1);
+       
+   
         delete gameState.players[playerNumber];
       
     }
