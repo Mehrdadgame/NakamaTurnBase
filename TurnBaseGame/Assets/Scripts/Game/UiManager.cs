@@ -34,6 +34,9 @@ public class UiManager : MonoBehaviour
     public TextMeshProUGUI NameOpp;
     public ParticleSystem WowPar;
     public static UiManager instance;
+
+    public GameObject PanelLeftPalyer;
+    public TextMeshProUGUI NamePalyerLeft;
     private void Start()
     {
         instance = this;
@@ -68,6 +71,13 @@ public class UiManager : MonoBehaviour
         PlayersManager.Instance.IsTurn += Instance_IsTurn;
         GameManager.Instance.diceRoller.RollUp += ShowHighLight;
         TimerTurn.instance.TimerStop += Instance_TimerStop;
+        PlayersManager.Instance.LeftPlayer += Instance_LeftPlayer;
+    }
+
+    private void Instance_LeftPlayer(string obj)
+    {
+        PanelLeftPalyer.SetActive(true);
+        NamePalyerLeft.text = obj + " is Left of match";
     }
 
     private void Instance_TimerStop()
@@ -88,6 +98,7 @@ public class UiManager : MonoBehaviour
         PlayersManager.Instance.IsTurn -= Instance_IsTurn;
         PlayersManager.Instance.onRematch -= Instance_onRematch;
         TimerTurn.instance.TimerStop -= Instance_TimerStop;
+        PlayersManager.Instance.LeftPlayer -= Instance_LeftPlayer;
     }
     private void Instance_onRematch(RematchData obj)
     {
@@ -97,6 +108,7 @@ public class UiManager : MonoBehaviour
         if (obj.Answer == "req")
         {
             rematchPanle.SetActive(true);
+            ActionEndGame.instance.ResultPanel.SetActive(false);
             AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
             AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
         }
@@ -133,6 +145,9 @@ public class UiManager : MonoBehaviour
     public void SendAcceptForRematch(string answerOpp)
     {
         rematchPanle.SetActive(true);
+            AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
+            AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
+            ActionEndGame.instance.ResultPanel.SetActive(false);
         var answer = new RematchData
         {
             Answer = answerOpp,
@@ -151,7 +166,8 @@ public class UiManager : MonoBehaviour
             ActionEndGame.instance.ResultPanel.SetActive(false);
 
         }
-      //  ResetGame();
+        //  ResetGame();
+       
         MultiplayerManager.Instance.Send(MultiplayerManager.Code.Rematch, answer);
     }
 
@@ -174,6 +190,7 @@ public class UiManager : MonoBehaviour
         await Task.Delay(750);
         AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
         AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(true);
+        ActionEndGame.instance.ResultPanel.SetActive(false);
         AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
         AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
         await Task.Delay(1000);

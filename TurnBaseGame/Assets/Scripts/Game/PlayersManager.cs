@@ -30,6 +30,7 @@ namespace NinjaBattle.Game
         public event Action<int, int, DataPlayer> onSetScoreMe;
         public event Action<int, int, DataPlayer> onSetScoreOpp;
         public event Action<RematchData> onRematch;
+        public event Action<string> LeftPlayer;
         #endregion
 
         #region PROPERTIES
@@ -63,6 +64,7 @@ namespace NinjaBattle.Game
             multiplayerManager.Subscribe(MultiplayerManager.Code.TurnMe, SetTurn);
             multiplayerManager.Subscribe(MultiplayerManager.Code.ChosseTurn, ChosseTurnPlayer);
             multiplayerManager.Subscribe(MultiplayerManager.Code.Rematch, RematchEvent);
+            multiplayerManager.Subscribe(MultiplayerManager.Code.PlayerLeft, EventPlayerLeft);
         }
 
         private void OnDestroy()
@@ -76,6 +78,16 @@ namespace NinjaBattle.Game
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.TurnMe, SetTurn);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.ChosseTurn, ChosseTurnPlayer);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.Rematch, RematchEvent);
+            multiplayerManager.Unsubscribe(MultiplayerManager.Code.PlayerLeft, EventPlayerLeft);
+        }
+        public void EventPlayerLeft(MultiplayerMessage message)
+        {
+            var data = message.GetData<string>();
+            //
+            //onRematch?.Invoke(data);
+            Debug.Log("Left Player");
+            LeftPlayer?.Invoke(data);
+
         }
 
         public void RematchEvent(MultiplayerMessage message)

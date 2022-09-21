@@ -9,6 +9,7 @@ const enum Scene
     FinalResults = 6
 }
 
+/* A enum. */
 const enum OperationCode
 {
     Players = 0,
@@ -18,5 +19,7 @@ const enum OperationCode
     Draw = 4,
     ChangeScene = 5,
     TurnMe=6,
-    ChosseTurn=7
+    ChosseTurn=7,
+    playerLeft =9
+
 }

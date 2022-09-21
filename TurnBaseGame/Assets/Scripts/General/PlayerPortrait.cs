@@ -79,7 +79,7 @@ namespace NinjaBattle.General
             portrait.color = hasPlayer ? connectedPlayerColor : noPlayerColor;
             displayName.text = hasPlayer ? players[playerNumber].DisplayName : string.Empty;
             displayName.color = playersManager.CurrentPlayerNumber == playerNumber ? youColor : othersColor;
-            Debug.Log("Left RT");
+          
         }
 
         #endregion

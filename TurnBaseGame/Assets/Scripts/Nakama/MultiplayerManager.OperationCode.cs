@@ -13,6 +13,7 @@ namespace Nakama.Helpers
             TurnMe = 6,
             ChosseTurn=7,
             Rematch = 8,
+            PlayerLeft = 9,
         }
     }
 }

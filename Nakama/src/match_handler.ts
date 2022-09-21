@@ -12,7 +12,8 @@ let matchInit: nkruntime.MatchInitFunction = function (context: nkruntime.Contex
         endMatch: false,
 CountTurnPlayer1:0,
 CountTurnPlayer2:0,
-namesForrematch :[]
+namesForrematch :[],
+BeforeEndGame :false
     }
 
     return {
@@ -55,7 +56,7 @@ let matchJoin: nkruntime.MatchJoinFunction = function (context: nkruntime.Contex
         dispatcher.broadcastMessage(OperationCode.PlayerJoined, JSON.stringify(player), presencesOnMatch);
         presencesOnMatch.push(presence);
     }
-   
+   //gameState.startGame =true;
   
     dispatcher.broadcastMessage(OperationCode.Players, JSON.stringify(gameState.players), presences);
     dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(gameState.players[0].presence.userId));
@@ -77,8 +78,12 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
     for (let presence of presences)
     {
         let playerNumber: number = getPlayerNumber(gameState.players, presence.sessionId);
-       
-   
+        var nameplayer = JSON.stringify(gameState.players[playerNumber].displayName);
+        if(   gameState.BeforeEndGame ==false){
+
+            dispatcher.broadcastMessage(9,nameplayer);
+        }
+
         delete gameState.players[playerNumber];
       
     }
@@ -87,6 +92,20 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
     return { state: gameState };
 }
 
+/**
+ * "Return the current match state."
+ * 
+ * The match terminate function is called when the match is about to be terminated. This is the last
+ * chance to save any data before the match is destroyed
+ * @param context - The context of the match.
+ * @param logger - A logger object that can be used to log messages to the server console.
+ * @param nakama - The Nakama server instance.
+ * @param dispatcher - The match dispatcher.
+ * @param {number} tick - The current tick of the match.
+ * @param state - The current match state.
+ * @param {number} graceSeconds - The number of seconds to wait before terminating the match.
+ * @returns The state of the match.
+ */
 
 let matchTerminate: nkruntime.MatchTerminateFunction = function (context: nkruntime.Context, logger: nkruntime.Logger, nakama: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, graceSeconds: number)
 {
@@ -172,6 +191,7 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
     let dataPlayer : DataPlayer = JSON.parse(nakama.binaryToString(message.data));
 let valuMines = 0;
     dataPlayer.MinesScore =false;
+    gameState.BeforeEndGame =false;
     if(message.sender.userId == gameState.players[0].presence.userId)
     {
         dataPlayer.master=true;
@@ -227,6 +247,9 @@ logger.info(end + "  dataPlayer.End");
                 dataPlayer.PlayerWin="";
             }
             dataPlayer.EndGame =true;
+            gameState.BeforeEndGame=true;
+          // gameState.endMatch =true;
+           // gameState.startGame =false;
         }
 
 
@@ -297,6 +320,8 @@ if(end == true)
         dataPlayer.PlayerWin="";
     }
     dataPlayer.EndGame=true;
+    gameState.BeforeEndGame=true;
+  //  gameState.startGame =false;
 }
 
     
@@ -341,12 +366,14 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
         {
             dataPlayer.Answer = "no";
             var dataSendToClint = JSON.stringify(dataPlayer);
+            gameState.endMatch =true;
             dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
             return;
         }
 
      else if(  dataPlayer.Answer == "yes"){
-
+        gameState.endMatch =false;
+        gameState.BeforeEndGame=false;
          dataPlayer.Answer = "yes";
          var dataSendToClint = JSON.stringify(dataPlayer);
          dispatcher.broadcastMessage(message.opCode,dataSendToClint,null,message.sender);
