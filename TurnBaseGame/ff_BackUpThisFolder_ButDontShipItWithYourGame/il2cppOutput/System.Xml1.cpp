@@ -8855,7 +8855,7 @@ IL_0081:
 		Encoding_t65CDEF28CF20A7B8C92E85A4E808920C2465F095* L_19 = ___encoding0;
 		NullCheck(L_19);
 		Decoder_tE16E789E38B25DD304004FC630EA8B21000ECBBC* L_20;
-		L_20 = VirtualFuncInvoker0< Decoder_tE16E789E38B25DD304004FC630EA8B21000ECBBC* >::Invoke(30, L_19);
+		L_20 = VirtualFuncInvoker0< Decoder_tE16E789E38B25DD304004FC630EA8B21000ECBBC* >::Invoke(31, L_19);
 		L_18->___decoder_6 = L_20;
 		Il2CppCodeGenWriteBarrier((void**)(&L_18->___decoder_6), (void*)L_20);
 		return;

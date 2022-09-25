@@ -14,6 +14,7 @@ namespace Nakama.Helpers
             ChosseTurn=7,
             Rematch = 8,
             PlayerLeft = 9,
+            SendSticker =10,
         }
     }
 }

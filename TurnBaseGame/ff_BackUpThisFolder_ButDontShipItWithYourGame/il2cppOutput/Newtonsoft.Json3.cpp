@@ -6852,7 +6852,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TraceJsonReader__ctor_m06DE37B905DD72B8E
 		String_t* L_5;
 		L_5 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(_stringLiteralB62AA2CC6BFDA437017A321F61AE9B5B2FF52ADE, L_4, NULL);
 		NullCheck(L_3);
-		VirtualActionInvoker1< String_t* >::Invoke(16, L_3, L_5);
+		VirtualActionInvoker1< String_t* >::Invoke(17, L_3, L_5);
 		StringWriter_tF48052BE4F980E5C85403221E835768E4156267D* L_6 = __this->____sw_17;
 		JsonTextWriter_t8A730143EFDFE2A07F31B3C4DB82061A883A60F4* L_7 = (JsonTextWriter_t8A730143EFDFE2A07F31B3C4DB82061A883A60F4*)il2cpp_codegen_object_new(JsonTextWriter_t8A730143EFDFE2A07F31B3C4DB82061A883A60F4_il2cpp_TypeInfo_var);
 		JsonTextWriter__ctor_mE77A9BD1789BB07C3B49A6EF74857D2225AA99B3(L_7, L_6, NULL);
@@ -7174,7 +7174,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TraceJsonWriter__ctor_m3E3486A6651B23E49
 		String_t* L_5;
 		L_5 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(_stringLiteral95C8A5370D26D671D01AC2995934B40AF9E59DB1, L_4, NULL);
 		NullCheck(L_3);
-		VirtualActionInvoker1< String_t* >::Invoke(16, L_3, L_5);
+		VirtualActionInvoker1< String_t* >::Invoke(17, L_3, L_5);
 		StringWriter_tF48052BE4F980E5C85403221E835768E4156267D* L_6 = __this->____sw_16;
 		JsonTextWriter_t8A730143EFDFE2A07F31B3C4DB82061A883A60F4* L_7 = (JsonTextWriter_t8A730143EFDFE2A07F31B3C4DB82061A883A60F4*)il2cpp_codegen_object_new(JsonTextWriter_t8A730143EFDFE2A07F31B3C4DB82061A883A60F4_il2cpp_TypeInfo_var);
 		JsonTextWriter__ctor_mE77A9BD1789BB07C3B49A6EF74857D2225AA99B3(L_7, L_6, NULL);
@@ -29713,7 +29713,7 @@ IL_00f4:
 		L_56 = DataColumn_get_DataType_mD6633BF8B7F6470C96791128AA8B1D7F736EBD0E_inline(L_55, NULL);
 		NullCheck(L_56);
 		Type_t* L_57;
-		L_57 = VirtualFuncInvoker0< Type_t* >::Invoke(46, L_56);
+		L_57 = VirtualFuncInvoker0< Type_t* >::Invoke(47, L_56);
 		List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* L_58 = V_5;
 		NullCheck(L_58);
 		int32_t L_59;
@@ -29955,7 +29955,7 @@ IL_007d:
 		L_13 = DataTableConverter_GetColumnDataType_mC43442E3804117313CB28095BA77533FDD22A7A2(L_12, NULL);
 		NullCheck(L_13);
 		Type_t* L_14;
-		L_14 = VirtualFuncInvoker0< Type_t* >::Invoke(118, L_13);
+		L_14 = VirtualFuncInvoker0< Type_t* >::Invoke(121, L_13);
 		return L_14;
 	}
 

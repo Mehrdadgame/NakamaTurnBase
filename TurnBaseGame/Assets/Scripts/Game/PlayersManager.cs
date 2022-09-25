@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Nakama;
 using Nakama.Helpers;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace NinjaBattle.Game
 {
@@ -65,6 +67,7 @@ namespace NinjaBattle.Game
             multiplayerManager.Subscribe(MultiplayerManager.Code.ChosseTurn, ChosseTurnPlayer);
             multiplayerManager.Subscribe(MultiplayerManager.Code.Rematch, RematchEvent);
             multiplayerManager.Subscribe(MultiplayerManager.Code.PlayerLeft, EventPlayerLeft);
+            multiplayerManager.Subscribe(MultiplayerManager.Code.SendSticker, RiseveSticker);
         }
 
         private void OnDestroy()
@@ -79,6 +82,21 @@ namespace NinjaBattle.Game
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.ChosseTurn, ChosseTurnPlayer);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.Rematch, RematchEvent);
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.PlayerLeft, EventPlayerLeft);
+            multiplayerManager.Unsubscribe(MultiplayerManager.Code.SendSticker, RiseveSticker);
+        }
+
+        public void RiseveSticker(MultiplayerMessage message)
+        {
+            var nameSticker = message.GetData<StickerData>();
+            Debug.Log(nameSticker.ID + "  PPPPPPP");
+            if (nameSticker.ID != multiplayerManager.Self.UserId)
+            {
+                UiManager.instance.StickerOpp.GetComponent<Image>().sprite = UiManager.instance.AllAssets.GetSprite(nameSticker.StickerName);
+                UiManager.instance.StickerOpp.GetComponent<Animator>().Play("StickerOpp", 0, 0);
+              
+
+            }
+
         }
         public void EventPlayerLeft(MultiplayerMessage message)
         {
@@ -94,8 +112,8 @@ namespace NinjaBattle.Game
         {
             var data = message.GetData<RematchData>();
             onRematch?.Invoke(data);
-           
-          
+
+
         }
         public void SetTurn(MultiplayerMessage message)
         {
@@ -133,7 +151,8 @@ namespace NinjaBattle.Game
                     }
 
                 }
-                IsTurn?.Invoke(true);
+                if (data.EndGame != true)
+                    IsTurn?.Invoke(true);
 
                 if (data.EndGame == true)
                 {
@@ -141,7 +160,7 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                      
+
                     }
                     else if (ScoreMe > ScoreOpp)
                     {

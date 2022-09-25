@@ -6,6 +6,7 @@ using TMPro;
 using NinjaBattle.Game;
 using System.Threading.Tasks;
 using System.Linq;
+using UnityEngine.U2D;
 
 public class UiManager : MonoBehaviour
 {
@@ -13,10 +14,13 @@ public class UiManager : MonoBehaviour
 
     [SerializeField] private Button dicRollButton;
     [SerializeField] private Transform transformOpp;
+
     [SerializeField] private List<TileDataOpp> tileDataOpps = new List<TileDataOpp>();
     [SerializeField] private List<ClickInCell> tileDataMe = new List<ClickInCell>();
+
     [SerializeField] private TextMeshProUGUI ScoreTextMe;
     [SerializeField] private TextMeshProUGUI ScoreTextOpp;
+
     [SerializeField] private Animator TextTurnYou;
     [SerializeField] private Animator TextTurnOpp;
     [SerializeField] private Animator TextValueMines;
@@ -28,6 +32,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Button acceptRematchButton;
     [SerializeField] private Button exitRematchButton;
     [SerializeField] private Button exitButton;
+
     [SerializeField] private Image loading;
     public TextMeshProUGUI[] arryRowSumMe;
     public TextMeshProUGUI[] arryRowSumOpp;
@@ -37,6 +42,10 @@ public class UiManager : MonoBehaviour
 
     public GameObject PanelLeftPalyer;
     public TextMeshProUGUI NamePalyerLeft;
+
+    public Animator StickerShow;
+    public Image StickerOpp;
+    public SpriteAtlas AllAssets;
     private void Start()
     {
         instance = this;
@@ -82,7 +91,7 @@ public class UiManager : MonoBehaviour
 
     private void Instance_TimerStop()
     {
-        GameManager.Instance.diceRoller.currrentDie = Random.Range(0,6);
+        GameManager.Instance.diceRoller.currrentDie = Random.Range(0, 6);
         var cell = tileDataMe.First(e => e.isLock == false);
         cell.SetDataInCell();
     }
@@ -123,7 +132,7 @@ public class UiManager : MonoBehaviour
         {
             messageLeftPalyerInRematch.text = "Player is Left";
             acceptRematchButton.gameObject.SetActive(true);
-            acceptRematchButton.gameObject.SetActive( false);
+            acceptRematchButton.gameObject.SetActive(false);
             exitRematchButton.gameObject.SetActive(false);
             exitButton.gameObject.SetActive(true);
             ActionEndGame.instance.ResultPanel.SetActive(false);
@@ -145,9 +154,9 @@ public class UiManager : MonoBehaviour
     public void SendAcceptForRematch(string answerOpp)
     {
         rematchPanle.SetActive(true);
-            AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
-            AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
-            ActionEndGame.instance.ResultPanel.SetActive(false);
+        AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
+        AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
+        ActionEndGame.instance.ResultPanel.SetActive(false);
         var answer = new RematchData
         {
             Answer = answerOpp,
@@ -160,14 +169,13 @@ public class UiManager : MonoBehaviour
             exitRematchButton.gameObject.SetActive(false);
             loading.gameObject.SetActive(true);
         }
-        else if(answer.Answer == "req")
+        else if (answer.Answer == "req")
         {
             loading.gameObject.SetActive(true);
             ActionEndGame.instance.ResultPanel.SetActive(false);
 
         }
-        //  ResetGame();
-       
+
         MultiplayerManager.Instance.Send(MultiplayerManager.Code.Rematch, answer);
     }
 
@@ -185,7 +193,7 @@ public class UiManager : MonoBehaviour
             me.SpriteDice.transform.parent.gameObject.SetActive(false);
         }
         ScoreTextMe.text = "0";
-        ScoreTextOpp.text="0";
+        ScoreTextOpp.text = "0";
         RowSum();
         await Task.Delay(750);
         AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
@@ -200,7 +208,7 @@ public class UiManager : MonoBehaviour
         AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconOpp;
         AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        
+
     }
     private void ShowHighLight(bool obj)
     {
@@ -314,7 +322,7 @@ public class UiManager : MonoBehaviour
             if (!obj.EndGame)
                 TextTurnOpp.Play("OppTurn", 0, 0);
             TimerTurn.instance.TimerRunning = false;
-            TimerTurn.instance.TimerText.text = "-"; 
+            TimerTurn.instance.TimerText.text = "-";
         }
         RowSum();
 
@@ -352,10 +360,10 @@ public class UiManager : MonoBehaviour
     {
 
         dicRollButton.interactable = true;
-         dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
+        dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
         TextTurnYou.Play("YouTurn", 0, 0);
         GameManager.Instance.diceRoller.Rotation(false);
-   
+
 
     }
     public void Leave()

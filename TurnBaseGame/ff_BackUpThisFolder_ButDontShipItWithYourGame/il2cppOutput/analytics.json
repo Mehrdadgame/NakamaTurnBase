@@ -1,6 +1,6 @@
 {
   "DataTable": {
-    "attribute_total_count_eager_static_constructor": 9,
+    "attribute_total_count_eager_static_constructor": 11,
     "attribute_total_count_set_option": 0,
     "attribute_total_count_generate_into_own_cpp_file": 0,
     "attribute_total_count_ignore_by_deep_profiler": 14,

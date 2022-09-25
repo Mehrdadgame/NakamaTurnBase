@@ -1851,18 +1851,18 @@ struct KeyValuePair_2_tFC32D2507216293851350D29B64D79F950B55230
 
 struct KeyedCollection_2_tBF854BD0291D71A8D8E9EA5FAE1F0D461C7CBB5F  : public Collection_1_t3899E6252BC3D003B1AB1D6F5D7AD93EB1DCEEC3
 {
-	RuntimeObject* ___comparer_1;
-	Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* ___dict_2;
-	int32_t ___keyCount_3;
-	int32_t ___threshold_4;
+	RuntimeObject* ___comparer_2;
+	Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* ___dict_3;
+	int32_t ___keyCount_4;
+	int32_t ___threshold_5;
 };
 
 struct KeyedCollection_2_t0E811DBCCCCC9FB99F23525F845D502F0FFF3B0E  : public Collection_1_t7B521FDAE878CCBA34B4E63F79D88AC205CB24A3
 {
-	RuntimeObject* ___comparer_1;
-	Dictionary_2_t3548A0C0ADE1D860E81C2982E252A309A8681C13* ___dict_2;
-	int32_t ___keyCount_3;
-	int32_t ___threshold_4;
+	RuntimeObject* ___comparer_2;
+	Dictionary_2_t3548A0C0ADE1D860E81C2982E252A309A8681C13* ___dict_3;
+	int32_t ___keyCount_4;
+	int32_t ___threshold_5;
 };
 
 struct Nullable_1_t78F453FADB4A9F50F267A4E349019C34410D1A01 
@@ -2601,8 +2601,8 @@ struct JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3  : public RuntimeO
 
 struct JsonPropertyCollection_t93082116A28103BD144B10160CDC36F9809D48C6  : public KeyedCollection_2_t0E811DBCCCCC9FB99F23525F845D502F0FFF3B0E
 {
-	Type_t* ____type_5;
-	List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB* ____list_6;
+	Type_t* ____type_6;
+	List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB* ____list_7;
 };
 
 struct JsonReader_tB90522FA9D4C1C218A3F2C529A27D95123847765  : public RuntimeObject
@@ -4434,13 +4434,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* U3CU3Ec_U3CGetExtensionDataMem
 		Type_t* L_2 = ___baseType0;
 		NullCheck(L_2);
 		PropertyInfoU5BU5D_tD81C248B41D0C76207C42DB9C332DC79F490B1D7* L_3;
-		L_3 = VirtualFuncInvoker1< PropertyInfoU5BU5D_tD81C248B41D0C76207C42DB9C332DC79F490B1D7*, int32_t >::Invoke(108, L_2, ((int32_t)54));
+		L_3 = VirtualFuncInvoker1< PropertyInfoU5BU5D_tD81C248B41D0C76207C42DB9C332DC79F490B1D7*, int32_t >::Invoke(111, L_2, ((int32_t)54));
 		CollectionUtils_AddRange_TisMemberInfo_t_mDE50EE4C0A4096874E30FF48A4806321F24E103F(L_1, (RuntimeObject*)L_3, CollectionUtils_AddRange_TisMemberInfo_t_mDE50EE4C0A4096874E30FF48A4806321F24E103F_RuntimeMethod_var);
 		List_1_t269913CE854C1793B808480C94E04A8DB19CD0A4* L_4 = L_1;
 		Type_t* L_5 = ___baseType0;
 		NullCheck(L_5);
 		FieldInfoU5BU5D_t50D47CBECF1AEB152F555803E3329D9E34DBF8D8* L_6;
-		L_6 = VirtualFuncInvoker1< FieldInfoU5BU5D_t50D47CBECF1AEB152F555803E3329D9E34DBF8D8*, int32_t >::Invoke(86, L_5, ((int32_t)54));
+		L_6 = VirtualFuncInvoker1< FieldInfoU5BU5D_t50D47CBECF1AEB152F555803E3329D9E34DBF8D8*, int32_t >::Invoke(88, L_5, ((int32_t)54));
 		CollectionUtils_AddRange_TisMemberInfo_t_mDE50EE4C0A4096874E30FF48A4806321F24E103F(L_4, (RuntimeObject*)L_6, CollectionUtils_AddRange_TisMemberInfo_t_mDE50EE4C0A4096874E30FF48A4806321F24E103F_RuntimeMethod_var);
 		return L_4;
 	}
@@ -4556,14 +4556,14 @@ IL_0056:
 		Type_t* L_23 = V_1;
 		NullCheck(L_23);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_24;
-		L_24 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_23);
+		L_24 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_23);
 		NullCheck(L_24);
 		int32_t L_25 = 0;
 		Type_t* L_26 = (L_24)->GetAt(static_cast<il2cpp_array_size_t>(L_25));
 		Type_t* L_27 = V_1;
 		NullCheck(L_27);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_28;
-		L_28 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_27);
+		L_28 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_27);
 		NullCheck(L_28);
 		int32_t L_29 = 1;
 		Type_t* L_30 = (L_28)->GetAt(static_cast<il2cpp_array_size_t>(L_29));
@@ -5645,7 +5645,7 @@ IL_00aa:
 		L_39 = List_1_ToArray_mAF39173491C493DC9C643F76BC50C311070BEE56(L_38, List_1_ToArray_mAF39173491C493DC9C643F76BC50C311070BEE56_RuntimeMethod_var);
 		NullCheck(L_37);
 		Type_t* L_40;
-		L_40 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_37, L_39);
+		L_40 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_37, L_39);
 		V_0 = L_40;
 	}
 
@@ -6045,7 +6045,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void JsonArrayContract__ctor_mAA81A5943EEC3B7
 		Type_t* L_5 = ((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)__this)->___NonNullableUnderlyingType_3;
 		NullCheck(L_5);
 		Type_t* L_6;
-		L_6 = VirtualFuncInvoker0< Type_t* >::Invoke(48, L_5);
+		L_6 = VirtualFuncInvoker0< Type_t* >::Invoke(49, L_5);
 		NullCheck(L_6);
 		String_t* L_7;
 		L_7 = VirtualFuncInvoker0< String_t* >::Invoke(26, L_6);
@@ -6102,7 +6102,7 @@ IL_0049:
 		(L_15)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_16);
 		NullCheck(L_13);
 		Type_t* L_17;
-		L_17 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_13, L_15);
+		L_17 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_13, L_15);
 		__this->____genericCollectionDefinitionType_29 = L_17;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____genericCollectionDefinitionType_29), (void*)L_17);
 		V_0 = (bool)1;
@@ -6123,7 +6123,7 @@ IL_0049:
 		L_20 = JsonContract_get_UnderlyingType_mD9A37A6619D3F541F77C3E09ED8242511AFCBEB7_inline(__this, NULL);
 		NullCheck(L_20);
 		int32_t L_21;
-		L_21 = VirtualFuncInvoker0< int32_t >::Invoke(47, L_20);
+		L_21 = VirtualFuncInvoker0< int32_t >::Invoke(48, L_20);
 		G_B9_0 = ((((int32_t)L_21) > ((int32_t)1))? 1 : 0);
 		G_B9_1 = G_B7_0;
 		goto IL_00b3;
@@ -6176,7 +6176,7 @@ IL_00bd:
 		Type_t* L_31 = __this->____genericCollectionDefinitionType_29;
 		NullCheck(L_31);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_32;
-		L_32 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_31);
+		L_32 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_31);
 		NullCheck(L_32);
 		int32_t L_33 = 0;
 		Type_t* L_34 = (L_32)->GetAt(static_cast<il2cpp_array_size_t>(L_33));
@@ -6274,7 +6274,7 @@ IL_0188:
 		Type_t* L_57 = __this->____genericCollectionDefinitionType_29;
 		NullCheck(L_57);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_58;
-		L_58 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_57);
+		L_58 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_57);
 		NullCheck(L_58);
 		int32_t L_59 = 0;
 		Type_t* L_60 = (L_58)->GetAt(static_cast<il2cpp_array_size_t>(L_59));
@@ -6323,7 +6323,7 @@ IL_01e9:
 		(L_72)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_73);
 		NullCheck(L_70);
 		Type_t* L_74;
-		L_74 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_70, L_72);
+		L_74 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_70, L_72);
 		JsonContract_set_CreatedType_mB9B232317567D5530B9C9E238C4F94BCEFDD6A67(__this, L_74, NULL);
 	}
 
@@ -6356,7 +6356,7 @@ IL_020d:
 		(L_82)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_83);
 		NullCheck(L_80);
 		Type_t* L_84;
-		L_84 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_80, L_82);
+		L_84 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_80, L_82);
 		JsonContract_set_CreatedType_mB9B232317567D5530B9C9E238C4F94BCEFDD6A67(__this, L_84, NULL);
 	}
 
@@ -6393,7 +6393,7 @@ IL_026d:
 		Type_t* L_92 = V_1;
 		NullCheck(L_92);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_93;
-		L_93 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_92);
+		L_93 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_92);
 		NullCheck(L_93);
 		int32_t L_94 = 0;
 		Type_t* L_95 = (L_93)->GetAt(static_cast<il2cpp_array_size_t>(L_94));
@@ -6442,7 +6442,7 @@ IL_02c5:
 		(L_107)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_108);
 		NullCheck(L_105);
 		Type_t* L_109;
-		L_109 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_105, L_107);
+		L_109 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_105, L_107);
 		JsonContract_set_CreatedType_mB9B232317567D5530B9C9E238C4F94BCEFDD6A67(__this, L_109, NULL);
 	}
 
@@ -6461,7 +6461,7 @@ IL_02e9:
 		(L_113)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_114);
 		NullCheck(L_111);
 		Type_t* L_115;
-		L_115 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_111, L_113);
+		L_115 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_111, L_113);
 		__this->____genericCollectionDefinitionType_29 = L_115;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____genericCollectionDefinitionType_29), (void*)L_115);
 		Type_t* L_116;
@@ -6500,7 +6500,7 @@ IL_0343:
 		Type_t* L_125 = V_1;
 		NullCheck(L_125);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_126;
-		L_126 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_125);
+		L_126 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_125);
 		NullCheck(L_126);
 		int32_t L_127 = 0;
 		Type_t* L_128 = (L_126)->GetAt(static_cast<il2cpp_array_size_t>(L_127));
@@ -6534,7 +6534,7 @@ IL_0343:
 		(L_136)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_137);
 		NullCheck(L_134);
 		Type_t* L_138;
-		L_138 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_134, L_136);
+		L_138 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_134, L_136);
 		JsonContract_set_CreatedType_mB9B232317567D5530B9C9E238C4F94BCEFDD6A67(__this, L_138, NULL);
 	}
 
@@ -6561,7 +6561,7 @@ IL_03a8:
 		Type_t* L_145 = ((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)__this)->___NonNullableUnderlyingType_3;
 		NullCheck(L_145);
 		Type_t* L_146;
-		L_146 = VirtualFuncInvoker0< Type_t* >::Invoke(48, L_145);
+		L_146 = VirtualFuncInvoker0< Type_t* >::Invoke(49, L_145);
 		RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B L_147 = { reinterpret_cast<intptr_t> (IEnumerable_1_t6D39F4BC58A66D98BCEB112169CFDE48809FC555_0_0_0_var) };
 		il2cpp_codegen_runtime_class_init_inline(Type_t_il2cpp_TypeInfo_var);
 		Type_t* L_148;
@@ -6598,7 +6598,7 @@ IL_040d:
 		(L_154)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_155);
 		NullCheck(L_152);
 		Type_t* L_156;
-		L_156 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_152, L_154);
+		L_156 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_152, L_154);
 		__this->____genericCollectionDefinitionType_29 = L_156;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____genericCollectionDefinitionType_29), (void*)L_156);
 		((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)__this)->___IsReadOnlyOrFixedSize_6 = (bool)1;
@@ -6696,7 +6696,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* JsonArrayContract_CreateWrappe
 		(L_4)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_5);
 		NullCheck(L_2);
 		Type_t* L_6;
-		L_6 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_2, L_4);
+		L_6 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_2, L_4);
 		__this->____genericWrapperType_30 = L_6;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____genericWrapperType_30), (void*)L_6);
 		Type_t* L_7 = __this->____genericCollectionDefinitionType_29;
@@ -6715,7 +6715,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* JsonArrayContract_CreateWrappe
 		Type_t* L_11 = __this->____genericCollectionDefinitionType_29;
 		NullCheck(L_11);
 		Type_t* L_12;
-		L_12 = VirtualFuncInvoker0< Type_t* >::Invoke(48, L_11);
+		L_12 = VirtualFuncInvoker0< Type_t* >::Invoke(49, L_11);
 		RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B L_13 = { reinterpret_cast<intptr_t> (IEnumerable_1_t6D39F4BC58A66D98BCEB112169CFDE48809FC555_0_0_0_var) };
 		il2cpp_codegen_runtime_class_init_inline(Type_t_il2cpp_TypeInfo_var);
 		Type_t* L_14;
@@ -6743,7 +6743,7 @@ IL_0062:
 		(L_19)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_20);
 		NullCheck(L_17);
 		Type_t* L_21;
-		L_21 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_17, L_19);
+		L_21 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_17, L_19);
 		V_0 = L_21;
 		goto IL_008a;
 	}
@@ -6867,7 +6867,7 @@ IL_0030:
 		(L_10)->SetAt(static_cast<il2cpp_array_size_t>(0), (Type_t*)L_11);
 		NullCheck(L_8);
 		Type_t* L_12;
-		L_12 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_8, L_10);
+		L_12 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_8, L_10);
 		V_1 = L_12;
 		il2cpp_codegen_runtime_class_init_inline(JsonTypeReflector_t367C9968A0B763401F51F0A38B6CCA19EDC92A35_il2cpp_TypeInfo_var);
 		ReflectionDelegateFactory_t33E37F4C07B3A1F415AA97A5C5F7F5A1662A8574* L_13;
@@ -8717,7 +8717,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void JsonDictionaryContract__ctor_mF9F1BD61E2
 		Type_t* L_6 = __this->____genericCollectionDefinitionType_31;
 		NullCheck(L_6);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_7;
-		L_7 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_6);
+		L_7 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_6);
 		NullCheck(L_7);
 		int32_t L_8 = 0;
 		Type_t* L_9 = (L_7)->GetAt(static_cast<il2cpp_array_size_t>(L_8));
@@ -8725,7 +8725,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void JsonDictionaryContract__ctor_mF9F1BD61E2
 		Type_t* L_10 = __this->____genericCollectionDefinitionType_31;
 		NullCheck(L_10);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_11;
-		L_11 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_10);
+		L_11 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_10);
 		NullCheck(L_11);
 		int32_t L_12 = 1;
 		Type_t* L_13 = (L_11)->GetAt(static_cast<il2cpp_array_size_t>(L_12));
@@ -8761,7 +8761,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void JsonDictionaryContract__ctor_mF9F1BD61E2
 		(L_23)->SetAt(static_cast<il2cpp_array_size_t>(1), (Type_t*)L_24);
 		NullCheck(L_19);
 		Type_t* L_25;
-		L_25 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_19, L_23);
+		L_25 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_19, L_23);
 		JsonContract_set_CreatedType_mB9B232317567D5530B9C9E238C4F94BCEFDD6A67(__this, L_25, NULL);
 		goto IL_00b6;
 	}
@@ -8780,7 +8780,7 @@ IL_0086:
 		Type_t* L_28 = ((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)__this)->___NonNullableUnderlyingType_3;
 		NullCheck(L_28);
 		Type_t* L_29;
-		L_29 = VirtualFuncInvoker0< Type_t* >::Invoke(48, L_28);
+		L_29 = VirtualFuncInvoker0< Type_t* >::Invoke(49, L_28);
 		NullCheck(L_29);
 		String_t* L_30;
 		L_30 = VirtualFuncInvoker0< String_t* >::Invoke(26, L_29);
@@ -8829,7 +8829,7 @@ IL_00d6:
 		Type_t* L_41 = __this->____genericCollectionDefinitionType_31;
 		NullCheck(L_41);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_42;
-		L_42 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_41);
+		L_42 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_41);
 		NullCheck(L_42);
 		int32_t L_43 = 0;
 		Type_t* L_44 = (L_42)->GetAt(static_cast<il2cpp_array_size_t>(L_43));
@@ -8837,7 +8837,7 @@ IL_00d6:
 		Type_t* L_45 = __this->____genericCollectionDefinitionType_31;
 		NullCheck(L_45);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_46;
-		L_46 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(50, L_45);
+		L_46 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(51, L_45);
 		NullCheck(L_46);
 		int32_t L_47 = 1;
 		Type_t* L_48 = (L_46)->GetAt(static_cast<il2cpp_array_size_t>(L_47));
@@ -8873,7 +8873,7 @@ IL_00d6:
 		(L_58)->SetAt(static_cast<il2cpp_array_size_t>(1), (Type_t*)L_59);
 		NullCheck(L_54);
 		Type_t* L_60;
-		L_60 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_54, L_58);
+		L_60 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_54, L_58);
 		JsonContract_set_CreatedType_mB9B232317567D5530B9C9E238C4F94BCEFDD6A67(__this, L_60, NULL);
 	}
 
@@ -8949,7 +8949,7 @@ IL_0188:
 		(L_78)->SetAt(static_cast<il2cpp_array_size_t>(1), (Type_t*)L_79);
 		NullCheck(L_74);
 		Type_t* L_80;
-		L_80 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_74, L_78);
+		L_80 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_74, L_78);
 		RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B L_81 = { reinterpret_cast<intptr_t> (IDictionary_2_t4F866F723F9E0A522C362494DC799D065D96C726_0_0_0_var) };
 		Type_t* L_82;
 		L_82 = Type_GetTypeFromHandle_m6062B81682F79A4D6DF2640692EE6D9987858C57(L_81, NULL);
@@ -8966,7 +8966,7 @@ IL_0188:
 		(L_86)->SetAt(static_cast<il2cpp_array_size_t>(1), (Type_t*)L_87);
 		NullCheck(L_82);
 		Type_t* L_88;
-		L_88 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_82, L_86);
+		L_88 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_82, L_86);
 		ConstructorInfo_t1B5967EE7E5554272F79F8880183C70AD240EEEB* L_89;
 		L_89 = CollectionUtils_ResolveEnumerableCollectionConstructor_mC2D9D30053DFE768B4E85A883579F9B8DFD3CD15(L_72, L_80, L_88, NULL);
 		__this->____parameterizedConstructor_36 = L_89;
@@ -9125,7 +9125,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* JsonDictionaryContract_CreateW
 		(L_6)->SetAt(static_cast<il2cpp_array_size_t>(1), (Type_t*)L_7);
 		NullCheck(L_2);
 		Type_t* L_8;
-		L_8 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, L_2, L_6);
+		L_8 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, L_2, L_6);
 		__this->____genericWrapperType_32 = L_8;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____genericWrapperType_32), (void*)L_8);
 		Type_t* L_9 = __this->____genericWrapperType_32;
@@ -9287,7 +9287,7 @@ IL_0045:
 		(G_B5_2)->SetAt(static_cast<il2cpp_array_size_t>(G_B5_1), (Type_t*)G_B5_0);
 		NullCheck(G_B5_4);
 		Type_t* L_14;
-		L_14 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(121, G_B5_4, G_B5_3);
+		L_14 = VirtualFuncInvoker1< Type_t*, TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(124, G_B5_4, G_B5_3);
 		V_0 = L_14;
 		il2cpp_codegen_runtime_class_init_inline(JsonTypeReflector_t367C9968A0B763401F51F0A38B6CCA19EDC92A35_il2cpp_TypeInfo_var);
 		ReflectionDelegateFactory_t33E37F4C07B3A1F415AA97A5C5F7F5A1662A8574* L_15;
@@ -11069,12 +11069,12 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void JsonPropertyCollection__ctor_m3BF51B1703
 		Type_t* L_1 = ___type0;
 		ValidationUtils_ArgumentNotNull_mC7EBE963D14FFCC7B90B08B403FF584EC520C888(L_1, _stringLiteralF3C6C902DBF80139640F6554F0C3392016A8ADF7, NULL);
 		Type_t* L_2 = ___type0;
-		__this->____type_5 = L_2;
-		Il2CppCodeGenWriteBarrier((void**)(&__this->____type_5), (void*)L_2);
+		__this->____type_6 = L_2;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____type_6), (void*)L_2);
 		RuntimeObject* L_3;
 		L_3 = Collection_1_get_Items_mD72F5F7EB95D5DE8CE02C139A26B8D3A0278BAB7_inline(__this, Collection_1_get_Items_mD72F5F7EB95D5DE8CE02C139A26B8D3A0278BAB7_RuntimeMethod_var);
-		__this->____list_6 = ((List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB*)CastclassClass((RuntimeObject*)L_3, List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB_il2cpp_TypeInfo_var));
-		Il2CppCodeGenWriteBarrier((void**)(&__this->____list_6), (void*)((List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB*)CastclassClass((RuntimeObject*)L_3, List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB_il2cpp_TypeInfo_var)));
+		__this->____list_7 = ((List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB*)CastclassClass((RuntimeObject*)L_3, List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB_il2cpp_TypeInfo_var));
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____list_7), (void*)((List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB*)CastclassClass((RuntimeObject*)L_3, List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB_il2cpp_TypeInfo_var)));
 		return;
 	}
 }
@@ -11290,7 +11290,7 @@ IL_00d2:
 
 IL_00d3:
 	{
-		Type_t* L_46 = __this->____type_5;
+		Type_t* L_46 = __this->____type_6;
 		JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3* L_47 = V_0;
 		NullCheck(L_47);
 		Type_t* L_48;
@@ -11303,7 +11303,7 @@ IL_00d3:
 		}
 	}
 	{
-		Type_t* L_50 = __this->____type_5;
+		Type_t* L_50 = __this->____type_6;
 		JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3* L_51 = ___property0;
 		NullCheck(L_51);
 		Type_t* L_52;
@@ -11335,7 +11335,7 @@ IL_00fa:
 		NullCheck(L_56);
 		String_t* L_57;
 		L_57 = JsonProperty_get_PropertyName_m66C0A76B6380773DCA04B91C40032EE6CC0F7FFE_inline(L_56, NULL);
-		Type_t* L_58 = __this->____type_5;
+		Type_t* L_58 = __this->____type_6;
 		String_t* L_59;
 		L_59 = StringUtils_FormatWith_mE8641D4F1BDCF64E9876EE3B78F84D7AC377D3E9(((String_t*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&_stringLiteral0420312213C14657051F4C980D6D83D64B825C02)), L_55, L_57, L_58, NULL);
 		JsonSerializationException_t00F36890DFAC04F2FDE779151340B9C5563612EC* L_60 = (JsonSerializationException_t00F36890DFAC04F2FDE779151340B9C5563612EC*)il2cpp_codegen_object_new(((RuntimeClass*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&JsonSerializationException_t00F36890DFAC04F2FDE779151340B9C5563612EC_il2cpp_TypeInfo_var)));
@@ -11459,7 +11459,7 @@ IL_0013:
 
 IL_0017:
 	{
-		List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB* L_4 = __this->____list_6;
+		List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB* L_4 = __this->____list_7;
 		int32_t L_5 = V_1;
 		NullCheck(L_4);
 		JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3* L_6;
@@ -11492,7 +11492,7 @@ IL_0035:
 IL_0039:
 	{
 		int32_t L_14 = V_1;
-		List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB* L_15 = __this->____list_6;
+		List_1_t74666FDF65CB5C8F34590E465BD151F8943D32CB* L_15 = __this->____list_7;
 		NullCheck(L_15);
 		int32_t L_16;
 		L_16 = List_1_get_Count_m8D08039CC25D5B199C0E6685DCEDEC310AF04E22_inline(L_15, List_1_get_Count_m8D08039CC25D5B199C0E6685DCEDEC310AF04E22_RuntimeMethod_var);
@@ -15902,7 +15902,7 @@ IL_00fa:
 		L_70 = JsonContract_get_CreatedType_mCEA0A64AA856091792CF9E7B70D9CDDBE2BCD9FC_inline(L_69, NULL);
 		NullCheck(L_70);
 		int32_t L_71;
-		L_71 = VirtualFuncInvoker0< int32_t >::Invoke(47, L_70);
+		L_71 = VirtualFuncInvoker0< int32_t >::Invoke(48, L_70);
 		RuntimeArray* L_72;
 		L_72 = CollectionUtils_ToMultidimensionalArray_m89EC870CBB5C35DA01D42D3FE5E7745B96BC5F29(L_66, L_68, L_71, NULL);
 		V_2 = L_72;
@@ -18797,7 +18797,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* JsonSerializerInternalReader_P
 		L_1 = JsonContract_get_UnderlyingType_mD9A37A6619D3F541F77C3E09ED8242511AFCBEB7_inline(L_0, NULL);
 		NullCheck(L_1);
 		int32_t L_2;
-		L_2 = VirtualFuncInvoker0< int32_t >::Invoke(47, L_1);
+		L_2 = VirtualFuncInvoker0< int32_t >::Invoke(48, L_1);
 		V_0 = L_2;
 		String_t* L_3 = ___id4;
 		if (!L_3)
@@ -21772,7 +21772,7 @@ IL_0586_1:
 			{
 				NullCheck(G_B91_0);
 				RuntimeObject* L_267;
-				L_267 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(8, IDictionary_t6D03155AF1FA9083817AA5B6AD7DEEACC26AB220_il2cpp_TypeInfo_var, G_B91_0);
+				L_267 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(9, IDictionary_t6D03155AF1FA9083817AA5B6AD7DEEACC26AB220_il2cpp_TypeInfo_var, G_B91_0);
 				V_32 = L_267;
 			}
 			{
@@ -29482,7 +29482,7 @@ IL_009c:
 		RuntimeObject* L_40 = ___values1;
 		NullCheck(L_40);
 		RuntimeObject* L_41;
-		L_41 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(8, IDictionary_t6D03155AF1FA9083817AA5B6AD7DEEACC26AB220_il2cpp_TypeInfo_var, L_40);
+		L_41 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(9, IDictionary_t6D03155AF1FA9083817AA5B6AD7DEEACC26AB220_il2cpp_TypeInfo_var, L_40);
 		V_3 = L_41;
 	}
 	{
@@ -31141,7 +31141,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Collection_1_get_I
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* KeyedCollection_2_get_Dictionary_mE6B246156B0BB2DD9412E2F42E220E85C486D450_gshared_inline (KeyedCollection_2_tBF854BD0291D71A8D8E9EA5FAE1F0D461C7CBB5F* __this, const RuntimeMethod* method) 
 {
 	{
-		Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* L_0 = (Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA*)__this->___dict_2;
+		Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* L_0 = (Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA*)__this->___dict_3;
 		return (RuntimeObject*)L_0;
 	}
 }

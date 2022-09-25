@@ -4635,7 +4635,7 @@ IL_0024:
 		DataRow_t4C2743279B40E332809F4E6EE3443B75E4C38388* L_25 = ___row0;
 		NullCheck(L_24);
 		RuntimeObject* L_26;
-		L_26 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(28, L_24, L_25);
+		L_26 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(29, L_24, L_25);
 		NullCheck(L_26);
 		String_t* L_27;
 		L_27 = VirtualFuncInvoker0< String_t* >::Invoke(3, L_26);

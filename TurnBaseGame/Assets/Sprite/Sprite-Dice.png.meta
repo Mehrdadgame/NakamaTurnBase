@@ -3,7 +3,7 @@ guid: b1f4b94b167be804ca17edcea61c5d53
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -63,6 +64,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -724,6 +727,69 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice_29
+      rect:
+        serializedVersion: 2
+        x: 933
+        y: 1774
+        width: 90
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 39462fcfc4987fb499ab53f83fe4157c
+      internalID: 955218397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice_30
+      rect:
+        serializedVersion: 2
+        x: 1030
+        y: 1811
+        width: 53
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccd3c7da5725c2c4eafecd02791294ac
+      internalID: -2119373336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice_31
+      rect:
+        serializedVersion: 2
+        x: 642
+        y: 1807
+        width: 278
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14320564c5230ef4bb3f81337d614998
+      internalID: 1398041337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -740,6 +806,7 @@ TextureImporter:
       Sprite-Dice_20: -2054607667
       Sprite-Dice_0: -712058315
       Sprite-Dice_18: -643206390
+      Sprite-Dice_29: 955218397
       Sprite-Dice_23: -1047294473
       Sprite-Dice_22: -1686203677
       Sprite-Dice_16: 914369998
@@ -758,15 +825,16 @@ TextureImporter:
       Sprite-Dice_24: 1571251963
       Sprite-Dice_1: -1831792093
       Sprite-Dice_28: 1749402312
+      Sprite-Dice_30: -2119373336
       Sprite-Dice_5: 991737301
       Sprite-Dice_26: 1707495483
       Sprite-Dice_15: 1572071154
       Sprite-Dice_2: -966120211
       Sprite-Dice_21: -1517814808
       Sprite-Dice_10: -1251218703
-  spritePackingTag: 
+      Sprite-Dice_31: 1398041337
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

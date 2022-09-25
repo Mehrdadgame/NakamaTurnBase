@@ -17584,7 +17584,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* Session_JwtUnpack_m1EF71E58E4AC08A5
 		L_17 = Convert_FromBase64String_m267327B074B41D93C9622D142B95CFAA4ACCCA9C(L_16, NULL);
 		NullCheck(L_15);
 		String_t* L_18;
-		L_18 = VirtualFuncInvoker1< String_t*, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* >::Invoke(34, L_15, L_17);
+		L_18 = VirtualFuncInvoker1< String_t*, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* >::Invoke(35, L_15, L_17);
 		return L_18;
 	}
 }
@@ -21289,7 +21289,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Socket_ProcessMessage_mBD59381EE5714AF3B
 		L_3 = ArraySegment_1_get_Count_m7B026228B16D905890B805EA70E9114D1517B053_inline((&___buffer0), ArraySegment_1_get_Count_m7B026228B16D905890B805EA70E9114D1517B053_RuntimeMethod_var);
 		NullCheck(L_0);
 		String_t* L_4;
-		L_4 = VirtualFuncInvoker3< String_t*, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*, int32_t, int32_t >::Invoke(35, L_0, L_1, L_2, L_3);
+		L_4 = VirtualFuncInvoker3< String_t*, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*, int32_t, int32_t >::Invoke(36, L_0, L_1, L_2, L_3);
 		V_0 = L_4;
 		RuntimeObject* L_5;
 		L_5 = Socket_get_Logger_m1CA7304F559660FB38434C28A5899BE00344BBA8_inline(__this, NULL);
