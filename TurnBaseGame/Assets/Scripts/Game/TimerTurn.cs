@@ -24,7 +24,7 @@ public class TimerTurn : MonoBehaviour
         if (TimerRunning && !TimerPause)
         {
             TimerCount -= Time.deltaTime * 1;
-            TimerText.text = TimerCount.ToString("F1");
+            TimerText.text = TimerCount.ToString("F0")+"s";
             if (TimerCount <= 5)
             {
                 TimerText.color = Color.red;

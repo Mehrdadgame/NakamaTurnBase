@@ -147,6 +147,10 @@ SpriteAtlas:
     - {fileID: 2800000, guid: eb9c7c24194c91947aeef75179ea8cc6, type: 3}
     - {fileID: 2800000, guid: b4ab7df65a698104bae443d880730cb7, type: 3}
     - {fileID: 2800000, guid: 659ded040b9277a49ba0ffd3d0894003, type: 3}
+    - {fileID: 2030970929, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
+    - {fileID: -2062493059, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
+    - {fileID: 1325044263, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
+    - {fileID: -2047160346, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -228,6 +232,10 @@ SpriteAtlas:
     - 712b26bab6d73bc4ab9b06ff1fd0c173: 21300000
     - 4cd637ba3e9147a42b92d681760d6e8d: 21300000
     - 121cefda23bc4ee4197cb00705f9aa74: 21300000
+    - a7d37e3b37391c34fa598ea3e6ff94a9: -2047160346
+    - a7d37e3b37391c34fa598ea3e6ff94a9: 1325044263
+    - a7d37e3b37391c34fa598ea3e6ff94a9: -2062493059
+    - a7d37e3b37391c34fa598ea3e6ff94a9: 2030970929
     - 8c650a4bbea4d624e8bfa758892d79eb: 21300000
     - 057da78b5f5518e48a98c0d7a147a33a: 21300000
     - 2e715d8b44b8cfa418c93b46a01b2a8c: 21300000
@@ -345,6 +353,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 712b26bab6d73bc4ab9b06ff1fd0c173, type: 3}
   - {fileID: 21300000, guid: 4cd637ba3e9147a42b92d681760d6e8d, type: 3}
   - {fileID: 21300000, guid: 121cefda23bc4ee4197cb00705f9aa74, type: 3}
+  - {fileID: -2047160346, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
+  - {fileID: 1325044263, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
+  - {fileID: -2062493059, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
+  - {fileID: 2030970929, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
   - {fileID: 21300000, guid: 8c650a4bbea4d624e8bfa758892d79eb, type: 3}
   - {fileID: 21300000, guid: 057da78b5f5518e48a98c0d7a147a33a, type: 3}
   - {fileID: 21300000, guid: 2e715d8b44b8cfa418c93b46a01b2a8c, type: 3}
@@ -461,6 +473,10 @@ SpriteAtlas:
   - 28
   - 54
   - 58
+  - Sprite-Dice-2_3
+  - Sprite-Dice-2_4
+  - Sprite-Dice-2_5
+  - Sprite-Dice-2_6
   - 1999
   - 15
   - 50
