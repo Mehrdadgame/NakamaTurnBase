@@ -28,7 +28,8 @@ namespace NinjaBattle.Game
 
         private void Awake()
         {
-          
+            Screen.sleepTimeout = SleepTimeout.NeverSleep;
+            Application.targetFrameRate = 60;
         }
         private void Start()
         {

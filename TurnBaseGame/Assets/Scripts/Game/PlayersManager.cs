@@ -88,12 +88,13 @@ namespace NinjaBattle.Game
         public void RiseveSticker(MultiplayerMessage message)
         {
             var nameSticker = message.GetData<StickerData>();
-            Debug.Log(nameSticker.ID + "  PPPPPPP");
+          
             if (nameSticker.ID != multiplayerManager.Self.UserId)
             {
                 UiManager.instance.StickerOpp.GetComponent<Image>().sprite = UiManager.instance.AllAssets.GetSprite(nameSticker.StickerName);
+                //var e = UiManager.instance.StickerOpp.GetComponent<Image>().SetNativeSize();
                 UiManager.instance.StickerOpp.GetComponent<Animator>().Play("StickerOpp", 0, 0);
-              
+
 
             }
 
@@ -103,7 +104,7 @@ namespace NinjaBattle.Game
             var data = message.GetData<string>();
             //
             //onRematch?.Invoke(data);
-            Debug.Log("Left Player");
+          
             LeftPlayer?.Invoke(data);
 
         }
@@ -130,7 +131,7 @@ namespace NinjaBattle.Game
         }
         private void ChosseTurnPlayer(MultiplayerMessage message)
         {
-
+            var hxdTotal = PlayerPrefs.GetInt("HXD");
             var data = message.GetData<DataPlayer>();
             onSetDataInTurn?.Invoke(data);
             if (multiplayerManager.Self.UserId != data.UserId)
@@ -160,15 +161,18 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-
+                      UiManager.instance.HXDWin.text ="+"+ multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
+                        PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-
+                        UiManager.instance.HXDWin.text = "-" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
+                        PlayerPrefs.SetInt("HXD", hxdTotal - multiplayerManager.ValueHXDInGameTurn);
                     }
                     else
                     {
+                        //
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;
@@ -203,12 +207,15 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-
+                       
+                        PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
+                        UiManager.instance.HXDWin.text = "+" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-
+                        PlayerPrefs.SetInt("HXD", hxdTotal - multiplayerManager.ValueHXDInGameTurn);
+                        UiManager.instance.HXDWin.text = "-" + multiplayerManager.ValueHXDInGameTurn.ToString()+"HXD";
                     }
                     else
                     {

@@ -44,7 +44,7 @@ namespace Nakama.Helpers
         public IUserPresence Self { get => match == null ? null : match.Self; }
         public IUserPresence Opp;   
         public bool IsOnMatch { get => match != null; }
-
+        public int ValueHXDInGameTurn;
         public NakamaUserManager players;
         #endregion
 
@@ -52,7 +52,7 @@ namespace Nakama.Helpers
 
         private void Awake()
         {
-
+           
             Instance = this;
         }
 

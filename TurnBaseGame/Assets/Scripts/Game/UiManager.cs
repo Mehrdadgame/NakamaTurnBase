@@ -40,6 +40,8 @@ public class UiManager : MonoBehaviour
     public ParticleSystem WowPar;
     public static UiManager instance;
 
+
+    public TextMeshProUGUI HXDWin;
     public GameObject PanelLeftPalyer;
     public TextMeshProUGUI NamePalyerLeft;
 
