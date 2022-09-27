@@ -1,15 +1,15 @@
-# Ninja Battle
+# Dice War
 Ninja Battle is a deterministic multiplayer online game made in Unity that implements basic rollback, intended for use as a example project of different technologies that [Nakama](https://heroiclabs.com/) offers.
 
 Genre: Action PvP
 
-Players: 2 to 4 players
+Players: 2 players
 
-Game engine: Unity 2021.1.18f1
+Game engine: Unity 2022.2B
 
 Language: C# for Unity, Typescript for Nakama
 
-Platform: PC, Mac and Web
+Platform: Android,IOS
 
 Multiplayer: Nakama server authoritative
 
