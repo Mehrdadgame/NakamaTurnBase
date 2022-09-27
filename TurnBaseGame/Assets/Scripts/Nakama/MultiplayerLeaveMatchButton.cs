@@ -21,6 +21,8 @@ namespace Nakama.Helpers
         private void LeaveMatch()
         {
             button.interactable = false;
+            var hxdTotal = PlayerPrefs.GetInt("HXD");
+            PlayerPrefs.SetInt("HXD", hxdTotal+(MultiplayerManager.Instance.ValueHXDInGameTurn));
             MultiplayerManager.Instance.LeaveMatchAsync();
         }
 

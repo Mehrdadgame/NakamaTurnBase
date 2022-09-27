@@ -161,18 +161,19 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                      UiManager.instance.HXDWin.text ="+"+ multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
-                        PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
+                      UiManager.instance.HXDWin.text ="+"+ (multiplayerManager.ValueHXDInGameTurn*2).ToString() + "HXD";
+                        PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn*2));
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "-" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
+                        UiManager.instance.HXDWin.text = "-" + (multiplayerManager.ValueHXDInGameTurn).ToString() + "HXD";
                         PlayerPrefs.SetInt("HXD", hxdTotal - multiplayerManager.ValueHXDInGameTurn);
                     }
                     else
                     {
-                        //
+                        UiManager.instance.HXDWin.text = "+" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
+                        PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;
@@ -208,17 +209,19 @@ namespace NinjaBattle.Game
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
                        
-                        PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
-                        UiManager.instance.HXDWin.text = "+" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
+                        PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn*2));
+                        UiManager.instance.HXDWin.text = "+" + (multiplayerManager.ValueHXDInGameTurn*2).ToString() + "HXD";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-                        PlayerPrefs.SetInt("HXD", hxdTotal - multiplayerManager.ValueHXDInGameTurn);
+                        PlayerPrefs.SetInt("HXD", hxdTotal - (multiplayerManager.ValueHXDInGameTurn));
                         UiManager.instance.HXDWin.text = "-" + multiplayerManager.ValueHXDInGameTurn.ToString()+"HXD";
                     }
                     else
                     {
+                        PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
+                        UiManager.instance.HXDWin.text = "+" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;

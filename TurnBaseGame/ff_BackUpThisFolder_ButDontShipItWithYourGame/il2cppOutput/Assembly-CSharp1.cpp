@@ -5942,10 +5942,6 @@ inline void AsyncVoidMethodBuilder_Start_TisU3CJoinedMatchU3Ed__21_t072DACC8A879
 }
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_GoToHome_m2066D2F6A8336650D2D3534F982F4D118594AAF0 (GameManager_t113C411246F44979634E6BAF9F091F2FF48303D7* __this, const RuntimeMethod* method) ;
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void GameManager_set_PlayersWins_m3E9FF911353F5B3EADAA22C60ED60490B952FCD4_inline (GameManager_t113C411246F44979634E6BAF9F091F2FF48303D7* __this, Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___value0, const RuntimeMethod* method) ;
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_ResetPlayerWins_mE98A6AA50FF95F26F9F2C053E7CE8F922889D883 (GameManager_t113C411246F44979634E6BAF9F091F2FF48303D7* __this, const RuntimeMethod* method) ;
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_GoToLobby_m9D1BBD05C9D00E36FD2EA17D06D472C7E74BCCA5 (GameManager_t113C411246F44979634E6BAF9F091F2FF48303D7* __this, const RuntimeMethod* method) ;
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CJoinedMatchU3Ed__21_MoveNext_m93BB4AECAD9C83A26D0B7069F735824B78D5116D (U3CJoinedMatchU3Ed__21_t072DACC8A879EB04B160041493C3C2A8BE3C9DA8* __this, const RuntimeMethod* method) ;
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CJoinedMatchU3Ed__21_SetStateMachine_m5E8867C6BCA345C3F083FD066517FEB34554B174 (U3CJoinedMatchU3Ed__21_t072DACC8A879EB04B160041493C3C2A8BE3C9DA8* __this, RuntimeObject* ___stateMachine0, const RuntimeMethod* method) ;
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Color__ctor_m3786F0D6E510D9CFA544523A955870BD2A514C8C_inline (Color_tD001788D726C3A7F1379BEED0260B9591F440C1F* __this, float ___r0, float ___g1, float ___b2, float ___a3, const RuntimeMethod* method) ;
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline (float ___value0, const RuntimeMethod* method) ;
 inline void List_1_AddWithResize_m79A9BF770BEF9C06BE40D5401E55E375F2726CC4 (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, RuntimeObject* ___item0, const RuntimeMethod* method)
@@ -13009,14 +13005,30 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MultiplayerLeaveMatchButton_Awake_m12D41
 }
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MultiplayerLeaveMatchButton_LeaveMatch_m63CF0BB9A7783151DA3755C423B5A36BAE91F255 (MultiplayerLeaveMatchButton_t194E0E72E0B9AF400BD73688B2EB9B692F3B79D4* __this, const RuntimeMethod* method) 
 {
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralD93B7A56B0DE23642CBB2CDED8C3F5AD26F30AD1);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
 	{
 		Button_t6786514A57F7AFDEE5431112FEA0CAB24F5AE098* L_0 = __this->___button_5;
 		NullCheck(L_0);
 		Selectable_set_interactable_m8DD581C1AD99B2EFA8B3EE9AF69EDDF26688B492(L_0, (bool)0, NULL);
-		MultiplayerManager_tA733035520C96326065E1DDF6415C7B1DF1368BC* L_1;
-		L_1 = MultiplayerManager_get_Instance_m083B9E6C351EA9C5445CD517403A6E1FCE0AC7BA_inline(NULL);
-		NullCheck(L_1);
-		MultiplayerManager_LeaveMatchAsync_m3527BD71225D996B7CDBFC694D2A2038EC33A5A8(L_1, NULL);
+		int32_t L_1;
+		L_1 = PlayerPrefs_GetInt_m4D859DBEABAD3FB406C94485A0B2638A0C7F2987(_stringLiteralD93B7A56B0DE23642CBB2CDED8C3F5AD26F30AD1, NULL);
+		V_0 = L_1;
+		int32_t L_2 = V_0;
+		MultiplayerManager_tA733035520C96326065E1DDF6415C7B1DF1368BC* L_3;
+		L_3 = MultiplayerManager_get_Instance_m083B9E6C351EA9C5445CD517403A6E1FCE0AC7BA_inline(NULL);
+		NullCheck(L_3);
+		int32_t L_4 = L_3->___ValueHXDInGameTurn_21;
+		PlayerPrefs_SetInt_m956D3E2DB966F20CF42F842880DDF9E2BE94D948(_stringLiteralD93B7A56B0DE23642CBB2CDED8C3F5AD26F30AD1, ((int32_t)il2cpp_codegen_add(L_2, L_4)), NULL);
+		MultiplayerManager_tA733035520C96326065E1DDF6415C7B1DF1368BC* L_5;
+		L_5 = MultiplayerManager_get_Instance_m083B9E6C351EA9C5445CD517403A6E1FCE0AC7BA_inline(NULL);
+		NullCheck(L_5);
+		MultiplayerManager_LeaveMatchAsync_m3527BD71225D996B7CDBFC694D2A2038EC33A5A8(L_5, NULL);
 		return;
 	}
 }
@@ -23044,89 +23056,6 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager__ctor_mFCFE484C1743B434A4C20
 		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
 		return;
 	}
-}
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Winvalid-offsetof"
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CJoinedMatchU3Ed__21_MoveNext_m93BB4AECAD9C83A26D0B7069F735824B78D5116D (U3CJoinedMatchU3Ed__21_t072DACC8A879EB04B160041493C3C2A8BE3C9DA8* __this, const RuntimeMethod* method) 
-{
-	GameManager_t113C411246F44979634E6BAF9F091F2FF48303D7* V_0 = NULL;
-	Exception_t* V_1 = NULL;
-	il2cpp::utils::ExceptionSupportStack<RuntimeObject*, 1> __active_exceptions;
-	{
-		GameManager_t113C411246F44979634E6BAF9F091F2FF48303D7* L_0 = __this->___U3CU3E4__this_2;
-		V_0 = L_0;
-	}
-	try
-	{
-		GameManager_t113C411246F44979634E6BAF9F091F2FF48303D7* L_1 = V_0;
-		NullCheck(L_1);
-		GameManager_ResetPlayerWins_mE98A6AA50FF95F26F9F2C053E7CE8F922889D883(L_1, NULL);
-		GameManager_t113C411246F44979634E6BAF9F091F2FF48303D7* L_2 = V_0;
-		NullCheck(L_2);
-		GameManager_GoToLobby_m9D1BBD05C9D00E36FD2EA17D06D472C7E74BCCA5(L_2, NULL);
-		goto IL_002c;
-	}
-	catch(Il2CppExceptionWrapper& e)
-	{
-		if(il2cpp_codegen_class_is_assignable_from (((RuntimeClass*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&Exception_t_il2cpp_TypeInfo_var)), il2cpp_codegen_object_class(e.ex)))
-		{
-			IL2CPP_PUSH_ACTIVE_EXCEPTION(e.ex);
-			goto CATCH_0015;
-		}
-		throw e;
-	}
-
-CATCH_0015:
-	{
-		V_1 = ((Exception_t*)IL2CPP_GET_ACTIVE_EXCEPTION(Exception_t*));
-		__this->___U3CU3E1__state_0 = ((int32_t)-2);
-		AsyncVoidMethodBuilder_t253E37B63E7E7B504878AE6563347C147F98EF2D* L_3 = (&__this->___U3CU3Et__builder_1);
-		Exception_t* L_4 = V_1;
-		AsyncVoidMethodBuilder_SetException_mD9A6F5D1A99A62AC9DF322901BFDE05193CB177B(L_3, L_4, NULL);
-		IL2CPP_POP_ACTIVE_EXCEPTION();
-		goto IL_003f;
-	}
-
-IL_002c:
-	{
-		__this->___U3CU3E1__state_0 = ((int32_t)-2);
-		AsyncVoidMethodBuilder_t253E37B63E7E7B504878AE6563347C147F98EF2D* L_5 = (&__this->___U3CU3Et__builder_1);
-		AsyncVoidMethodBuilder_SetResult_m008490FDF057D5F5D871F537C7A58BE36027F3DC(L_5, NULL);
-	}
-
-IL_003f:
-	{
-		return;
-	}
-}
-IL2CPP_EXTERN_C  void U3CJoinedMatchU3Ed__21_MoveNext_m93BB4AECAD9C83A26D0B7069F735824B78D5116D_AdjustorThunk (RuntimeObject* __this, const RuntimeMethod* method)
-{
-	U3CJoinedMatchU3Ed__21_t072DACC8A879EB04B160041493C3C2A8BE3C9DA8* _thisAdjusted;
-	int32_t _offset = 1;
-	_thisAdjusted = reinterpret_cast<U3CJoinedMatchU3Ed__21_t072DACC8A879EB04B160041493C3C2A8BE3C9DA8*>(__this + _offset);
-	U3CJoinedMatchU3Ed__21_MoveNext_m93BB4AECAD9C83A26D0B7069F735824B78D5116D(_thisAdjusted, method);
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CJoinedMatchU3Ed__21_SetStateMachine_m5E8867C6BCA345C3F083FD066517FEB34554B174 (U3CJoinedMatchU3Ed__21_t072DACC8A879EB04B160041493C3C2A8BE3C9DA8* __this, RuntimeObject* ___stateMachine0, const RuntimeMethod* method) 
-{
-	{
-		AsyncVoidMethodBuilder_t253E37B63E7E7B504878AE6563347C147F98EF2D* L_0 = (&__this->___U3CU3Et__builder_1);
-		RuntimeObject* L_1 = ___stateMachine0;
-		AsyncVoidMethodBuilder_SetStateMachine_m48640FB81C34D4C2B5A5BBA7F5AE17DC50BF1A25(L_0, L_1, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C  void U3CJoinedMatchU3Ed__21_SetStateMachine_m5E8867C6BCA345C3F083FD066517FEB34554B174_AdjustorThunk (RuntimeObject* __this, RuntimeObject* ___stateMachine0, const RuntimeMethod* method)
-{
-	U3CJoinedMatchU3Ed__21_t072DACC8A879EB04B160041493C3C2A8BE3C9DA8* _thisAdjusted;
-	int32_t _offset = 1;
-	_thisAdjusted = reinterpret_cast<U3CJoinedMatchU3Ed__21_t072DACC8A879EB04B160041493C3C2A8BE3C9DA8*>(__this + _offset);
-	U3CJoinedMatchU3Ed__21_SetStateMachine_m5E8867C6BCA345C3F083FD066517FEB34554B174(_thisAdjusted, ___stateMachine0, method);
 }
 #ifdef __clang__
 #pragma clang diagnostic pop
