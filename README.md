@@ -1,7 +1,7 @@
 # Dice War
 Ninja Battle is a deterministic multiplayer online game made in Unity that implements basic rollback, intended for use as a example project of different technologies that [Nakama](https://heroiclabs.com/) offers.
 
-Genre: Action PvP
+Genre: Puzzle PvP
 
 Players: 2 players
 
@@ -20,8 +20,9 @@ Client logic: Send inputs on a deterministic simulation and implement a simple r
 Gameplay: You play as a ninja that has to battle against other player-controlled ninjas. When a ninja moves, they leave behind a caltrops path that makes the terrain deadly even for themselves. The ninjas cannot stop moving. You can only control the direction that the ninja is moving in. A single touch to the caltrops eliminates you. The ninja can prevent the damage by jumping over the caltrops automatically. If the ninja runs against a wall or falls into caltrops, he is eliminated instantly. If two ninjas run into each other, both are eliminated.
 
 ## Screenshots
-![image](https://github.com/Mehrdadgame/NakamaTurnBase/blob/main/Images/1.PNG)
+![image](https://github.com/Mehrdadgame/NakamaTurnBase/blob/main/TurnBaseGame/Assets/Sprite/dice%2066E.jpg )
 
+![image](https://github.com/Mehrdadgame/NakamaTurnBase/blob/main/TurnBaseGame/Assets/Sprite/dice%2066D.jpg )
 
 ## Feel free to contribute
 This is an open source project, all contributions are welcome, if you want to contribute you can create and issue first and we can discuss the changes or the features you want to add in there.
