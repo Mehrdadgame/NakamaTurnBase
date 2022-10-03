@@ -48,6 +48,7 @@ public class UiManager : MonoBehaviour
     public Animator StickerShow;
     public Image StickerOpp;
     public SpriteAtlas AllAssets;
+    public Color colroParticlewhite;
     private void Start()
     {
         instance = this;
@@ -187,11 +188,17 @@ public class UiManager : MonoBehaviour
         {
             opp.SpriteDice.transform.parent.gameObject.SetActive(false);
             opp.ValueTile = 0;
+            opp.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = opp.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
         }
         foreach (var me in tileDataMe)
         {
             me.isLock = false;
             me.ValueTile = 0;
+            me.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = me.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
             me.SpriteDice.transform.parent.gameObject.SetActive(false);
         }
         ScoreTextMe.text = "0";
@@ -280,6 +287,9 @@ public class UiManager : MonoBehaviour
         clone.SpriteDice.sprite = null;
         clone.ValueTile = 0;
         clone.SpriteDice.transform.parent.gameObject.SetActive(false);
+        clone.GetComponentInChildren<ParticleSystem>().Stop();
+        ParticleSystem.MainModule settings = clone.GetComponentInChildren<ParticleSystem>().main;
+        settings.startColor = new ParticleSystem.MinMaxGradient(Color.white);
         RowSum();
     }
 
@@ -290,6 +300,9 @@ public class UiManager : MonoBehaviour
         meCell.SpriteDice.sprite = null;
         meCell.ValueTile = 0;
         meCell.isLock = false;
+        meCell.GetComponentInChildren<ParticleSystem>().Stop();
+        ParticleSystem.MainModule settings = meCell.GetComponentInChildren<ParticleSystem>().main;
+        settings.startColor = new ParticleSystem.MinMaxGradient(Color.white);
         meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
         RowSum();
     }

@@ -1003,6 +1003,15 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CanvasRenderer_Clear_m496D522F1DBD103741
 	_il2cpp_icall_func = (CanvasRenderer_Clear_m496D522F1DBD1037417E470CF2D4D9FD22F68E81_ftn)il2cpp_codegen_resolve_icall ("UnityEngine.CanvasRenderer::Clear()");
 	_il2cpp_icall_func(__this);
 }
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float CanvasRenderer_GetInheritedAlpha_m55E826F02D368D3510AE8B2EE42729CF167127F7 (CanvasRenderer_tAB9A55A976C4E3B2B37D0CE5616E5685A8B43860* __this, const RuntimeMethod* method) 
+{
+	typedef float (*CanvasRenderer_GetInheritedAlpha_m55E826F02D368D3510AE8B2EE42729CF167127F7_ftn) (CanvasRenderer_tAB9A55A976C4E3B2B37D0CE5616E5685A8B43860*);
+	static CanvasRenderer_GetInheritedAlpha_m55E826F02D368D3510AE8B2EE42729CF167127F7_ftn _il2cpp_icall_func;
+	if (!_il2cpp_icall_func)
+	_il2cpp_icall_func = (CanvasRenderer_GetInheritedAlpha_m55E826F02D368D3510AE8B2EE42729CF167127F7_ftn)il2cpp_codegen_resolve_icall ("UnityEngine.CanvasRenderer::GetInheritedAlpha()");
+	float icallRetVal = _il2cpp_icall_func(__this);
+	return icallRetVal;
+}
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CanvasRenderer_SetMaterial_m445BACF01EF1997CBFCBB79AB64E09AF39860196 (CanvasRenderer_tAB9A55A976C4E3B2B37D0CE5616E5685A8B43860* __this, Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ___material0, Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700* ___texture1, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;

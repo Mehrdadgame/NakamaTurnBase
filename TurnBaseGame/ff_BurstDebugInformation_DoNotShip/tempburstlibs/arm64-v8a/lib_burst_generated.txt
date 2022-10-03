@@ -150,6 +150,7 @@ Library: lib_burst_generated
 --root-assembly=C:\NakamaEx\ninja-battle-nakama\TurnBaseGame\Temp\StagingArea\Data\Managed\Unity.TextMeshPro.dll
 --root-assembly=C:\NakamaEx\ninja-battle-nakama\TurnBaseGame\Temp\StagingArea\Data\Managed\NakamaEditor.dll
 --root-assembly=C:\NakamaEx\ninja-battle-nakama\TurnBaseGame\Temp\StagingArea\Data\Managed\Unity.Services.Core.Scheduler.dll
+--root-assembly=C:\NakamaEx\ninja-battle-nakama\TurnBaseGame\Temp\StagingArea\Data\Managed\Coffee.UIParticle.dll
 --root-assembly=C:\NakamaEx\ninja-battle-nakama\TurnBaseGame\Temp\StagingArea\Data\Managed\Unity.2D.IK.Runtime.dll
 --root-assembly=C:\NakamaEx\ninja-battle-nakama\TurnBaseGame\Temp\StagingArea\Data\Managed\Unity.Services.Core.Analytics.dll
 --root-assembly=C:\NakamaEx\ninja-battle-nakama\TurnBaseGame\Temp\StagingArea\Data\Managed\Unity.Mathematics.dll

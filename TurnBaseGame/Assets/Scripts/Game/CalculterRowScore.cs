@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Drawing.Imaging;
 
 public class CalculterRowScore : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class CalculterRowScore : MonoBehaviour
     public List<ClickInCell> clickInCells1 = new List<ClickInCell>();
     public List<ClickInCell> clickInCells2 = new List<ClickInCell>();
 
+
+    public Color colorParticle;
     private void Start()
     {
         instance = this;
@@ -27,6 +30,23 @@ public class CalculterRowScore : MonoBehaviour
                                             .ToDictionary(x => x.Key, x => x.Count());
 
 
+        var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
+        foreach (var item in placeCell)
+        {
+
+            foreach (var par in item.Value)
+            {
+                if (par.ValueTile > 0)
+                {
+                    par.GetComponentInChildren<ParticleSystem>().Play();
+                    ParticleSystem.MainModule settings = par.GetComponentInChildren<ParticleSystem>().main;
+                    settings.startColor = new ParticleSystem.MinMaxGradient(colorParticle);
+
+                }
+            }
+
+        }
+
         foreach (var item in freqMap)
         {
 
@@ -35,6 +55,7 @@ public class CalculterRowScore : MonoBehaviour
             {
 
                 return item.Key * 9;
+
 
             }
             else if (item.Value == 2)
@@ -63,24 +84,37 @@ public class CalculterRowScore : MonoBehaviour
                                             .Where(g => g.Count() > 1)
                                             .ToDictionary(x => x.Key, x => x.Count());
 
+        var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
+        foreach (var item in placeCell)
+        {
+
+            foreach (var par in item.Value)
+            {
+                if (par.isLock == true)
+                {
+                    par.GetComponentInChildren<ParticleSystem>().Play();
+                    ParticleSystem.MainModule settings = par.GetComponentInChildren<ParticleSystem>().main;
+                    settings.startColor = new ParticleSystem.MinMaxGradient(colorParticle);
+
+                }
+            }
+
+        }
+
 
         foreach (var item in freqMap)
         {
 
-
             if (item.Value > 2)
             {
-
                 return item.Key * 9;
 
             }
             else if (item.Value == 2)
             {
-
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
 
                 total = item.Key * 4;
-
 
                 return total + dif[0].Key;
 
