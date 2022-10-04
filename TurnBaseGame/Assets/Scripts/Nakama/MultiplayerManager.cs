@@ -42,7 +42,7 @@ namespace Nakama.Helpers
 
         public static MultiplayerManager Instance { get; private set; } = null;
         public IUserPresence Self { get => match == null ? null : match.Self; }
-        public IUserPresence Opp;   
+        public IUserPresence Opp;
         public bool IsOnMatch { get => match != null; }
         public int ValueHXDInGameTurn;
         public NakamaUserManager players;
@@ -52,26 +52,13 @@ namespace Nakama.Helpers
 
         private void Awake()
         {
-           
+
             Instance = this;
-        }
-
-        private void OnEnable()
-        {
-          //  InvokeRepeating(nameof(LocalTickPassed), SendRate, SendRate);
-
-        }
-
-
-
-        private void LocalTickPassed()
-        {
-            onLocalTick?.Invoke();
         }
 
         public async void JoinMatchAsync()
         {
-          
+
             PlayerPrefs.DeleteKey("Opp");
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             NakamaManager.Instance.Socket.ReceivedMatchState += Receive;
@@ -98,8 +85,6 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onDisconnected -= Disconnected;
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             await NakamaManager.Instance.Socket.LeaveMatchAsync(match);
-
-
             match = null;
             onMatchLeave?.Invoke();
         }
@@ -115,7 +100,7 @@ namespace Nakama.Helpers
 
             NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, json);
         }
-        public void Send(Code code,object data = null, IEnumerable<IUserPresence> player =null)
+        public void Send(Code code, object data = null, IEnumerable<IUserPresence> player = null)
         {
             if (match == null)
                 return;
@@ -138,7 +123,7 @@ namespace Nakama.Helpers
             NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, bytes);
         }
 
-        private  void Receive(IMatchState newState)
+        private void Receive(IMatchState newState)
         {
             if (enableLog)
             {
@@ -147,7 +132,7 @@ namespace Nakama.Helpers
                 LogData(ReceivedDataLog, newState.OpCode, json);
             }
 
-          
+
             MultiplayerMessage multiplayerMessage = new MultiplayerMessage(newState);
             if (onReceiveData.ContainsKey(multiplayerMessage.DataCode))
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);

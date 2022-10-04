@@ -13,7 +13,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
     public Image SpriteDice;
 
     /// <summary>
-    /// 
+    /// Enter Pointerdown in cell 
     /// </summary>
     /// <param name="eventData"></param>
     public void OnPointerDown(PointerEventData eventData)
@@ -26,7 +26,6 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
 
     public void SetDataInCell()
     {
-
         MultiplayerManager.Instance.SendTurn(name, GameManager.Instance.diceRoller.currrentDie, numberLine, numberRow);
         var tile = SpriteDice.transform.parent;
         tile.gameObject.SetActive(true);

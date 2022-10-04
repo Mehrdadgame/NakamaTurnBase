@@ -289,10 +289,14 @@ public class UiManager : MonoBehaviour
         clone.SpriteDice.transform.parent.gameObject.SetActive(false);
         clone.GetComponentInChildren<ParticleSystem>().Stop();
         ParticleSystem.MainModule settings = clone.GetComponentInChildren<ParticleSystem>().main;
-        settings.startColor = new ParticleSystem.MinMaxGradient(Color.white);
+        settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
         RowSum();
     }
-
+    /// <summary>
+    /// Set data iv row 
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <param name="arg2"></param>
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
 
@@ -302,11 +306,14 @@ public class UiManager : MonoBehaviour
         meCell.isLock = false;
         meCell.GetComponentInChildren<ParticleSystem>().Stop();
         ParticleSystem.MainModule settings = meCell.GetComponentInChildren<ParticleSystem>().main;
-        settings.startColor = new ParticleSystem.MinMaxGradient(Color.white);
+        settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
         meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
         RowSum();
     }
-
+    /// <summary>
+    /// check data in turn player
+    /// </summary>
+    /// <param name="obj"></param>
     private void Instance_SetDataInTurn(DataPlayer obj)
     {
 

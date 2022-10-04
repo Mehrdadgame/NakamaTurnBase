@@ -774,11 +774,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: a76430d8-4f8e-4d0f-92dc-5313e7980985
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: DiceWar
+  organizationId: mehrdad-g
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

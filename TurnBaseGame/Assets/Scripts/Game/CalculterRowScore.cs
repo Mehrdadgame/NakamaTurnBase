@@ -53,10 +53,7 @@ public class CalculterRowScore : MonoBehaviour
 
             if (item.Value > 2)
             {
-
                 return item.Key * 9;
-
-
             }
             else if (item.Value == 2)
             {
@@ -95,7 +92,6 @@ public class CalculterRowScore : MonoBehaviour
                     par.GetComponentInChildren<ParticleSystem>().Play();
                     ParticleSystem.MainModule settings = par.GetComponentInChildren<ParticleSystem>().main;
                     settings.startColor = new ParticleSystem.MinMaxGradient(colorParticle);
-
                 }
             }
 

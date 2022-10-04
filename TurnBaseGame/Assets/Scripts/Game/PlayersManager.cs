@@ -92,7 +92,7 @@ namespace NinjaBattle.Game
             if (nameSticker.ID != multiplayerManager.Self.UserId)
             {
                 UiManager.instance.StickerOpp.GetComponent<Image>().sprite = UiManager.instance.AllAssets.GetSprite(nameSticker.StickerName);
-                //var e = UiManager.instance.StickerOpp.GetComponent<Image>().SetNativeSize();
+             
                 UiManager.instance.StickerOpp.GetComponent<Animator>().Play("StickerOpp", 0, 0);
 
 

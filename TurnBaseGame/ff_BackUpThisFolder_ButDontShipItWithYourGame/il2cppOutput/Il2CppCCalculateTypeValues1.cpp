@@ -31860,7 +31860,7 @@ struct U3CSendAsyncU3Ed__99_t7F65CEF5874E988C0C5867B0B6EA5E52FBF3DB22
 	TaskAwaiter_1_tE38072315F6A88FBFA6F29739C27EDE17D53E6B4 ___U3CU3Eu__4_13;
 };
 
-struct U3CJoinMatchAsyncU3Ed__36_t697578B4256E81A2F919AC94B26DA9CA512D82C6 
+struct U3CJoinMatchAsyncU3Ed__34_t35A3792CE3F815DA3EB80EF6E4E592E91A8F23A2 
 {
 	int32_t ___U3CU3E1__state_0;
 	AsyncVoidMethodBuilder_t253E37B63E7E7B504878AE6563347C147F98EF2D ___U3CU3Et__builder_1;
@@ -31869,7 +31869,7 @@ struct U3CJoinMatchAsyncU3Ed__36_t697578B4256E81A2F919AC94B26DA9CA512D82C6
 	TaskAwaiter_1_t590B6D90EDEF2CFADD40A0A53D030E1BD046A2AE ___U3CU3Eu__2_4;
 };
 
-struct U3CLeaveMatchAsyncU3Ed__38_t5CA2C9DE1BCAB033BB43600A264730CA42A4529C 
+struct U3CLeaveMatchAsyncU3Ed__36_t46351885F24704664302D6434648818538922FAC 
 {
 	int32_t ___U3CU3E1__state_0;
 	AsyncVoidMethodBuilder_t253E37B63E7E7B504878AE6563347C147F98EF2D ___U3CU3Et__builder_1;
@@ -44491,9 +44491,9 @@ const Il2CppTypeDefinitionSizes g_typeDefinitionSize8163 = { sizeof(MultiplayerL
 extern const Il2CppTypeDefinitionSizes g_typeDefinitionSize8164;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize8164 = { sizeof(int32_t)+ sizeof(RuntimeObject), sizeof(int32_t), 0, 0 };
 extern const Il2CppTypeDefinitionSizes g_typeDefinitionSize8165;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8165 = { sizeof(U3CJoinMatchAsyncU3Ed__36_t697578B4256E81A2F919AC94B26DA9CA512D82C6)+ sizeof(RuntimeObject), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8165 = { sizeof(U3CJoinMatchAsyncU3Ed__34_t35A3792CE3F815DA3EB80EF6E4E592E91A8F23A2)+ sizeof(RuntimeObject), -1, 0, 0 };
 extern const Il2CppTypeDefinitionSizes g_typeDefinitionSize8166;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8166 = { sizeof(U3CLeaveMatchAsyncU3Ed__38_t5CA2C9DE1BCAB033BB43600A264730CA42A4529C)+ sizeof(RuntimeObject), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8166 = { sizeof(U3CLeaveMatchAsyncU3Ed__36_t46351885F24704664302D6434648818538922FAC)+ sizeof(RuntimeObject), -1, 0, 0 };
 extern const Il2CppTypeDefinitionSizes g_typeDefinitionSize8167;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize8167 = { sizeof(MultiplayerManager_tA733035520C96326065E1DDF6415C7B1DF1368BC), -1, sizeof(MultiplayerManager_tA733035520C96326065E1DDF6415C7B1DF1368BC_StaticFields), 0 };
 extern const Il2CppTypeDefinitionSizes g_typeDefinitionSize8168;
