@@ -46,11 +46,12 @@ namespace Nakama.Helpers
         private void AutoLoad()
         {
             UpdateCollectionObjectsAsync(autoLoadObjects);
+          // 
         }
 
         public void UpdateCollectionObject(NakamaCollectionObject collectionObject)
         {
-            UpdateCollectionObjectsAsync(new List<NakamaCollectionObject>() { collectionObject });
+            UpdateCollectionObjectsAsync(new List<NakamaCollectionObject>() {collectionObject});
         }
 
         public void UpdateCollectionObjects(IEnumerable<NakamaCollectionObject> collectionObjects)
@@ -80,7 +81,8 @@ namespace Nakama.Helpers
                 storageObjectIds.Add(storageObjectId);
             }
 
-            var result = await NakamaManager.Instance.Client.ReadStorageObjectsAsync(NakamaManager.Instance.Session, storageObjectIds.ToArray<IApiReadStorageObjectId>());
+            var result = await NakamaManager.Instance.Client.ReadStorageObjectsAsync(NakamaManager.Instance.Session,
+                storageObjectIds.ToArray<IApiReadStorageObjectId>());
             foreach (IApiStorageObject storageObject in result.Objects)
             {
                 foreach (NakamaCollectionObject collectionObject in collectionObjects)
@@ -106,7 +108,9 @@ namespace Nakama.Helpers
                 Version = collectionObject.Version
             };
 
-            var objectIds = await NakamaManager.Instance.Client.WriteStorageObjectsAsync(NakamaManager.Instance.Session, new[] { writeStorageObject });
+            var objectIds =
+                await NakamaManager.Instance.Client.WriteStorageObjectsAsync(NakamaManager.Instance.Session,
+                    new[] {writeStorageObject});
             foreach (IApiStorageObjectAck storageObject in objectIds.Acks)
             {
                 if (storageObject.Key != collectionObject.Key)

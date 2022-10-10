@@ -48,12 +48,8 @@ namespace Nakama.Helpers
 
         private void OnApplicationQuit()
         {
-            if (socket != null)
-            {
-                socket.CloseAsync();
+            socket?.CloseAsync();
 
-            }
-                
         }
 
         public void LoginWithUdid()
@@ -93,6 +89,7 @@ namespace Nakama.Helpers
                 Debug.Log(exception);
                 onLoginFail?.Invoke();
             }
+            
         }
 
         public void LogOut()
@@ -103,6 +100,7 @@ namespace Nakama.Helpers
         private void Connected()
         {
             onConnected?.Invoke();
+           
         }
 
         private void Disconnected()

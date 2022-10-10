@@ -43,6 +43,7 @@ namespace Nakama.Helpers
         private void OnConnected()
         {
             onConnected?.Invoke();
+ 
         }
 
         private void OnDisconnected()

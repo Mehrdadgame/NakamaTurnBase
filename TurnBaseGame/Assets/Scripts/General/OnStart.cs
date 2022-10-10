@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace NinjaBattle.General
+namespace General
 {
     public class OnStart : MonoBehaviour
     {
         #region EVENTS
 
-        public UnityEvent onStart = null;
+        public UnityEvent onStart;
 
         #endregion
 

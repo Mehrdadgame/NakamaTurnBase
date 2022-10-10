@@ -21,9 +21,9 @@ namespace Nakama.Helpers
 
         public static NakamaUserManager Instance { get; private set; } = null;
         public bool LoadingFinished { get; private set; } = false;
-        public IApiUser User { get => account.User; }
-        public string Wallet { get => account.Wallet; }
-        public string DisplayName { get => account.User.DisplayName; }
+        public IApiUser User => account.User;
+        public string Wallet => account.Wallet;
+        public string DisplayName => account.User.DisplayName;
 
         #endregion
 
@@ -49,6 +49,7 @@ namespace Nakama.Helpers
             account = await NakamaManager.Instance.Client.GetAccountAsync(NakamaManager.Instance.Session);
             LoadingFinished = true;
             onLoaded?.Invoke();
+       
         }
 
         public async void UpdateDisplayName(string displayName)
@@ -58,10 +59,7 @@ namespace Nakama.Helpers
 
         public T GetWallet<T>()
         {
-            if (account == null || account.Wallet == null)
-                return default(T);
-
-            return account.Wallet.Deserialize<T>();
+            return account?.Wallet == null ? default(T) : account.Wallet.Deserialize<T>();
         }
 
         #endregion

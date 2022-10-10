@@ -218,7 +218,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.1994482, g: 0.509434, b: 0.2800388, a: 0}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -274,17 +274,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &658766818 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 33490675808999847, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
-  m_PrefabInstance: {fileID: 33490676809798314}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ce1d66538afa4436b5a2801ba03eebc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1368027443
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,10 +655,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 33490676637556200, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
-      propertyPath: connectionData
-      value: 
-      objectReference: {fileID: 11400000, guid: c132f79a14a6ddf4f8ab1b2f2b213729, type: 2}
+    - target: {fileID: 1959876945, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959876946, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
+      propertyPath: recordsPerPage
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 33490677032360848, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -718,20 +711,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Managers
       objectReference: {fileID: 0}
-    - target: {fileID: 33490677032360851, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
-      propertyPath: m_TagString
-      value: GameController
-      objectReference: {fileID: 0}
-    - target: {fileID: 33490677359399838, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
-      propertyPath: players
-      value: 
-      objectReference: {fileID: 658766818}
     - target: {fileID: 33490677359399838, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
       propertyPath: enableLog
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3448525726534906303, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
-      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

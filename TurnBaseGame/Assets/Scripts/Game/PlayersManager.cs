@@ -9,6 +9,9 @@ using UnityEngine.UI;
 
 namespace NinjaBattle.Game
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class PlayersManager : MonoBehaviour
     {
         #region FIELDS
