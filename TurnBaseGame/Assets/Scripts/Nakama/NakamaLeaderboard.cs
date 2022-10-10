@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Nakama
 {
-    
     public class NakamaLeaderboard : MonoBehaviour
     {
         [SerializeField] private int recordsPerPage = 10;
@@ -23,14 +22,22 @@ namespace Nakama
 
         public async void ShowGlobalLeaderboards(ISession session)
         {
-            Debug.Log(session.Username +" Username");
-            var result = await NakamaManager.Instance.Client.ListLeaderboardRecordsAsync(session, LeaderboardId);
-            Debug.Log(result.Records + "   rrrr");
-            foreach (var r in result.Records)
+            try
             {
-                var cell= Instantiate(UiManagerHome.instance.cellLeaderboard,UiManagerHome.instance.parentPos);
-                Debug.Log("{0}{1} r.Username, r.Score");
+                var result = await NakamaManager.Instance.Client.ListLeaderboardRecordsAsync(session, LeaderboardId);
+                Debug.Log(result.Records + "   rrrr");
+                foreach (var r in result.Records)
+                {
+                    var cell = Instantiate(UiManagerHome.instance.cellLeaderboard, UiManagerHome.instance.parentPos);
+                    Debug.Log($"{0}{1} r.Username, r.Score");
+                }
             }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                throw;
+            }
+         
         }
     }
 }

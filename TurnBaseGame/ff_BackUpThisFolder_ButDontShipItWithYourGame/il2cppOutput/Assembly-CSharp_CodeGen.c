@@ -728,6 +728,9 @@ extern void AotStubs_NakamaChatManager_op_Inequality_m5A5ABB1B2D0F89CA7AC093FC0B
 extern void AotStubs_ClickToStickers_op_Implicit_mBA309D76C9F3AA8A2527B45389D633023DB77E21 (void);
 extern void AotStubs_ClickToStickers_op_Equality_mC505A8EA4E8A0867E34EB842F090DCE12EB2FDB8 (void);
 extern void AotStubs_ClickToStickers_op_Inequality_m34F1F66416FA6CB26E917C5BB28DB9AA3C6C13C9 (void);
+extern void AotStubs_Nakama_NakamaLeaderboard_op_Implicit_m412E6AC68817FB4AECEB6A163DC31E7BA38A866B (void);
+extern void AotStubs_Nakama_NakamaLeaderboard_op_Equality_m3724B028CE5A81134580BDB2D1A78823152593DB (void);
+extern void AotStubs_Nakama_NakamaLeaderboard_op_Inequality_mF9A6FF955F510D402C5FE689691A7A20889D3FBC (void);
 extern void AotStubs_Nakama_Helpers_MultiplayerIdentity_op_Implicit_mCB55B1B0920F40D39614CD2E093B6E4DDEC900EC (void);
 extern void AotStubs_Nakama_Helpers_MultiplayerIdentity_op_Equality_m18DEC39052B6271049634D4030CB3F1B1A445658 (void);
 extern void AotStubs_Nakama_Helpers_MultiplayerIdentity_op_Inequality_m99E4DEB0BF72BE1F1E9186C37C17D72A2187F1E6 (void);
@@ -767,6 +770,12 @@ extern void AotStubs_Nakama_Helpers_NakamaStorageManager_op_Inequality_mE803F591
 extern void AotStubs_Nakama_Helpers_NakamaUserManager_op_Implicit_m0D7B419B58F6EBD511CA35D52A2BE0C53E48FADA (void);
 extern void AotStubs_Nakama_Helpers_NakamaUserManager_op_Equality_m13047FF037373C94886352E62A80470E1F6D7828 (void);
 extern void AotStubs_Nakama_Helpers_NakamaUserManager_op_Inequality_mAB7760100CA11C95D2D49B2977C31B48E3574840 (void);
+extern void AotStubs_General_OnStart_op_Implicit_mF1C2FE91C4384BB5B4DA692F8311C884DD321358 (void);
+extern void AotStubs_General_OnStart_op_Equality_m8BCF61D6DF828ACB9A34828AED559750A90BC077 (void);
+extern void AotStubs_General_OnStart_op_Inequality_m8BBC65E5D02C62974E8671104D49C62D922BFB0D (void);
+extern void AotStubs_Game_UiManagerHome_op_Implicit_m36FA4218A3F0F2CB4B0A57BB647A931A0A464F58 (void);
+extern void AotStubs_Game_UiManagerHome_op_Equality_mF646023705B9D7B083EA0CDEFEAC82809EED5C6F (void);
+extern void AotStubs_Game_UiManagerHome_op_Inequality_m1DA3189D48351B0F0B5EE52598D7F9FA141D4771 (void);
 extern void AotStubs_NinjaBattle_General_AudioManager_op_Implicit_mEC68CBCA6C4F84A424465DBE97AD265DB1E01CD4 (void);
 extern void AotStubs_NinjaBattle_General_AudioManager_op_Equality_mBC6B65D7E97F3AF0173E0FCB9489C3586A47F339 (void);
 extern void AotStubs_NinjaBattle_General_AudioManager_op_Inequality_m0121C01B1E829B27004699171A2EC43C0944DBF2 (void);
@@ -782,9 +791,6 @@ extern void AotStubs_NinjaBattle_General_MusicPlay_op_Inequality_m46BDD6CB110D59
 extern void AotStubs_NinjaBattle_General_MusicStop_op_Implicit_m5D38631D66D2C8F71649CD2AE3BCF40D41A7A1A6 (void);
 extern void AotStubs_NinjaBattle_General_MusicStop_op_Equality_mC2A000E54BD83998B6557BF9D41A0A78AEE2E6D0 (void);
 extern void AotStubs_NinjaBattle_General_MusicStop_op_Inequality_m6A996C0185488BDC4363535704164E942A52F21C (void);
-extern void AotStubs_NinjaBattle_General_OnStart_op_Implicit_mB1698CD0D133452AEF9C005BA658192AE4E7C705 (void);
-extern void AotStubs_NinjaBattle_General_OnStart_op_Equality_mCA0BED059D98807F6240593F03D3BBF707D09A30 (void);
-extern void AotStubs_NinjaBattle_General_OnStart_op_Inequality_mCD508B015356890292A1C33EC9112C5171188801 (void);
 extern void AotStubs_NinjaBattle_General_PlayerPortrait_op_Implicit_m58E44AE5EA5E4150DF94D7DD85811D1D4D0A78B0 (void);
 extern void AotStubs_NinjaBattle_General_PlayerPortrait_op_Equality_m62BA5C2EE8F39794EC9C7B36FD2328E743AB2C6A (void);
 extern void AotStubs_NinjaBattle_General_PlayerPortrait_op_Inequality_mEF64FA752358BF21585F2B3C7EF83B6D8517120D (void);
@@ -993,6 +999,11 @@ extern void AotStubs_UnityEngine_EventSystems_PhysicsRaycaster_op_Implicit_m59AD
 extern void AotStubs_UnityEngine_EventSystems_PhysicsRaycaster_op_Equality_m30C5C7702A36F2BAEEF9EF82E6F8425500AFAFB9 (void);
 extern void AotStubs_UnityEngine_EventSystems_PhysicsRaycaster_op_Inequality_m5CF222965746AAF9CE984589B2B487C9CC9B0F03 (void);
 extern void AotStubs__ctor_mD8E1D4EB5BE3B72AE9FD29C595BB7C9A05734676 (void);
+extern void NakamaLeaderboard_Awake_m77EE956813DA9016E05609F31899083306BD12A8 (void);
+extern void NakamaLeaderboard_ShowGlobalLeaderboards_m2845DF734BCD8CC50E8710F472EBA523DD8EF2EC (void);
+extern void NakamaLeaderboard__ctor_m8FB1A0739A4B630DBEAD0A095019AE373FD881E1 (void);
+extern void U3CShowGlobalLeaderboardsU3Ed__4_MoveNext_m29343B1B051D82661D8292A363EA6CBAD1CA4DB4 (void);
+extern void U3CShowGlobalLeaderboardsU3Ed__4_SetStateMachine_m0462EF4B03988F2A0B7CA6883D935077DA1A3DEF (void);
 extern void JSONExtensions_Serialize_m12AC9F43C7FAF475DC1485D0615A7651F1518824 (void);
 extern void JSONExtensions_Deserialize_mE6972181E4106264E354BBEF2C5B185B6595C9D8 (void);
 extern void MultiplayerIdentity_get_Id_m0130495FB2A21F524D9482A72B03F491DDF23E03 (void);
@@ -1168,6 +1179,11 @@ extern void UserPresence_set_Username_mBD33A09CBE814AFDF8EAEB63D45855CA5A42B7FF 
 extern void UserPresence_get_UserId_m0D5291206E5CC3B0E90C2F9CC3AAC028CFFEC4E9 (void);
 extern void UserPresence_set_UserId_m4923CC28E3A2F1FF98B42716BE2F0E3A723E72E4 (void);
 extern void UserPresence__ctor_mFC217C60C1866EE63FC247CF1D3F90CF602C22C4 (void);
+extern void OnStart_Start_m5AA6B1E3284ED45313F3F6B3380D370BB423E6AA (void);
+extern void OnStart__ctor_mC62153F69443B8D39BD3FEE6F3804370E1BE4F93 (void);
+extern void UiManagerHome_Awake_m8923F9945E049999EFE9077C7E4F7CA400F697DA (void);
+extern void UiManagerHome_GetLeaderboard_m5EF8001C87B3BCA21356FC9048F3C6BE327EAE03 (void);
+extern void UiManagerHome__ctor_m307638316F447184A817CE2D9979818827083336 (void);
 extern void AudioManager_get_Instance_m1893E002285B089F1044EA4F188422EB85D2CC8E (void);
 extern void AudioManager_set_Instance_m7F1B5B4285E65287490DAAC64BA8FCDCC72C9C5B (void);
 extern void AudioManager_Awake_mEE6B3EC5A4DC4314F6295232A98210971EE0E015 (void);
@@ -1203,8 +1219,6 @@ extern void MusicPlay_Start_m145F20AF0E8B0ED7FC66AA5469BEE1E4942DD4C1 (void);
 extern void MusicPlay__ctor_m1A2A228D00C418EFB856757A7A98C70379434537 (void);
 extern void MusicStop_Start_m1D27D79A9DC65232CF33BD2A8BB303E2287848E5 (void);
 extern void MusicStop__ctor_m05CAC9B07C1A9EC4BBA847B6305CA89BD9EE02FE (void);
-extern void OnStart_Start_m9F9747C6317C5A4FC6D2932ACB6519CD5078719F (void);
-extern void OnStart__ctor_mE6348F1EF8CBB5D2FEAFA9257DD02AA5A9FC2618 (void);
 extern void PlayerPortrait_get_PlayerNumber_mE8896E8193051D91A065071928D047036E4772F3 (void);
 extern void PlayerPortrait_set_PlayerNumber_mB142C14E6A44ACC96365E2E87D72AE25991A5C08 (void);
 extern void PlayerPortrait_Awake_m87AB240AC28E6BEF723119A6E55C2CE58ADA25E9 (void);
@@ -1455,7 +1469,7 @@ extern void PresenceData__ctor_m11A5A6D334B7D6DC03A2B0ACE4EB23E484ACEFAE (void);
 extern void SpawnPoint_get_Coordinates_m4157BB9BFCB434D4973738C5CA390C3ED3484F9B (void);
 extern void SpawnPoint_get_Direction_mDEFBAEFA34B6BA9FB4EA7E501B09DB7973EB7F1B (void);
 extern void SpawnPoint__ctor_mE819E86968E6AFE8B8415F82E8EB108905AC3A05 (void);
-static Il2CppMethodPointer s_methodPointers[1458] = 
+static Il2CppMethodPointer s_methodPointers[1472] = 
 {
 	switch_scenes_Start_m408E146860C46D6B22E4E6ABC81671C0912CC34C,
 	switch_scenes_Update_mAC546178BA30B60EC4402B796BDB1DF38690FC64,
@@ -2178,6 +2192,9 @@ static Il2CppMethodPointer s_methodPointers[1458] =
 	AotStubs_ClickToStickers_op_Implicit_mBA309D76C9F3AA8A2527B45389D633023DB77E21,
 	AotStubs_ClickToStickers_op_Equality_mC505A8EA4E8A0867E34EB842F090DCE12EB2FDB8,
 	AotStubs_ClickToStickers_op_Inequality_m34F1F66416FA6CB26E917C5BB28DB9AA3C6C13C9,
+	AotStubs_Nakama_NakamaLeaderboard_op_Implicit_m412E6AC68817FB4AECEB6A163DC31E7BA38A866B,
+	AotStubs_Nakama_NakamaLeaderboard_op_Equality_m3724B028CE5A81134580BDB2D1A78823152593DB,
+	AotStubs_Nakama_NakamaLeaderboard_op_Inequality_mF9A6FF955F510D402C5FE689691A7A20889D3FBC,
 	AotStubs_Nakama_Helpers_MultiplayerIdentity_op_Implicit_mCB55B1B0920F40D39614CD2E093B6E4DDEC900EC,
 	AotStubs_Nakama_Helpers_MultiplayerIdentity_op_Equality_m18DEC39052B6271049634D4030CB3F1B1A445658,
 	AotStubs_Nakama_Helpers_MultiplayerIdentity_op_Inequality_m99E4DEB0BF72BE1F1E9186C37C17D72A2187F1E6,
@@ -2217,6 +2234,12 @@ static Il2CppMethodPointer s_methodPointers[1458] =
 	AotStubs_Nakama_Helpers_NakamaUserManager_op_Implicit_m0D7B419B58F6EBD511CA35D52A2BE0C53E48FADA,
 	AotStubs_Nakama_Helpers_NakamaUserManager_op_Equality_m13047FF037373C94886352E62A80470E1F6D7828,
 	AotStubs_Nakama_Helpers_NakamaUserManager_op_Inequality_mAB7760100CA11C95D2D49B2977C31B48E3574840,
+	AotStubs_General_OnStart_op_Implicit_mF1C2FE91C4384BB5B4DA692F8311C884DD321358,
+	AotStubs_General_OnStart_op_Equality_m8BCF61D6DF828ACB9A34828AED559750A90BC077,
+	AotStubs_General_OnStart_op_Inequality_m8BBC65E5D02C62974E8671104D49C62D922BFB0D,
+	AotStubs_Game_UiManagerHome_op_Implicit_m36FA4218A3F0F2CB4B0A57BB647A931A0A464F58,
+	AotStubs_Game_UiManagerHome_op_Equality_mF646023705B9D7B083EA0CDEFEAC82809EED5C6F,
+	AotStubs_Game_UiManagerHome_op_Inequality_m1DA3189D48351B0F0B5EE52598D7F9FA141D4771,
 	AotStubs_NinjaBattle_General_AudioManager_op_Implicit_mEC68CBCA6C4F84A424465DBE97AD265DB1E01CD4,
 	AotStubs_NinjaBattle_General_AudioManager_op_Equality_mBC6B65D7E97F3AF0173E0FCB9489C3586A47F339,
 	AotStubs_NinjaBattle_General_AudioManager_op_Inequality_m0121C01B1E829B27004699171A2EC43C0944DBF2,
@@ -2232,9 +2255,6 @@ static Il2CppMethodPointer s_methodPointers[1458] =
 	AotStubs_NinjaBattle_General_MusicStop_op_Implicit_m5D38631D66D2C8F71649CD2AE3BCF40D41A7A1A6,
 	AotStubs_NinjaBattle_General_MusicStop_op_Equality_mC2A000E54BD83998B6557BF9D41A0A78AEE2E6D0,
 	AotStubs_NinjaBattle_General_MusicStop_op_Inequality_m6A996C0185488BDC4363535704164E942A52F21C,
-	AotStubs_NinjaBattle_General_OnStart_op_Implicit_mB1698CD0D133452AEF9C005BA658192AE4E7C705,
-	AotStubs_NinjaBattle_General_OnStart_op_Equality_mCA0BED059D98807F6240593F03D3BBF707D09A30,
-	AotStubs_NinjaBattle_General_OnStart_op_Inequality_mCD508B015356890292A1C33EC9112C5171188801,
 	AotStubs_NinjaBattle_General_PlayerPortrait_op_Implicit_m58E44AE5EA5E4150DF94D7DD85811D1D4D0A78B0,
 	AotStubs_NinjaBattle_General_PlayerPortrait_op_Equality_m62BA5C2EE8F39794EC9C7B36FD2328E743AB2C6A,
 	AotStubs_NinjaBattle_General_PlayerPortrait_op_Inequality_mEF64FA752358BF21585F2B3C7EF83B6D8517120D,
@@ -2443,6 +2463,11 @@ static Il2CppMethodPointer s_methodPointers[1458] =
 	AotStubs_UnityEngine_EventSystems_PhysicsRaycaster_op_Equality_m30C5C7702A36F2BAEEF9EF82E6F8425500AFAFB9,
 	AotStubs_UnityEngine_EventSystems_PhysicsRaycaster_op_Inequality_m5CF222965746AAF9CE984589B2B487C9CC9B0F03,
 	AotStubs__ctor_mD8E1D4EB5BE3B72AE9FD29C595BB7C9A05734676,
+	NakamaLeaderboard_Awake_m77EE956813DA9016E05609F31899083306BD12A8,
+	NakamaLeaderboard_ShowGlobalLeaderboards_m2845DF734BCD8CC50E8710F472EBA523DD8EF2EC,
+	NakamaLeaderboard__ctor_m8FB1A0739A4B630DBEAD0A095019AE373FD881E1,
+	U3CShowGlobalLeaderboardsU3Ed__4_MoveNext_m29343B1B051D82661D8292A363EA6CBAD1CA4DB4,
+	U3CShowGlobalLeaderboardsU3Ed__4_SetStateMachine_m0462EF4B03988F2A0B7CA6883D935077DA1A3DEF,
 	JSONExtensions_Serialize_m12AC9F43C7FAF475DC1485D0615A7651F1518824,
 	NULL,
 	JSONExtensions_Deserialize_mE6972181E4106264E354BBEF2C5B185B6595C9D8,
@@ -2622,6 +2647,11 @@ static Il2CppMethodPointer s_methodPointers[1458] =
 	UserPresence_get_UserId_m0D5291206E5CC3B0E90C2F9CC3AAC028CFFEC4E9,
 	UserPresence_set_UserId_m4923CC28E3A2F1FF98B42716BE2F0E3A723E72E4,
 	UserPresence__ctor_mFC217C60C1866EE63FC247CF1D3F90CF602C22C4,
+	OnStart_Start_m5AA6B1E3284ED45313F3F6B3380D370BB423E6AA,
+	OnStart__ctor_mC62153F69443B8D39BD3FEE6F3804370E1BE4F93,
+	UiManagerHome_Awake_m8923F9945E049999EFE9077C7E4F7CA400F697DA,
+	UiManagerHome_GetLeaderboard_m5EF8001C87B3BCA21356FC9048F3C6BE327EAE03,
+	UiManagerHome__ctor_m307638316F447184A817CE2D9979818827083336,
 	AudioManager_get_Instance_m1893E002285B089F1044EA4F188422EB85D2CC8E,
 	AudioManager_set_Instance_m7F1B5B4285E65287490DAAC64BA8FCDCC72C9C5B,
 	AudioManager_Awake_mEE6B3EC5A4DC4314F6295232A98210971EE0E015,
@@ -2657,8 +2687,6 @@ static Il2CppMethodPointer s_methodPointers[1458] =
 	MusicPlay__ctor_m1A2A228D00C418EFB856757A7A98C70379434537,
 	MusicStop_Start_m1D27D79A9DC65232CF33BD2A8BB303E2287848E5,
 	MusicStop__ctor_m05CAC9B07C1A9EC4BBA847B6305CA89BD9EE02FE,
-	OnStart_Start_m9F9747C6317C5A4FC6D2932ACB6519CD5078719F,
-	OnStart__ctor_mE6348F1EF8CBB5D2FEAFA9257DD02AA5A9FC2618,
 	PlayerPortrait_get_PlayerNumber_mE8896E8193051D91A065071928D047036E4772F3,
 	PlayerPortrait_set_PlayerNumber_mB142C14E6A44ACC96365E2E87D72AE25991A5C08,
 	PlayerPortrait_Awake_m87AB240AC28E6BEF723119A6E55C2CE58ADA25E9,
@@ -2926,6 +2954,8 @@ extern void U3CLeaveChatU3Ed__5_MoveNext_m9EC9D3325C870F12F18CC6E76A7E6051271059
 extern void U3CLeaveChatU3Ed__5_SetStateMachine_mE242F175E53CF9686FC793C8DBB9A0F794B3CAEF_AdjustorThunk (void);
 extern void U3CSendMessagesU3Ed__4_MoveNext_mADF6ED2EF23D09D7918636A75251E8F9616C53BB_AdjustorThunk (void);
 extern void U3CSendMessagesU3Ed__4_SetStateMachine_mDC60ECD34441F84FE9BA1CD380E16193F51A0570_AdjustorThunk (void);
+extern void U3CShowGlobalLeaderboardsU3Ed__4_MoveNext_m29343B1B051D82661D8292A363EA6CBAD1CA4DB4_AdjustorThunk (void);
+extern void U3CShowGlobalLeaderboardsU3Ed__4_SetStateMachine_m0462EF4B03988F2A0B7CA6883D935077DA1A3DEF_AdjustorThunk (void);
 extern void U3CJoinMatchAsyncU3Ed__34_MoveNext_mE9BAEF2B2818D5533BA091E1AF59A4EB2D3AD7E5_AdjustorThunk (void);
 extern void U3CJoinMatchAsyncU3Ed__34_SetStateMachine_m476092F189A243C82C22DD32FE7621BBA30756F7_AdjustorThunk (void);
 extern void U3CLeaveMatchAsyncU3Ed__36_MoveNext_m41FC3FFC2F05C238632CD57D5415E51329ED1807_AdjustorThunk (void);
@@ -2946,7 +2976,7 @@ extern void U3CJoinedMatchU3Ed__21_MoveNext_m93BB4AECAD9C83A26D0B7069F735824B78D
 extern void U3CJoinedMatchU3Ed__21_SetStateMachine_m5E8867C6BCA345C3F083FD066517FEB34554B174_AdjustorThunk (void);
 extern void U3CReceivedChangeSceneU3Ed__20_MoveNext_mADD6536C4E3E13338124A747E460F8F812EE45E0_AdjustorThunk (void);
 extern void U3CReceivedChangeSceneU3Ed__20_SetStateMachine_m1047C4F8EEED6E3A40DDCBDFDA48EBE5B2574F15_AdjustorThunk (void);
-static Il2CppTokenAdjustorThunkPair s_adjustorThunks[30] = 
+static Il2CppTokenAdjustorThunkPair s_adjustorThunks[32] = 
 {
 	{ 0x06000046, U3CResetGameU3Ed__36_MoveNext_m8426E5D921697483B6DB8261BBCAD2CBC9E86146_AdjustorThunk },
 	{ 0x06000047, U3CResetGameU3Ed__36_SetStateMachine_m6079C61968EF6832C269621943D826EB558FE8FF_AdjustorThunk },
@@ -2958,28 +2988,30 @@ static Il2CppTokenAdjustorThunkPair s_adjustorThunks[30] =
 	{ 0x0600006B, U3CLeaveChatU3Ed__5_SetStateMachine_mE242F175E53CF9686FC793C8DBB9A0F794B3CAEF_AdjustorThunk },
 	{ 0x0600006C, U3CSendMessagesU3Ed__4_MoveNext_mADF6ED2EF23D09D7918636A75251E8F9616C53BB_AdjustorThunk },
 	{ 0x0600006D, U3CSendMessagesU3Ed__4_SetStateMachine_mDC60ECD34441F84FE9BA1CD380E16193F51A0570_AdjustorThunk },
-	{ 0x06000405, U3CJoinMatchAsyncU3Ed__34_MoveNext_mE9BAEF2B2818D5533BA091E1AF59A4EB2D3AD7E5_AdjustorThunk },
-	{ 0x06000406, U3CJoinMatchAsyncU3Ed__34_SetStateMachine_m476092F189A243C82C22DD32FE7621BBA30756F7_AdjustorThunk },
-	{ 0x06000407, U3CLeaveMatchAsyncU3Ed__36_MoveNext_m41FC3FFC2F05C238632CD57D5415E51329ED1807_AdjustorThunk },
-	{ 0x06000408, U3CLeaveMatchAsyncU3Ed__36_SetStateMachine_mEE6FE26D927B2D80BAAB433F85CF4B4E917BC32B_AdjustorThunk },
-	{ 0x06000458, U3CLoginAsyncU3Ed__39_MoveNext_m2A628A143FACB40EA14A9FE1008B5F4F8F08F19A_AdjustorThunk },
-	{ 0x06000459, U3CLoginAsyncU3Ed__39_SetStateMachine_m0E2035FCD6348E4711D6F22506C407A8241A1D51_AdjustorThunk },
-	{ 0x0600045A, U3CSendRPCU3Ed__43_MoveNext_mEB43570BA5F71BF6F89BF36BA5EB01ABB5A15AEC_AdjustorThunk },
-	{ 0x0600045B, U3CSendRPCU3Ed__43_SetStateMachine_mE00865F3B058C8B54542B191912CAA280AB4C1A1_AdjustorThunk },
-	{ 0x0600046B, U3CSendValueToServerU3Ed__19_MoveNext_m95C9D76A6117E79EFDBDD17C50B2938A9B4DD2C3_AdjustorThunk },
-	{ 0x0600046C, U3CSendValueToServerU3Ed__19_SetStateMachine_m54A1082DE94600EEFCE2610F0185F6AFA3CBA27F_AdjustorThunk },
-	{ 0x0600046D, U3CUpdateCollectionObjectsAsyncU3Ed__18_MoveNext_m440CBDB2A7783E7907198C1485C6D74B87626D6E_AdjustorThunk },
-	{ 0x0600046E, U3CUpdateCollectionObjectsAsyncU3Ed__18_SetStateMachine_m922CA515D6095D181A057C5C5BEB2330F48EDA26_AdjustorThunk },
-	{ 0x0600047F, U3CAutoLoadU3Ed__21_MoveNext_m0035BBE7980D823509F7E2152589293CF7AA5E0F_AdjustorThunk },
-	{ 0x06000480, U3CAutoLoadU3Ed__21_SetStateMachine_mDAED359F829B227130F52376536267D0D42B035E_AdjustorThunk },
-	{ 0x06000481, U3CUpdateDisplayNameU3Ed__22_MoveNext_m99E3C1BF1826B3060F78031A88379454CD44C34C_AdjustorThunk },
-	{ 0x06000482, U3CUpdateDisplayNameU3Ed__22_SetStateMachine_mC99CC4458403DC50AB3837BAF67D7445F80BEF1D_AdjustorThunk },
-	{ 0x06000531, U3CJoinedMatchU3Ed__21_MoveNext_m93BB4AECAD9C83A26D0B7069F735824B78D5116D_AdjustorThunk },
-	{ 0x06000532, U3CJoinedMatchU3Ed__21_SetStateMachine_m5E8867C6BCA345C3F083FD066517FEB34554B174_AdjustorThunk },
-	{ 0x06000533, U3CReceivedChangeSceneU3Ed__20_MoveNext_mADD6536C4E3E13338124A747E460F8F812EE45E0_AdjustorThunk },
-	{ 0x06000534, U3CReceivedChangeSceneU3Ed__20_SetStateMachine_m1047C4F8EEED6E3A40DDCBDFDA48EBE5B2574F15_AdjustorThunk },
+	{ 0x060003E4, U3CShowGlobalLeaderboardsU3Ed__4_MoveNext_m29343B1B051D82661D8292A363EA6CBAD1CA4DB4_AdjustorThunk },
+	{ 0x060003E5, U3CShowGlobalLeaderboardsU3Ed__4_SetStateMachine_m0462EF4B03988F2A0B7CA6883D935077DA1A3DEF_AdjustorThunk },
+	{ 0x06000410, U3CJoinMatchAsyncU3Ed__34_MoveNext_mE9BAEF2B2818D5533BA091E1AF59A4EB2D3AD7E5_AdjustorThunk },
+	{ 0x06000411, U3CJoinMatchAsyncU3Ed__34_SetStateMachine_m476092F189A243C82C22DD32FE7621BBA30756F7_AdjustorThunk },
+	{ 0x06000412, U3CLeaveMatchAsyncU3Ed__36_MoveNext_m41FC3FFC2F05C238632CD57D5415E51329ED1807_AdjustorThunk },
+	{ 0x06000413, U3CLeaveMatchAsyncU3Ed__36_SetStateMachine_mEE6FE26D927B2D80BAAB433F85CF4B4E917BC32B_AdjustorThunk },
+	{ 0x06000463, U3CLoginAsyncU3Ed__39_MoveNext_m2A628A143FACB40EA14A9FE1008B5F4F8F08F19A_AdjustorThunk },
+	{ 0x06000464, U3CLoginAsyncU3Ed__39_SetStateMachine_m0E2035FCD6348E4711D6F22506C407A8241A1D51_AdjustorThunk },
+	{ 0x06000465, U3CSendRPCU3Ed__43_MoveNext_mEB43570BA5F71BF6F89BF36BA5EB01ABB5A15AEC_AdjustorThunk },
+	{ 0x06000466, U3CSendRPCU3Ed__43_SetStateMachine_mE00865F3B058C8B54542B191912CAA280AB4C1A1_AdjustorThunk },
+	{ 0x06000476, U3CSendValueToServerU3Ed__19_MoveNext_m95C9D76A6117E79EFDBDD17C50B2938A9B4DD2C3_AdjustorThunk },
+	{ 0x06000477, U3CSendValueToServerU3Ed__19_SetStateMachine_m54A1082DE94600EEFCE2610F0185F6AFA3CBA27F_AdjustorThunk },
+	{ 0x06000478, U3CUpdateCollectionObjectsAsyncU3Ed__18_MoveNext_m440CBDB2A7783E7907198C1485C6D74B87626D6E_AdjustorThunk },
+	{ 0x06000479, U3CUpdateCollectionObjectsAsyncU3Ed__18_SetStateMachine_m922CA515D6095D181A057C5C5BEB2330F48EDA26_AdjustorThunk },
+	{ 0x0600048A, U3CAutoLoadU3Ed__21_MoveNext_m0035BBE7980D823509F7E2152589293CF7AA5E0F_AdjustorThunk },
+	{ 0x0600048B, U3CAutoLoadU3Ed__21_SetStateMachine_mDAED359F829B227130F52376536267D0D42B035E_AdjustorThunk },
+	{ 0x0600048C, U3CUpdateDisplayNameU3Ed__22_MoveNext_m99E3C1BF1826B3060F78031A88379454CD44C34C_AdjustorThunk },
+	{ 0x0600048D, U3CUpdateDisplayNameU3Ed__22_SetStateMachine_mC99CC4458403DC50AB3837BAF67D7445F80BEF1D_AdjustorThunk },
+	{ 0x0600053F, U3CJoinedMatchU3Ed__21_MoveNext_m93BB4AECAD9C83A26D0B7069F735824B78D5116D_AdjustorThunk },
+	{ 0x06000540, U3CJoinedMatchU3Ed__21_SetStateMachine_m5E8867C6BCA345C3F083FD066517FEB34554B174_AdjustorThunk },
+	{ 0x06000541, U3CReceivedChangeSceneU3Ed__20_MoveNext_mADD6536C4E3E13338124A747E460F8F812EE45E0_AdjustorThunk },
+	{ 0x06000542, U3CReceivedChangeSceneU3Ed__20_SetStateMachine_m1047C4F8EEED6E3A40DDCBDFDA48EBE5B2574F15_AdjustorThunk },
 };
-static const int32_t s_InvokerIndices[1458] = 
+static const int32_t s_InvokerIndices[1472] = 
 {
 	6512,
 	6512,
@@ -3966,7 +3998,18 @@ static const int32_t s_InvokerIndices[1458] =
 	9495,
 	9495,
 	9495,
+	9495,
+	9495,
+	9495,
+	9495,
+	9495,
+	9495,
 	6512,
+	6512,
+	5269,
+	6512,
+	6512,
+	5269,
 	9095,
 	0,
 	9095,
@@ -4146,6 +4189,11 @@ static const int32_t s_InvokerIndices[1458] =
 	6391,
 	5269,
 	527,
+	6512,
+	6512,
+	6512,
+	6512,
+	6512,
 	9462,
 	9334,
 	6512,
@@ -4175,8 +4223,6 @@ static const int32_t s_InvokerIndices[1458] =
 	5269,
 	5269,
 	5269,
-	6512,
-	6512,
 	6512,
 	6512,
 	6512,
@@ -4443,11 +4489,11 @@ static const int32_t s_InvokerIndices[1458] =
 static const Il2CppTokenRangePair s_rgctxIndices[6] = 
 {
 	{ 0x02000012, { 0, 5 } },
-	{ 0x02000067, { 13, 17 } },
-	{ 0x060003DC, { 5, 2 } },
-	{ 0x06000412, { 7, 2 } },
-	{ 0x06000425, { 9, 2 } },
-	{ 0x0600047D, { 11, 2 } },
+	{ 0x0200006A, { 13, 17 } },
+	{ 0x060003E7, { 5, 2 } },
+	{ 0x0600041D, { 7, 2 } },
+	{ 0x06000430, { 9, 2 } },
+	{ 0x06000488, { 11, 2 } },
 };
 extern const uint32_t g_rgctx_Singelton_1_t43A042774B3B6F81B5B1A3389AD69D3E350AFA79;
 extern const uint32_t g_rgctx_T_t302DB918EEDC9D2EE5C65F8C4D58914EDA1D15A7;
@@ -4460,8 +4506,8 @@ extern const uint32_t g_rgctx_JSONExtensions_Deserialize_TisT_t6A5403978569BE19F
 extern const uint32_t g_rgctx_T_t6A5403978569BE19F9CE26CCF3455224B971451C;
 extern const uint32_t g_rgctx_JSONExtensions_Deserialize_TisT_tB0B9D5903B4CE80BAF131686F52CCE6E13BAE80A_m0709E46268A7A2836B1BD31CBEE7D8309D326AAB;
 extern const uint32_t g_rgctx_T_tB0B9D5903B4CE80BAF131686F52CCE6E13BAE80A;
-extern const uint32_t g_rgctx_T_t345CFDAA80CB03977F5C59E5F8B6C9C31B18810A;
 extern const uint32_t g_rgctx_JSONExtensions_Deserialize_TisT_t345CFDAA80CB03977F5C59E5F8B6C9C31B18810A_m7274676CBA271619BAD5619A739548DF370B17E9;
+extern const uint32_t g_rgctx_T_t345CFDAA80CB03977F5C59E5F8B6C9C31B18810A;
 extern const uint32_t g_rgctx_RollbackVar_1_tFC593BBBBBA267C32EC568AEDE77D0D4DE6561A4;
 extern const uint32_t g_rgctx_Dictionary_2_t618BF83C9D25C751AD7ED1F0B2263DAB83FC6C12;
 extern const uint32_t g_rgctx_Dictionary_2_ContainsKey_m3AE3C944E87430BF90ABC0BC3C209167D01C1C98;
@@ -4492,8 +4538,8 @@ static const Il2CppRGCTXDefinition s_rgctxValues[30] =
 	{ (Il2CppRGCTXDataType)2, (const void *)&g_rgctx_T_t6A5403978569BE19F9CE26CCF3455224B971451C },
 	{ (Il2CppRGCTXDataType)3, (const void *)&g_rgctx_JSONExtensions_Deserialize_TisT_tB0B9D5903B4CE80BAF131686F52CCE6E13BAE80A_m0709E46268A7A2836B1BD31CBEE7D8309D326AAB },
 	{ (Il2CppRGCTXDataType)2, (const void *)&g_rgctx_T_tB0B9D5903B4CE80BAF131686F52CCE6E13BAE80A },
-	{ (Il2CppRGCTXDataType)2, (const void *)&g_rgctx_T_t345CFDAA80CB03977F5C59E5F8B6C9C31B18810A },
 	{ (Il2CppRGCTXDataType)3, (const void *)&g_rgctx_JSONExtensions_Deserialize_TisT_t345CFDAA80CB03977F5C59E5F8B6C9C31B18810A_m7274676CBA271619BAD5619A739548DF370B17E9 },
+	{ (Il2CppRGCTXDataType)2, (const void *)&g_rgctx_T_t345CFDAA80CB03977F5C59E5F8B6C9C31B18810A },
 	{ (Il2CppRGCTXDataType)2, (const void *)&g_rgctx_RollbackVar_1_tFC593BBBBBA267C32EC568AEDE77D0D4DE6561A4 },
 	{ (Il2CppRGCTXDataType)2, (const void *)&g_rgctx_Dictionary_2_t618BF83C9D25C751AD7ED1F0B2263DAB83FC6C12 },
 	{ (Il2CppRGCTXDataType)3, (const void *)&g_rgctx_Dictionary_2_ContainsKey_m3AE3C944E87430BF90ABC0BC3C209167D01C1C98 },
@@ -4516,9 +4562,9 @@ IL2CPP_EXTERN_C const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule;
 const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule = 
 {
 	"Assembly-CSharp.dll",
-	1458,
+	1472,
 	s_methodPointers,
-	30,
+	32,
 	s_adjustorThunks,
 	s_InvokerIndices,
 	0,

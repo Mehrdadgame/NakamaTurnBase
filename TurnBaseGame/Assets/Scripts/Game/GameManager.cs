@@ -21,6 +21,7 @@ namespace NinjaBattle.Game
         public int? Winner { get; private set; } = 0;
 
         public DiceRoller diceRoller;
+        public ModeGame modeGame;
 
         #endregion
 

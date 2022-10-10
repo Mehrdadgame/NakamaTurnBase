@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Nakama;
 using Nakama.Helpers;
+using NinjaBattle.Game;
 using UnityEngine;
 
 namespace Game
@@ -14,6 +15,7 @@ namespace Game
 
         public Transform parentPos;
 
+       
         // Start is called before the first frame update
         private void Awake()
         {
@@ -26,5 +28,7 @@ namespace Game
           Debug.Log(NakamaManager.Instance.Session.Username);
             NakamaLeaderboard.instance.ShowGlobalLeaderboards(NakamaManager.Instance.Session);
         }
+
+      
     }
 }

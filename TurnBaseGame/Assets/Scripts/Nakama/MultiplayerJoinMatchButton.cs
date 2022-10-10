@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NinjaBattle.Game;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Nakama.Helpers
@@ -22,6 +23,7 @@ namespace Nakama.Helpers
         {
             button.interactable = false;
             MultiplayerManager.Instance.JoinMatchAsync();
+            GameManager.Instance.modeGame = GetComponent<SetModeGame>().modeGame;
         }
 
         #endregion

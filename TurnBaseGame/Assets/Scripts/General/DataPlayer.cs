@@ -1,7 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum ModeGame
+{
+    ThreeByThree,
+    FourByThree,
+    VerticalAndHorizontal
+}
 public class DataPlayer 
 {
 
@@ -21,6 +26,7 @@ public class DataPlayer
     public int[] sumRow1= new int [3];
     public int[] sumRow2 = new int[3];
     public bool master;
+    public ModeGame modeGame;
 
 }
 
