@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System.Drawing.Imaging;
+
 
 public class CalculterRowScore : MonoBehaviour
 {
@@ -25,7 +25,7 @@ public class CalculterRowScore : MonoBehaviour
     {
         var total = 0;
 
-        Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
+        Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile )
                                             .Where(g => g.Count() > 1)
                                             .ToDictionary(x => x.Key, x => x.Count());
 
@@ -69,7 +69,8 @@ public class CalculterRowScore : MonoBehaviour
 
 
         }
-        return cell.Sum(c => c.ValueTile);
+        
+        return cell.Where(r=>r.ValueTile>-1).Sum(c => c.ValueTile);
 
     }
 
@@ -108,7 +109,7 @@ public class CalculterRowScore : MonoBehaviour
             }
             else if (item.Value == 2)
             {
-                var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
+                var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1 ).ToArray();
 
                 total = item.Key * 4;
 

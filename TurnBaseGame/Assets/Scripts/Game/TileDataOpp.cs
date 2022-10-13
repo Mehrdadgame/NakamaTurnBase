@@ -8,4 +8,5 @@ public class TileDataOpp : MonoBehaviour
     public int row;
     public int ValueTile;
     public Image SpriteDice;
+    public bool IsLock;
 }

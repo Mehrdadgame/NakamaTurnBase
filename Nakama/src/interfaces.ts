@@ -1,6 +1,12 @@
 interface MatchLabel
 {
-    open: boolean
+    open: boolean,
+    game_mode:string
+}
+enum GameMode{
+    ThreeByThree ,
+    FourByThree ,
+    VerticalAndHorizontal ,
 }
 
 interface GameState
@@ -15,7 +21,8 @@ interface GameState
     CountTurnPlayer1:any
     CountTurnPlayer2:any
   namesForrematch:string[]
-  BeforeEndGame:boolean
+  BeforeEndGame:boolean,
+  VerticalMode:boolean
 }
 
 interface Player
@@ -43,8 +50,6 @@ interface DataPlayer{
     NameTile:string
     NumberLine:number
     NumberRow : number
-    ResultLine:number
-    ResultRow:number[]
     EndGame:boolean
     PlayerWin :string
     ScoreOtherPlayer:number
@@ -53,6 +58,8 @@ interface DataPlayer{
     sumRow1: number[]
     sumRow2:number[] 
     master:boolean
+    Array2DTilesPlayer:number[][]
+    Array2DTilesOtherPlayer:number[][]
 
 
 }
@@ -60,6 +67,10 @@ interface DataPlayer{
 interface IReMatch{
     userId:string,
     Answer:string
+}
+interface StickerData{
+    id:string,
+    nameSticker:string
 }
 
 
@@ -74,3 +85,4 @@ interface TrophiesData
 {
     amount: number
 }
+

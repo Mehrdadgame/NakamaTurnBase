@@ -21,9 +21,10 @@ namespace Nakama.Helpers
 
         private void FindMatch()
         {
-            button.interactable = false;
-            MultiplayerManager.Instance.JoinMatchAsync();
             GameManager.Instance.modeGame = GetComponent<SetModeGame>().modeGame;
+          
+            button.interactable = false;
+            MultiplayerManager.Instance.JoinMatchAsync(GameManager.Instance.modeGame);
         }
 
         #endregion

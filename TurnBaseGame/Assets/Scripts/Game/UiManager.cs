@@ -283,13 +283,17 @@ public class UiManager : MonoBehaviour
     private void Instance_onSetDataInRowOpp(int arg1, int arg2)
     {
 
-        var clone = tileDataOpps.Find(e => e.line == arg1 && e.row == arg2);
-        clone.SpriteDice.sprite = null;
-        clone.ValueTile = 0;
-        clone.SpriteDice.transform.parent.gameObject.SetActive(false);
-        clone.GetComponentInChildren<ParticleSystem>().Stop();
-        ParticleSystem.MainModule settings = clone.GetComponentInChildren<ParticleSystem>().main;
-        settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
+        var clone = tileDataOpps.Find(e => e.line == arg1 && e.row == arg2 && e.IsLock);
+        if (clone != null)
+        {
+            clone.SpriteDice.sprite = null;
+            clone.ValueTile = 0;
+            clone.SpriteDice.transform.parent.gameObject.SetActive(false);
+            clone.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = clone.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
+        }
+      
         RowSum();
     }
     /// <summary>
@@ -299,15 +303,19 @@ public class UiManager : MonoBehaviour
     /// <param name="arg2"></param>
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
-
-        var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2);
-        meCell.SpriteDice.sprite = null;
-        meCell.ValueTile = 0;
-        meCell.isLock = false;
-        meCell.GetComponentInChildren<ParticleSystem>().Stop();
-        ParticleSystem.MainModule settings = meCell.GetComponentInChildren<ParticleSystem>().main;
-        settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
-        meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
+      
+        var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2 && r.isLock);
+        if(meCell != null)
+        {
+            meCell.SpriteDice.sprite = null;
+            meCell.ValueTile = 0;
+            meCell.isLock = false;
+            meCell.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = meCell.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
+            meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
+        }
+    
         RowSum();
     }
     /// <summary>
@@ -326,6 +334,7 @@ public class UiManager : MonoBehaviour
             GameManager.Instance.diceRoller.GetComponent<Image>().sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
             GameManager.Instance.diceRoller.currrentDie = -1;
             var tile = transformOpp.Find(obj.NameTile).GetComponentInChildren<TileDataOpp>();
+            tile.IsLock = true;
             tile.SpriteDice.transform.parent.gameObject.SetActive(true);
             tile.SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
             tile.ValueTile = obj.NumberTile + 1;

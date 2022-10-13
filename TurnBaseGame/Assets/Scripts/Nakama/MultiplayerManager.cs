@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 
@@ -56,18 +57,23 @@ namespace Nakama.Helpers
             Instance = this;
         }
 
-        public async void JoinMatchAsync()
+        public async void JoinMatchAsync(ModeGame mode)
         {
 
             PlayerPrefs.DeleteKey("Opp");
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             NakamaManager.Instance.Socket.ReceivedMatchState += Receive;
             NakamaManager.Instance.onDisconnected += Disconnected;
-            IApiRpc rpcResult = await NakamaManager.Instance.SendRPC(JoinOrCreateMatchRpc);
+            IApiRpc rpcResult = await NakamaManager.Instance.SendRPC(JoinOrCreateMatchRpc, mode.ToString());
             string matchId = rpcResult.Payload;
-            match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId);
-            onMatchJoin?.Invoke();
 
+            var stringProperties = new Dictionary<string, string>() 
+            {
+               {"mode", mode.ToString()}
+            };
+            match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId, stringProperties);
+
+            onMatchJoin?.Invoke();
         }
 
 
@@ -138,6 +144,7 @@ namespace Nakama.Helpers
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);
             Opp = newState.UserPresence;
 
+
         }
 
 
@@ -170,12 +177,11 @@ namespace Nakama.Helpers
                 NumberTile = number,
                 NumberRow = row,
                 NumberLine = line,
-                ResultLine = 0,
-                ResultRow = new int[0],
                 PlayerWin = "",
                 sumRow1 = new int[3],
                 sumRow2 = new int[3],
-
+                Array2DTilesOtherPlayer = new int[3][],
+                Array2DTilesPlayer = new int[3][],
             };
 
             Send(Code.ChosseTurn, data);

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum ModeGame
 {
-    ThreeByThree,
-    FourByThree,
-    VerticalAndHorizontal
+    ThreeByThree =3,
+    FourByThree =4,
+    VerticalAndHorizontal =5,
 }
 public class DataPlayer 
 {
@@ -16,8 +16,6 @@ public class DataPlayer
     public string NameTile;
     public int NumberLine;
     public int NumberRow;
-    public int ResultLine;
-    public int[] ResultRow;
     public bool EndGame;
     public string PlayerWin;
     public int ScoreOtherPlayer;
@@ -27,6 +25,8 @@ public class DataPlayer
     public int[] sumRow2 = new int[3];
     public bool master;
     public ModeGame modeGame;
+    public int[][] Array2DTilesPlayer;
+    public int[][] Array2DTilesOtherPlayer;
 
 }
 

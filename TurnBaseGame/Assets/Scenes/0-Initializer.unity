@@ -715,6 +715,14 @@ PrefabInstance:
       propertyPath: enableLog
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1313448497895265073, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
+      propertyPath: Mute
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3448525726534906303, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -57,7 +57,7 @@ namespace NinjaBattle.Game
             MultiplayerManager.Instance.onMatchLeave -= LeavedMatch;
         }
 
-      
+
 
         private void ReceivedPlayerWonRound(MultiplayerMessage message)
         {
@@ -94,8 +94,8 @@ namespace NinjaBattle.Game
         private async void JoinedMatch()
         {
             ResetPlayerWins();
-         
-             GoToLobby();
+
+            GoToLobby();
         }
 
         private void LeavedMatch()
@@ -115,7 +115,20 @@ namespace NinjaBattle.Game
 
         private void GoToLobby()
         {
-            SceneManager.LoadScene((int)Scenes.Battle);
+            switch (modeGame)
+            {
+                case ModeGame.ThreeByThree:
+                    SceneManager.LoadScene((int)Scenes.ThreeByThree);
+                    break;
+                case ModeGame.FourByThree:
+                    SceneManager.LoadScene((int)Scenes.FourByThree);
+                    break;
+                case ModeGame.VerticalAndHorizontal:
+                    SceneManager.LoadScene((int)Scenes.VerticalAndHorizontal);
+                    break;
+                default:
+                    break;
+            }
         }
 
         #endregion

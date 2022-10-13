@@ -91,11 +91,11 @@ namespace NinjaBattle.Game
         public void RiseveSticker(MultiplayerMessage message)
         {
             var nameSticker = message.GetData<StickerData>();
-          
+
             if (nameSticker.ID != multiplayerManager.Self.UserId)
             {
                 UiManager.instance.StickerOpp.GetComponent<Image>().sprite = UiManager.instance.AllAssets.GetSprite(nameSticker.StickerName);
-             
+
                 UiManager.instance.StickerOpp.GetComponent<Animator>().Play("StickerOpp", 0, 0);
 
 
@@ -107,7 +107,7 @@ namespace NinjaBattle.Game
             var data = message.GetData<string>();
             //
             //onRematch?.Invoke(data);
-          
+
             LeftPlayer?.Invoke(data);
 
         }
@@ -143,18 +143,32 @@ namespace NinjaBattle.Game
                     onSetScoreOpp?.Invoke(data.ScoreOtherPlayer, data.ValueMines, data);
 
                 onSetScoreMe.Invoke(data.Score, 0, data);
+
+                for (int i = 0; i < data.Array2DTilesOtherPlayer.Length; i++)
+                {
+                    for (int j = 0; j < data.Array2DTilesOtherPlayer[i].Length; j++)
+                    {
+                        if (data.Array2DTilesOtherPlayer[i][j] == -1)
+                        {
+                            onSetDataInRowMe(i, j);
+                            Debug.Log($"{i}{j}");
+
+                        }
+
+                    }
+                }
                 ScoreMe = data.Score;
                 if (data.ScoreOtherPlayer > 0)
                     ScoreOpp = data.ScoreOtherPlayer;
-                if (data.ResultRow.Length > 0)
-                {
-                    for (int i = 0; i < data.ResultRow.Length; i++)
-                    {
-                        Debug.Log(data.ResultRow[i] + data.ResultLine);
-                        onSetDataInRowMe(data.ResultLine, data.ResultRow[i]);
-                    }
+                //if (data.ResultRow.Length > 0)
+                //{
+                //    for (int i = 0; i < data.ResultRow.Length; i++)
+                //    {
+                //        Debug.Log(data.ResultRow[i] + data.ResultLine);
+                //        onSetDataInRowMe(data.ResultLine, data.ResultRow[i]);
+                //    }
 
-                }
+                //}
                 if (data.EndGame != true)
                     IsTurn?.Invoke(true);
 
@@ -164,8 +178,8 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                      UiManager.instance.HXDWin.text ="+"+ (multiplayerManager.ValueHXDInGameTurn*2).ToString() + "HXD";
-                        PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn*2));
+                        UiManager.instance.HXDWin.text = "+" + (multiplayerManager.ValueHXDInGameTurn * 2).ToString() + "HXD";
+                        PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn * 2));
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
@@ -194,15 +208,27 @@ namespace NinjaBattle.Game
                 ScoreOpp = data.Score;
                 if (data.ScoreOtherPlayer > 0)
                     ScoreMe = data.ScoreOtherPlayer;
-
-                if (data.ResultRow.Length > 0)
+                for (int i = 0; i < data.Array2DTilesOtherPlayer.Length; i++)
                 {
-                    for (int i = 0; i < data.ResultRow.Length; i++)
+                    for (int j = 0; j < data.Array2DTilesOtherPlayer[i].Length; j++)
                     {
-                        onSetDataInRowOpp(data.ResultLine, data.ResultRow[i]);
-                    }
+                        if (data.Array2DTilesOtherPlayer[i][j] == -1)
+                        {
+                            onSetDataInRowOpp(i, j);
 
+                            Debug.Log($"{i}{j}" + " Me");
+                        }
+                      
+                    }
                 }
+                //if (data.ResultRow.Length > 0)
+                //{
+                //    for (int i = 0; i < data.ResultRow.Length; i++)
+                //    {
+                //        onSetDataInRowOpp(data.ResultLine, data.ResultRow[i]);
+                //    }
+
+                //}
 
 
                 if (data.EndGame == true)
@@ -211,15 +237,15 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                       
-                        PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn*2));
-                        UiManager.instance.HXDWin.text = "+" + (multiplayerManager.ValueHXDInGameTurn*2).ToString() + "HXD";
+
+                        PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn * 2));
+                        UiManager.instance.HXDWin.text = "+" + (multiplayerManager.ValueHXDInGameTurn * 2).ToString() + "HXD";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
                         PlayerPrefs.SetInt("HXD", hxdTotal - (multiplayerManager.ValueHXDInGameTurn));
-                        UiManager.instance.HXDWin.text = "-" + multiplayerManager.ValueHXDInGameTurn.ToString()+"HXD";
+                        UiManager.instance.HXDWin.text = "-" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
                     }
                     else
                     {

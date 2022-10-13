@@ -7,6 +7,7 @@
     "./src/enums.ts",
     "./src/consts.ts"
   ],
+  
   "compilerOptions": {
     "target": "ES5",
     "strict": true,
@@ -18,4 +19,5 @@
       "./node_modules"
     ]
   }
+  
 }

@@ -5,9 +5,8 @@ namespace NinjaBattle.General
         Initializer = 0,
         Splash = 1,
         Home = 2,
-        //Lobby = 3,
-        Battle = 3,
-        RoundResults = 5,
-        FinalResults = 6
+        ThreeByThree = 3,
+        FourByThree =4,
+        VerticalAndHorizontal=5
     }
 }

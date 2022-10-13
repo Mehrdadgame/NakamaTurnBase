@@ -15,9 +15,9 @@ namespace NinjaBattle.General
         private AudioSource musicChannel = null;
         private AudioSource musicChannelCrossFadeHelper = null;
         private AudioSource soundChannel = null;
-        private List<AudioClip> currentSoundClips = new List<AudioClip>();
-        private List<AudioClip> playingSoundClips = new List<AudioClip>();
-
+        private List<AudioClip> currentSoundClips = new();
+        private List<AudioClip> playingSoundClips = new();
+       
         #endregion
 
         #region PROPERTIES
@@ -30,6 +30,7 @@ namespace NinjaBattle.General
 
         private void Awake()
         {
+           
             Instance = this;
             musicChannel = gameObject.AddComponent<AudioSource>();
             musicChannelCrossFadeHelper = gameObject.AddComponent<AudioSource>();
@@ -48,7 +49,7 @@ namespace NinjaBattle.General
             StopMusic();
             musicChannel.clip = clip;
             musicChannel.loop = loop;
-            musicChannel.Play();
+            musicChannel.Stop();
         }
 
         public void StopMusic()
