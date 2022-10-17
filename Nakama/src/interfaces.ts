@@ -22,7 +22,11 @@ interface GameState
     CountTurnPlayer2:any
   namesForrematch:string[]
   BeforeEndGame:boolean,
-  VerticalMode:boolean
+  VerticalMode:boolean,
+  array3DPlayerFirst:any[][],
+  array3DPlayerSecend:any[][],
+  ModeText:string
+  
 }
 
 interface Player

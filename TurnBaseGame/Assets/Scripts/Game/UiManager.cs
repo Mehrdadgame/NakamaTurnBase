@@ -35,7 +35,9 @@ public class UiManager : MonoBehaviour
 
     [SerializeField] private Image loading;
     public TextMeshProUGUI[] arryRowSumMe;
+    public TextMeshProUGUI[] arryRowSumMeCal;
     public TextMeshProUGUI[] arryRowSumOpp;
+    public TextMeshProUGUI[] arryRowSumOppCal;
     public TextMeshProUGUI NameOpp;
     public ParticleSystem WowPar;
     public static UiManager instance;
@@ -245,7 +247,7 @@ public class UiManager : MonoBehaviour
         {
             TextValueMines.GetComponent<TextMeshProUGUI>().text = "-" + mines;
             TextValueMines.Play("Mines", 0, 0);
-
+           
             WowPar.Play();
 
             mines = 0;
@@ -278,14 +280,32 @@ public class UiManager : MonoBehaviour
         arryRowSumMe[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells).ToString();
         arryRowSumMe[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1).ToString();
         arryRowSumMe[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2).ToString();
+
+        if (GameManager.Instance.modeGame == ModeGame.VerticalAndHorizontal)
+        {
+            arryRowSumOppCal[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOppsCal).ToString();
+            arryRowSumOppCal[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2Cal).ToString();
+            arryRowSumOppCal[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3Cal).ToString();
+
+            arryRowSumMeCal[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCellsCal).ToString();
+            arryRowSumMeCal[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1Cal).ToString();
+            arryRowSumMeCal [2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal).ToString();
+        }
+        if (GameManager.Instance.modeGame != ModeGame.VerticalAndHorizontal)
+        {
+            arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4).ToString();
+            arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3).ToString();
+        }
     }
 
     private void Instance_onSetDataInRowOpp(int arg1, int arg2)
     {
 
+            Debug.Log($"{arg1} {arg2} Opp tile");
         var clone = tileDataOpps.Find(e => e.line == arg1 && e.row == arg2 && e.IsLock);
         if (clone != null)
         {
+            Debug.Log(clone.name.ToString());
             clone.SpriteDice.sprite = null;
             clone.ValueTile = 0;
             clone.SpriteDice.transform.parent.gameObject.SetActive(false);
@@ -304,9 +324,12 @@ public class UiManager : MonoBehaviour
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
       
+            Debug.Log($"{arg1} {arg2} Me tile");
         var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2 && r.isLock);
-        if(meCell != null)
+       
+        if (meCell != null)
         {
+            Debug.Log(meCell.name);
             meCell.SpriteDice.sprite = null;
             meCell.ValueTile = 0;
             meCell.isLock = false;

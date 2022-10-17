@@ -237,8 +237,8 @@ function StickersManager(message, gameState, dispatcher, nakama, logger) {
     dispatcher.broadcastMessage(10 /* Sticker */, JSON.stringify(data));
 }
 /* Creating a 3D array. */
-var array3DPlayerFirst = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
-var array3DPlayerSecend = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+var array3DPlayerFirst = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+var array3DPlayerSecend = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 /*  */
 /**
  * The above function is used to choose the turn of the player.
@@ -264,6 +264,7 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         gameState.players[0].ScorePlayer = readc.ScoreF;
         SaveScore(message.sender.userId, 0, nakama, readc);
         gameState.CountTurnPlayer1++;
+        TotalScore(array3DPlayerFirst, 3, logger);
         var resultTile = CalculatorArray2D(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
         logger.info(gameState.VerticalMode + " VerticalMode@@@@@@@@@  ");
         var countPow = 0;
@@ -271,7 +272,7 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             var resultTileVertical = CalculatorArray2DWithVertical(array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
             for (var index = 0; index < resultTileVertical.length; index++) {
                 logger.info(dataPlayer.NumberRow.toString() + resultTileVertical[index] + "  %%%%%%%%%%%%%%%%");
-                array3DPlayerSecend[resultTileVertical[index]][dataPlayer.NumberRow] = (-1);
+                array3DPlayerSecend[resultTileVertical[index]][dataPlayer.NumberRow] = (0);
                 countPow++;
             }
             if (countPow > 0) {
@@ -290,7 +291,7 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         if (resultTile.length > 0) {
             for (var index = 0; index < resultTile.length; index++) {
                 countPow++;
-                array3DPlayerSecend[dataPlayer.NumberLine][resultTile[index]] = -1;
+                array3DPlayerSecend[dataPlayer.NumberLine][resultTile[index]] = 0;
             }
             if (countPow > 0) {
                 var read1 = ReadScore(gameState.players[1].presence.userId, nakama);
@@ -316,19 +317,19 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             if (end == true) {
                 if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
                     dataPlayer.PlayerWin = gameState.players[0].presence.userId;
-                    var readCountWin = ReadScoreLeaderboard(gameState.players[0].presence.userId, nakama);
-                    readCountWin.win += 1;
-                    logger.info(readCountWin.win.toString() + "Player0");
-                    SaveScoreLeaderboard(gameState.players[0].presence.userId, nakama, readCountWin);
-                    nakama.leaderboardRecordWrite(IdLeaderboard, dataPlayer.PlayerWin, gameState.players[0].presence.username, readCountWin.win);
+                    //  var readCountWin = ReadScoreLeaderboard( gameState.players[0].presence.userId,nakama);
+                    //  readCountWin.win+=1;
+                    //  logger.info(readCountWin.win.toString() + "Player0");
+                    // SaveScoreLeaderboard( gameState.players[0].presence.userId,nakama,readCountWin);
+                    // nakama.leaderboardRecordWrite(IdLeaderboard,dataPlayer.PlayerWin,gameState.players[0].presence.username,readCountWin.win)
                 }
                 else if (gameState.players[1].ScorePlayer > gameState.players[0].ScorePlayer) {
                     dataPlayer.PlayerWin = gameState.players[1].presence.userId;
-                    var readCountWin = ReadScoreLeaderboard(gameState.players[1].presence.userId, nakama);
-                    readCountWin.win += 1;
-                    logger.info(readCountWin.win.toString() + "Player1");
-                    SaveScoreLeaderboard(gameState.players[1].presence.userId, nakama, readCountWin);
-                    nakama.leaderboardRecordWrite(IdLeaderboard, dataPlayer.PlayerWin, gameState.players[1].presence.username, readCountWin.win);
+                    //  var readCountWin = ReadScoreLeaderboard( gameState.players[1].presence.userId,nakama);
+                    // readCountWin.win+=1;
+                    // logger.info(readCountWin.win.toString()+"Player1");
+                    // SaveScoreLeaderboard( gameState.players[1].presence.userId,nakama,readCountWin);
+                    // nakama.leaderboardRecordWrite(IdLeaderboard,dataPlayer.PlayerWin,gameState.players[1].presence.username,readCountWin.win)
                 }
                 else {
                     dataPlayer.PlayerWin = "";
@@ -360,7 +361,7 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             var resultTileVertical = CalculatorArray2DWithVertical(array3DPlayerFirst, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
             for (var index = 0; index < resultTileVertical.length; index++) {
                 logger.info(dataPlayer.NumberRow.toString() + resultTileVertical[index] + "  %%%%%%%%%%%%%%%%");
-                array3DPlayerFirst[resultTileVertical[index]][dataPlayer.NumberRow] = (-1);
+                array3DPlayerFirst[resultTileVertical[index]][dataPlayer.NumberRow] = (0);
                 countPow++;
             }
             if (countPow > 0) {
@@ -379,7 +380,7 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         if (resultTile2.length > 0) {
             for (var index = 0; index < resultTile2.length; index++) {
                 countPow++;
-                array3DPlayerFirst[dataPlayer.NumberLine][resultTile2[index]] = -1;
+                array3DPlayerFirst[dataPlayer.NumberLine][resultTile2[index]] = 0;
             }
             if (countPow > 0) {
                 var read1 = ReadScore(gameState.players[0].presence.userId, nakama);
@@ -405,19 +406,19 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             if (end == true) {
                 if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
                     dataPlayer.PlayerWin = gameState.players[0].presence.userId;
-                    var readCountWin = ReadScoreLeaderboard(gameState.players[0].presence.userId, nakama);
-                    readCountWin.win += 1;
-                    logger.info(readCountWin.win.toString() + "Player0");
-                    SaveScoreLeaderboard(gameState.players[0].presence.userId, nakama, readCountWin);
-                    nakama.leaderboardRecordWrite(IdLeaderboard, dataPlayer.PlayerWin, gameState.players[0].presence.username, readCountWin.win);
+                    //   var readCountWin = ReadScoreLeaderboard( gameState.players[0].presence.userId,nakama);
+                    //  readCountWin.win+=1;
+                    //  logger.info(readCountWin.win.toString()+"Player0");
+                    //   SaveScoreLeaderboard( gameState.players[0].presence.userId,nakama,readCountWin);
+                    //  nakama.leaderboardRecordWrite(IdLeaderboard,dataPlayer.PlayerWin,gameState.players[0].presence.username,readCountWin.win)
                 }
                 else if (gameState.players[1].ScorePlayer > gameState.players[0].ScorePlayer) {
                     dataPlayer.PlayerWin = gameState.players[1].presence.userId;
-                    var readCountWin = ReadScoreLeaderboard(gameState.players[1].presence.userId, nakama);
-                    readCountWin.win += 1;
-                    logger.info(readCountWin.win.toString() + "Player1");
-                    SaveScoreLeaderboard(gameState.players[1].presence.userId, nakama, readCountWin);
-                    nakama.leaderboardRecordWrite(IdLeaderboard, dataPlayer.PlayerWin, gameState.players[1].presence.username, readCountWin.win);
+                    //  var readCountWin = ReadScoreLeaderboard( gameState.players[1].presence.userId,nakama);
+                    //  readCountWin.win +=1;
+                    //  logger.info(readCountWin.win.toString()+"Player1");
+                    //  SaveScoreLeaderboard( gameState.players[1].presence.userId,nakama,readCountWin);
+                    // nakama.leaderboardRecordWrite(IdLeaderboard,dataPlayer.PlayerWin,gameState.players[1].presence.username, readCountWin.win)
                 }
                 else {
                     dataPlayer.PlayerWin = "";
@@ -431,6 +432,54 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     var dataSendToClint = JSON.stringify(dataPlayer);
     dispatcher.broadcastMessage(message.opCode, dataSendToClint, null, message.sender);
     dataPlayer.EndGame = false;
+}
+function TotalScore(array2D, countArray, logger) {
+    var score = 0;
+    for (var i = 0; i < array2D.length; i++) {
+        // for (let j = 0; j < array2D[i].length; j++) {
+        score += CalculatorArray(array2D[i], logger);
+        //}
+    }
+    logger.info(score.toString() + " Score");
+    return score;
+}
+function CalculatorArray(arrayInput, logger) {
+    var countInArray = arrayInput.reduce(function (tally, fruit) {
+        if (!tally[fruit]) {
+            tally[fruit] = 1;
+        }
+        else {
+            tally[fruit] = tally[fruit] + 1;
+        }
+        return tally;
+    }, {});
+    logger.info(JSON.stringify(countInArray) + " countInArray");
+    var duplicates = Object.keys(countInArray).map(function (k) {
+        return {
+            key: k,
+            count: countInArray[k]
+        };
+    });
+    logger.info(JSON.stringify(duplicates) + " duplicates");
+    var sum = 0;
+    if (duplicates.length > 0) {
+        for (var i = 0; i < duplicates.length; i++) {
+            var count = duplicates[i].count;
+            var key = Number(duplicates[i].key + 1);
+            if (count > 2) {
+                sum = key * 9;
+            }
+            else if (count == 2) {
+                sum += key * 4;
+            }
+            else
+                return arrayInput.reduce(function (a, b) { return a + b; });
+        }
+        logger.info(sum + " sum");
+        return arrayInput.reduce(function (a, b) { return a + b; });
+        ;
+    }
+    return 0;
 }
 /**
  * *|CURSOR_MARCADOR|*
@@ -575,7 +624,7 @@ function ActionWinPlayer(array1) {
     var count = 0;
     for (var index = 0; index < array1.length; index++) {
         for (var index1 = 0; index1 < array1[index].length; index1++) {
-            if (array1[index][index1] == -1) {
+            if (array1[index][index1] == 0) {
                 count++;
             }
         }

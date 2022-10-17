@@ -5,8 +5,8 @@ namespace NinjaBattle.General
         Initializer = 0,
         Splash = 1,
         Home = 2,
-        ThreeByThree = 3,
+        VerticalAndHorizontal=3,
         FourByThree =4,
-        VerticalAndHorizontal=5
+        ThreeByThree = 5,
     }
 }

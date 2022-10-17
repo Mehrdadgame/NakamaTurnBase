@@ -151,7 +151,8 @@ namespace NinjaBattle.Game
                         if (data.Array2DTilesOtherPlayer[i][j] == -1)
                         {
                             onSetDataInRowMe(i, j);
-                            Debug.Log($"{i}{j}");
+                        
+                
 
                         }
 
@@ -215,8 +216,8 @@ namespace NinjaBattle.Game
                         if (data.Array2DTilesOtherPlayer[i][j] == -1)
                         {
                             onSetDataInRowOpp(i, j);
+                          
 
-                            Debug.Log($"{i}{j}" + " Me");
                         }
                       
                     }

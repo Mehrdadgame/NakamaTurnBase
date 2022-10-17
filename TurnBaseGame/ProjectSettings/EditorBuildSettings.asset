@@ -18,12 +18,12 @@ EditorBuildSettings:
     path: Assets/Scenes/3-Lobby.unity
     guid: a538d35a4a2f04edaa9e34a3e959523f
   - enabled: 1
-    path: Assets/Scenes/4-ThreeByThree.unity
+    path: Assets/Scenes/4-VerticalAndHorizontal.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/5-FourByThree.unity
     guid: 166dc96fe3530664081aaa27e22d5922
   - enabled: 1
-    path: Assets/Scenes/6-VerticalAndHorizontal.unity
+    path: Assets/Scenes/6-FourByFour.unity
     guid: 488314da47c7097419e4426c6a01fd48
   m_configObjects: {}

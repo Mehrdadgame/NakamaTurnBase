@@ -47,6 +47,9 @@ namespace Nakama.Helpers
         public bool IsOnMatch { get => match != null; }
         public int ValueHXDInGameTurn;
         public NakamaUserManager players;
+
+        private short rowTable;
+        private short colTable;
         #endregion
 
         #region BEHAVIORS
@@ -57,6 +60,31 @@ namespace Nakama.Helpers
             Instance = this;
         }
 
+        private void SetRowAndCol()
+        {
+            switch (GameManager.Instance.modeGame)
+            {
+                case ModeGame.ThreeByThree:
+                    rowTable = 4;
+                    colTable = 4; ;
+                    break;
+                case ModeGame.FourByThree:
+                    rowTable = 4;
+                    colTable = 3; ;
+                    break;
+                case ModeGame.VerticalAndHorizontal:
+                    rowTable =3;
+                    colTable = 3; ;
+                    break;
+                default:
+                    break;
+            }
+            if (GameManager.Instance.modeGame == ModeGame.FourByThree)
+            {
+              
+            }
+           
+        }
         public async void JoinMatchAsync(ModeGame mode)
         {
 
@@ -169,7 +197,7 @@ namespace Nakama.Helpers
 
         public void SendTurn(string nameTile, int number, int line, int row)
         {
-
+            SetRowAndCol();
             var data = new DataPlayer()
             {
                 UserId = players.User.Id,
@@ -178,8 +206,8 @@ namespace Nakama.Helpers
                 NumberRow = row,
                 NumberLine = line,
                 PlayerWin = "",
-                sumRow1 = new int[3],
-                sumRow2 = new int[3],
+                sumRow1 = new int[colTable],
+                sumRow2 = new int[rowTable],
                 Array2DTilesOtherPlayer = new int[3][],
                 Array2DTilesPlayer = new int[3][],
             };

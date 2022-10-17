@@ -663,6 +663,10 @@ PrefabInstance:
       propertyPath: recordsPerPage
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 33490676637556200, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
+      propertyPath: connectionData
+      value: 
+      objectReference: {fileID: 11400000, guid: c132f79a14a6ddf4f8ab1b2f2b213729, type: 2}
     - target: {fileID: 33490677032360848, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
       propertyPath: m_RootOrder
       value: 3
