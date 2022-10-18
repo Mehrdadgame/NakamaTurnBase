@@ -10,6 +10,7 @@ public class HXDManager : Singelton<HXDManager>
     public int HXDAmount;
     public TextMeshProUGUI textHXD;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,17 +23,29 @@ public class HXDManager : Singelton<HXDManager>
         else
         {
             HXDAmount = PlayerPrefs.GetInt("HXD");
-            textHXD.text  = HXDAmount.ToString();
+            textHXD.text = HXDAmount.ToString();
+        }
+        ///deV
+        if (HXDAmount <= 0)
+        {
+            HXDAmount = 100000;
+            PlayerPrefs.SetInt("HXD", HXDAmount);
+            textHXD.text = HXDAmount.ToString();
         }
     }
 
-    public void SetHXD( int amunt)
+    public void SetHXD(int amunt)
     {
+        if (amunt > HXDAmount)
+        {
+
+            return;
+        }
         HXDAmount -= amunt;
         PlayerPrefs.SetInt("HXD", HXDAmount);
         textHXD.text = HXDAmount.ToString();
         MultiplayerManager.Instance.ValueHXDInGameTurn = amunt;
     }
 
-    
+
 }

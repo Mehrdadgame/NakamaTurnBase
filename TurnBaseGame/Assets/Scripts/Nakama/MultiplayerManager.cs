@@ -79,10 +79,7 @@ namespace Nakama.Helpers
                 default:
                     break;
             }
-            if (GameManager.Instance.modeGame == ModeGame.FourByThree)
-            {
-              
-            }
+           
            
         }
         public async void JoinMatchAsync(ModeGame mode)

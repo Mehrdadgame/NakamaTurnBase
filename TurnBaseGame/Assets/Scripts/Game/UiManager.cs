@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine.U2D;
 
+
 public class UiManager : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -118,7 +119,7 @@ public class UiManager : MonoBehaviour
     {
         //if (obj.UserId == MultiplayerManager.Instance.Self.UserId)
         //    return;
-        Debug.Log(obj.Answer);
+       
         if (obj.Answer == "req")
         {
             rematchPanle.SetActive(true);
@@ -238,7 +239,7 @@ public class UiManager : MonoBehaviour
                 item.GetComponentInChildren<ParticleSystem>().Stop();
             }
         }
-        RowSum();
+       // RowSum();
     }
 
     private void Instance_onSetScoreMe(int obj, int mines, DataPlayer data)
@@ -247,7 +248,7 @@ public class UiManager : MonoBehaviour
         {
             TextValueMines.GetComponent<TextMeshProUGUI>().text = "-" + mines;
             TextValueMines.Play("Mines", 0, 0);
-           
+
             WowPar.Play();
 
             mines = 0;
@@ -289,32 +290,38 @@ public class UiManager : MonoBehaviour
 
             arryRowSumMeCal[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCellsCal).ToString();
             arryRowSumMeCal[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1Cal).ToString();
-            arryRowSumMeCal [2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal).ToString();
+            arryRowSumMeCal[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal).ToString();
         }
         if (GameManager.Instance.modeGame != ModeGame.VerticalAndHorizontal)
         {
             arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4).ToString();
             arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3).ToString();
         }
+        CheckShowLight();
+
     }
 
     private void Instance_onSetDataInRowOpp(int arg1, int arg2)
     {
 
-            Debug.Log($"{arg1} {arg2} Opp tile");
+    
         var clone = tileDataOpps.Find(e => e.line == arg1 && e.row == arg2 && e.IsLock);
         if (clone != null)
         {
-            Debug.Log(clone.name.ToString());
+          
             clone.SpriteDice.sprite = null;
             clone.ValueTile = 0;
+            clone.IsLock = false;
             clone.SpriteDice.transform.parent.gameObject.SetActive(false);
             clone.GetComponentInChildren<ParticleSystem>().Stop();
             ParticleSystem.MainModule settings = clone.GetComponentInChildren<ParticleSystem>().main;
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
         }
-      
         RowSum();
+       
+
+
+
     }
     /// <summary>
     /// Set data iv row 
@@ -323,13 +330,13 @@ public class UiManager : MonoBehaviour
     /// <param name="arg2"></param>
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
-      
-            Debug.Log($"{arg1} {arg2} Me tile");
+
+     
         var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2 && r.isLock);
-       
+
         if (meCell != null)
         {
-            Debug.Log(meCell.name);
+           
             meCell.SpriteDice.sprite = null;
             meCell.ValueTile = 0;
             meCell.isLock = false;
@@ -338,8 +345,11 @@ public class UiManager : MonoBehaviour
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
             meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
         }
-    
+
         RowSum();
+      
+
+
     }
     /// <summary>
     /// check data in turn player
@@ -369,20 +379,67 @@ public class UiManager : MonoBehaviour
             TimerTurn.instance.TimerText.text = "30";
             TimerTurn.instance.TimerCount = 30;
             TimerTurn.instance.TimerText.color = Color.white;
-
+            RowSum();
+         
         }
         else
         {
             if (!obj.EndGame)
                 TextTurnOpp.Play("OppTurn", 0, 0);
+            RowSum();
+            
             TimerTurn.instance.TimerRunning = false;
             TimerTurn.instance.TimerText.text = "-";
         }
-        RowSum();
+     
 
     }
 
+    private void CheckShowLight()
+    {
+        Debug.Log(CalculterRowScore.instance.DuobleScore1.Count + " Count");
+        Debug.Log(CalculterRowScore.instance.DuobleScore2.Count + " Count 2");
 
+        foreach (var item in tileDataMe)
+        {
+            item.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
+        }
+        foreach (var itemm in tileDataOpps)
+        {
+            itemm.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = itemm.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
+        }
+        foreach (var item in CalculterRowScore.instance.DuobleScore1)
+        {
+            var showLight = tileDataMe.FindAll(e => e.numberLine == item.line && e.numberRow == item.row);
+            for (int i = 0; i < showLight.Count; i++)
+            {
+                Debug.Log(showLight[i].numberLine + showLight[i].numberRow + " show");
+                showLight[i].GetComponentInChildren<ParticleSystem>().Play();
+                ParticleSystem.MainModule settings = showLight[i].GetComponentInChildren<ParticleSystem>().main;
+                settings.startColor = new ParticleSystem.MinMaxGradient(item.color);
+              
+            }
+        }
+        foreach (var item in CalculterRowScore.instance.DuobleScore2)
+        {
+            var showLight = tileDataOpps.FindAll(e => e.line == item.line && e.row == item.row);
+            for (int i = 0; i < showLight.Count; i++)
+            {
+                Debug.Log(showLight[i].line + showLight[i].row + " show Opp");
+                showLight[i].GetComponentInChildren<ParticleSystem>().Play();
+                ParticleSystem.MainModule settings = showLight[i].GetComponentInChildren<ParticleSystem>().main;
+                settings.startColor = new ParticleSystem.MinMaxGradient(item.color);
+
+             
+            }
+        }
+        CalculterRowScore.instance.DuobleScore2.Clear();
+        CalculterRowScore.instance.DuobleScore1.Clear();
+    }
 
     private void Instance_IsTurn(bool obj)
     {

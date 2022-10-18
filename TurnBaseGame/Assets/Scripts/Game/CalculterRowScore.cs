@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Nakama.Helpers;
-using Newtonsoft.Json;
+
 
 public class CalculterRowScore : MonoBehaviour
 {
@@ -25,7 +25,13 @@ public class CalculterRowScore : MonoBehaviour
     public List<ClickInCell> clickInCellsCal = new List<ClickInCell>();
     public List<ClickInCell> clickInCells1Cal = new List<ClickInCell>();
     public List<ClickInCell> clickInCells2Cal = new List<ClickInCell>();
-    public Color colorParticle;
+
+    public List<SaveShowLight> DuobleScore1 = new();
+    public List<SaveShowLight> DuobleScore2 = new();
+    public Color colorParticle2Count;
+    public Color colorParticle3Count;
+    public Color colorParticle4Count;
+    public Color whitecolor;
     private void Start()
     {
         instance = this;
@@ -33,6 +39,7 @@ public class CalculterRowScore : MonoBehaviour
 
     public int TilesOpp(List<TileDataOpp> cell)
     {
+        //  DuobleScore2.Clear();
         var total = 0;
         var freqMap = cell.GroupBy(x => x.ValueTile)
                                                     .Where(g => g.Count() > 1).Where(r => r.Key > 0)
@@ -42,27 +49,48 @@ public class CalculterRowScore : MonoBehaviour
         var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
         foreach (var item in placeCell)
         {
-
             foreach (var par in item.Value)
             {
-                if (par.ValueTile > 0)
+                if (par.IsLock)
                 {
-                    par.GetComponentInChildren<ParticleSystem>().Play();
-                    ParticleSystem.MainModule settings = par.GetComponentInChildren<ParticleSystem>().main;
-                    settings.startColor = new ParticleSystem.MinMaxGradient(colorParticle);
+                    SaveShowLight show = new()
+                    {
+                        line = par.line,
+                        row = par.row
+
+                    };
+                    if (!DuobleScore2.Contains(show))
+                    {
+                        DuobleScore2.Add(show);
+                        show.countInLine++;
+                    }
+                   
+
+
+                    Debug.Log($"{show.line}{show.row}  DuobleScore2");
+                    //par.GetComponentInChildren<ParticleSystem>().Play();
+                    //ParticleSystem.MainModule settings = par.GetComponentInChildren<ParticleSystem>().main;
+                    //settings.startColor = new ParticleSystem.MinMaxGradient(colorParticle);
 
                 }
+
+
             }
 
         }
 
+
+
+
         foreach (var item in freqMap)
         {
-            Debug.LogWarning($"{item.Key} + {item.Value} item for opp");
+
 
             if (item.Value > 3)
             {
+
                 return item.Key * 16;
+
             }
             else if (item.Value == 3)
             {
@@ -85,7 +113,7 @@ public class CalculterRowScore : MonoBehaviour
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
                 var same = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 2).Where(t => t.Key != item.Key).ToArray();
 
-                Debug.Log(item.Value + " item Value");
+
                 total += item.Key * 4;
 
                 if (dif.Length > 0)
@@ -116,13 +144,17 @@ public class CalculterRowScore : MonoBehaviour
 
     public int TileMe(List<ClickInCell> cell)
     {
-        var total = 0;
 
+        var total = 0;
+        // DuobleScore1.Clear();
         Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
                                            .Where(g => g.Count() > 1).Where(r => r.Key > 0)
                                             .ToDictionary(x => x.Key, x => x.Count());
 
+
         var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
+
+
         foreach (var item in placeCell)
         {
 
@@ -130,10 +162,23 @@ public class CalculterRowScore : MonoBehaviour
             {
                 if (par.isLock == true)
                 {
-                    par.GetComponentInChildren<ParticleSystem>().Play();
-                    ParticleSystem.MainModule settings = par.GetComponentInChildren<ParticleSystem>().main;
-                    settings.startColor = new ParticleSystem.MinMaxGradient(colorParticle);
+                    SaveShowLight show = new()
+                    {
+                        line = par.numberLine,
+                        row = par.numberRow,
+                    };
+                    if (!DuobleScore2.Contains(show))
+                    {
+                        DuobleScore2.Add(show);
+                        show.countInLine++;
+                    }
+                  
+                    Debug.Log($"{show.line}{show.row} DuobleScore1");
+                    //par.GetComponentInChildren<ParticleSystem>().Play();
+                    //ParticleSystem.MainModule settings = par.GetComponentInChildren<ParticleSystem>().main;
+                    //settings.startColor = new ParticleSystem.MinMaxGradient(colorParticle);
                 }
+
             }
 
         }
@@ -141,7 +186,7 @@ public class CalculterRowScore : MonoBehaviour
 
         foreach (var item in freqMap)
         {
-            Debug.LogWarning($"{item.Key} + {item.Value} item for Me");
+
 
             if (item.Value > 3)
             {
@@ -149,7 +194,6 @@ public class CalculterRowScore : MonoBehaviour
             }
             else if (item.Value == 3)
             {
-
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
 
                 total = item.Key * 9;
@@ -168,7 +212,7 @@ public class CalculterRowScore : MonoBehaviour
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
                 var same = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 2).Where(t => t.Key != item.Key).ToArray();
 
-                Debug.Log(item.Value + " item Value");
+
                 total += item.Key * 4;
 
                 if (dif.Length > 0)

@@ -7137,7 +7137,10 @@ MonoBehaviour:
   - {fileID: 979877961}
   - {fileID: 455725804}
   - {fileID: 757218806}
-  colorParticle: {r: 1, g: 0.40945286, b: 0, a: 0.23529412}
+  colorParticle2Count: {r: 1, g: 0.21120691, b: 0, a: 0.23529412}
+  colorParticle3Count: {r: 1, g: 0, b: 0.625, a: 0.23529412}
+  colorParticle4Count: {r: 0.36644602, g: 0, b: 1, a: 0.23529412}
+  whitecolor: {r: 1, g: 1, b: 1, a: 0.23529412}
 --- !u!1 &522090070
 GameObject:
   m_ObjectHideFlags: 0
