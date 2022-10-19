@@ -8240,8 +8240,8 @@ MonoBehaviour:
   clickInCells2Cal: []
   colorParticle2Count: {r: 1, g: 0.22172387, b: 0, a: 0.23529412}
   colorParticle3Count: {r: 1, g: 0, b: 0.7200346, a: 0.23529412}
-  colorParticle4Count: {r: 0, g: 0, b: 0, a: 0}
-  whitecolor: {r: 0.55001116, g: 0, b: 1, a: 0.23529412}
+  colorParticle4Count: {r: 0.77491474, g: 0, b: 1, a: 0.23529412}
+  whitecolor: {r: 1, g: 1, b: 1, a: 0.23529412}
 --- !u!1001 &522326642
 PrefabInstance:
   m_ObjectHideFlags: 0

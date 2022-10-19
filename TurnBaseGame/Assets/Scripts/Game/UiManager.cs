@@ -7,7 +7,7 @@ using NinjaBattle.Game;
 using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine.U2D;
-
+using Unity.VisualScripting;
 
 public class UiManager : MonoBehaviour
 {
@@ -119,7 +119,7 @@ public class UiManager : MonoBehaviour
     {
         //if (obj.UserId == MultiplayerManager.Instance.Self.UserId)
         //    return;
-       
+
         if (obj.Answer == "req")
         {
             rematchPanle.SetActive(true);
@@ -239,7 +239,7 @@ public class UiManager : MonoBehaviour
                 item.GetComponentInChildren<ParticleSystem>().Stop();
             }
         }
-       // RowSum();
+        // RowSum();
     }
 
     private void Instance_onSetScoreMe(int obj, int mines, DataPlayer data)
@@ -271,31 +271,48 @@ public class UiManager : MonoBehaviour
         ScoreTextOpp.text = obj.ToString();
 
     }
+   
+    int Count;
     [ContextMenu("sum")]
     public void RowSum()
     {
-        arryRowSumOpp[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps).ToString();
-        arryRowSumOpp[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2).ToString();
-        arryRowSumOpp[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3).ToString();
+  
+        arryRowSumOpp[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps, out Count).ToString();
+    
+        arryRowSumOpp[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2, out Count).ToString();
+       
+        arryRowSumOpp[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3, out Count).ToString();
+       
 
-        arryRowSumMe[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells).ToString();
-        arryRowSumMe[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1).ToString();
-        arryRowSumMe[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2).ToString();
+        arryRowSumMe[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells, out Count).ToString();
+      
+        arryRowSumMe[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1, out Count).ToString();
+     
+         arryRowSumMe[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2, out Count).ToString();
+      
 
         if (GameManager.Instance.modeGame == ModeGame.VerticalAndHorizontal)
         {
-            arryRowSumOppCal[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOppsCal).ToString();
-            arryRowSumOppCal[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2Cal).ToString();
-            arryRowSumOppCal[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3Cal).ToString();
+            arryRowSumOppCal[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOppsCal, out Count).ToString();
+          
+            arryRowSumOppCal[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2Cal, out Count).ToString();
+           
+            arryRowSumOppCal[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3Cal, out Count).ToString();
+           
 
-            arryRowSumMeCal[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCellsCal).ToString();
-            arryRowSumMeCal[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1Cal).ToString();
-            arryRowSumMeCal[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal).ToString();
+            arryRowSumMeCal[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCellsCal, out Count).ToString();
+         
+            arryRowSumMeCal[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1Cal, out Count).ToString();
+         
+            arryRowSumMeCal[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal, out Count).ToString();
         }
+     
         if (GameManager.Instance.modeGame != ModeGame.VerticalAndHorizontal)
         {
-            arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4).ToString();
-            arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3).ToString();
+            arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4, out Count).ToString();
+         
+            arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3, out Count).ToString();
+           
         }
         CheckShowLight();
 
@@ -304,11 +321,11 @@ public class UiManager : MonoBehaviour
     private void Instance_onSetDataInRowOpp(int arg1, int arg2)
     {
 
-    
+
         var clone = tileDataOpps.Find(e => e.line == arg1 && e.row == arg2 && e.IsLock);
         if (clone != null)
         {
-          
+
             clone.SpriteDice.sprite = null;
             clone.ValueTile = 0;
             clone.IsLock = false;
@@ -318,7 +335,7 @@ public class UiManager : MonoBehaviour
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
         }
         RowSum();
-       
+
 
 
 
@@ -331,12 +348,12 @@ public class UiManager : MonoBehaviour
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
 
-     
+
         var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2 && r.isLock);
 
         if (meCell != null)
         {
-           
+
             meCell.SpriteDice.sprite = null;
             meCell.ValueTile = 0;
             meCell.isLock = false;
@@ -347,7 +364,7 @@ public class UiManager : MonoBehaviour
         }
 
         RowSum();
-      
+
 
 
     }
@@ -380,18 +397,18 @@ public class UiManager : MonoBehaviour
             TimerTurn.instance.TimerCount = 30;
             TimerTurn.instance.TimerText.color = Color.white;
             RowSum();
-         
+
         }
         else
         {
             if (!obj.EndGame)
                 TextTurnOpp.Play("OppTurn", 0, 0);
             RowSum();
-            
+
             TimerTurn.instance.TimerRunning = false;
             TimerTurn.instance.TimerText.text = "-";
         }
-     
+
 
     }
 
@@ -400,43 +417,7 @@ public class UiManager : MonoBehaviour
         Debug.Log(CalculterRowScore.instance.DuobleScore1.Count + " Count");
         Debug.Log(CalculterRowScore.instance.DuobleScore2.Count + " Count 2");
 
-        foreach (var item in tileDataMe)
-        {
-            item.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
-        }
-        foreach (var itemm in tileDataOpps)
-        {
-            itemm.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = itemm.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
-        }
-        foreach (var item in CalculterRowScore.instance.DuobleScore1)
-        {
-            var showLight = tileDataMe.FindAll(e => e.numberLine == item.line && e.numberRow == item.row);
-            for (int i = 0; i < showLight.Count; i++)
-            {
-                Debug.Log(showLight[i].numberLine + showLight[i].numberRow + " show");
-                showLight[i].GetComponentInChildren<ParticleSystem>().Play();
-                ParticleSystem.MainModule settings = showLight[i].GetComponentInChildren<ParticleSystem>().main;
-                settings.startColor = new ParticleSystem.MinMaxGradient(item.color);
-              
-            }
-        }
-        foreach (var item in CalculterRowScore.instance.DuobleScore2)
-        {
-            var showLight = tileDataOpps.FindAll(e => e.line == item.line && e.row == item.row);
-            for (int i = 0; i < showLight.Count; i++)
-            {
-                Debug.Log(showLight[i].line + showLight[i].row + " show Opp");
-                showLight[i].GetComponentInChildren<ParticleSystem>().Play();
-                ParticleSystem.MainModule settings = showLight[i].GetComponentInChildren<ParticleSystem>().main;
-                settings.startColor = new ParticleSystem.MinMaxGradient(item.color);
-
-             
-            }
-        }
+      
         CalculterRowScore.instance.DuobleScore2.Clear();
         CalculterRowScore.instance.DuobleScore1.Clear();
     }
