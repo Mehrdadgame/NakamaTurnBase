@@ -60,12 +60,7 @@ public class CalculterRowScore : MonoBehaviour
 
 
 
-        foreach (var item in cell)
-        {
-            item.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
-        }
+    
        
         var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
         foreach (var item in placeCell)
@@ -79,19 +74,18 @@ public class CalculterRowScore : MonoBehaviour
                     ParticleSystem.MainModule settings = item.Value[i].GetComponentInChildren<ParticleSystem>().main;
                     if (item.Value.Length==4)
                     {
-                       
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(4));
-                    
+                        item.Value[i].Double = true;
                     }
                     if (item.Value.Length == 3)
                     {
-                        
+                        item.Value[i].Double = true;
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(3));
 
                     }
                     if (item.Value.Length == 2)
                     {
-                    
+                        item.Value[i].Double = true;
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(2));
 
                     }
@@ -180,12 +174,7 @@ public class CalculterRowScore : MonoBehaviour
         Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
                                            .Where(g => g.Count() > 1).Where(r => r.Key > 0)
                                             .ToDictionary(x => x.Key, x => x.Count());
-        foreach (var itemm in cell)
-        {
-            itemm.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = itemm.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
-        }
+      
 
 
         var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());

@@ -327,7 +327,10 @@ namespace NinjaBattle.Game
             ActionEndGame.instance.IconOpp.enabled = true;
             ActionEndGame.instance.IconMe.Play("EndGamePlayer1Icon");
             ActionEndGame.instance.IconOpp.Play("EndGamePlater2Icon");
+            ActionEndGame.instance.IconMe.GetComponentInChildren<ParticleSystem>().Stop();
+            ActionEndGame.instance.IconOpp.GetComponentInChildren<ParticleSystem>().Stop();
 
+            
         }
 
         private void GetCurrentPlayer()

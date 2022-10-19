@@ -7,7 +7,7 @@ using NinjaBattle.Game;
 using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine.U2D;
-using Unity.VisualScripting;
+
 
 public class UiManager : MonoBehaviour
 {
@@ -52,6 +52,8 @@ public class UiManager : MonoBehaviour
     public Image StickerOpp;
     public SpriteAtlas AllAssets;
     public Color colroParticlewhite;
+
+
     private void Start()
     {
         instance = this;
@@ -62,6 +64,8 @@ public class UiManager : MonoBehaviour
             TextTurnYou.Play("YouTurn", 0, 0);
             TimerTurn.instance.TimerRunning = true;
             NameOpp.text = PlayerPrefs.GetString("Opp");
+            AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Play();
+            AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Stop();
         }
         else
         {
@@ -70,6 +74,8 @@ public class UiManager : MonoBehaviour
             TimerTurn.instance.TimerRunning = false;
             NameOpp.text = PlayerPrefs.GetString("Opp");
             GameManager.Instance.diceRoller.Rotation(true);
+            AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Stop();
+            AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Play();
         }
 
     }
@@ -191,6 +197,7 @@ public class UiManager : MonoBehaviour
         {
             opp.SpriteDice.transform.parent.gameObject.SetActive(false);
             opp.ValueTile = 0;
+            opp.IsLock = false;
             opp.GetComponentInChildren<ParticleSystem>().Stop();
             ParticleSystem.MainModule settings = opp.GetComponentInChildren<ParticleSystem>().main;
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
@@ -204,6 +211,7 @@ public class UiManager : MonoBehaviour
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
             me.SpriteDice.transform.parent.gameObject.SetActive(false);
         }
+        ClearList();
         ScoreTextMe.text = "0";
         ScoreTextOpp.text = "0";
         RowSum();
@@ -276,7 +284,20 @@ public class UiManager : MonoBehaviour
     [ContextMenu("sum")]
     public void RowSum()
     {
-  
+
+        foreach (var item in tileDataMe)
+        {
+            item.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
+        }
+        foreach (var item in tileDataOpps)
+        {
+            item.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
+        }
+
         arryRowSumOpp[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps, out Count).ToString();
     
         arryRowSumOpp[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2, out Count).ToString();
@@ -314,7 +335,7 @@ public class UiManager : MonoBehaviour
             arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3, out Count).ToString();
            
         }
-        CheckShowLight();
+        ClearList();
 
     }
 
@@ -379,7 +400,8 @@ public class UiManager : MonoBehaviour
         {
 
             GameManager.Instance.diceRoller.Rotation(false);
-
+            AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Play();
+            AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Stop();
             _ = Task.Delay(200);
             GameManager.Instance.diceRoller.GetComponent<Image>().sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
             GameManager.Instance.diceRoller.currrentDie = -1;
@@ -404,7 +426,8 @@ public class UiManager : MonoBehaviour
             if (!obj.EndGame)
                 TextTurnOpp.Play("OppTurn", 0, 0);
             RowSum();
-
+            AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Stop();
+            AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Play();
             TimerTurn.instance.TimerRunning = false;
             TimerTurn.instance.TimerText.text = "-";
         }
@@ -412,12 +435,8 @@ public class UiManager : MonoBehaviour
 
     }
 
-    private void CheckShowLight()
+    private void ClearList()
     {
-        Debug.Log(CalculterRowScore.instance.DuobleScore1.Count + " Count");
-        Debug.Log(CalculterRowScore.instance.DuobleScore2.Count + " Count 2");
-
-      
         CalculterRowScore.instance.DuobleScore2.Clear();
         CalculterRowScore.instance.DuobleScore1.Clear();
     }
@@ -434,6 +453,8 @@ public class UiManager : MonoBehaviour
             _ = Task.Delay(1000);
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerRunning = true;
+            AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Play();
+            AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Stop();
 
         }
         else
@@ -444,6 +465,8 @@ public class UiManager : MonoBehaviour
             MultiplayerManager.Instance.isTurn = false;
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerRunning = false;
+            AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Stop();
+            AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Play();
         }
 
     }
@@ -455,6 +478,8 @@ public class UiManager : MonoBehaviour
         dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
         TextTurnYou.Play("YouTurn", 0, 0);
         GameManager.Instance.diceRoller.Rotation(false);
+        AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Play();
+        AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Stop();
 
 
     }
