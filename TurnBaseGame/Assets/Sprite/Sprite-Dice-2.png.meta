@@ -316,7 +316,7 @@ TextureImporter:
         width: 507
         height: 121
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -324,6 +324,48 @@ TextureImporter:
       bones: []
       spriteID: e1089420e84a81746917f4a65ed1f649
       internalID: -33627901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice-2_10
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 1964
+        width: 78
+        height: 84
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff92fa76dbdd59247896f496c0173998
+      internalID: 1824474033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice-2_11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1340
+        width: 299
+        height: 491
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 50, y: 50, z: 50, w: 50}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f4adc48db932bb459297e27b0c23985
+      internalID: 104242626
       vertices: []
       indices: 
       edges: []
@@ -341,6 +383,8 @@ TextureImporter:
     nameFileIdTable:
       Sprite-Dice-2_6: 2030970929
       Sprite-Dice-2_0: 356413036
+      Sprite-Dice-2_11: 104242626
+      Sprite-Dice-2_10: 1824474033
       Sprite-Dice-2_3: -2047160346
       Sprite-Dice-2_8: -1118543235
       Sprite-Dice-2_9: -33627901

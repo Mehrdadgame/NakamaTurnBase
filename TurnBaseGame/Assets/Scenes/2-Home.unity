@@ -220,8 +220,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Entry Fee: 500HXD'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 068d5c533e72b374892b6873981c53f6, type: 2}
-  m_sharedMaterial: {fileID: -5352203308899520952, guid: 068d5c533e72b374892b6873981c53f6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ed9fbb48aeb95fa4897973f9c0f94b3b, type: 2}
+  m_sharedMaterial: {fileID: -2040807428288936985, guid: ed9fbb48aeb95fa4897973f9c0f94b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -584,8 +584,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Entry Fee: 50HXD'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 068d5c533e72b374892b6873981c53f6, type: 2}
-  m_sharedMaterial: {fileID: -5352203308899520952, guid: 068d5c533e72b374892b6873981c53f6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ed9fbb48aeb95fa4897973f9c0f94b3b, type: 2}
+  m_sharedMaterial: {fileID: -2040807428288936985, guid: ed9fbb48aeb95fa4897973f9c0f94b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4455,8 +4455,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Entry Fee: 5000HXD'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 068d5c533e72b374892b6873981c53f6, type: 2}
-  m_sharedMaterial: {fileID: -5352203308899520952, guid: 068d5c533e72b374892b6873981c53f6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ed9fbb48aeb95fa4897973f9c0f94b3b, type: 2}
+  m_sharedMaterial: {fileID: -2040807428288936985, guid: ed9fbb48aeb95fa4897973f9c0f94b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
