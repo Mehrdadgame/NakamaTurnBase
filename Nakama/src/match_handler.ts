@@ -123,6 +123,26 @@ let matchLoop: nkruntime.MatchLoopFunction = function (context: nkruntime.Contex
     return gameState.endMatch ? null : { state: gameState };
 }
 
+
+
+/**
+ * When a player leaves the match, the game sends a message to all the other players in the match,
+ * telling them that the player has left.
+ * 
+ * Arguments:
+ * 
+ * * `context`: The context of the match.
+ * * `logger`: A logger object that can be used to log messages.
+ * * `nakama`: The Nakama server instance.
+ * * `dispatcher`: The match dispatcher object.
+ * * `tick`: The current tick number.
+ * * `state`: The current state of the match.
+ * * `presences`: nkruntime.Presence[]
+ * 
+ * Returns:
+ * 
+ * The match state is being returned.
+ */
 let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Context, logger: nkruntime.Logger, nakama: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, presences: nkruntime.Presence[])
 {
     let gameState = state as GameState;

@@ -215,20 +215,20 @@ public class UiManager : MonoBehaviour
         ScoreTextMe.text = "0";
         ScoreTextOpp.text = "0";
         RowSum();
-        await Task.Delay(750);
+        await Task.Delay(1000);
         AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
         AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(true);
         ActionEndGame.instance.ResultPanel.SetActive(false);
         AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
         AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
-        await Task.Delay(1000);
+        await Task.Delay(1200);
         AniamtionManager.instance.AnimGoToUpMe.enabled = false;
         AniamtionManager.instance.AnimGoToUpOpp.enabled = false;
         AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconMe;
         AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconOpp;
         AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
+        TimerTurn.instance.TimerCount = 30;
     }
     private void ShowHighLight(bool obj)
     {
