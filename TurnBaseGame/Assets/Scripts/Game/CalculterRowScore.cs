@@ -5,28 +5,28 @@ using System.Linq;
 using Nakama.Helpers;
 using System.Drawing;
 using Color = UnityEngine.Color;
-using UnityEngine.Tilemaps;
+
 
 public class CalculterRowScore : MonoBehaviour
 {
     public static CalculterRowScore instance;
-    public List<TileDataOpp> tileDataOpps = new List<TileDataOpp>();
-    public List<TileDataOpp> tileDataOpps2 = new List<TileDataOpp>();
-    public List<TileDataOpp> tileDataOpps3 = new List<TileDataOpp>();
-    public List<TileDataOpp> tileDataOpps4 = new List<TileDataOpp>();
+    public List<TileDataOpp> tileDataOpps = new();
+    public List<TileDataOpp> tileDataOpps2 = new();
+    public List<TileDataOpp> tileDataOpps3 = new();
+    public List<TileDataOpp> tileDataOpps4 = new();
 
-    public List<ClickInCell> clickInCells = new List<ClickInCell>();
-    public List<ClickInCell> clickInCells1 = new List<ClickInCell>();
-    public List<ClickInCell> clickInCells2 = new List<ClickInCell>();
-    public List<ClickInCell> clickInCells3 = new List<ClickInCell>();
+    public List<ClickInCell> clickInCells = new();
+    public List<ClickInCell> clickInCells1 = new();
+    public List<ClickInCell> clickInCells2 = new();
+    public List<ClickInCell> clickInCells3 = new();
 
-    public List<TileDataOpp> tileDataOppsCal = new List<TileDataOpp>();
-    public List<TileDataOpp> tileDataOpps2Cal = new List<TileDataOpp>();
-    public List<TileDataOpp> tileDataOpps3Cal = new List<TileDataOpp>();
+    public List<TileDataOpp> tileDataOppsCal = new();
+    public List<TileDataOpp> tileDataOpps2Cal = new();
+    public List<TileDataOpp> tileDataOpps3Cal = new();
 
-    public List<ClickInCell> clickInCellsCal = new List<ClickInCell>();
-    public List<ClickInCell> clickInCells1Cal = new List<ClickInCell>();
-    public List<ClickInCell> clickInCells2Cal = new List<ClickInCell>();
+    public List<ClickInCell> clickInCellsCal = new();
+    public List<ClickInCell> clickInCells1Cal = new();
+    public List<ClickInCell> clickInCells2Cal = new();
 
     public List<SaveShowLight> DuobleScore1 = new();
     public List<SaveShowLight> DuobleScore2 = new();
@@ -50,7 +50,7 @@ public class CalculterRowScore : MonoBehaviour
         }
         return whitecolor;
     }
-    public int TilesOpp(List<TileDataOpp> cell , out int count)
+    public int TilesOpp(List<TileDataOpp> cell)
     {
         //  DuobleScore2.Clear();
         var total = 0;
@@ -60,8 +60,8 @@ public class CalculterRowScore : MonoBehaviour
 
 
 
-    
-       
+
+
         var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
         foreach (var item in placeCell)
         {
@@ -72,7 +72,7 @@ public class CalculterRowScore : MonoBehaviour
 
                     item.Value[i].GetComponentInChildren<ParticleSystem>().Play();
                     ParticleSystem.MainModule settings = item.Value[i].GetComponentInChildren<ParticleSystem>().main;
-                    if (item.Value.Length==4)
+                    if (item.Value.Length == 4)
                     {
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(4));
                         item.Value[i].Double = true;
@@ -112,13 +112,13 @@ public class CalculterRowScore : MonoBehaviour
 
             if (item.Value > 3)
             {
-                count = 4;
-                return item.Key * 16 ;
+
+                return item.Key * 16;
 
             }
             else if (item.Value == 3)
             {
-                count = 3;
+
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
 
                 total = item.Key * 9;
@@ -137,7 +137,7 @@ public class CalculterRowScore : MonoBehaviour
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
                 var same = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 2).Where(t => t.Key != item.Key).ToArray();
 
-                count = 2;
+
                 total += item.Key * 4;
 
                 if (dif.Length > 0)
@@ -161,21 +161,18 @@ public class CalculterRowScore : MonoBehaviour
 
 
         }
-        count = 1;
+
         return cell.Where(r => r.ValueTile > -1).Sum(c => c.ValueTile);
 
     }
 
-    public int TileMe(List<ClickInCell> cell , out int count)
+    public int TileMe(List<ClickInCell> cell)
     {
 
         var total = 0;
-        // DuobleScore1.Clear();
         Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
                                            .Where(g => g.Count() > 1).Where(r => r.Key > 0)
                                             .ToDictionary(x => x.Key, x => x.Count());
-      
-
 
         var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
 
@@ -232,13 +229,13 @@ public class CalculterRowScore : MonoBehaviour
 
             if (item.Value > 3)
             {
-                count = 4;
+
                 return item.Key * 16;
             }
             else if (item.Value == 3)
             {
                 var dif = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() == 1).ToArray();
-                count = 3;
+
                 total = item.Key * 9;
                 var totalDif = 0;
                 if (dif.Length > 0)
@@ -257,7 +254,7 @@ public class CalculterRowScore : MonoBehaviour
 
 
                 total += item.Key * 4;
-                count = 2;
+
                 if (dif.Length > 0)
                 {
                     var totalDif = 0;
@@ -279,7 +276,7 @@ public class CalculterRowScore : MonoBehaviour
 
 
         }
-        count = 1;
+
         return cell.Where(r => r.ValueTile > -1).Sum(c => c.ValueTile);
 
 

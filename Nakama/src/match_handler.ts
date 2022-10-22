@@ -2,12 +2,9 @@
 
 let matchInit: nkruntime.MatchInitFunction = function (context: nkruntime.Context, logger: nkruntime.Logger, nakama: nkruntime.Nakama, params: { [key: string]: string })
 {
-  logger.info(gameMode + " gameMode((((((((")
   let value="";
   for (let key in params) {
        value = params[key];
-      logger.info(value + " CCCCCCCCCCCCCCCCCCCCC");
-      // Use `key` and `value`
     }
    
     var label: MatchLabel = { open: true ,game_mode:value}
@@ -107,7 +104,6 @@ let matchJoin: nkruntime.MatchJoinFunction = function (context: nkruntime.Contex
         dispatcher.broadcastMessage(OperationCode.PlayerJoined, JSON.stringify(player), presencesOnMatch);
         presencesOnMatch.push(presence);
     }
-   //gameState.startGame =true;
   
     dispatcher.broadcastMessage(OperationCode.Players, JSON.stringify(gameState.players), presences);
     dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(gameState.players[0].presence.userId));
@@ -275,13 +271,6 @@ let valuMines = 0;
     {
         dataPlayer.master=true;
         gameState.  array3DPlayerFirst[dataPlayer.NumberLine][dataPlayer.NumberRow] = (dataPlayer.NumberTile);
-       // let readc=  ReadScore(message.sender.userId,nakama);
-       // var score=  CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,logger,readc.ScoreF)[0];
-       // dataPlayer.sumRow1[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberTile,logger)[1];
-      //  readc.ScoreF = score;
-      //  dataPlayer.Score =  readc.ScoreF;
-       // gameState.players[0].ScorePlayer =readc.ScoreF;
-       // SaveScore(message.sender.userId,0,nakama,readc);
         gameState.CountTurnPlayer1++;
 
          dataPlayer.Score = TotalScore(gameState.array3DPlayerFirst,logger,gameState.VerticalMode);
@@ -300,15 +289,11 @@ if(gameState.VerticalMode == true){
         if(countPow>0)
         {
             dataPlayer.ScoreOtherPlayer =  TotalScore(gameState.array3DPlayerSecend,logger,gameState.VerticalMode);
-        //    let read1 =  ReadScore( gameState.players[1].presence.userId,nakama);
-           valuMines = dataPlayer.NumberTile+1;
+            valuMines = dataPlayer.NumberTile+1;
             let miness= (valuMines*countPow)*countPow;
             dataPlayer.ValueMines = miness;
-        //    gameState.players[1].ScorePlayer  = read1.ScoreF;
-        //   let resultSave = SaveScore(gameState.players[1].presence.userId, miness ,nakama,read1);
-        //   dataPlayer.ScoreOtherPlayer = resultSave;
-          dataPlayer.MinesScore =true;
-          resultTile=[];
+            dataPlayer.MinesScore =true;
+            resultTile=[];
       
 
          }
@@ -325,15 +310,11 @@ if(gameState.VerticalMode == true){
     if(countPow>0)
  {
     dataPlayer.ScoreOtherPlayer =  TotalScore(gameState.array3DPlayerSecend,logger,gameState.VerticalMode);
-//     let read1 =  ReadScore( gameState.players[1].presence.userId,nakama);
     valuMines = dataPlayer.NumberTile+1;
     let miness= (valuMines*countPow)*countPow;
     dataPlayer.ValueMines = miness;
-//     gameState.players[1].ScorePlayer  = read1.ScoreF;
-//    let resultSave = SaveScore(gameState.players[1].presence.userId, miness ,nakama,read1);
-//    dataPlayer.ScoreOtherPlayer = resultSave;
-   dataPlayer.MinesScore =true;
-   resultTile=[];
+    dataPlayer.MinesScore =true;
+    resultTile=[];
  }
   
  }
@@ -345,35 +326,22 @@ if(gameState.VerticalMode == true){
 
     var checkEnd1 = ActionWinPlayer(gameState.array3DPlayerFirst);
     var checkEnd2 = ActionWinPlayer(gameState.array3DPlayerSecend);
-var end = parseInt (gameState.CountTurnPlayer1) == parseInt( gameState.CountTurnPlayer2);
-logger.info(end + "  dataPlayer.End");
+    var end = parseInt (gameState.CountTurnPlayer1) == parseInt( gameState.CountTurnPlayer2);
+    logger.info(end + "  dataPlayer.End");
     if(checkEnd1 == true || checkEnd2 ==true ){
         if(end ==true){
 
             if (gameState.players[1].ScorePlayer< gameState.players[0].ScorePlayer) {
                 dataPlayer.PlayerWin = gameState.players[0].presence.userId;
-             //  var readCountWin = ReadScoreLeaderboard( gameState.players[0].presence.userId,nakama);
-             
-              //  readCountWin.win+=1;
-              //  logger.info(readCountWin.win.toString() + "Player0");
-               // SaveScoreLeaderboard( gameState.players[0].presence.userId,nakama,readCountWin);
-               // nakama.leaderboardRecordWrite(IdLeaderboard,dataPlayer.PlayerWin,gameState.players[0].presence.username,readCountWin.win)
             }
             else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer){
                 dataPlayer.PlayerWin =gameState.players[1].presence.userId;
-              //  var readCountWin = ReadScoreLeaderboard( gameState.players[1].presence.userId,nakama);
-               // readCountWin.win+=1;
-               // logger.info(readCountWin.win.toString()+"Player1");
-              // SaveScoreLeaderboard( gameState.players[1].presence.userId,nakama,readCountWin);
-               // nakama.leaderboardRecordWrite(IdLeaderboard,dataPlayer.PlayerWin,gameState.players[1].presence.username,readCountWin.win)
             }
             else{
                 dataPlayer.PlayerWin="";
             }
             dataPlayer.EndGame =true;
             gameState.BeforeEndGame=true;
-          // gameState.endMatch =true;
-           // gameState.startGame =false;
         }
 
 
@@ -386,34 +354,23 @@ logger.info(end + "  dataPlayer.End");
     gameState.CountTurnPlayer2++;
     gameState. array3DPlayerSecend[dataPlayer.NumberLine][dataPlayer.NumberRow] =(dataPlayer.NumberTile);
      logger.info(dataPlayer.NumberLine + " "+ dataPlayer.NumberRow);
-    // dataPlayer.sumRow2 = [0,0,0];
     dataPlayer.Score = TotalScore(gameState.array3DPlayerSecend,logger,gameState.VerticalMode);
-    // let read=   ReadScore(message.sender.userId,nakama);
-     //logger.info(read.ScoreF + "read.ScoreF");
-     //let score= CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,logger,read.ScoreF)[0];
-     //dataPlayer.sumRow2[dataPlayer.NumberLine] = CalculatorScore(array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberTile,logger)[1];
-     //read.ScoreF = score;
-    // dataPlayer.Score =read.ScoreF;
      gameState.players[1].ScorePlayer = dataPlayer.Score;
-    // SaveScore(message.sender.userId,0,nakama,read);
      var resultTile2 = CalculatorArray2D(gameState.array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile, logger);
      let countPow=0;
      if(gameState.VerticalMode == true){
         var resultTileVertical = CalculatorArray2DWithVertical(gameState.array3DPlayerFirst,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile,logger);
        
         for (let index = 0; index < resultTileVertical.length; index++) {
-           logger.info(dataPlayer.NumberRow.toString()+resultTileVertical[index]+ "  %%%%%%%%%%%%%%%%");
            gameState. array3DPlayerFirst[resultTileVertical[index]][dataPlayer.NumberRow] = (-1);
             countPow++;
         }
             if(countPow>0)
             {
-               //let read1 =  ReadScore( gameState.players[0].presence.userId,nakama);
               valuMines = dataPlayer.NumberTile+1;
                let miness= (valuMines*countPow)*countPow;
                dataPlayer.ValueMines = miness;
                gameState.players[0].ScorePlayer  =TotalScore(gameState.array3DPlayerFirst,logger,gameState.VerticalMode);
-           //   let resultSave = SaveScore(gameState.players[0].presence.userId, miness ,nakama,read1);
               dataPlayer.ScoreOtherPlayer =  gameState.players[0].ScorePlayer;
               dataPlayer.MinesScore =true;
               resultTile=[];
@@ -433,28 +390,22 @@ logger.info(end + "  dataPlayer.End");
         if(countPow>0)
      {
         gameState.players[0].ScorePlayer  =TotalScore(gameState.array3DPlayerFirst,logger,gameState.VerticalMode);
-     //   let read1 =  ReadScore( gameState.players[0].presence.userId,nakama);
         valuMines = dataPlayer.NumberTile+1;
         let miness= (valuMines*countPow)*countPow;
         dataPlayer.ValueMines = miness;
         gameState.players[0].ScorePlayer  = gameState.players[0].ScorePlayer;
-      // let resultSave = SaveScore(gameState.players[0].presence.userId, miness ,nakama,read1);
        dataPlayer.ScoreOtherPlayer =  gameState.players[0].ScorePlayer;
        dataPlayer.MinesScore =true;
        resultTile2=[];
      }
       
      }
-     logger.info(  gameState.players[0].ScorePlayer + "  dataPlayer.CountTurnPlayer1");
-     logger.info(  gameState.players[1].ScorePlayer + "  dataPlayer.CountTurnPlayer2");
-
      dataPlayer.Array2DTilesPlayer =gameState.array3DPlayerSecend ;
      dataPlayer.Array2DTilesOtherPlayer =gameState.array3DPlayerFirst;
      
        var checkEnd1 = ActionWinPlayer(gameState.array3DPlayerSecend );
        var checkEnd2 = ActionWinPlayer(gameState.array3DPlayerFirst );
         var end=  parseInt( gameState.CountTurnPlayer1) === parseInt( gameState.CountTurnPlayer2);
-        logger.info(end + "  dataPlayer.End");
       if(checkEnd1 == true ||checkEnd2 ==true  )
       {
 if(end == true)
@@ -462,31 +413,17 @@ if(end == true)
 
     if (gameState.players[1].ScorePlayer< gameState.players[0].ScorePlayer) {
         dataPlayer.PlayerWin = gameState.players[0].presence.userId;
-     //   var readCountWin = ReadScoreLeaderboard( gameState.players[0].presence.userId,nakama);
-        
-       //  readCountWin.win+=1;
-       //  logger.info(readCountWin.win.toString()+"Player0");
-     //   SaveScoreLeaderboard( gameState.players[0].presence.userId,nakama,readCountWin);
-      //  nakama.leaderboardRecordWrite(IdLeaderboard,dataPlayer.PlayerWin,gameState.players[0].presence.username,readCountWin.win)
     }
     else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer)
     {
     
         dataPlayer.PlayerWin =  gameState.players[1].presence.userId;
-      //  var readCountWin = ReadScoreLeaderboard( gameState.players[1].presence.userId,nakama);
-       
-      //  readCountWin.win +=1;
-      //  logger.info(readCountWin.win.toString()+"Player1");
-
-      //  SaveScoreLeaderboard( gameState.players[1].presence.userId,nakama,readCountWin);
-       // nakama.leaderboardRecordWrite(IdLeaderboard,dataPlayer.PlayerWin,gameState.players[1].presence.username, readCountWin.win)
     }
     else{
         dataPlayer.PlayerWin="";
     }
     dataPlayer.EndGame=true;
     gameState.BeforeEndGame=true;
-  //  gameState.startGame =false;
 }
 
     
@@ -531,14 +468,12 @@ function CalculatorArray( arrayInput: any[] , logger : nkruntime.Logger) :number
         return tally;
     }, {});
 
-    logger.info(JSON.stringify(countInArray) + " countInArray");
     let duplicates = Object.keys(countInArray).map(k => {
         return {
             key: k ,
             count: countInArray[k]
         }
     });
-    logger.info(JSON.stringify(duplicates) + " duplicates");
     let sum = 0;
     if (duplicates.length > 0) {
         for (let i = 0; i < duplicates.length; i++) {
@@ -560,7 +495,6 @@ function CalculatorArray( arrayInput: any[] , logger : nkruntime.Logger) :number
             }
          
     }
-    logger.info(JSON.stringify(sum) + " sum 00");
     return sum;
 }
 
@@ -576,7 +510,6 @@ function CalculatorArray( arrayInput: any[] , logger : nkruntime.Logger) :number
 function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
    
     let dataPlayer : IReMatch = JSON.parse(nakama.binaryToString(message.data));
-  //  if(gameState.namesForrematch.some(e=> e!= dataPlayer.userId))
     gameState.namesForrematch.push(dataPlayer.userId);
   
    
@@ -608,13 +541,12 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
          dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(gameState.players[0].presence.userId));
          for (let index = 0; index <gameState. array3DPlayerFirst.length; index++) {
            for (let index1 = 0; index1 < gameState.array3DPlayerFirst[index].length; index1++) {
-
-           gameState.array3DPlayerFirst[index][index1] = -1;
-            gameState.array3DPlayerSecend[index][index1]=-1;
+                gameState.array3DPlayerFirst[index][index1] = -1;
+                gameState.array3DPlayerSecend[index][index1]=-1;
            }
              
          }
-       
+         dataPlayer.Answer ="";
          gameState.CountTurnPlayer1=0;
          gameState.CountTurnPlayer2=0;
  

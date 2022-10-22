@@ -11,6 +11,7 @@ using UnityEngine.U2D;
 
 public class UiManager : MonoBehaviour
 {
+    #region Property
     // Start is called before the first frame update
 
     [SerializeField] private Button dicRollButton;
@@ -52,7 +53,7 @@ public class UiManager : MonoBehaviour
     public Image StickerOpp;
     public SpriteAtlas AllAssets;
     public Color colroParticlewhite;
-
+    #endregion
 
     private void Start()
     {
@@ -139,6 +140,7 @@ public class UiManager : MonoBehaviour
             ActionEndGame.instance.ResultPanel.SetActive(false);
             _ = Task.Delay(1000);
             ResetGame();
+            obj.Answer = "";
         }
         if (obj.Answer == "left")
         {
@@ -221,7 +223,7 @@ public class UiManager : MonoBehaviour
         ActionEndGame.instance.ResultPanel.SetActive(false);
         AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
         AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
-        await Task.Delay(1200);
+        await Task.Delay(1000);
         AniamtionManager.instance.AnimGoToUpMe.enabled = false;
         AniamtionManager.instance.AnimGoToUpOpp.enabled = false;
         AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconMe;
@@ -247,7 +249,7 @@ public class UiManager : MonoBehaviour
                 item.GetComponentInChildren<ParticleSystem>().Stop();
             }
         }
-        // RowSum();
+ 
     }
 
     private void Instance_onSetScoreMe(int obj, int mines, DataPlayer data)
@@ -280,7 +282,7 @@ public class UiManager : MonoBehaviour
 
     }
    
-    int Count;
+  
     [ContextMenu("sum")]
     public void RowSum()
     {
@@ -298,41 +300,41 @@ public class UiManager : MonoBehaviour
             settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
         }
 
-        arryRowSumOpp[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps, out Count).ToString();
+        arryRowSumOpp[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps).ToString();
     
-        arryRowSumOpp[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2, out Count).ToString();
+        arryRowSumOpp[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2).ToString();
        
-        arryRowSumOpp[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3, out Count).ToString();
+        arryRowSumOpp[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3).ToString();
        
 
-        arryRowSumMe[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells, out Count).ToString();
+        arryRowSumMe[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells).ToString();
       
-        arryRowSumMe[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1, out Count).ToString();
+        arryRowSumMe[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1).ToString();
      
-         arryRowSumMe[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2, out Count).ToString();
+         arryRowSumMe[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2).ToString();
       
 
         if (GameManager.Instance.modeGame == ModeGame.VerticalAndHorizontal)
         {
-            arryRowSumOppCal[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOppsCal, out Count).ToString();
+            arryRowSumOppCal[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOppsCal).ToString();
           
-            arryRowSumOppCal[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2Cal, out Count).ToString();
+            arryRowSumOppCal[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2Cal).ToString();
            
-            arryRowSumOppCal[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3Cal, out Count).ToString();
+            arryRowSumOppCal[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3Cal).ToString();
            
 
-            arryRowSumMeCal[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCellsCal, out Count).ToString();
+            arryRowSumMeCal[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCellsCal).ToString();
          
-            arryRowSumMeCal[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1Cal, out Count).ToString();
+            arryRowSumMeCal[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1Cal).ToString();
          
-            arryRowSumMeCal[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal, out Count).ToString();
+            arryRowSumMeCal[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal).ToString();
         }
      
         if (GameManager.Instance.modeGame != ModeGame.VerticalAndHorizontal)
         {
-            arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4, out Count).ToString();
+            arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4).ToString();
          
-            arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3, out Count).ToString();
+            arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3).ToString();
            
         }
         ClearList();

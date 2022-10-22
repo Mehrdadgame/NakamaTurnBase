@@ -66,21 +66,21 @@ namespace Nakama.Helpers
             {
                 case ModeGame.ThreeByThree:
                     rowTable = 4;
-                    colTable = 4; ;
+                    colTable = 4;
                     break;
                 case ModeGame.FourByThree:
                     rowTable = 4;
-                    colTable = 3; ;
+                    colTable = 3;
                     break;
                 case ModeGame.VerticalAndHorizontal:
-                    rowTable =3;
-                    colTable = 3; ;
+                    rowTable = 3;
+                    colTable = 3;
                     break;
                 default:
                     break;
             }
-           
-           
+
+
         }
         public async void JoinMatchAsync(ModeGame mode)
         {
@@ -92,7 +92,7 @@ namespace Nakama.Helpers
             IApiRpc rpcResult = await NakamaManager.Instance.SendRPC(JoinOrCreateMatchRpc, mode.ToString());
             string matchId = rpcResult.Payload;
 
-            var stringProperties = new Dictionary<string, string>() 
+            var stringProperties = new Dictionary<string, string>()
             {
                {"mode", mode.ToString()}
             };
@@ -113,9 +113,9 @@ namespace Nakama.Helpers
 
         public async void LeaveMatchAsync()
         {
+            await NakamaManager.Instance.Socket.LeaveMatchAsync(match);
             NakamaManager.Instance.onDisconnected -= Disconnected;
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
-            await NakamaManager.Instance.Socket.LeaveMatchAsync(match);
             match = null;
             onMatchLeave?.Invoke();
         }

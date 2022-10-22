@@ -73,13 +73,13 @@ namespace NinjaBattle.Game
 
         private async void ReceivedChangeScene(MultiplayerMessage message)
         {
-            // SceneManager.LoadScene(message.GetData<int>());
-
             AniamtionManager.instance.AnimIconOpp.enabled = false;
             AniamtionManager.instance.PageMatchMaking.gameObject.SetActive(false);
+
             await Task.Delay(2000);
             AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
             AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
+
             await Task.Delay(750);
             FindObjectOfType<UiManager>().enabled = true;
             FindObjectOfType<ActionEndGame>().enabled = true;
@@ -91,7 +91,7 @@ namespace NinjaBattle.Game
             AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         }
 
-        private async void JoinedMatch()
+        private void JoinedMatch()
         {
             ResetPlayerWins();
 

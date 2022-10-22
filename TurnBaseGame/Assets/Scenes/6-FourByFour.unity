@@ -577,7 +577,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 118.600006, y: -83}
-  m_SizeDelta: {x: 86.91, y: 82.66}
+  m_SizeDelta: {x: 99.47, y: 90.47}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &33389140
 MonoBehaviour:
@@ -1283,7 +1283,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &101108364
 GameObject:
@@ -15175,6 +15175,7 @@ RectTransform:
   - {fileID: 1031193634}
   - {fileID: 2047157071}
   - {fileID: 1132649801}
+  - {fileID: 1670787698}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -23116,7 +23117,7 @@ GameObject:
   - component: {fileID: 1132649803}
   - component: {fileID: 1132649802}
   m_Layer: 5
-  m_Name: Panel Puase.1
+  m_Name: Panel Puase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39536,7 +39537,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 940651311}
     m_Modifications:
     - target: {fileID: 153454, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_Name
@@ -39544,7 +39545,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_LocalPosition.x
@@ -39556,7 +39557,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -43200
       objectReference: {fileID: 0}
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_LocalRotation.w
@@ -39568,11 +39569,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -39678,6 +39679,18 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4569554780943784111, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
+      propertyPath: m_Scale3D.x
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 4569554780943784111, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
+      propertyPath: m_Scale3D.y
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 4569554780943784111, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
+      propertyPath: m_Scale3D.z
+      value: 500
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -39686,6 +39699,11 @@ PrefabInstance:
 --- !u!198 &1670787697 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 19850162, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
+  m_PrefabInstance: {fileID: 1670787696}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1670787698 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
   m_PrefabInstance: {fileID: 1670787696}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1672973278
@@ -46314,7 +46332,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -121.899994, y: -83}
+  m_AnchoredPosition: {x: -118, y: -83}
   m_SizeDelta: {x: 99.47, y: 90.47}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2117713589

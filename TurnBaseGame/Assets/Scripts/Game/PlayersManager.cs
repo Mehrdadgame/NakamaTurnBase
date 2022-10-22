@@ -105,8 +105,6 @@ namespace NinjaBattle.Game
         public void EventPlayerLeft(MultiplayerMessage message)
         {
             var data = message.GetData<string>();
-            //
-            //onRematch?.Invoke(data);
 
             LeftPlayer?.Invoke(data);
 
@@ -151,8 +149,8 @@ namespace NinjaBattle.Game
                         if (data.Array2DTilesOtherPlayer[i][j] == -1)
                         {
                             onSetDataInRowMe(i, j);
-                        
-                
+
+
 
                         }
 
@@ -161,15 +159,7 @@ namespace NinjaBattle.Game
                 ScoreMe = data.Score;
                 if (data.ScoreOtherPlayer > 0)
                     ScoreOpp = data.ScoreOtherPlayer;
-                //if (data.ResultRow.Length > 0)
-                //{
-                //    for (int i = 0; i < data.ResultRow.Length; i++)
-                //    {
-                //        Debug.Log(data.ResultRow[i] + data.ResultLine);
-                //        onSetDataInRowMe(data.ResultLine, data.ResultRow[i]);
-                //    }
 
-                //}
                 if (data.EndGame != true)
                     IsTurn?.Invoke(true);
 
@@ -216,21 +206,13 @@ namespace NinjaBattle.Game
                         if (data.Array2DTilesOtherPlayer[i][j] == -1)
                         {
                             onSetDataInRowOpp(i, j);
-                          
+
 
                         }
-                      
+
                     }
                 }
-                //if (data.ResultRow.Length > 0)
-                //{
-                //    for (int i = 0; i < data.ResultRow.Length; i++)
-                //    {
-                //        onSetDataInRowOpp(data.ResultLine, data.ResultRow[i]);
-                //    }
-
-                //}
-
+            
 
                 if (data.EndGame == true)
                 {
@@ -285,8 +267,6 @@ namespace NinjaBattle.Game
                 PlayerPrefs.SetString("Opp", player.DisplayName);
             }
 
-
-
             onPlayerJoined?.Invoke(player);
         }
 
@@ -330,7 +310,7 @@ namespace NinjaBattle.Game
             ActionEndGame.instance.IconMe.GetComponentInChildren<ParticleSystem>().Stop();
             ActionEndGame.instance.IconOpp.GetComponentInChildren<ParticleSystem>().Stop();
 
-            
+
         }
 
         private void GetCurrentPlayer()
@@ -346,7 +326,6 @@ namespace NinjaBattle.Game
 
             CurrentPlayer = Players.Find(player => player.Presence.SessionId == multiplayerManager.Self.SessionId);
             CurrentPlayerNumber = Players.IndexOf(CurrentPlayer);
-
             onLocalPlayerObtained?.Invoke(CurrentPlayer, CurrentPlayerNumber);
 
 
