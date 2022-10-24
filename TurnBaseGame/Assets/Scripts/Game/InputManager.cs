@@ -17,21 +17,6 @@ namespace NinjaBattle.Game
 
         #region BEHAVIORS
 
-        private void Update()
-        {
-            BattleManager battleManager = BattleManager.Instance;
-            if (Input.GetKeyDown(keyUp))
-                SendData(battleManager.CurrentTick - delay, Direction.North);
-            else if (Input.GetKeyDown(keyLeft))
-                SendData(battleManager.CurrentTick - delay, Direction.West);
-            else if (Input.GetKeyDown(keyRight))
-                SendData(battleManager.CurrentTick - delay, Direction.East);
-            else if (Input.GetKeyDown(keyDown))
-                SendData(battleManager.CurrentTick - delay, Direction.South);
-            else
-                return;
-        }
-
         private void SendData(int tick, Direction direction)
         {
             MultiplayerManager.Instance.Send(MultiplayerManager.Code.PlayerInput, new InputData(tick, (int)direction));

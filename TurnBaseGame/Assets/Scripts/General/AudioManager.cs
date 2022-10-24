@@ -80,6 +80,10 @@ namespace NinjaBattle.General
             yield return new WaitForSecondsRealtime(cooldown);
             playingSoundClips.Remove(clip);
         }
+        public void PlayPointAudio(AudioClip clip)
+        {
+            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position);
+        }
 
         #endregion
     }

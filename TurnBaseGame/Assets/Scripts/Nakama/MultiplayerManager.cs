@@ -168,8 +168,6 @@ namespace Nakama.Helpers
             if (onReceiveData.ContainsKey(multiplayerMessage.DataCode))
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);
             Opp = newState.UserPresence;
-
-
         }
 
 

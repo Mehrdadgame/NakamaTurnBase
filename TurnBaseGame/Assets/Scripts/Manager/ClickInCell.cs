@@ -1,5 +1,6 @@
 using Nakama.Helpers;
 using NinjaBattle.Game;
+using NinjaBattle.General;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -31,6 +32,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
         var tile = SpriteDice.transform.parent;
         tile.gameObject.SetActive(true);
         SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
+        AudioManager.Instance.PlayPointAudio(UiManager.instance.DiceSound);
         ValueTile = GameManager.Instance.diceRoller.currrentDie + 1;
         SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[GameManager.Instance.diceRoller.currrentDie];
         GetComponentInChildren<ParticleSystem>().Stop();

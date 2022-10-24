@@ -50,8 +50,8 @@ namespace NinjaBattle.Game
 
         private void OnDestroy()
         {
-            MultiplayerManager.Instance.Unsubscribe(MultiplayerManager.Code.PlayerWon, ReceivedPlayerWonRound);
-            MultiplayerManager.Instance.Unsubscribe(MultiplayerManager.Code.Draw, ReceivedDrawRound);
+            //MultiplayerManager.Instance.Unsubscribe(MultiplayerManager.Code.PlayerWon, ReceivedPlayerWonRound);
+            //MultiplayerManager.Instance.Unsubscribe(MultiplayerManager.Code.Draw, ReceivedDrawRound);
             MultiplayerManager.Instance.Unsubscribe(MultiplayerManager.Code.PlayerInput, ReceivedChangeScene);
             MultiplayerManager.Instance.onMatchJoin -= JoinedMatch;
             MultiplayerManager.Instance.onMatchLeave -= LeavedMatch;
@@ -125,6 +125,9 @@ namespace NinjaBattle.Game
                     break;
                 case ModeGame.VerticalAndHorizontal:
                     SceneManager.LoadScene((int)Scenes.VerticalAndHorizontal);
+                    break;
+                case ModeGame.FourByFour:
+                    SceneManager.LoadScene((int)Scenes.FourByFour);
                     break;
                 default:
                     break;

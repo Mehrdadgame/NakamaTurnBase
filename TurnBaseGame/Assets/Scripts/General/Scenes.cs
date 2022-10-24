@@ -8,5 +8,6 @@ namespace NinjaBattle.General
         VerticalAndHorizontal=3,
         FourByThree =4,
         ThreeByThree = 5,
+        FourByFour = 6,
     }
 }

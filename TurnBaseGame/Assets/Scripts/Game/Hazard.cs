@@ -8,7 +8,7 @@ namespace NinjaBattle.Game
 
         private RollbackVar<bool> wasCreated = new RollbackVar<bool>();
         private SpriteRenderer spriteRenderer = null;
-        private Map map = null;
+     
 
         #endregion
 
@@ -25,19 +25,19 @@ namespace NinjaBattle.Game
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        public void Initialize(int tick, Vector2Int coordinates, Color color, Map map)
+        public void Initialize(int tick, Vector2Int coordinates, Color color)
         {
-            this.map = map;
+          
             spriteRenderer.color = color;
             Coordinates = coordinates;
             wasCreated[default(int)] = false;
             wasCreated[tick] = true;
-            BattleManager.Instance.onRewind += Rewind;
+          
         }
 
         private void OnDestroy()
         {
-            BattleManager.Instance.onRewind -= Rewind;
+          //  BattleManager.Instance.onRewind -= Rewind;
         }
 
         private void Rewind(int tick)
@@ -46,7 +46,7 @@ namespace NinjaBattle.Game
             if (wasCreated.GetLastValue(tick) == true)
                 return;
 
-            map.RemoveHazard(this);
+          
             Destroy(this.gameObject);
         }
 

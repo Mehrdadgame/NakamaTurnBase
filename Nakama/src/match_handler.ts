@@ -51,9 +51,13 @@ function Checkmode(value:string):[any[][],any[][],boolean]{
         arraOne=    [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
         arraTow= [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
     }
-    if(value == "ThreeByThree"){
+    if(value == "FourByFour"){
         arraOne=    [[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]];
         arraTow= [[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]];
+    }
+    if(value == "ThreeByThree"){
+        arraOne=    [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
+        arraTow= [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
     }
     return[arraOne,arraTow,vertical];
     

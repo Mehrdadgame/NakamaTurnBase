@@ -7,7 +7,7 @@ using NinjaBattle.Game;
 using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine.U2D;
-
+using NinjaBattle.General;
 
 public class UiManager : MonoBehaviour
 {
@@ -53,6 +53,9 @@ public class UiManager : MonoBehaviour
     public Image StickerOpp;
     public SpriteAtlas AllAssets;
     public Color colroParticlewhite;
+
+
+    public AudioClip DiceSound;
     #endregion
 
     private void Start()
@@ -192,7 +195,9 @@ public class UiManager : MonoBehaviour
 
         MultiplayerManager.Instance.Send(MultiplayerManager.Code.Rematch, answer);
     }
-
+    /// <summary>
+    /// reset game after rematch
+    /// </summary>
     private async void ResetGame()
     {
         foreach (var opp in tileDataOpps)
@@ -232,6 +237,10 @@ public class UiManager : MonoBehaviour
         AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         TimerTurn.instance.TimerCount = 30;
     }
+    /// <summary>
+    /// show particle when before click to tile (empety tile )
+    /// </summary>
+    /// <param name="obj"></param>
     private void ShowHighLight(bool obj)
     {
         var list = tileDataMe.FindAll(e => e.isLock == false);
@@ -267,7 +276,12 @@ public class UiManager : MonoBehaviour
 
 
     }
-
+    /// <summary>
+    /// call remove dice in bord game  
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="mines"></param>
+    /// <param name="data"></param>
     private void Instance_onSetScoreOpp(int obj, int mines, DataPlayer data)
     {
         if (mines > 0)
@@ -330,7 +344,7 @@ public class UiManager : MonoBehaviour
             arryRowSumMeCal[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal).ToString();
         }
      
-        if (GameManager.Instance.modeGame != ModeGame.VerticalAndHorizontal)
+        if (GameManager.Instance.modeGame == ModeGame.FourByFour || GameManager.Instance.modeGame == ModeGame.FourByThree)
         {
             arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4).ToString();
          
@@ -411,6 +425,7 @@ public class UiManager : MonoBehaviour
             tile.IsLock = true;
             tile.SpriteDice.transform.parent.gameObject.SetActive(true);
             tile.SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
+            AudioManager.Instance.PlayPointAudio(DiceSound);
             tile.ValueTile = obj.NumberTile + 1;
             tile.SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
             if (!obj.EndGame)
@@ -436,13 +451,18 @@ public class UiManager : MonoBehaviour
 
 
     }
-
+    /// <summary>
+    /// Clear list DuobleScores
+    /// </summary>
     private void ClearList()
     {
         CalculterRowScore.instance.DuobleScore2.Clear();
         CalculterRowScore.instance.DuobleScore1.Clear();
     }
-
+    /// <summary>
+    /// trun of player clint
+    /// </summary>
+    /// <param name="obj"></param>
     private void Instance_IsTurn(bool obj)
     {
         if (obj)
@@ -472,7 +492,9 @@ public class UiManager : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// check first turn in start game
+    /// </summary>
     private void Instance_onTurnMe()
     {
 
@@ -485,6 +507,9 @@ public class UiManager : MonoBehaviour
 
 
     }
+    /// <summary>
+    /// call Event leave of room 
+    /// </summary>
     public void Leave()
     {
         MultiplayerManager.Instance.LeaveMatchAsync();

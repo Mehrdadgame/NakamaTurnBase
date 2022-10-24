@@ -6,6 +6,7 @@ public enum ModeGame
     ThreeByThree =3,
     FourByThree =4,
     VerticalAndHorizontal =5,
+    FourByFour=6,
 }
 public class DataPlayer 
 {

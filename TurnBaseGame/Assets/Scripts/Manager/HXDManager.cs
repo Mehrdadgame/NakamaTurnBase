@@ -25,7 +25,7 @@ public class HXDManager : Singelton<HXDManager>
             HXDAmount = PlayerPrefs.GetInt("HXD");
             textHXD.text = HXDAmount.ToString();
         }
-        ///deV
+        ///deVelop mode
         if (HXDAmount <= 0)
         {
             HXDAmount = 100000;

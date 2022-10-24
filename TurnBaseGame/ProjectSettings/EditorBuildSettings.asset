@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/5-FourByThree.unity
     guid: 166dc96fe3530664081aaa27e22d5922
   - enabled: 1
+    path: Assets/Scenes/7-TrheeByThree.unity
+    guid: 5b9ebfbea72b16c42aa901a6e5d5064e
+  - enabled: 1
     path: Assets/Scenes/6-FourByFour.unity
     guid: 488314da47c7097419e4426c6a01fd48
   m_configObjects: {}
