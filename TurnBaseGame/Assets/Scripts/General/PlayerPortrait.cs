@@ -15,9 +15,9 @@ namespace NinjaBattle.General
         [SerializeField] private Image portrait = null;
         [SerializeField] private Color noPlayerColor = Color.white;
         [SerializeField] private Color connectedPlayerColor = Color.white;
-        [SerializeField] private TMP_Text displayName = null;
         [SerializeField] private Color youColor = Color.white;
         [SerializeField] private Color othersColor = Color.white;
+        [SerializeField] private TMP_Text displayName = null;
 
         private PlayersManager playersManager = null;
 
@@ -35,7 +35,9 @@ namespace NinjaBattle.General
         {
             playersManager = PlayersManager.Instance;
         }
-
+        /// <summary>
+        /// call event for match making
+        /// </summary>
         private void Start()
         {
             playersManager.onPlayerJoined += PlayerJoined;
@@ -72,7 +74,10 @@ namespace NinjaBattle.General
         {
             SetPortrait(playersManager.Players);
         }
-
+        /// <summary>
+        /// set data other player in board
+        /// </summary>
+        /// <param name="players"></param>
         private void SetPortrait(List<PlayerData> players)
         {
             bool hasPlayer = players != null && players.Count > playerNumber && players[playerNumber] != null;

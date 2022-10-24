@@ -12,7 +12,6 @@ using NinjaBattle.General;
 public class UiManager : MonoBehaviour
 {
     #region Property
-    // Start is called before the first frame update
 
     [SerializeField] private Button dicRollButton;
     [SerializeField] private Transform transformOpp;
@@ -34,8 +33,9 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Button acceptRematchButton;
     [SerializeField] private Button exitRematchButton;
     [SerializeField] private Button exitButton;
-
     [SerializeField] private Image loading;
+
+
     public TextMeshProUGUI[] arryRowSumMe;
     public TextMeshProUGUI[] arryRowSumMeCal;
     public TextMeshProUGUI[] arryRowSumOpp;
@@ -112,7 +112,7 @@ public class UiManager : MonoBehaviour
         cell.SetDataInCell();
     }
 
-    void OnDestroy()
+    private void OnDisable()
     {
         PlayersManager.Instance.onSetDataInTurn -= Instance_SetDataInTurn;
         PlayersManager.Instance.onSetScoreOpp -= Instance_onSetScoreOpp;
@@ -125,6 +125,11 @@ public class UiManager : MonoBehaviour
         TimerTurn.instance.TimerStop -= Instance_TimerStop;
         PlayersManager.Instance.LeftPlayer -= Instance_LeftPlayer;
     }
+
+    /// <summary>
+    /// call back event rematch 
+    /// </summary>
+    /// <param name="obj"></param>
     private void Instance_onRematch(RematchData obj)
     {
         //if (obj.UserId == MultiplayerManager.Instance.Self.UserId)
@@ -168,6 +173,10 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Button for send answer For Rematch
+    /// </summary>
+    /// <param name="answerOpp"></param>
     public void SendAcceptForRematch(string answerOpp)
     {
         rematchPanle.SetActive(true);
@@ -222,13 +231,17 @@ public class UiManager : MonoBehaviour
         ScoreTextMe.text = "0";
         ScoreTextOpp.text = "0";
         RowSum();
+
         await Task.Delay(1000);
         AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
         AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(true);
+
         ActionEndGame.instance.ResultPanel.SetActive(false);
         AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
         AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
+
         await Task.Delay(1000);
+
         AniamtionManager.instance.AnimGoToUpMe.enabled = false;
         AniamtionManager.instance.AnimGoToUpOpp.enabled = false;
         AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconMe;
@@ -260,7 +273,12 @@ public class UiManager : MonoBehaviour
         }
  
     }
-
+    /// <summary>
+    ///  call remove dice for you  in bord game  
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="mines"></param>
+    /// <param name="data"></param>
     private void Instance_onSetScoreMe(int obj, int mines, DataPlayer data)
     {
         if (mines > 0)
@@ -277,7 +295,7 @@ public class UiManager : MonoBehaviour
 
     }
     /// <summary>
-    /// call remove dice in bord game  
+    /// call remove dice for opp  in bord game  
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="mines"></param>
@@ -513,6 +531,7 @@ public class UiManager : MonoBehaviour
     public void Leave()
     {
         MultiplayerManager.Instance.LeaveMatchAsync();
+       
     }
 
 

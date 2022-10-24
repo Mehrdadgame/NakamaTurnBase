@@ -23,9 +23,13 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
 
         if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie == -1 || isLock)
             return;
+
         SetDataInCell();
     }
 
+    /// <summary>
+    /// send data in your turn to server 
+    /// </summary>
     public void SetDataInCell()
     {
         MultiplayerManager.Instance.SendTurn(name, GameManager.Instance.diceRoller.currrentDie, numberLine, numberRow);

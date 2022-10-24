@@ -42,34 +42,15 @@ namespace NinjaBattle.Game
         private void OnEnable()
         {
             Instance = this;
-            // MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.PlayerWon, ReceivedPlayerWonRound);
-            //  MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.Draw, ReceivedDrawRound);
-
-
         }
 
         private void OnDestroy()
         {
-            //MultiplayerManager.Instance.Unsubscribe(MultiplayerManager.Code.PlayerWon, ReceivedPlayerWonRound);
-            //MultiplayerManager.Instance.Unsubscribe(MultiplayerManager.Code.Draw, ReceivedDrawRound);
             MultiplayerManager.Instance.Unsubscribe(MultiplayerManager.Code.PlayerInput, ReceivedChangeScene);
             MultiplayerManager.Instance.onMatchJoin -= JoinedMatch;
             MultiplayerManager.Instance.onMatchLeave -= LeavedMatch;
         }
 
-
-
-        private void ReceivedPlayerWonRound(MultiplayerMessage message)
-        {
-            PlayerWonData playerWonData = message.GetData<PlayerWonData>();
-            PlayersWins[playerWonData.PlayerNumber]++;
-            Winner = playerWonData.PlayerNumber;
-        }
-
-        private void ReceivedDrawRound(MultiplayerMessage message)
-        {
-            Winner = null;
-        }
 
         private async void ReceivedChangeScene(MultiplayerMessage message)
         {
@@ -80,7 +61,7 @@ namespace NinjaBattle.Game
             AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
             AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
 
-            await Task.Delay(750);
+            await Task.Delay(1000);
             FindObjectOfType<UiManager>().enabled = true;
             FindObjectOfType<ActionEndGame>().enabled = true;
             AniamtionManager.instance.AnimGoToUpMe.enabled = false;
@@ -129,8 +110,7 @@ namespace NinjaBattle.Game
                 case ModeGame.FourByFour:
                     SceneManager.LoadScene((int)Scenes.FourByFour);
                     break;
-                default:
-                    break;
+              
             }
         }
 

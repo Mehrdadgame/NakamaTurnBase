@@ -59,7 +59,10 @@ namespace Nakama.Helpers
 
             Instance = this;
         }
-
+        /// <summary>
+        /// set row and column for send data to server 
+        /// 
+        /// </summary>
         private void SetRowAndCol()
         {
             switch (GameManager.Instance.modeGame)
@@ -76,15 +79,13 @@ namespace Nakama.Helpers
                     rowTable = 3;
                     colTable = 3;
                     break;
-                default:
-                    break;
+;
             }
 
 
         }
         public async void JoinMatchAsync(ModeGame mode)
         {
-
             PlayerPrefs.DeleteKey("Opp");
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             NakamaManager.Instance.Socket.ReceivedMatchState += Receive;
@@ -100,9 +101,6 @@ namespace Nakama.Helpers
 
             onMatchJoin?.Invoke();
         }
-
-
-
         private void Disconnected()
         {
             NakamaManager.Instance.onDisconnected -= Disconnected;
@@ -118,6 +116,7 @@ namespace Nakama.Helpers
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             match = null;
             onMatchLeave?.Invoke();
+            isTurn=false;
         }
 
         public void Send(Code code, object data = null)
@@ -153,6 +152,10 @@ namespace Nakama.Helpers
 
             NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, bytes);
         }
+        /// <summary>
+        /// Receive data of server or player and save to multiplayerMessage
+        /// </summary>
+        /// <param name="newState"></param>
 
         private void Receive(IMatchState newState)
         {
@@ -170,7 +173,11 @@ namespace Nakama.Helpers
             Opp = newState.UserPresence;
         }
 
-
+        /// <summary>
+        /// method for send data to server and clint
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="action"></param>
         public void Subscribe(Code code, Action<MultiplayerMessage> action)
         {
             if (!onReceiveData.ContainsKey(code))
@@ -178,7 +185,11 @@ namespace Nakama.Helpers
 
             onReceiveData[code] += action;
         }
-
+        /// <summary>
+        /// remove data of clint
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="action"></param>
         public void Unsubscribe(Code code, Action<MultiplayerMessage> action)
         {
             if (onReceiveData.ContainsKey(code))
@@ -189,7 +200,13 @@ namespace Nakama.Helpers
         {
             Debug.Log(string.Format(LogFormat, description, (Code)dataCode, json));
         }
-
+        /// <summary>
+        /// send data turn player to server
+        /// </summary>
+        /// <param name="nameTile"></param>
+        /// <param name="number"></param>
+        /// <param name="line"></param>
+        /// <param name="row"></param>
         public void SendTurn(string nameTile, int number, int line, int row)
         {
             SetRowAndCol();

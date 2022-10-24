@@ -26,7 +26,9 @@ public class ClickToStickers : MonoBehaviour, IPointerClickHandler
 
 
 }
-
+/// <summary>
+/// calss data for send sticker
+/// </summary>
 public class StickerData
 {
     public string ID;
