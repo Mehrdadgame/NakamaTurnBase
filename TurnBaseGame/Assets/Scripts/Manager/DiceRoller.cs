@@ -132,7 +132,7 @@ public class DiceRoller : MonoBehaviour
     }
 
     // removed the parameter because AddTotal() is called from wone place with same parameter
-    public async void AddTotal()
+    public  void AddTotal()
     {
         // value is the true amount of the die face (currrentDie is 0 base so add 1)
         int value = currrentDie + 1;

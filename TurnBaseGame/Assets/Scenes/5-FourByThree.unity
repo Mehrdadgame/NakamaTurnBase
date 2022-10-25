@@ -11289,7 +11289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -239.59999, y: 290}
+  m_AnchoredPosition: {x: -254.2, y: 290}
   m_SizeDelta: {x: 132.4, y: 72.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &462240143
@@ -16071,7 +16071,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -18324,12 +18324,12 @@ RectTransform:
   - {fileID: 1119019593}
   - {fileID: 1739463170}
   - {fileID: 1030398073}
-  - {fileID: 1749415983}
   - {fileID: 653795009}
   - {fileID: 1031193634}
-  - {fileID: 431281196}
   - {fileID: 1114116882}
   - {fileID: 2047157071}
+  - {fileID: 431281196}
+  - {fileID: 1749415983}
   - {fileID: 1670787698}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -23417,6 +23417,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29656a4c9818fb4468b5ae8218e3d709, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WinAudioClip: {fileID: 8300000, guid: 27c6880321ee047c6a1649f567159988, type: 3}
+  LoosAudioClip: {fileID: 8300000, guid: b6943ea5cb0494edf822070af326f51e, type: 3}
+  drawAudioClip: {fileID: 8300000, guid: 458e97b9d59b4437db5d1109d3a9cbde, type: 3}
 --- !u!4 &1208344074
 Transform:
   m_ObjectHideFlags: 0

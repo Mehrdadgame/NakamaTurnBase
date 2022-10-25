@@ -22,8 +22,8 @@ namespace NinjaBattle.Game
 
         public PlayerData(PresenceData presence, string displayName)
         {
-            Presence = presence;
-            DisplayName = displayName;
+            Presence = presence; 
+            DisplayName = displayName; 
         }
 
         #endregion

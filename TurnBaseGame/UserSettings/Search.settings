@@ -10,6 +10,9 @@ scopes = {
 	"last_search.E8DA15E5" = ""
 	"OpenInspectorPreview.E8DA15E5" = "0"
 	"currentGroup.E8DA15E5" = "asset"
+	"last_search.110DEAF1" = "h: ref=\"Assets/Scenes/6-FourByFour.unity\""
+	"OpenInspectorPreview.110DEAF1" = "0"
+	"currentGroup.110DEAF1" = "all"
 }
 providers = {
 	adb = {
@@ -56,6 +59,8 @@ providers = {
 objectSelectors = {
 }
 recentSearches = [
+	"h: ref=\"Assets/Scenes/6-FourByFour.unity\""
+	"p: dir=\"Scenes\" "
 ]
 searchItemFavorites = [
 ]

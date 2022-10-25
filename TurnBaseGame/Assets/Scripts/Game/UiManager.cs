@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine.U2D;
 using NinjaBattle.General;
+using System;
 
 public class UiManager : MonoBehaviour
 {
@@ -56,6 +57,7 @@ public class UiManager : MonoBehaviour
 
 
     public AudioClip DiceSound;
+
     #endregion
 
     private void Start()
@@ -107,7 +109,7 @@ public class UiManager : MonoBehaviour
 
     private void Instance_TimerStop()
     {
-        GameManager.Instance.diceRoller.currrentDie = Random.Range(0, 6);
+        GameManager.Instance.diceRoller.currrentDie =UnityEngine.Random.Range(0, 6);
         var cell = tileDataMe.First(e => e.isLock == false);
         cell.SetDataInCell();
     }
@@ -124,6 +126,7 @@ public class UiManager : MonoBehaviour
         PlayersManager.Instance.onRematch -= Instance_onRematch;
         TimerTurn.instance.TimerStop -= Instance_TimerStop;
         PlayersManager.Instance.LeftPlayer -= Instance_LeftPlayer;
+        GameManager.Instance.diceRoller.RollUp -= ShowHighLight;
     }
 
     /// <summary>
@@ -429,7 +432,9 @@ public class UiManager : MonoBehaviour
     /// <param name="obj"></param>
     private void Instance_SetDataInTurn(DataPlayer obj)
     {
-
+        MultiplayerManager.Instance.end = DateTime.Now;
+        MultiplayerManager.Instance.ping = MultiplayerManager.Instance.end - MultiplayerManager.Instance.start;
+        Debug.Log(MultiplayerManager.Instance.ping.Milliseconds + " ping");
         if (obj.UserId != MultiplayerManager.Instance.players.User.Id)
         {
 

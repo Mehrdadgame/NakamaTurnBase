@@ -1,6 +1,7 @@
 using Nakama.Helpers;
 using NinjaBattle.Game;
 using NinjaBattle.General;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,7 +22,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
 
-        if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie == -1 || isLock)
+        if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie == -1 || isLock || !GameManager.Instance.diceRoller.dieRolled)
             return;
 
         SetDataInCell();
@@ -32,6 +33,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
     /// </summary>
     public void SetDataInCell()
     {
+        MultiplayerManager.Instance.start = DateTime.Now;
         MultiplayerManager.Instance.SendTurn(name, GameManager.Instance.diceRoller.currrentDie, numberLine, numberRow);
         var tile = SpriteDice.transform.parent;
         tile.gameObject.SetActive(true);
@@ -45,7 +47,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
         MultiplayerManager.Instance.isTurn = false;
         GameManager.Instance.diceRoller.currrentDie = -1;
         isLock = true;
-       
+
     }
 
 

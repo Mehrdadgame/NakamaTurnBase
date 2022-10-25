@@ -2,8 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Unity.VisualScripting.Dependencies.NCalc;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -36,6 +35,7 @@ namespace Nakama.Helpers
 
         public bool isTurn;
 
+        public TimeSpan ping;
 
         #endregion
 
@@ -50,6 +50,10 @@ namespace Nakama.Helpers
 
         private short rowTable;
         private short colTable;
+
+        public DateTime start;
+        public DateTime end;
+      
         #endregion
 
         #region BEHAVIORS
@@ -79,13 +83,19 @@ namespace Nakama.Helpers
                     rowTable = 3;
                     colTable = 3;
                     break;
-;
+
             }
 
 
         }
+        /// <summary>
+        /// join match 
+        /// send mode game
+        /// </summary>
+        /// <param name="mode"></param>
         public async void JoinMatchAsync(ModeGame mode)
         {
+           
             PlayerPrefs.DeleteKey("Opp");
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             NakamaManager.Instance.Socket.ReceivedMatchState += Receive;
@@ -108,7 +118,9 @@ namespace Nakama.Helpers
             match = null;
             onMatchLeave?.Invoke();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public async void LeaveMatchAsync()
         {
             await NakamaManager.Instance.Socket.LeaveMatchAsync(match);
@@ -116,7 +128,7 @@ namespace Nakama.Helpers
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             match = null;
             onMatchLeave?.Invoke();
-            isTurn=false;
+            isTurn = false;
         }
 
         public void Send(Code code, object data = null)
@@ -166,11 +178,11 @@ namespace Nakama.Helpers
                 LogData(ReceivedDataLog, newState.OpCode, json);
             }
 
-
-            MultiplayerMessage multiplayerMessage = new MultiplayerMessage(newState);
+            MultiplayerMessage multiplayerMessage = new(newState);
             if (onReceiveData.ContainsKey(multiplayerMessage.DataCode))
                 onReceiveData[multiplayerMessage.DataCode]?.Invoke(multiplayerMessage);
             Opp = newState.UserPresence;
+          
         }
 
         /// <summary>

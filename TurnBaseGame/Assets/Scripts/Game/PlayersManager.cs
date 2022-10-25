@@ -9,6 +9,13 @@ using UnityEngine.UI;
 
 namespace NinjaBattle.Game
 {
+
+    public enum ResultGame
+    {
+        win,
+        loose,
+        draw
+    }
     /// <summary>
     /// 
     /// </summary>
@@ -48,6 +55,8 @@ namespace NinjaBattle.Game
 
         public int ScoreMe;
         public int ScoreOpp;
+
+        private ResultGame resultGame;
         #endregion
 
         #region BEHAVIORS
@@ -168,27 +177,32 @@ namespace NinjaBattle.Game
                     TimerTurn.instance.TimerPause = true;
                     if (ScoreMe < ScoreOpp)
                     {
+                        resultGame = ResultGame.win;
+
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
                         UiManager.instance.HXDWin.text = "+" + (multiplayerManager.ValueHXDInGameTurn * 2).ToString() + "HXD";
                         PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn * 2));
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
+                        resultGame = ResultGame.loose;
+
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
                         UiManager.instance.HXDWin.text = "-" + (multiplayerManager.ValueHXDInGameTurn).ToString() + "HXD";
                         PlayerPrefs.SetInt("HXD", hxdTotal - multiplayerManager.ValueHXDInGameTurn);
                     }
                     else
                     {
+                        resultGame = ResultGame.draw;
                         UiManager.instance.HXDWin.text = "+" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
                         PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;
-                    if (data.EndGame != true)
-                        IsTurn?.Invoke(false);
-                }
 
+                    AudioClipManager.instance.PlaySoundResultGame(resultGame);
+                }
+              
             }
             else
             {
@@ -212,7 +226,7 @@ namespace NinjaBattle.Game
 
                     }
                 }
-            
+
 
                 if (data.EndGame == true)
                 {
@@ -220,31 +234,32 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-
+                        resultGame = ResultGame.win;
                         PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn * 2));
                         UiManager.instance.HXDWin.text = "+" + (multiplayerManager.ValueHXDInGameTurn * 2).ToString() + "HXD";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
+                        resultGame = ResultGame.loose;
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
                         PlayerPrefs.SetInt("HXD", hxdTotal - (multiplayerManager.ValueHXDInGameTurn));
                         UiManager.instance.HXDWin.text = "-" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
                     }
                     else
                     {
+                        resultGame = ResultGame.draw;
                         PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
                         UiManager.instance.HXDWin.text = "+" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
                     }
                     multiplayerManager.isTurn = false;
 
+                    AudioClipManager.instance.PlaySoundResultGame(resultGame);
                 }
-                if (data.EndGame != true)
-                    IsTurn?.Invoke(false);
+              
 
 
             }
-
         }
 
         private void SetPlayers(MultiplayerMessage message)
@@ -309,8 +324,6 @@ namespace NinjaBattle.Game
             ActionEndGame.instance.IconOpp.Play("EndGamePlater2Icon");
             ActionEndGame.instance.IconMe.GetComponentInChildren<ParticleSystem>().Stop();
             ActionEndGame.instance.IconOpp.GetComponentInChildren<ParticleSystem>().Stop();
-
-
         }
 
         private void GetCurrentPlayer()
