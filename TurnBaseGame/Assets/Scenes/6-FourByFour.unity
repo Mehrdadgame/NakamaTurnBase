@@ -8194,6 +8194,7 @@ MonoBehaviour:
   StickerOpp: {fileID: 1030398074}
   AllAssets: {fileID: 4343727234628468602, guid: 88b5a91d57fbd91488da28843238b37d, type: 2}
   colroParticlewhite: {r: 1, g: 1, b: 1, a: 0.23529412}
+  SendTurn: {fileID: 3160785755182468132}
   DiceSound: {fileID: 8300000, guid: 893dd1bb1ffd77044a1aae18444b793d, type: 3}
 --- !u!114 &519420034
 MonoBehaviour:
@@ -39584,6 +39585,18 @@ PrefabInstance:
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_RootOrder
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 416690, guid: d3aa5ccf5c3d6bb4aa6aeb2920558a35, type: 3}
       propertyPath: m_LocalPosition.x

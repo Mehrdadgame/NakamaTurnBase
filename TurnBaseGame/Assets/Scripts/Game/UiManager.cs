@@ -56,6 +56,8 @@ public class UiManager : MonoBehaviour
     public Color colroParticlewhite;
 
 
+    public Button SendTurn;
+
     public AudioClip DiceSound;
 
     #endregion
@@ -109,9 +111,10 @@ public class UiManager : MonoBehaviour
 
     private void Instance_TimerStop()
     {
-        GameManager.Instance.diceRoller.currrentDie =UnityEngine.Random.Range(0, 6);
+        GameManager.Instance.diceRoller.currrentDie = UnityEngine.Random.Range(0, 6);
         var cell = tileDataMe.First(e => e.isLock == false);
         cell.SetDataInCell();
+        UiManager.instance.SendTurn.interactable = false;
     }
 
     private void OnDisable()
@@ -274,7 +277,7 @@ public class UiManager : MonoBehaviour
                 item.GetComponentInChildren<ParticleSystem>().Stop();
             }
         }
- 
+
     }
     /// <summary>
     ///  call remove dice for you  in bord game  
@@ -316,8 +319,8 @@ public class UiManager : MonoBehaviour
         ScoreTextOpp.text = obj.ToString();
 
     }
-   
-  
+
+
     [ContextMenu("sum")]
     public void RowSum()
     {
@@ -336,41 +339,41 @@ public class UiManager : MonoBehaviour
         }
 
         arryRowSumOpp[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps).ToString();
-    
+
         arryRowSumOpp[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2).ToString();
-       
+
         arryRowSumOpp[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3).ToString();
-       
+
 
         arryRowSumMe[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells).ToString();
-      
+
         arryRowSumMe[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1).ToString();
-     
-         arryRowSumMe[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2).ToString();
-      
+
+        arryRowSumMe[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2).ToString();
+
 
         if (GameManager.Instance.modeGame == ModeGame.VerticalAndHorizontal)
         {
             arryRowSumOppCal[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOppsCal).ToString();
-          
+
             arryRowSumOppCal[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2Cal).ToString();
-           
+
             arryRowSumOppCal[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3Cal).ToString();
-           
+
 
             arryRowSumMeCal[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCellsCal).ToString();
-         
+
             arryRowSumMeCal[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1Cal).ToString();
-         
+
             arryRowSumMeCal[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal).ToString();
         }
-     
+
         if (GameManager.Instance.modeGame == ModeGame.FourByFour || GameManager.Instance.modeGame == ModeGame.FourByThree)
         {
             arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4).ToString();
-         
+
             arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3).ToString();
-           
+
         }
         ClearList();
 
@@ -536,7 +539,7 @@ public class UiManager : MonoBehaviour
     public void Leave()
     {
         MultiplayerManager.Instance.LeaveMatchAsync();
-       
+
     }
 
 
