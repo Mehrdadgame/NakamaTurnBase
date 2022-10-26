@@ -7,7 +7,7 @@ namespace NinjaBattle.General
         #region FIELDS
 
         [SerializeField] private AudioClip music = null;
-        [SerializeField] private AudioClip DiceClip = null;
+     
         #endregion
 
         #region BEHAVIORS

@@ -23,7 +23,6 @@ public class DiceRoller : MonoBehaviour
     private float intervalTime;
     public int currrentDie;
     public bool dieRolled;
-    private int currentTotal;
     public bool isRootDice;
 
     Image die;
@@ -32,7 +31,6 @@ public class DiceRoller : MonoBehaviour
     {
         rolls = 0;
         total = 0;
-
         // moved this here because there is no need  to continually get the same object
         die = GameObject.Find("DieImage").GetComponent<Image>();
 
@@ -101,7 +99,7 @@ public class DiceRoller : MonoBehaviour
             isRolling = true;
         }
         button.interactable = false;
-      
+
     }
 
     public void PanelTestButton_Click()
@@ -132,7 +130,7 @@ public class DiceRoller : MonoBehaviour
     }
 
     // removed the parameter because AddTotal() is called from wone place with same parameter
-    public  void AddTotal()
+    public void AddTotal()
     {
         // value is the true amount of the die face (currrentDie is 0 base so add 1)
         int value = currrentDie + 1;

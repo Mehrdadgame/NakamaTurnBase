@@ -106,7 +106,9 @@ public class UiManager : MonoBehaviour
     private void Instance_LeftPlayer(string obj)
     {
         PanelLeftPalyer.SetActive(true);
-        NamePalyerLeft.text = obj + " is Left of match";
+        var hxdTotal = PlayerPrefs.GetInt("HXD");
+        PlayerPrefs.SetInt("HXD", hxdTotal + (MultiplayerManager.Instance.ValueHXDInGameTurn *2));
+        NamePalyerLeft.text = $"{obj} Is Left of match \n Add { (MultiplayerManager.Instance.ValueHXDInGameTurn * 2)} HXD to your wallet";
     }
 
     private void Instance_TimerStop()

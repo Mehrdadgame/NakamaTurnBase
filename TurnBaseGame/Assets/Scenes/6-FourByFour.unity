@@ -4053,7 +4053,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   music: {fileID: 8300000, guid: 38497319f0c7844268029ff252651181, type: 3}
-  DiceClip: {fileID: 0}
 --- !u!4 &253769881
 Transform:
   m_ObjectHideFlags: 0
