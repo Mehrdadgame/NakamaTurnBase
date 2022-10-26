@@ -387,8 +387,6 @@ nakama.storageWrite(storageWriteRequests);
 ```
 
 ## Credits
-Programming: [Alan Gaspar](https://www.linkedin.com/in/alangaspar/)
+Programming: [Mehrdad Moradi](https://www.linkedin.com/in/mehrdad-moradi-05b6ab15b/)
 
-Art: [Monica Murillo](https://www.artstation.com/monicamurilloart)
 
-Music: [FoxSynergy](https://opengameart.org/users/foxsynergy) (8-BitNinja) and [Spring Spring](https://opengameart.org/users/spring-spring) (Ninja Theme) (10 Fanfares)
