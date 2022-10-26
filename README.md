@@ -1,5 +1,5 @@
 # Dice War
-Ninja Battle is a deterministic multiplayer online game made in Unity that implements basic rollback, intended for use as a example project of different technologies that [Nakama](https://heroiclabs.com/) offers.
+Dice War is a deterministic multiplayer online game made in Unity that implements basic rollback, intended for use as a example project of different technologies that [Nakama](https://heroiclabs.com/) offers.
 
 Genre: Puzzle PvP
 
@@ -17,7 +17,7 @@ Server logic: Manage score and rounds
 
 Client logic: Send inputs on a deterministic simulation and implement a simple rollback 
 
-Gameplay: You play as a ninja that has to battle against other player-controlled ninjas. When a ninja moves, they leave behind a caltrops path that makes the terrain deadly even for themselves. The ninjas cannot stop moving. You can only control the direction that the ninja is moving in. A single touch to the caltrops eliminates you. The ninja can prevent the damage by jumping over the caltrops automatically. If the ninja runs against a wall or falls into caltrops, he is eliminated instantly. If two ninjas run into each other, both are eliminated.
+
 
 ## Screenshots
 ![image](https://github.com/Mehrdadgame/NakamaTurnBase/blob/main/TurnBaseGame/Assets/Sprite/dice%2066E.jpg )
@@ -180,11 +180,10 @@ Is a script that holds the unique id of a object or player, in this case is the 
 ### Spawning players
 The spawn of the players is made by the `Map` class on initialization, it takes each player and put each one on a spawn point
 ```csharp
-public void InstantiateNinja(int playerNumber, SpawnPoint spawnPoint, string sessionId)
+public void Instantiate(int playerNumber, SpawnPoint spawnPoint, string sessionId)
 {
-    Ninja ninja = Instantiate(ninjaPrefab, transform);
-    ninja.Initialize(spawnPoint, playerNumber, this, sessionId);
-    Ninjas.Add(ninja);
+    var player = Instantiate(Prefab, transform);
+    player.Initialize(spawnPoint, playerNumber, this, sessionId);
     if (MultiplayerManager.Instance.Self.SessionId == sessionId)
         gameCamera.SetStartingPosition(spawnPoint.Coordinates);
 }
