@@ -15,6 +15,8 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
     public int ValueTile;
     public Image SpriteDice;
 
+    public ParticleSystem empetySpace;
+    public ParticleSystem particleDouble;
     /// <summary>
     /// Enter Pointerdown in cell 
     /// </summary>
@@ -41,7 +43,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
         AudioManager.Instance.PlayPointAudio(UiManager.instance.DiceSound);
         ValueTile = GameManager.Instance.diceRoller.currrentDie + 1;
         SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[GameManager.Instance.diceRoller.currrentDie];
-        GetComponentInChildren<ParticleSystem>().Stop();
+        empetySpace.Stop();
         GameManager.Instance.diceRoller.RollUp?.Invoke(false);
         GameManager.Instance.diceRoller.Rotation(true);
         MultiplayerManager.Instance.isTurn = false;

@@ -10,5 +10,6 @@ public class TileDataOpp : MonoBehaviour
     public Image SpriteDice;
     public bool IsLock;
     public bool Double;
-   
+    public ParticleSystem empetySpace;
+    public ParticleSystem particleDouble;
 }

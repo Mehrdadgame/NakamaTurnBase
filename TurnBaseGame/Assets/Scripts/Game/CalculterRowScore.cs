@@ -70,8 +70,8 @@ public class CalculterRowScore : MonoBehaviour
                 if (item.Value[i].IsLock)
                 {
 
-                    item.Value[i].GetComponentInChildren<ParticleSystem>().Play();
-                    ParticleSystem.MainModule settings = item.Value[i].GetComponentInChildren<ParticleSystem>().main;
+                    item.Value[i].particleDouble.Play();
+                    ParticleSystem.MainModule settings = item.Value[i].particleDouble.main;
                     if (item.Value.Length == 4)
                     {
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(4));
@@ -185,8 +185,8 @@ public class CalculterRowScore : MonoBehaviour
                 if (item.Value[i].isLock)
                 {
 
-                    item.Value[i].GetComponentInChildren<ParticleSystem>().Play();
-                    ParticleSystem.MainModule settings = item.Value[i].GetComponentInChildren<ParticleSystem>().main;
+                    item.Value[i].particleDouble.Play();
+                    ParticleSystem.MainModule settings = item.Value[i].particleDouble.main;
                     if (item.Value.Length == 4)
                     {
 

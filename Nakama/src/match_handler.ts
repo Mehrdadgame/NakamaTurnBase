@@ -100,7 +100,9 @@ let matchJoin: nkruntime.MatchJoinFunction = function (context: nkruntime.Contex
         {
             presence: presence,
             displayName: account.user.displayName,
-            ScorePlayer : 0
+            ScorePlayer : 0,
+            amuntMony :0
+            
         }
         let nextPlayerNumber: number = getNextPlayerNumber(gameState.players);
         gameState.players[nextPlayerNumber] = player;
@@ -110,8 +112,9 @@ let matchJoin: nkruntime.MatchJoinFunction = function (context: nkruntime.Contex
     }
   
     dispatcher.broadcastMessage(OperationCode.Players, JSON.stringify(gameState.players), presences);
-    dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(gameState.players[0].presence.userId));
+    dispatcher.broadcastMessage(OperationCode.TurnMe,JSON.stringify(presencesOnMatch[0].userId));
     gameState.countdown = DurationLobby * TickRate;
+    presencesOnMatch =[];
     return { state: gameState };
 }
 
@@ -151,14 +154,13 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
         let playerNumber: number = getPlayerNumber(gameState.players, presence.sessionId);
         var nameplayer = JSON.stringify(gameState.players[playerNumber].displayName);
         if(   gameState.BeforeEndGame ==false){
-
+            
             dispatcher.broadcastMessage(9,nameplayer);
+         
         }
 
         delete gameState.players[playerNumber];
-      
     }
-
   
     return { state: gameState };
 }
@@ -267,7 +269,7 @@ function StickersManager(message: nkruntime.MatchMessage, gameState: GameState, 
  */
 function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) : void{
     let dataPlayer : DataPlayer = JSON.parse(nakama.binaryToString(message.data));
-let valuMines = 0;
+    let valuMines = 0;
     dataPlayer.MinesScore =false;
     gameState.BeforeEndGame =false;
 

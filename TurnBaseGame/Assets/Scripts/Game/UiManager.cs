@@ -107,8 +107,8 @@ public class UiManager : MonoBehaviour
     {
         PanelLeftPalyer.SetActive(true);
         var hxdTotal = PlayerPrefs.GetInt("HXD");
-        PlayerPrefs.SetInt("HXD", hxdTotal + (MultiplayerManager.Instance.ValueHXDInGameTurn *2));
-        NamePalyerLeft.text = $"{obj} Is Left of match \n Add { (MultiplayerManager.Instance.ValueHXDInGameTurn * 2)} HXD to your wallet";
+        PlayerPrefs.SetInt("HXD", hxdTotal + (MultiplayerManager.Instance.ValueHXDInGameTurn * 2));
+        NamePalyerLeft.text = $"{obj} Is Left of match \n Add {(MultiplayerManager.Instance.ValueHXDInGameTurn * 2)} HXD to your wallet";
     }
 
     private void Instance_TimerStop()
@@ -222,7 +222,8 @@ public class UiManager : MonoBehaviour
             opp.SpriteDice.transform.parent.gameObject.SetActive(false);
             opp.ValueTile = 0;
             opp.IsLock = false;
-            opp.GetComponentInChildren<ParticleSystem>().Stop();
+            opp.particleDouble.Stop();
+            opp.empetySpace.Stop();
             ParticleSystem.MainModule settings = opp.GetComponentInChildren<ParticleSystem>().main;
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
         }
@@ -230,7 +231,8 @@ public class UiManager : MonoBehaviour
         {
             me.isLock = false;
             me.ValueTile = 0;
-            me.GetComponentInChildren<ParticleSystem>().Stop();
+            me.empetySpace.Stop();
+            me.particleDouble.Stop();
             ParticleSystem.MainModule settings = me.GetComponentInChildren<ParticleSystem>().main;
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
             me.SpriteDice.transform.parent.gameObject.SetActive(false);
@@ -269,14 +271,14 @@ public class UiManager : MonoBehaviour
         {
             foreach (var item in list)
             {
-                item.GetComponentInChildren<ParticleSystem>().Play();
+                item.empetySpace.Play();
             }
         }
         else
         {
             foreach (var item in list)
             {
-                item.GetComponentInChildren<ParticleSystem>().Stop();
+                item.empetySpace.Stop();
             }
         }
 
@@ -393,8 +395,8 @@ public class UiManager : MonoBehaviour
             clone.ValueTile = 0;
             clone.IsLock = false;
             clone.SpriteDice.transform.parent.gameObject.SetActive(false);
-            clone.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = clone.GetComponentInChildren<ParticleSystem>().main;
+            clone.particleDouble.Stop();
+            ParticleSystem.MainModule settings = clone.particleDouble.main;
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
         }
         RowSum();
@@ -420,8 +422,8 @@ public class UiManager : MonoBehaviour
             meCell.SpriteDice.sprite = null;
             meCell.ValueTile = 0;
             meCell.isLock = false;
-            meCell.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = meCell.GetComponentInChildren<ParticleSystem>().main;
+            meCell.particleDouble.Stop();
+            ParticleSystem.MainModule settings = meCell.particleDouble.main;
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
             meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
         }

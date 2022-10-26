@@ -29,19 +29,10 @@ var joinOrCreateMatch = function (context, logger, nakama, payload) {
     var MatchesLimit = 1;
     var MinimumPlayers = 1;
     var label = { open: true, game_mode: payload };
-    var query = "+label.open:true +label.game_mode:" + payload;
     matches = nakama.matchList(MatchesLimit, true, JSON.stringify(label), MinimumPlayers, MaxPlayers);
     if (matches.length > 0) {
-        //var s= new ScoreCalss;
-        // s.ScoreF=0;
-        // SaveScore(context.userId,0,nakama,s);
         return matches[0].matchId;
     }
-    // var s= new ScoreCalss;
-    // s.ScoreF=0;
-    // SaveScore(context.userId,0,nakama,s);
-    // nakama.leaderboardRecordWrite(IdLeaderboard,context.userId,context.username,10)
-    //CreateLeaderborad(context,logger,nakama);
     var persons = {};
     persons = { "mode": payload };
     return nakama.matchCreate(MatchModuleName, persons);
@@ -152,8 +143,9 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
         presencesOnMatch.push(presence);
     }
     dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players), presences);
-    dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
+    dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(presencesOnMatch[0].userId));
     gameState.countdown = DurationLobby * TickRate;
+    presencesOnMatch = [];
     return { state: gameState };
 };
 var matchLoop = function (context, logger, nakama, dispatcher, tick, state, messages) {
