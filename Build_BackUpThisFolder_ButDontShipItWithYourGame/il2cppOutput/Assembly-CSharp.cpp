@@ -20703,6 +20703,104 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_UiManager_op_Inequality_mE1AD08
 		return;
 	}
 }
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_AudioClipManager_op_Implicit_m6A2E748351E7E9D61B8DCFD69959AB69714C6BA8 (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
+	{
+		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Implicit_m93896EF7D68FA113C42D3FE2BC6F661FC7EF514A(L_0, NULL);
+		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_2 = (StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75*)il2cpp_codegen_object_new(StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
+		StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091(L_2, (MethodInfo_t*)NULL, StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
+		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_3 = L_2;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_4 = V_0;
+		NullCheck(L_3);
+		RuntimeObject* L_5;
+		L_5 = VirtualFuncInvoker2< RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(15, L_3, NULL, L_4);
+		NullCheck(L_3);
+		RuntimeObject* L_6;
+		L_6 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_3, NULL);
+		return;
+	}
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_AudioClipManager_op_Equality_mB5813E17C459F4982C29D66995BD8D99088166CB (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
+	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
+	{
+		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
+		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_2;
+		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, L_1, NULL);
+		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
+		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
+		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
+		NullCheck(L_4);
+		RuntimeObject* L_7;
+		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
+		NullCheck(L_4);
+		RuntimeObject* L_8;
+		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
+		return;
+	}
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_AudioClipManager_op_Inequality_m9D5986E662912B79ED3BAB2B2611AF8399292E46 (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
+	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
+	{
+		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
+		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_2;
+		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, L_1, NULL);
+		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
+		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
+		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
+		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
+		NullCheck(L_4);
+		RuntimeObject* L_7;
+		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
+		NullCheck(L_4);
+		RuntimeObject* L_8;
+		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
+		return;
+	}
+}
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_ClickInCell_op_Implicit_mAA7A7E4726634A328DD58A2B242730901FC27FB4 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -24231,104 +24329,6 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_AnimationData_
 		return;
 	}
 }
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_BattleManager_op_Implicit_m96F9A15A1A12E22C7B7D2F50285474644469F1FC (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_1;
-		L_1 = Object_op_Implicit_m93896EF7D68FA113C42D3FE2BC6F661FC7EF514A(L_0, NULL);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_2 = (StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75*)il2cpp_codegen_object_new(StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091(L_2, (MethodInfo_t*)NULL, StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_3 = L_2;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_4 = V_0;
-		NullCheck(L_3);
-		RuntimeObject* L_5;
-		L_5 = VirtualFuncInvoker2< RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(15, L_3, NULL, L_4);
-		NullCheck(L_3);
-		RuntimeObject* L_6;
-		L_6 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_3, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_BattleManager_op_Equality_m6D0F82313306810513E79BC1D4395ECBEA0E9A27 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_BattleManager_op_Inequality_m3310CD0CF9FD929172B075F1583A076A9853DCAF (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_BattleWinnerFeedback_op_Implicit_mAC9E7F54619566DC26DD79223A9B2FA7F8DB3A67 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -24427,104 +24427,6 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_BattleWinnerFe
 		return;
 	}
 }
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_GameCamera_op_Implicit_m3F16525CE8F9B37D0FB6C8A004C74147BA7B30CC (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_1;
-		L_1 = Object_op_Implicit_m93896EF7D68FA113C42D3FE2BC6F661FC7EF514A(L_0, NULL);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_2 = (StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75*)il2cpp_codegen_object_new(StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091(L_2, (MethodInfo_t*)NULL, StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_3 = L_2;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_4 = V_0;
-		NullCheck(L_3);
-		RuntimeObject* L_5;
-		L_5 = VirtualFuncInvoker2< RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(15, L_3, NULL, L_4);
-		NullCheck(L_3);
-		RuntimeObject* L_6;
-		L_6 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_3, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_GameCamera_op_Equality_m225856C53157AFE3898B96D2796EEF926C666074 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_GameCamera_op_Inequality_mEAD375F08EDE2ABEF137C6CF990F65289987C65B (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_GameManager_op_Implicit_mBA8365A3B2B0C56B9D48D547BAD39C602CAAB046 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -24590,496 +24492,6 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_GameManager_op
 	}
 }
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_GameManager_op_Inequality_mE507C1A4666F02BAF8B76A04666EE9FD03FBCD26 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Hazard_op_Implicit_m4CC43DF5FE2DA0D8F6353A90FC0911BFBB8636B7 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_1;
-		L_1 = Object_op_Implicit_m93896EF7D68FA113C42D3FE2BC6F661FC7EF514A(L_0, NULL);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_2 = (StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75*)il2cpp_codegen_object_new(StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091(L_2, (MethodInfo_t*)NULL, StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_3 = L_2;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_4 = V_0;
-		NullCheck(L_3);
-		RuntimeObject* L_5;
-		L_5 = VirtualFuncInvoker2< RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(15, L_3, NULL, L_4);
-		NullCheck(L_3);
-		RuntimeObject* L_6;
-		L_6 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_3, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Hazard_op_Equality_m1D1427FE3E9FC5BB7269F1532D8DF016511AFF14 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Hazard_op_Inequality_m789FE8A77F51A5ADAA25C8E0CA8596449157E690 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_InputManager_op_Implicit_mB24FBF85F00D721B2C29E5D7BA6E14677D17ABF7 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_1;
-		L_1 = Object_op_Implicit_m93896EF7D68FA113C42D3FE2BC6F661FC7EF514A(L_0, NULL);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_2 = (StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75*)il2cpp_codegen_object_new(StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091(L_2, (MethodInfo_t*)NULL, StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_3 = L_2;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_4 = V_0;
-		NullCheck(L_3);
-		RuntimeObject* L_5;
-		L_5 = VirtualFuncInvoker2< RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(15, L_3, NULL, L_4);
-		NullCheck(L_3);
-		RuntimeObject* L_6;
-		L_6 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_3, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_InputManager_op_Equality_mCADA80F28523EDE8C87E3EC2BA7C3EFDABA051C5 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_InputManager_op_Inequality_m0196F3009B9DEC6C28FBF90205B77A2C31C479F4 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Map_op_Implicit_mF84CCE43FF41A3A179A4DA1F81700B77107B48AF (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_1;
-		L_1 = Object_op_Implicit_m93896EF7D68FA113C42D3FE2BC6F661FC7EF514A(L_0, NULL);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_2 = (StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75*)il2cpp_codegen_object_new(StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091(L_2, (MethodInfo_t*)NULL, StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_3 = L_2;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_4 = V_0;
-		NullCheck(L_3);
-		RuntimeObject* L_5;
-		L_5 = VirtualFuncInvoker2< RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(15, L_3, NULL, L_4);
-		NullCheck(L_3);
-		RuntimeObject* L_6;
-		L_6 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_3, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Map_op_Equality_m6482CEEF92A4A3B2C01DCDCF66D18DE42FD01A74 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Map_op_Inequality_m0BBA68498B29E7602526F79EC647900B3179E1A2 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_MapData_op_Implicit_m2966C05730F20B26A3AB0BD59424FF3F566E27E8 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_1;
-		L_1 = Object_op_Implicit_m93896EF7D68FA113C42D3FE2BC6F661FC7EF514A(L_0, NULL);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_2 = (StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75*)il2cpp_codegen_object_new(StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091(L_2, (MethodInfo_t*)NULL, StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_3 = L_2;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_4 = V_0;
-		NullCheck(L_3);
-		RuntimeObject* L_5;
-		L_5 = VirtualFuncInvoker2< RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(15, L_3, NULL, L_4);
-		NullCheck(L_3);
-		RuntimeObject* L_6;
-		L_6 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_3, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_MapData_op_Equality_m52B47FACD7286BC20C6DB5CBC3D312F3A0850030 (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_MapData_op_Inequality_m9F3C4957FC70CCC59C456E101B77BA5DAC911C2B (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Ninja_op_Implicit_m9B9BFCFB161B47B86F47DBE0AF96BA6F7CA3F43E (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_1;
-		L_1 = Object_op_Implicit_m93896EF7D68FA113C42D3FE2BC6F661FC7EF514A(L_0, NULL);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_2 = (StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75*)il2cpp_codegen_object_new(StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091(L_2, (MethodInfo_t*)NULL, StaticFunctionInvoker_2__ctor_m4CDB31460E5A5BB11EB6135DABDC361799595091_RuntimeMethod_var);
-		StaticFunctionInvoker_2_tB0037C75DC128BB46023A63D75D3D946527C4F75* L_3 = L_2;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_4 = V_0;
-		NullCheck(L_3);
-		RuntimeObject* L_5;
-		L_5 = VirtualFuncInvoker2< RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(15, L_3, NULL, L_4);
-		NullCheck(L_3);
-		RuntimeObject* L_6;
-		L_6 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_3, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Ninja_op_Equality_mC887425A81D709B2F31F3511BC0E79799CF2391F (const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_0 = NULL;
-	Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* V_1 = NULL;
-	{
-		V_0 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		V_1 = (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_0 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_1 = V_1;
-		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
-		bool L_2;
-		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, L_1, NULL);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_3 = (StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D*)il2cpp_codegen_object_new(StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D_il2cpp_TypeInfo_var);
-		StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21(L_3, (MethodInfo_t*)NULL, StaticFunctionInvoker_3__ctor_m6ECE0899F63C38E54C67BE22307570E484786E21_RuntimeMethod_var);
-		StaticFunctionInvoker_3_t66B4891BE6B11D38C90DB74B008E4FC2BA112D1D* L_4 = L_3;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_5 = V_0;
-		Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* L_6 = V_1;
-		NullCheck(L_4);
-		RuntimeObject* L_7;
-		L_7 = VirtualFuncInvoker3< RuntimeObject*, RuntimeObject*, RuntimeObject*, RuntimeObject* >::Invoke(16, L_4, NULL, L_5, L_6);
-		NullCheck(L_4);
-		RuntimeObject* L_8;
-		L_8 = VirtualFuncInvoker1< RuntimeObject*, RuntimeObject* >::Invoke(14, L_4, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AotStubs_NinjaBattle_Game_Ninja_op_Inequality_m66D86464BC4882307520F03EA47C6EFABBEF5D88 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
 	if (!s_Il2CppMethodInitialized)

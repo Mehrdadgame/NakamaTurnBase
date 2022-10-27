@@ -284,11 +284,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Scale3D.x
-      value: 8
+      value: 380
       objectReference: {fileID: 0}
     - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Scale3D.y
-      value: 8
+      value: 380
       objectReference: {fileID: 0}
     - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Particles.Array.size
@@ -347,6 +347,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5822688346361072065, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5822688346361072065, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5822688346361072065, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -361,6 +369,10 @@ PrefabInstance:
     - target: {fileID: 5822688346361072076, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Name
       value: cellParticle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5822688346361072078, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: scalingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5822688346361072079, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Enabled
@@ -495,11 +507,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -4.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -521,13 +533,21 @@ PrefabInstance:
       propertyPath: m_ApplyActiveColorSpace
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2306476648067935795, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6932678725526036308, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
       propertyPath: m_Scale3D.x
-      value: 125
+      value: 390
       objectReference: {fileID: 0}
     - target: {fileID: 6932678725526036308, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
       propertyPath: m_Scale3D.y
-      value: 125
+      value: 390
+      objectReference: {fileID: 0}
+    - target: {fileID: 6932678725526036308, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
+      propertyPath: m_Scale3D.z
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 6932678725526036308, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
       propertyPath: m_Particles.Array.size

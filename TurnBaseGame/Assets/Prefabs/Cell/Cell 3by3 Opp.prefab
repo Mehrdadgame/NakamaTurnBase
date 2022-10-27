@@ -108,9 +108,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1293790963735621666}
   - {fileID: 4700104575794178388}
   - {fileID: 4407805396967923852}
+  - {fileID: 1293790963735621666}
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -283,6 +283,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 4190922586359276365}
     m_Modifications:
     - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: m_Scale3D.x
+      value: 460
+      objectReference: {fileID: 0}
+    - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: m_Scale3D.y
+      value: 460
+      objectReference: {fileID: 0}
+    - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: m_Scale3D.z
+      value: 460
+      objectReference: {fileID: 0}
+    - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Particles.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -349,6 +361,10 @@ PrefabInstance:
     - target: {fileID: 5822688346361072076, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Name
       value: cellParticle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5822688346361072078, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: scalingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5822688346361072079, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Enabled

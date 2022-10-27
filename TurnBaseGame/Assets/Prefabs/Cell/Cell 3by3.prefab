@@ -108,14 +108,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5026613777848771291}
   - {fileID: 1516664871579711346}
   - {fileID: 9027018816660121524}
+  - {fileID: 5026613777848771291}
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -191.78, y: 610}
   m_SizeDelta: {x: 174.45, y: 176.3}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -282,6 +282,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 7935135272217747584}
     m_Modifications:
     - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: m_Scale3D.x
+      value: 460
+      objectReference: {fileID: 0}
+    - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: m_Scale3D.y
+      value: 460
+      objectReference: {fileID: 0}
+    - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: m_Scale3D.z
+      value: 460
+      objectReference: {fileID: 0}
+    - target: {fileID: -5885736312427586175, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Particles.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -389,6 +401,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: cellParticle
       objectReference: {fileID: 0}
+    - target: {fileID: 5822688346361072078, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5822688346361072079, guid: 5ec0a4c147ac8eb45bfa341ec0a3c0da, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -457,18 +473,6 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -497,6 +501,14 @@ PrefabInstance:
       value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2306476648067935793, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -508,22 +520,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2306476648067935794, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2306476648067935794, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
-      propertyPath: m_ApplyActiveColorSpace
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6932678725526036308, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
-      propertyPath: m_Particles.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6932678725526036308, guid: 5879b056420f4a847a71ec768f13d859, type: 3}
-      propertyPath: m_Particles.Array.data[0]
-      value: 
-      objectReference: {fileID: 9027018816660121526}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

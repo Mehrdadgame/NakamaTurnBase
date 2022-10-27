@@ -8528,15 +8528,6 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Camera_set_farClipPlane_m84EF39B09573168
 	_il2cpp_icall_func = (Camera_set_farClipPlane_m84EF39B09573168734613481FD979BFF31C60139_ftn)il2cpp_codegen_resolve_icall ("UnityEngine.Camera::set_farClipPlane(System.Single)");
 	_il2cpp_icall_func(__this, ___value0);
 }
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float Camera_get_orthographicSize_m7950C5627086253E02992A43ADFE59039DB473F8 (Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* __this, const RuntimeMethod* method) 
-{
-	typedef float (*Camera_get_orthographicSize_m7950C5627086253E02992A43ADFE59039DB473F8_ftn) (Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184*);
-	static Camera_get_orthographicSize_m7950C5627086253E02992A43ADFE59039DB473F8_ftn _il2cpp_icall_func;
-	if (!_il2cpp_icall_func)
-	_il2cpp_icall_func = (Camera_get_orthographicSize_m7950C5627086253E02992A43ADFE59039DB473F8_ftn)il2cpp_codegen_resolve_icall ("UnityEngine.Camera::get_orthographicSize()");
-	float icallRetVal = _il2cpp_icall_func(__this);
-	return icallRetVal;
-}
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Camera_set_orthographicSize_m76DD021032ACB3DDBD052B75EC66DCE3A7295A5C (Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* __this, float ___value0, const RuntimeMethod* method) 
 {
 	typedef void (*Camera_set_orthographicSize_m76DD021032ACB3DDBD052B75EC66DCE3A7295A5C_ftn) (Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184*, float);
