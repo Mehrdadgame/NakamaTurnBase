@@ -21,7 +21,7 @@ public class DiceRoller : MonoBehaviour
     public bool isRolling;
     private float totalTime;
     private float intervalTime;
-    public int currrentDie;
+    public int currrentDie =-1;
     public bool dieRolled;
     public bool isRootDice;
 

@@ -56,7 +56,7 @@ public class CalculterRowScore : MonoBehaviour
         var total = 0;
         var freqMap = cell.GroupBy(x => x.ValueTile)
                                                     .Where(g => g.Count() > 1).Where(r => r.Key > 0)
-                                                    .ToDictionary(x => x.Key, x => x.Count());
+                                                     .ToDictionary(x => x.Key, x => x.Count());
 
 
 

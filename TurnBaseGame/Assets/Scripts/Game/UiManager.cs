@@ -113,7 +113,9 @@ public class UiManager : MonoBehaviour
 
     private void Instance_TimerStop()
     {
-        GameManager.Instance.diceRoller.currrentDie = UnityEngine.Random.Range(0, 6);
+        if (GameManager.Instance.diceRoller.currrentDie == -1)
+            GameManager.Instance.diceRoller.currrentDie = UnityEngine.Random.Range(0, 6);
+
         var cell = tileDataMe.First(e => e.isLock == false);
         cell.SetDataInCell();
         SendTurn.interactable = false;
