@@ -84,6 +84,7 @@ public class UiManager : MonoBehaviour
             GameManager.Instance.diceRoller.Rotation(true);
             AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Stop();
             AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Play();
+            TimerTurn.instance.TimerText.text = "-";
         }
 
     }
