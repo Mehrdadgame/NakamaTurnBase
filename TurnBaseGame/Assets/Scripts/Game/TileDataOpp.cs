@@ -9,7 +9,7 @@ public class TileDataOpp : MonoBehaviour
     public int ValueTile;
     public Image SpriteDice;
     public bool IsLock;
-    public bool Double;
+    public bool PluseScore;
     public ParticleSystem empetySpace;
     public ParticleSystem particleDouble;
 }

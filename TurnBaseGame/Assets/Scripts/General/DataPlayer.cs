@@ -10,7 +10,6 @@ public enum ModeGame
 }
 public class DataPlayer 
 {
-
     public string UserId;
     public int Score;
     public int NumberTile;
@@ -28,7 +27,6 @@ public class DataPlayer
     public ModeGame modeGame;
     public int[][] Array2DTilesPlayer;
     public int[][] Array2DTilesOtherPlayer;
-
 }
 
 public class RematchData

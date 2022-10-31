@@ -21,7 +21,7 @@ namespace Nakama.Helpers
 
         [SerializeField] private bool enableLog = false;
 
-        private Dictionary<Code, Action<MultiplayerMessage>> onReceiveData = new Dictionary<Code, Action<MultiplayerMessage>>();
+        private Dictionary<Code, Action<MultiplayerMessage>> onReceiveData = new ();
         private IMatch match = null;
 
         #endregion
@@ -234,6 +234,7 @@ namespace Nakama.Helpers
                 sumRow2 = new int[rowTable],
                 Array2DTilesOtherPlayer = new int[3][],
                 Array2DTilesPlayer = new int[3][],
+             
             };
 
             Send(Code.ChosseTurn, data);

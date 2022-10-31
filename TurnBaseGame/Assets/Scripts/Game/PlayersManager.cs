@@ -80,7 +80,7 @@ namespace NinjaBattle.Game
             multiplayerManager.Subscribe(MultiplayerManager.Code.Rematch, RematchEvent);
             multiplayerManager.Subscribe(MultiplayerManager.Code.PlayerLeft, EventPlayerLeft);
             multiplayerManager.Subscribe(MultiplayerManager.Code.SendSticker, RiseveSticker);
-            
+
         }
 
         private void OnDestroy()
@@ -203,7 +203,7 @@ namespace NinjaBattle.Game
 
                     AudioClipManager.instance.PlaySoundResultGame(resultGame);
                 }
-              
+
             }
             else
             {
@@ -257,7 +257,7 @@ namespace NinjaBattle.Game
 
                     AudioClipManager.instance.PlaySoundResultGame(resultGame);
                 }
-              
+
 
 
             }

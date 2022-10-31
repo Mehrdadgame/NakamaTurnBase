@@ -34,6 +34,10 @@ public class CalculterRowScore : MonoBehaviour
     public Color colorParticle3Count;
     public Color colorParticle4Count;
     public Color whitecolor;
+
+    public ParticleSystem Fire;
+    private bool IsPluseScoreMe;
+    private bool IsPluseScoreOpp;
     private void Start()
     {
         instance = this;
@@ -74,18 +78,33 @@ public class CalculterRowScore : MonoBehaviour
                     ParticleSystem.MainModule settings = item.Value[i].particleDouble.main;
                     if (item.Value.Length == 4)
                     {
+                        if (item.Value[i].PluseScore == false)
+                        {
+                            item.Value[i].PluseScore = true;
+                            IsPluseScoreOpp = true;
+                        }
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(4));
-                        item.Value[i].Double = true;
+                        item.Value[i].PluseScore = true;
                     }
                     if (item.Value.Length == 3)
                     {
-                        item.Value[i].Double = true;
+                        if (item.Value[i].PluseScore == false)
+                        {
+                            item.Value[i].PluseScore = true;
+                            IsPluseScoreOpp = true;
+                        }
+                        item.Value[i].PluseScore = true;
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(3));
 
                     }
                     if (item.Value.Length == 2)
                     {
-                        item.Value[i].Double = true;
+                        if (item.Value[i].PluseScore == false)
+                        {
+                            item.Value[i].PluseScore = true;
+                            IsPluseScoreOpp = true;
+
+                        }
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(2));
 
                     }
@@ -105,7 +124,11 @@ public class CalculterRowScore : MonoBehaviour
             }
 
         }
-
+        if (IsPluseScoreOpp)
+        {
+            Debug.Log("Opp Score");
+            IsPluseScoreOpp = false;
+        }
         foreach (var item in freqMap)
         {
 
@@ -158,8 +181,6 @@ public class CalculterRowScore : MonoBehaviour
 
                 return total;
             }
-
-
         }
 
         return cell.Where(r => r.ValueTile > -1).Sum(c => c.ValueTile);
@@ -189,19 +210,34 @@ public class CalculterRowScore : MonoBehaviour
                     ParticleSystem.MainModule settings = item.Value[i].particleDouble.main;
                     if (item.Value.Length == 4)
                     {
-
+                        if (item.Value[i].PlusScore == false)
+                        {
+                            IsPluseScoreMe = true;
+                            item.Value[i].PlusScore = true;
+                            Fire.Play();
+                        }
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(4));
 
                     }
                     if (item.Value.Length == 3)
                     {
+                        if (item.Value[i].PlusScore == false)
+                        {
+                            IsPluseScoreMe = true;
+                            item.Value[i].PlusScore = true;
+                            Fire.Play();
 
+                        }
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(3));
 
                     }
                     if (item.Value.Length == 2)
                     {
-
+                        if (item.Value[i].PlusScore == false)
+                        {
+                            IsPluseScoreMe = true;
+                            item.Value[i].PlusScore = true;
+                        }
                         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(2));
 
                     }
@@ -221,7 +257,11 @@ public class CalculterRowScore : MonoBehaviour
             }
 
         }
-
+        if (IsPluseScoreMe)
+        {
+            Debug.Log("Score Me Plus");
+            IsPluseScoreMe = false;
+        }
 
         foreach (var item in freqMap)
         {

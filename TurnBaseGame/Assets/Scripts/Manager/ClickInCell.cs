@@ -12,6 +12,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
     public int numberLine;
     public int numberRow;
     public bool isLock;
+    public bool PlusScore;
     public int ValueTile;
     public Image SpriteDice;
 

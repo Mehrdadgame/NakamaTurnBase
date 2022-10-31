@@ -397,6 +397,7 @@ public class UiManager : MonoBehaviour
             clone.SpriteDice.sprite = null;
             clone.ValueTile = 0;
             clone.IsLock = false;
+            clone.PluseScore = false;
             clone.SpriteDice.transform.parent.gameObject.SetActive(false);
             clone.particleDouble.Stop();
             ParticleSystem.MainModule settings = clone.particleDouble.main;
@@ -421,7 +422,7 @@ public class UiManager : MonoBehaviour
 
         if (meCell != null)
         {
-
+            meCell.PlusScore = false;
             meCell.SpriteDice.sprite = null;
             meCell.ValueTile = 0;
             meCell.isLock = false;
@@ -442,12 +443,11 @@ public class UiManager : MonoBehaviour
     /// <param name="obj"></param>
     private void Instance_SetDataInTurn(DataPlayer obj)
     {
-        MultiplayerManager.Instance.end = DateTime.Now;
-        MultiplayerManager.Instance.ping = MultiplayerManager.Instance.end - MultiplayerManager.Instance.start;
-        Debug.Log(MultiplayerManager.Instance.ping.Milliseconds + " ping");
+        //MultiplayerManager.Instance.end = DateTime.Now;
+        //MultiplayerManager.Instance.ping = MultiplayerManager.Instance.end - MultiplayerManager.Instance.start;
+        //Debug.Log(MultiplayerManager.Instance.ping.Milliseconds + " ping");
         if (obj.UserId != MultiplayerManager.Instance.players.User.Id)
         {
-
             GameManager.Instance.diceRoller.Rotation(false);
             AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Play();
             AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Stop();
@@ -467,7 +467,7 @@ public class UiManager : MonoBehaviour
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerText.text = "30";
             TimerTurn.instance.TimerCount = 30;
-            TimerTurn.instance.TimerText.color = Color.white;
+         
             RowSum();
 
         }
@@ -480,6 +480,7 @@ public class UiManager : MonoBehaviour
             AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Play();
             TimerTurn.instance.TimerRunning = false;
             TimerTurn.instance.TimerText.text = "-";
+         
         }
 
 

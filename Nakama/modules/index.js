@@ -134,7 +134,8 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
         var player = {
             presence: presence,
             displayName: account.user.displayName,
-            ScorePlayer: 0
+            ScorePlayer: 0,
+            amuntMony: 0
         };
         var nextPlayerNumber = getNextPlayerNumber(gameState.players);
         gameState.players[nextPlayerNumber] = player;
@@ -260,8 +261,6 @@ function processMessages(messages, gameState, dispatcher, nakama, logger) {
 }
 function StickersManager(message, gameState, dispatcher, nakama, logger) {
     var data = JSON.parse(nakama.binaryToString(message.data));
-    //  data.id = message.sender.userId;
-    logger.info(data.id + "  User ID");
     dispatcher.broadcastMessage(10 /* Sticker */, JSON.stringify(data));
 }
 /* Creating a 3D array. */
@@ -286,12 +285,10 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         dataPlayer.Score = TotalScore(gameState.array3DPlayerFirst, logger, gameState.VerticalMode);
         gameState.players[0].ScorePlayer = dataPlayer.Score;
         var resultTile = CalculatorArray2D(gameState.array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
-        logger.info(gameState.VerticalMode + " VerticalMode@@@@@@@@@  ");
         var countPow = 0;
         if (gameState.VerticalMode == true) {
             var resultTileVertical = CalculatorArray2DWithVertical(gameState.array3DPlayerSecend, dataPlayer.NumberLine, dataPlayer.NumberRow, dataPlayer.NumberTile, logger);
             for (var index = 0; index < resultTileVertical.length; index++) {
-                logger.info(dataPlayer.NumberRow.toString() + resultTileVertical[index] + "  %%%%%%%%%%%%%%%%");
                 gameState.array3DPlayerSecend[resultTileVertical[index]][dataPlayer.NumberRow] = (-1);
                 countPow++;
             }
@@ -321,12 +318,10 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
         }
         dataPlayer.Array2DTilesPlayer = gameState.array3DPlayerFirst;
         dataPlayer.Array2DTilesOtherPlayer = gameState.array3DPlayerSecend;
-        logger.info(gameState.players[0].ScorePlayer + "  dataPlayer.CountTurnPlayer1");
-        logger.info(gameState.players[1].ScorePlayer + "  dataPlayer.CountTurnPlayer2");
+        ;
         var checkEnd1 = ActionWinPlayer(gameState.array3DPlayerFirst);
         var checkEnd2 = ActionWinPlayer(gameState.array3DPlayerSecend);
         var end = parseInt(gameState.CountTurnPlayer1) == parseInt(gameState.CountTurnPlayer2);
-        logger.info(end + "  dataPlayer.End");
         if (checkEnd1 == true || checkEnd2 == true) {
             if (end == true) {
                 if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
@@ -425,7 +420,6 @@ function TotalScore(array2D, logger, mode) {
             }
         }
     }
-    logger.info(score.toString() + " Score");
     return score;
 }
 function CalculatorArray(arrayInput, logger) {
