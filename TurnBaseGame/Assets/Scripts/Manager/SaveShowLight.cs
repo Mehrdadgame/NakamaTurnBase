@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/* This class is used to save the information of the particle in the show */
 public class SaveShowLight 
 {
 

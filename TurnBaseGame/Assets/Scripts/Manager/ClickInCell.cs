@@ -2,10 +2,13 @@ using Nakama.Helpers;
 using NinjaBattle.Game;
 using NinjaBattle.General;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+/// <summary>
+/// this class for action click to tile player down
+/// </summary>
 public class ClickInCell : MonoBehaviour, IPointerDownHandler
 {
 
@@ -19,7 +22,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
     public ParticleSystem empetySpace;
     public ParticleSystem particleDouble;
     /// <summary>
-    /// Enter Pointerdown in cell 
+    /// Enter Pointerdown in cell player down
     /// </summary>
     /// <param name="eventData"></param>
     public void OnPointerDown(PointerEventData eventData)
@@ -31,8 +34,10 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
         SetDataInCell();
     }
 
+
     /// <summary>
-    /// send data in your turn to server 
+    /// This function is called when a player clicks on a cell in the game board. It sets the value of
+    /// the cell to the value of the dice, and then it sets the dice to be inactive.
     /// </summary>
     public void SetDataInCell()
     {

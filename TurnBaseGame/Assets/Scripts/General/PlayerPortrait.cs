@@ -55,29 +55,52 @@ namespace NinjaBattle.General
             playersManager.onLocalPlayerObtained -= LocalPlayerObtained;
         }
 
+     /// <summary>
+     /// If the player number is the same as the player number of the player who is currently logged in,
+     /// then the color of the text will be the color that is set in the inspector. Otherwise, the color
+     /// will be the color that is set in the inspector
+     /// </summary>
+     /// <param name="PlayerData">This is the player data that is obtained from the server.</param>
+     /// <param name="playerNumber">The player number of the player who joined the game.</param>
         private void LocalPlayerObtained(PlayerData player, int playerNumber)
         {
             displayName.color = this.playerNumber == playerNumber ? youColor : othersColor;
         }
 
+     /// <summary>
+     /// It sets the portrait of the player.
+     /// </summary>
+     /// <param name="players">List of PlayerData objects</param>
         private void PlayersReceived(List<PlayerData> players)
         {
             SetPortrait(players);
         }
 
+      /// <summary>
+      /// This function is called when a player leaves the game. It updates the portrait of the player
+      /// who left
+      /// </summary>
+      /// <param name="PlayerData">This is a class that contains all the information about the
+      /// player.</param>
         private void PlayerLeft(PlayerData player)
         {
             SetPortrait(playersManager.Players);
         }
 
+     /// <summary>
+     /// When a player joins, set the portrait of all players
+     /// </summary>
+     /// <param name="PlayerData"></param>
         private void PlayerJoined(PlayerData player)
         {
             SetPortrait(playersManager.Players);
         }
-        /// <summary>
-        /// set data other player in board
-        /// </summary>
-        /// <param name="players"></param>
+      
+       /// <summary>
+       /// If the player is connected, set the portrait to the connectedPlayerColor, otherwise set it to
+       /// the noPlayerColor
+       /// </summary>
+       /// <param name="players">List of PlayerData</param>
         private void SetPortrait(List<PlayerData> players)
         {
             bool hasPlayer = players != null && players.Count > playerNumber && players[playerNumber] != null;

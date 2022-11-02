@@ -36,6 +36,10 @@ namespace NinjaBattle.General
             nakamaUserManager.onLoaded -= ObtainName;
         }
 
+    /// <summary>
+    /// If the user's display name is empty, then generate a random name from the firstPart and
+    /// secondPart arrays. Otherwise, set the inputField.text to the user's display name
+    /// </summary>
         private void ObtainName()
         {
             if (string.IsNullOrEmpty(nakamaUserManager.DisplayName))
@@ -44,12 +48,20 @@ namespace NinjaBattle.General
                 inputField.text = nakamaUserManager.DisplayName;
         }
 
+    /// <summary>
+    /// If the user types a new character, wait for a second, then update the name
+    /// </summary>
+    /// <param name="newValue">The new value of the textbox</param>
         private void ValueChanged(string newValue)
         {
             CancelInvoke(nameof(UpdateName));
             Invoke(nameof(UpdateName), delay);
         }
 
+     /// <summary>
+     /// If the text in the input field is not the same as the display name, then update the display
+     /// name
+     /// </summary>
         private void UpdateName()
         {
             if (inputField.text != nakamaUserManager.DisplayName)

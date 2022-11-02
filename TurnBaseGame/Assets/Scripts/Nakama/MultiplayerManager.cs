@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -118,9 +117,11 @@ namespace Nakama.Helpers
             match = null;
             onMatchLeave?.Invoke();
         }
-        /// <summary>
-        /// 
-        /// </summary>
+       
+      /// <summary>
+      /// This function is called when the player leaves the match. It removes the player from the
+      /// match, removes the event listeners, and sets the match to null
+      /// </summary>
         public async void LeaveMatchAsync()
         {
             await NakamaManager.Instance.Socket.LeaveMatchAsync(match);
@@ -130,7 +131,11 @@ namespace Nakama.Helpers
             onMatchLeave?.Invoke();
             isTurn = false;
         }
-
+        /// <summary>
+        /// send data to server
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="data"></param>
         public void Send(Code code, object data = null)
         {
             if (match == null)
@@ -142,6 +147,13 @@ namespace Nakama.Helpers
 
             NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, json);
         }
+
+        /// <summary>
+        /// send data to server 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="data"></param>
+        /// <param name="player"></param>
         public void Send(Code code, object data = null, IEnumerable<IUserPresence> player = null)
         {
             if (match == null)
@@ -185,11 +197,12 @@ namespace Nakama.Helpers
           
         }
 
-        /// <summary>
-        /// method for send data to server and clint
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="action"></param>
+    
+      /// <summary>
+      /// This function adds a new action to the dictionary of actions
+      /// </summary>
+      /// <param name="Code">The code that the message is being sent with.</param>
+      /// <param name="action">The method that will be called when the message is received.</param>
         public void Subscribe(Code code, Action<MultiplayerMessage> action)
         {
             if (!onReceiveData.ContainsKey(code))
@@ -197,11 +210,12 @@ namespace Nakama.Helpers
 
             onReceiveData[code] += action;
         }
-        /// <summary>
-        /// remove data of clint
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="action"></param>
+      
+    /// <summary>
+    /// > Unsubscribe from a specific code
+    /// </summary>
+    /// <param name="Code">The code that the message is being sent with.</param>
+    /// <param name="action">The method that will be called when the message is received.</param>
         public void Unsubscribe(Code code, Action<MultiplayerMessage> action)
         {
             if (onReceiveData.ContainsKey(code))
@@ -212,13 +226,14 @@ namespace Nakama.Helpers
         {
             Debug.Log(string.Format(LogFormat, description, (Code)dataCode, json));
         }
+
         /// <summary>
-        /// send data turn player to server
+        /// I send the data to the server, and the server sends it to the other player
         /// </summary>
-        /// <param name="nameTile"></param>
-        /// <param name="number"></param>
-        /// <param name="line"></param>
-        /// <param name="row"></param>
+        /// <param name="nameTile">the name of the tile</param>
+        /// <param name="number">the number of the tile</param>
+        /// <param name="line">the line of the tile</param>
+        /// <param name="row">the row of the tile</param>
         public void SendTurn(string nameTile, int number, int line, int row)
         {
             SetRowAndCol();

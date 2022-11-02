@@ -5,9 +5,8 @@ using TMPro;
 using UnityEngine.UI;
 using Nakama.Helpers;
 using System;
-/// <summary>
-/// This Calss for DiceRoller 
-/// </summary>
+
+/* A class declaration. */
 public class DiceRoller : MonoBehaviour
 {
 
@@ -21,18 +20,18 @@ public class DiceRoller : MonoBehaviour
     public bool isRolling;
     private float totalTime;
     private float intervalTime;
-    public int currrentDie =-1;
+    public int currrentDie = -1;
     public bool dieRolled;
     public bool isRootDice;
 
-    Image die;
+    private Image dice;
 
     void Start()
     {
         rolls = 0;
         total = 0;
         // moved this here because there is no need  to continually get the same object
-        die = GameObject.Find("DieImage").GetComponent<Image>();
+        dice = GameObject.Find("DieImage").GetComponent<Image>();
 
         Init();
     }
@@ -43,7 +42,7 @@ public class DiceRoller : MonoBehaviour
         intervalTime = 0.0f;
         currrentDie = 0;
         dieRolled = false;
-        die.sprite = Dice[currrentDie];
+        dice.sprite = Dice[currrentDie];
     }
 
     void Update()
@@ -57,10 +56,10 @@ public class DiceRoller : MonoBehaviour
             {
                 //change die & rotation
                 currrentDie = UnityEngine.Random.Range(0, 6);
-                die.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360));
+                dice.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360));
 
                 //set image to selected die
-                die.sprite = Dice[currrentDie];
+                dice.sprite = Dice[currrentDie];
                 intervalTime -= 0.1f;
             }
 
@@ -76,16 +75,21 @@ public class DiceRoller : MonoBehaviour
 
         if (isRootDice)
         {
-            die.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360) * Time.deltaTime * 2);
+            dice.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360) * Time.deltaTime * 2);
             currrentDie = UnityEngine.Random.Range(0, 6);
-            die.sprite = Dice[currrentDie];
+            dice.sprite = Dice[currrentDie];
         }
         else
         {
-            die.GetComponent<RectTransform>().eulerAngles = Vector3.zero;
+            dice.GetComponent<RectTransform>().eulerAngles = Vector3.zero;
         }
     }
 
+  /// <summary>
+  /// If the die hasn't been rolled, then set the die to rolling. If the die isn't rolling, then
+  /// initialize the die and set it to rolling
+  /// </summary>
+  /// <param name="Button">The button that was clicked</param>
     public void DieImage_Click(Button button)
     {
         if (!dieRolled)
@@ -136,7 +140,7 @@ public class DiceRoller : MonoBehaviour
         int value = currrentDie + 1;
         //   totalValue[currrentDie] += value; // add value to totalValue of current die
         total += value;                   // add value to total
-        die.GetComponent<RectTransform>().eulerAngles = Vector3.zero;
+        dice.GetComponent<RectTransform>().eulerAngles = Vector3.zero;
         RollUp?.Invoke(true);
 
 

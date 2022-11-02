@@ -1,8 +1,4 @@
 using System.Collections.Generic;
-using System.Numerics;
-using System.Threading.Tasks;
-using Nakama;
-using Nakama.Helpers;
 using NinjaBattle.Game;
 using UnityEngine;
 
@@ -29,7 +25,7 @@ namespace NinjaBattle.General
             playersManager.onPlayerJoined += PlayerJoined;
             playersManager.onPlayerLeft += PlayerLeft;
             playersManager.onPlayersReceived += PlayersReceived;
-            UpdateStatus();
+       
 
         }
 
@@ -42,42 +38,20 @@ namespace NinjaBattle.General
 
         private void PlayersReceived(List<PlayerData> players)
         {
-            if (!PlayerPrefs.HasKey("Opp"))
-
-                UpdateStatus();
+          
         }
 
         private void PlayerLeft(PlayerData player)
         {
-            UpdateStatus();
+          
         }
 
         private void PlayerJoined(PlayerData player)
         {
 
-
-            UpdateStatus();
-
         }
 
-        private  void UpdateStatus()
-        {
-            Debug.Log("Left");
-            //bool gameStarting = playersManager.PlayersCount > 1;
-
-
-            //if (gameStarting)
-            //{
-            //    // timer.ResetTimer();
-            //    // waitingText.SetActive(!gameStarting);
-            //    // timer.gameObject.SetActive(gameStarting);
-
-
-
-            // gameStarting = false;
-            //}
-
-        }
+      
 
         #endregion
     }

@@ -32,6 +32,7 @@ namespace NinjaBattle.Game
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Application.targetFrameRate = 60;
         }
+
         private void Start()
         {
             MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.ChangeScene, ReceivedChangeScene);
@@ -51,7 +52,10 @@ namespace NinjaBattle.Game
             MultiplayerManager.Instance.onMatchLeave -= LeavedMatch;
         }
 
-
+        /// <summary>
+        ///  Received action of srever for change scene
+        /// </summary>
+        /// <param name="message"></param>
         private async void ReceivedChangeScene(MultiplayerMessage message)
         {
             AniamtionManager.instance.AnimIconOpp.enabled = false;
@@ -76,14 +80,18 @@ namespace NinjaBattle.Game
         {
             ResetPlayerWins();
 
-            GoToLobby();
+            GoToGamePlayScene();
         }
-
+        /// <summary>
+        /// go to home scene when leave of room
+        /// </summary>
         private void LeavedMatch()
         {
             GoToHome();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         private void ResetPlayerWins()
         {
             PlayersWins = new int[2];
@@ -93,8 +101,11 @@ namespace NinjaBattle.Game
         {
             SceneManager.LoadScene((int)Scenes.Home);
         }
-
-        private void GoToLobby()
+        /// <summary>
+        /// switch scene with game mode
+        /// check mode game for select scene
+        /// </summary>
+        private void GoToGamePlayScene()
         {
             switch (modeGame)
             {

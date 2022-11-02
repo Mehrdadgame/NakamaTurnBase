@@ -1,5 +1,6 @@
 namespace NinjaBattle.General
 {
+   /* A list of scenes that can be used in the game. */
     public enum Scenes
     {
         Initializer = 0,

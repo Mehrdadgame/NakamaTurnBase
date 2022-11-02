@@ -29,7 +29,7 @@ namespace NinjaBattle.Game
 
         #endregion
 
-        #region EVENTS
+        #region EVENTS action for joine and left player
 
         public event Action<List<PlayerData>> onPlayersReceived;
         public event Action<PlayerData> onPlayerJoined;
@@ -83,6 +83,9 @@ namespace NinjaBattle.Game
 
         }
 
+      /// <summary>
+      /// A function that is called when the object is destroyed.
+      /// </summary>
         private void OnDestroy()
         {
             multiplayerManager.onMatchJoin -= MatchJoined;
@@ -98,6 +101,10 @@ namespace NinjaBattle.Game
             multiplayerManager.Unsubscribe(MultiplayerManager.Code.SendSticker, RiseveSticker);
         }
 
+/// <summary>
+/// A function that is called when a player receives a sticker.
+/// </summary>
+/// <param name="MultiplayerMessage">The message that was sent to the server.</param>
         public void RiseveSticker(MultiplayerMessage message)
         {
             var nameSticker = message.GetData<StickerData>();
@@ -112,6 +119,10 @@ namespace NinjaBattle.Game
             }
 
         }
+/// <summary>
+/// A function that is called when a player leaves the game.
+/// </summary>
+/// <param name="MultiplayerMessage">This is the message that was sent from the server.</param>
         public void EventPlayerLeft(MultiplayerMessage message)
         {
             var data = message.GetData<string>();
@@ -120,6 +131,10 @@ namespace NinjaBattle.Game
 
         }
 
+/// <summary>
+/// A function that is called when a player requests a rematch.
+/// </summary>
+/// <param name="MultiplayerMessage">This is the message that was sent to the client.</param>
         public void RematchEvent(MultiplayerMessage message)
         {
             var data = message.GetData<RematchData>();
@@ -127,6 +142,10 @@ namespace NinjaBattle.Game
 
 
         }
+/// <summary>
+/// 
+/// </summary>
+/// <param name="MultiplayerMessage">This is the message that was sent from the server.</param>
         public void SetTurn(MultiplayerMessage message)
         {
             if (message.GetData<string>() == multiplayerManager.Self.UserId)
@@ -140,6 +159,10 @@ namespace NinjaBattle.Game
             }
 
         }
+   /// <summary>
+   /// call back select turn for palyer
+   /// </summary>
+   /// <param name="MultiplayerMessage">This is the message that was sent from the other player.</param>
         private void ChosseTurnPlayer(MultiplayerMessage message)
         {
             var hxdTotal = PlayerPrefs.GetInt("HXD");
@@ -263,6 +286,12 @@ namespace NinjaBattle.Game
             }
         }
 
+    /// <summary>
+    /// It takes a message from the server, gets the data from the message, and sets the Players
+    /// variable to the data
+    /// </summary>
+    /// <param name="MultiplayerMessage">A class that contains the data that is sent from the
+    /// server.</param>
         private void SetPlayers(MultiplayerMessage message)
         {
             Players = message.GetData<List<PlayerData>>();
@@ -271,6 +300,13 @@ namespace NinjaBattle.Game
             GetCurrentPlayer();
         }
 
+     /// <summary>
+     /// "When a player joins, add them to the list of players, and then invoke the onPlayerJoined
+     /// event."
+     /// 
+     /// The onPlayerJoined event is a UnityEvent that we'll use to update the UI
+     /// </summary>
+     /// <param name="MultiplayerMessage">This is the message that is sent from the server.</param>
         private void PlayerJoined(MultiplayerMessage message)
         {
             PlayerData player = message.GetData<PlayerData>();
@@ -286,6 +322,11 @@ namespace NinjaBattle.Game
             onPlayerJoined?.Invoke(player);
         }
 
+/// <summary>
+/// A function that is called when the players in the match change.
+/// </summary>
+/// <param name="IMatchPresenceEvent">This is the event that is sent to the client. It contains
+/// information about the players that have joined or left the match.</param>
         private void PlayersChanged(IMatchPresenceEvent matchPresenceEvent)
         {
             if (blockJoinsAndLeaves)
@@ -305,12 +346,23 @@ namespace NinjaBattle.Game
             }
         }
 
+      /// <summary>
+      /// This function is called when the player joins a match. It adds a listener to the socket that
+      /// will call the PlayersChanged function when the players in the match change. It also calls the
+      /// GetCurrentPlayer function
+      /// </summary>
         private void MatchJoined()
         {
             nakamaManager.Socket.ReceivedMatchPresence += PlayersChanged;
             GetCurrentPlayer();
 
         }
+/// <summary>
+/// show ui result in end game
+/// </summary>
+/// <param name="resutlText">The text to display in the result text box.</param>
+/// <param name="score1">The score of the first player.</param>
+/// <param name="score2">The score of the second player.</param>
         private void ShowResultEndGame(string resutlText, int score1, int score2)
         {
             ActionEndGame.instance.ResultPanel.SetActive(true);
@@ -345,6 +397,9 @@ namespace NinjaBattle.Game
 
         }
 
+      /// <summary>
+      /// This function is called when a player leaves the match. It resets the match and the players
+      /// </summary>
         private void ResetLeaved()
         {
             nakamaManager.Socket.ReceivedMatchPresence -= PlayersChanged;
@@ -355,6 +410,10 @@ namespace NinjaBattle.Game
 
         }
 
+      /// <summary>
+      /// This function is called when a match is started
+      /// </summary>
+      /// <param name="MultiplayerMessage">This is the message that was sent to the client.</param>
         public void MatchStarted(MultiplayerMessage message)
         {
             blockJoinsAndLeaves = true;

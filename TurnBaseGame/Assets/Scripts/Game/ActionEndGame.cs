@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Nakama.Helpers;
 
+/* This class is used to display the result of the game. */
 public class ActionEndGame : MonoBehaviour
 {
     public static ActionEndGame instance;

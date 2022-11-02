@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace NinjaBattle.Game
 {
+/* A generic class that can be used to store a value of any type. */
     public class RollbackVar<T>
     {
         #region FIELDS

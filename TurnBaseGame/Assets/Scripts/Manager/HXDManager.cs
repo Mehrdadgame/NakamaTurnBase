@@ -25,7 +25,7 @@ public class HXDManager : Singelton<HXDManager>
             HXDAmount = PlayerPrefs.GetInt("HXD");
             textHXD.text = HXDAmount.ToString();
         }
-        ///deVelop mode
+        ///Develop mode
         if (HXDAmount <= 0)
         {
             HXDAmount = 100000;
@@ -34,6 +34,13 @@ public class HXDManager : Singelton<HXDManager>
         }
     }
 
+  /// <summary>
+  /// It takes an integer as a parameter and subtracts it from the current amount of HXD
+  /// </summary>
+  /// <param name="amunt">The amount of HXD to be set.</param>
+  /// <returns>
+  /// Nothing
+  /// </returns>
     public void SetHXD(int amunt)
     {
         if (amunt > HXDAmount)

@@ -24,6 +24,11 @@ public class AudioClipManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position);
     }
 
+  /// <summary>
+  /// It plays a sound based on the result of the game
+  /// </summary>
+  /// <param name="ResultGame">is an enum that contains the result of the game (win, loose,
+  /// draw)</param>
     public void PlaySoundResultGame(ResultGame result)
     {
         switch (result)

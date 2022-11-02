@@ -20,6 +20,9 @@ namespace Nakama.Helpers
             button.onClick.AddListener(FindMatch);
         }
 
+    /// <summary>
+    /// The function FindMatch() is called when the player clicks the button to find a match
+    /// </summary>
         private void FindMatch()
         {
             GameManager.Instance.modeGame = GetComponent<SetModeGame>().modeGame;

@@ -23,6 +23,9 @@ namespace Nakama.Helpers
             button.onClick.RemoveListener(Disconect);
         }
 
+     /// <summary>
+     /// It disconnects the user from the server.
+     /// </summary>
         private void Disconect()
         {
             NakamaManager.Instance.LogOut();

@@ -263,7 +263,7 @@ function StickersManager(message, gameState, dispatcher, nakama, logger) {
     var data = JSON.parse(nakama.binaryToString(message.data));
     dispatcher.broadcastMessage(10 /* Sticker */, JSON.stringify(data));
 }
-/* Creating a 3D array. */
+/* Creating a 2D array. */
 /*  */
 /**
  * The above function is used to choose the turn of the player.
@@ -640,10 +640,8 @@ function CalculatorArray2D(array1, x, y, input, logger) {
 function CalculatorArray2DWithVertical(array1, X, y, input, logger) {
     var arrayResult = [];
     var arrayColumn = array1.map(function (x) { return x[y]; });
-    logger.warn(JSON.stringify(arrayColumn) + " " + " $$$$");
     arrayColumn.map(function (element, index) {
         if (element === input) {
-            logger.info(index.toString() + " " + y);
             arrayResult.push(index);
         }
     });
@@ -672,11 +670,9 @@ function CalculatorScore(array1, x, input, logger, scoreSaved) {
     if (countNumber > 1) {
         i = input + 1;
         powScore = (i * countNumber) * countNumber;
-        logger.info(powScore + "  logger : count !!!! " + i);
         if (countNumber == 2)
             return [powScore + scoreSaved - (i), powScore];
         if (countNumber == 3) {
-            logger.info(powScore + " " + scoreSaved + " " + i);
             return [powScore + scoreSaved - (i * 4), powScore];
         }
     }

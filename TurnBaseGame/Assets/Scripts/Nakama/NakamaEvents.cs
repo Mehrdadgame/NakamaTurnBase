@@ -35,6 +35,9 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onLoginFail -= OnLoginFail;
         }
 
+     /// <summary>
+     /// A function that is called when the client is connected to the server.
+     /// </summary>
         private void OnConnecting()
         {
             onConnecting?.Invoke();

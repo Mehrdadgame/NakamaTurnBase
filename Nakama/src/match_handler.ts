@@ -253,7 +253,7 @@ function StickersManager(message: nkruntime.MatchMessage, gameState: GameState, 
   
     dispatcher.broadcastMessage(OperationCode.Sticker, JSON.stringify(data));
 }
-/* Creating a 3D array. */
+/* Creating a 2D array. */
 
 
 /*  */
@@ -280,7 +280,7 @@ function ChooseTurnPlayer(message: nkruntime.MatchMessage, gameState: GameState,
          dataPlayer.Score = TotalScore(gameState.array3DPlayerFirst,logger,gameState.VerticalMode);
          gameState.players[0].ScorePlayer =  dataPlayer.Score ;
          var resultTile = CalculatorArray2D(gameState.array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile,logger);
-let countPow=0;
+         let countPow=0;
 if(gameState.VerticalMode == true){
     var resultTileVertical = CalculatorArray2DWithVertical(gameState.array3DPlayerSecend,dataPlayer.NumberLine,dataPlayer.NumberRow,dataPlayer.NumberTile,logger);
    
@@ -364,7 +364,7 @@ if(gameState.VerticalMode == true){
            gameState. array3DPlayerFirst[resultTileVertical[index]][dataPlayer.NumberRow] = (-1);
             countPow++;
         }
-        
+
             if(countPow>0)
             {
               valuMines = dataPlayer.NumberTile+1;
@@ -725,14 +725,11 @@ function CalculatorArray2DWithVertical(array1:number[][],X:number,y:number,input
 {
     let arrayResult : number[] =[];
     let arrayColumn =  array1.map(x => x[y]);
-    logger.warn(JSON.stringify(arrayColumn )+ " "+" $$$$");
    
     arrayColumn.map((element, index) => {
         if (element === input) 
         {
-            logger.info(index.toString() + " "+ y);
             arrayResult.push(index);
-
         }
    
  });
@@ -766,17 +763,13 @@ function CalculatorScore(array1:number[][],x:number,input:number,logger : nkrunt
  if(countNumber>1){
      i = input+1;
     powScore = (i*countNumber)*countNumber;
-    logger.info(powScore + "  logger : count !!!! " + i);
     if(countNumber==2)
     return [powScore+scoreSaved-(i), powScore];
     if(countNumber==3){
        
-        logger.info(powScore + " "+ scoreSaved + " "+ i);
         return [powScore+scoreSaved-(i*4), powScore];
     }
  }
-
-
 return [scoreSaved+(input+1),input+1];
 
 }

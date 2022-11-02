@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using System;
 
+/* A class for start timer when finish timer call action TimerStop  */
 public class TimerTurn : MonoBehaviour
 {
     public static TimerTurn instance;

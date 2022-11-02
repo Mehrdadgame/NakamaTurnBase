@@ -1,5 +1,6 @@
 namespace Nakama.Helpers
 {
+   /* It's a list of all the codes that we will use to communicate between the server and the client */
     public partial class MultiplayerManager
     {
         public enum Code

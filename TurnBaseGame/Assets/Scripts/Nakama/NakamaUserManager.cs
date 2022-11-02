@@ -52,6 +52,10 @@ namespace Nakama.Helpers
        
         }
 
+      /// <summary>
+      /// This function updates the display name of the user
+      /// </summary>
+      /// <param name="displayName">The new display name for the user.</param>
         public async void UpdateDisplayName(string displayName)
         {
             await NakamaManager.Instance.Client.UpdateAccountAsync(NakamaManager.Instance.Session, null, displayName);

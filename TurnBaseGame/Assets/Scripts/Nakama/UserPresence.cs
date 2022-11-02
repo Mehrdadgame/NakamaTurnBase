@@ -26,6 +26,7 @@ namespace Nakama.Helpers
 
         #region CONSTRUCTORS
 
+    /* A constructor. */
         public UserPresence(bool persistence, string sessionId, string status, string username, string userId)
         {
             Persistence = persistence;

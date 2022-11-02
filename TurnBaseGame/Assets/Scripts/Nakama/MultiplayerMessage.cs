@@ -20,6 +20,7 @@
 
         #region BEHAVIORS
 
+       /* A constructor. */
         public MultiplayerMessage(IMatchState matchState)
         {
             DataCode = (MultiplayerManager.Code)matchState.OpCode;
@@ -35,11 +36,23 @@
             bytes = matchState.State;
         }
 
+       /// <summary>
+       /// It takes a JSON string and returns a generic object of type T
+       /// </summary>
+       /// <returns>
+       /// The deserialized JSON data.
+       /// </returns>
         public T GetData<T>()
         {
             return json.Deserialize<T>();
         }
 
+      /// <summary>
+      /// It returns the bytes of the image
+      /// </summary>
+      /// <returns>
+      /// The bytes array is being returned.
+      /// </returns>
         public byte[] GetBytes()
         {
             return bytes;

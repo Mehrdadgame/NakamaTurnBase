@@ -24,6 +24,11 @@ namespace NinjaBattle.General
             SetPortrait(playersManager.Players);
         }
 
+     /// <summary>
+     /// It sets the portrait of the player to the player number, and if the player has won, it sets the
+     /// stars to white
+     /// </summary>
+     /// <param name="players">List of PlayerData</param>
         private void SetPortrait(List<PlayerData> players)
         {
             int playerNumber = portrait.PlayerNumber;

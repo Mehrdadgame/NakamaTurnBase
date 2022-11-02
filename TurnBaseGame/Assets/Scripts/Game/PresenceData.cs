@@ -2,6 +2,8 @@ using Newtonsoft.Json;
 
 namespace NinjaBattle.Game
 {
+  /* It's a class that contains a single property, SessionId, which is a string */
+  
     public class PresenceData
     {
         #region FIELDS

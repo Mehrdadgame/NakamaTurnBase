@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Nakama.Helpers;
-using System.Drawing;
 using Color = UnityEngine.Color;
 
 
+/* A class declaration. */
 public class CalculterRowScore : MonoBehaviour
 {
+
+    #region property
     public static CalculterRowScore instance;
     public List<TileDataOpp> tileDataOpps = new();
     public List<TileDataOpp> tileDataOpps2 = new();
@@ -38,10 +39,17 @@ public class CalculterRowScore : MonoBehaviour
     public ParticleSystem Fire;
     private bool IsPluseScoreMe;
     private bool IsPluseScoreOpp;
+    #endregion
     private void Start()
     {
         instance = this;
     }
+
+    /// <summary>
+    /// set color particel for double or triple dice
+    /// </summary>
+    /// <param name="a"></param>
+    /// <returns></returns>
     private Color SetColorParticle(int a)
     {
         switch (a)
@@ -54,6 +62,11 @@ public class CalculterRowScore : MonoBehaviour
         }
         return whitecolor;
     }
+
+/// <summary>
+/// It returns the number of tiles in the list.
+/// </summary>
+/// <param name="cell">The list of tiles that are in the cell.</param>
     public int TilesOpp(List<TileDataOpp> cell)
     {
         //  DuobleScore2.Clear();
@@ -187,6 +200,11 @@ public class CalculterRowScore : MonoBehaviour
 
     }
 
+/// <summary>
+/// It takes a list of ClickInCell objects and returns an integer.
+/// </summary>
+/// <param name="cell">A list of ClickInCell objects. Each ClickInCell object represents a click in a
+/// cell.</param>
     public int TileMe(List<ClickInCell> cell)
     {
 

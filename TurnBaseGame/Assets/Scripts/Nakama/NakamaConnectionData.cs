@@ -3,6 +3,7 @@ using UnityEngine;
 namespace Nakama.Helpers
 {
     [CreateAssetMenu(menuName = "Nakama/Connection data")]
+/* A class that inherits from ScriptableObject. */
     public class NakamaConnectionData : ScriptableObject
     {
         #region FIELDS

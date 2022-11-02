@@ -52,6 +52,10 @@ namespace Nakama.Helpers
 
         }
 
+     /// <summary>
+     /// It gets the UDID from the PlayerPrefs, if it doesn't exist, it creates a new one and saves it
+     /// to the PlayerPrefs
+     /// </summary>
         public void LoginWithUdid()
         {
             var udid = PlayerPrefs.GetString(UdidKey, Guid.NewGuid().ToString());
@@ -111,6 +115,14 @@ namespace Nakama.Helpers
 
         }
 
+     /// <summary>
+     /// > Send an RPC to the server
+     /// </summary>
+     /// <param name="rpc">The name of the RPC you want to call.</param>
+     /// <param name="payload">The JSON payload to send to the server.</param>
+     /// <returns>
+     /// The return value is an object of type IApiRpc.
+     /// </returns>
         public async Task<IApiRpc> SendRPC(string rpc, string payload = "{}")
         {
             if (client == null || session == null)

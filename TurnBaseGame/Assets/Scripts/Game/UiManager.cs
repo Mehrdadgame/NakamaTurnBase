@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine.U2D;
 using NinjaBattle.General;
-using System;
 
 public class UiManager : MonoBehaviour
 {
@@ -103,7 +102,10 @@ public class UiManager : MonoBehaviour
         TimerTurn.instance.TimerStop += Instance_TimerStop;
         PlayersManager.Instance.LeftPlayer += Instance_LeftPlayer;
     }
-
+    /// <summary>
+    /// action when left palyer 
+    /// </summary>
+    /// <param name="obj"></param>
     private void Instance_LeftPlayer(string obj)
     {
         PanelLeftPalyer.SetActive(true);
@@ -111,7 +113,9 @@ public class UiManager : MonoBehaviour
         PlayerPrefs.SetInt("HXD", hxdTotal + (MultiplayerManager.Instance.ValueHXDInGameTurn * 2));
         NamePalyerLeft.text = $"{obj} Is Left of match \n Add {(MultiplayerManager.Instance.ValueHXDInGameTurn * 2)} HXD to your wallet";
     }
-
+    /// <summary>
+    /// when  timer equal zero in turn find first empety cell and set data in cell
+    /// </summary>
     private void Instance_TimerStop()
     {
         if (GameManager.Instance.diceRoller.currrentDie == -1)
@@ -137,10 +141,11 @@ public class UiManager : MonoBehaviour
         GameManager.Instance.diceRoller.RollUp -= ShowHighLight;
     }
 
-    /// <summary>
-    /// call back event rematch 
-    /// </summary>
-    /// <param name="obj"></param>
+
+/// <summary>
+/// A callback function that is called when a rematch is requested.
+/// </summary>
+/// <param name="RematchData"></param>
     private void Instance_onRematch(RematchData obj)
     {
         //if (obj.UserId == MultiplayerManager.Instance.Self.UserId)
@@ -328,7 +333,9 @@ public class UiManager : MonoBehaviour
     }
 
 
-    [ContextMenu("sum")]
+/// <summary>
+/// It adds the numbers in the row together.
+/// </summary>
     public void RowSum()
     {
 
@@ -386,6 +393,12 @@ public class UiManager : MonoBehaviour
 
     }
 
+
+    /// <summary>
+    /// find dice in tiles for remove opp
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <param name="arg2"></param>
     private void Instance_onSetDataInRowOpp(int arg1, int arg2)
     {
 
@@ -410,7 +423,7 @@ public class UiManager : MonoBehaviour
 
     }
     /// <summary>
-    /// Set data iv row 
+    ///  find dice in tiles for remove player
     /// </summary>
     /// <param name="arg1"></param>
     /// <param name="arg2"></param>
