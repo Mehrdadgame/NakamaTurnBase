@@ -10,6 +10,7 @@ namespace Nakama.Helpers
 
         private const string UdidKey = "udid";
 
+/* A reference to the NakamaConnectionData scriptable object.  set local and host*/
         [SerializeField] private NakamaConnectionData connectionData = null;
 
         private IClient client = null;
