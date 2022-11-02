@@ -2,6 +2,17 @@
 var JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
+/**
+ * "Register the RPC and the match module with the initializer."
+ *
+ * The first thing we do is register the RPC. We do this by calling the `registerRpc` function on the
+ * initializer. This function takes two parameters: the name of the RPC and the function that will be
+ * called when the RPC is invoked
+ * @param ctx - The context of the module.
+ * @param logger - The logger object that you can use to log messages.
+ * @param nk - The Nakama server instance.
+ * @param initializer - This is the object that allows you to register your RPCs and match modules.
+ */
 function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
     initializer.registerMatch(MatchModuleName, {
@@ -51,6 +62,15 @@ function CreateLeaderborad(context, logger, nakama) {
         // Handle error
     }
 }
+/**
+ * It takes in a bunch of parameters, and returns an object with three properties: state, tickRate, and
+ * label
+ * @param context - The context of the match.
+ * @param logger - A logger object that can be used to log messages to the server console.
+ * @param nakama - The Nakama server instance.
+ * @param params - { [key: string]: string }
+ * @returns The match initialization function returns a MatchInit object.
+ */
 var matchInit = function (context, logger, nakama, params) {
     var value = "";
     for (var key in params) {
@@ -80,6 +100,11 @@ var matchInit = function (context, logger, nakama, params) {
         label: JSON.stringify(label),
     };
 };
+/**
+ * It takes a string as an argument and returns an array of two arrays of arrays of numbers and a
+ * boolean
+ * @param {string} value - the value of the dropdown
+ */
 function Checkmode(value) {
     var arraOne = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
     var arraTow = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
@@ -121,6 +146,17 @@ var matchJoinAttempt = function (context, logger, nakama, dispatcher, tick, stat
         accept: gameState.scene == 3 /* Lobby */,
     };
 };
+/**
+ * The match join function is called when a player joins the match
+ * @param context - nkruntime.Context
+ * @param logger - A logger object that you can use to log messages.
+ * @param nakama - nkruntime.Nakama
+ * @param dispatcher - nkruntime.MatchDispatcher
+ * @param {number} tick - The current tick number.
+ * @param state - The current state of the match.
+ * @param {nkruntime.Presence[]} presences - nkruntime.Presence[]
+ * @returns an object with a state property.
+ */
 var matchJoin = function (context, logger, nakama, dispatcher, tick, state, presences) {
     var gameState = state;
     if (gameState.scene != 3 /* Lobby */)
@@ -149,6 +185,19 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
     presencesOnMatch = [];
     return { state: gameState };
 };
+/**
+ * `matchLoop` is called every tick of the match. It processes the messages sent by the clients,
+ * processes the game logic, and returns the new game state
+ * @param context - The context of the match.
+ * @param logger - A logger object that can be used to log messages to the server console.
+ * @param nakama - The Nakama server instance.
+ * @param dispatcher - This is the object that allows you to send messages to the clients.
+ * @param {number} tick - The current tick of the match.
+ * @param state - This is the state of the match. It's a JSON object that you can use to store any data
+ * you want.
+ * @param {nkruntime.MatchMessage[]} messages - An array of messages sent by the client.
+ * @returns The game state is being returned.
+ */
 var matchLoop = function (context, logger, nakama, dispatcher, tick, state, messages) {
     var gameState = state;
     processMessages(messages, gameState, dispatcher, nakama, logger);
@@ -259,6 +308,17 @@ function processMessages(messages, gameState, dispatcher, nakama, logger) {
         //     messagesDefaultLogic(message, gameState, dispatcher);
     }
 }
+/**
+ * "When a player sends a sticker, broadcast the sticker to all players."
+ *
+ * The first line of the function is a TypeScript annotation. It tells the compiler what type of data
+ * to expect in each parameter
+ * @param message - nkruntime.MatchMessage
+ * @param {GameState} gameState - This is the current state of the game.
+ * @param dispatcher - This is the dispatcher that you can use to send messages to the client.
+ * @param nakama - nkruntime.Nakama - This is the Nakama server instance.
+ * @param logger - A logger object that can be used to log messages to the console.
+ */
 function StickersManager(message, gameState, dispatcher, nakama, logger) {
     var data = JSON.parse(nakama.binaryToString(message.data));
     dispatcher.broadcastMessage(10 /* Sticker */, JSON.stringify(data));
@@ -405,6 +465,14 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     dispatcher.broadcastMessage(message.opCode, dataSendToClint, null, message.sender);
     dataPlayer.EndGame = false;
 }
+/**
+ * It takes a 2D array, a logger, and a boolean, and returns a number.
+ * @param {number[][]} array2D - The 2D array you want to calculate the score of.
+ * @param logger - This is the logger object that you can use to log messages to the console.
+ * @param {boolean} mode - boolean - true if you want to calculate the score of the columns as well as
+ * the rows.
+ * @returns The total score of the array.
+ */
 function TotalScore(array2D, logger, mode) {
     var score = 0;
     for (var index = 0; index < array2D.length; index++) {
@@ -422,6 +490,13 @@ function TotalScore(array2D, logger, mode) {
     }
     return score;
 }
+/**
+ * It takes an array of numbers, and returns the sum of the numbers in the array.
+ * @param {any[]} arrayInput - any[] - This is the array of numbers that you want to calculate the sum
+ * of.
+ * @param logger - This is a logger object that you can use to log messages to the console.
+ * @returns The sum of the values of the array.
+ */
 function CalculatorArray(arrayInput, logger) {
     var countInArray = arrayInput.reduce(function (tally, fruit) {
         if (!tally[fruit]) {
@@ -637,6 +712,16 @@ function CalculatorArray2D(array1, x, y, input, logger) {
     arrayResult = [];
     return [];
 }
+/**
+ * It takes an array of arrays, a column number, a row number, and a value, and returns an array of row
+ * numbers where the value is found in the column
+ * @param {number[][]} array1 - The array to search
+ * @param {number} X - The X coordinate of the cell you want to check.
+ * @param {number} y - the column number
+ * @param {number} input - The value you're looking for in the array.
+ * @param logger - This is the logger object that you can use to log messages to the console.
+ * @returns an array of numbers.
+ */
 function CalculatorArray2DWithVertical(array1, X, y, input, logger) {
     var arrayResult = [];
     var arrayColumn = array1.map(function (x) { return x[y]; });
@@ -854,6 +939,7 @@ var ScoreFirstPlayer = 0;
 var ScoreSecendPlayer = 0;
 var IdLeaderboard = "b7c182b36521Win";
 var Mode = "ThreeByThree";
+/* A dictionary of functions. */
 var MessagesLogic = {
     7: ChooseTurnPlayer,
     8: Rematch,

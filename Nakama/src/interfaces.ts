@@ -69,6 +69,7 @@ interface DataPlayer{
 
 }
 
+/* An interface. */
 interface IReMatch{
     userId:string,
     Answer:string

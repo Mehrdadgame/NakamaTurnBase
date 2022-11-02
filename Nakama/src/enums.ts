@@ -1,3 +1,4 @@
+/* A enum. */
 const enum Scene
 {
     Initializer = 0,
@@ -9,6 +10,7 @@ const enum Scene
     FinalResults = 6
 }
 
+/* A enum. */
 const enum OperationCode
 {
     Players = 0,
