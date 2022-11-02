@@ -52,10 +52,13 @@ namespace NinjaBattle.Game
             MultiplayerManager.Instance.onMatchLeave -= LeavedMatch;
         }
 
-        /// <summary>
-        ///  Received action of srever for change scene
-        /// </summary>
-        /// <param name="message"></param>
+       
+      /// <summary>
+      /// When the player receives a message from the server, the function will be called and the player
+      /// will be moved to the next scene.
+      /// </summary>
+      /// <param name="MultiplayerMessage">This is a class that contains the data that is sent from the
+      /// server.</param>
         private async void ReceivedChangeScene(MultiplayerMessage message)
         {
             AniamtionManager.instance.AnimIconOpp.enabled = false;
@@ -76,35 +79,47 @@ namespace NinjaBattle.Game
             AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         }
 
+      /// <summary>
+      /// "If the player is the first to join the match, then the player is the host. If the player is
+      /// not the first to join the match, then the player is the client."
+      /// 
+      /// The first thing we do is reset the player wins. This is because we want to reset the player
+      /// wins every time a new match is started
+      /// </summary>
         private void JoinedMatch()
         {
             ResetPlayerWins();
 
             GoToGamePlayScene();
         }
-        /// <summary>
-        /// go to home scene when leave of room
-        /// </summary>
+       
+      /// <summary>
+      /// The function is called when the player leaves the match
+      /// </summary>
         private void LeavedMatch()
         {
             GoToHome();
         }
-        /// <summary>
-        /// 
-        /// </summary>
+       
+      /// <summary>
+      /// This function resets the player wins to 0
+      /// </summary>
         private void ResetPlayerWins()
         {
             PlayersWins = new int[2];
         }
 
+    /// <summary>
+    /// It loads the scene with the index of the enum Scenes.Home
+    /// </summary>
         private void GoToHome()
         {
             SceneManager.LoadScene((int)Scenes.Home);
         }
-        /// <summary>
-        /// switch scene with game mode
-        /// check mode game for select scene
-        /// </summary>
+      
+      /// <summary>
+      /// It loads the scene based on the modeGame enum
+      /// </summary>
         private void GoToGamePlayScene()
         {
             switch (modeGame)

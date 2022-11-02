@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 
 namespace NinjaBattle.Game
 {
+/* A class. */
     public class PlayerData
     {
         #region FIELDS

@@ -6,7 +6,8 @@ using UnityEngine;
 
 
 namespace Nakama.Helpers
-{
+{/* A partial class. */
+
     public partial class MultiplayerManager : MonoBehaviour
     {
         #region FIELDS
@@ -62,10 +63,10 @@ namespace Nakama.Helpers
 
             Instance = this;
         }
-        /// <summary>
-        /// set row and column for send data to server 
-        /// 
-        /// </summary>
+      
+      /// <summary>
+      /// It sets the row and column of the table based on the mode of the game
+      /// </summary>
         private void SetRowAndCol()
         {
             switch (GameManager.Instance.modeGame)
@@ -87,11 +88,11 @@ namespace Nakama.Helpers
 
 
         }
-        /// <summary>
-        /// join match 
-        /// send mode game
-        /// </summary>
-        /// <param name="mode"></param>
+      
+     /// <summary>
+     /// A function that is used to join a match.
+     /// </summary>
+     /// <param name="ModeGame">The mode of the game you want to join.</param>
         public async void JoinMatchAsync(ModeGame mode)
         {
            
@@ -110,6 +111,10 @@ namespace Nakama.Helpers
 
             onMatchJoin?.Invoke();
         }
+      /// <summary>
+      /// If the player is disconnected from the server, then remove the player from the match and
+      /// invoke the onMatchLeave event
+      /// </summary>
         private void Disconnected()
         {
             NakamaManager.Instance.onDisconnected -= Disconnected;
@@ -131,11 +136,27 @@ namespace Nakama.Helpers
             onMatchLeave?.Invoke();
             isTurn = false;
         }
-        /// <summary>
-        /// send data to server
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="data"></param>
+      
+      /// <summary>
+      /// It sends a message to the server.
+      /// 
+      /// The first parameter is the code, which is an enum that we'll define later. The second
+      /// parameter is the data, which is an object that we'll serialize into a JSON string.
+      /// 
+      /// The function first checks if the match is null. If it is, it returns.
+      /// 
+      /// The next line serializes the data into a JSON string. If the data is null, it sets the json
+      /// variable to an empty string.
+      /// 
+      /// The next line logs the data if the enableLog variable is true.
+      /// 
+      /// The last line sends the message to the server.
+      /// </summary>
+      /// <param name="Code">This is the code that you will use to identify the message.</param>
+      /// <param name="data">The data you want to send.</param>
+      /// <returns>
+      /// The code is being returned.
+      /// </returns>
         public void Send(Code code, object data = null)
         {
             if (match == null)
@@ -148,12 +169,7 @@ namespace Nakama.Helpers
             NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, json);
         }
 
-        /// <summary>
-        /// send data to server 
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="data"></param>
-        /// <param name="player"></param>
+     
         public void Send(Code code, object data = null, IEnumerable<IUserPresence> player = null)
         {
             if (match == null)
@@ -176,11 +192,12 @@ namespace Nakama.Helpers
 
             NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, bytes);
         }
-        /// <summary>
-        /// Receive data of server or player and save to multiplayerMessage
-        /// </summary>
-        /// <param name="newState"></param>
-
+       
+     /// <summary>
+     /// The function receives the data from the opponent and then calls the function that is registered
+     /// to the data code
+     /// </summary>
+     /// <param name="IMatchState">This is the data that is received from the opponent.</param>
         private void Receive(IMatchState newState)
         {
             if (enableLog)

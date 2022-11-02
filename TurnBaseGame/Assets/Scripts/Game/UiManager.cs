@@ -220,9 +220,10 @@ public class UiManager : MonoBehaviour
 
         MultiplayerManager.Instance.Send(MultiplayerManager.Code.Rematch, answer);
     }
-    /// <summary>
-    /// reset game after rematch
-    /// </summary>
+
+/// <summary>
+/// It resets the game.
+/// </summary>
     private async void ResetGame()
     {
         foreach (var opp in tileDataOpps)
@@ -291,12 +292,14 @@ public class UiManager : MonoBehaviour
         }
 
     }
-    /// <summary>
-    ///  call remove dice for you  in bord game  
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="mines"></param>
-    /// <param name="data"></param>
+
+   /// <summary>
+   /// This function is called when the score of the player is changed
+   /// </summary>
+   /// <param name="obj">The score of the player</param>
+   /// <param name="mines">the number of mines that were hit</param>
+   /// <param name="DataPlayer">This is a class that contains the player's name, score, and
+   /// mines.</param>
     private void Instance_onSetScoreMe(int obj, int mines, DataPlayer data)
     {
         if (mines > 0)
@@ -312,12 +315,14 @@ public class UiManager : MonoBehaviour
 
 
     }
-    /// <summary>
-    /// call remove dice for opp  in bord game  
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="mines"></param>
-    /// <param name="data"></param>
+ 
+/// <summary>
+   /// This function is called when the score of the player opp is changed
+/// </summary>
+/// <param name="obj">The score of the opponent</param>
+/// <param name="mines">the number of mines that were destroyed</param>
+/// <param name="DataPlayer">This is a class that contains the player's name, score, and other
+/// information.</param>
     private void Instance_onSetScoreOpp(int obj, int mines, DataPlayer data)
     {
         if (mines > 0)
@@ -450,10 +455,11 @@ public class UiManager : MonoBehaviour
 
 
     }
-    /// <summary>
-    /// check data in turn player
-    /// </summary>
-    /// <param name="obj"></param>
+
+/// <summary>
+/// A function that is called when the SetDataInTurn event is raised.
+/// </summary>
+/// <param name="DataPlayer">The player who's turn it is.</param>
     private void Instance_SetDataInTurn(DataPlayer obj)
     {
         //MultiplayerManager.Instance.end = DateTime.Now;
@@ -506,10 +512,11 @@ public class UiManager : MonoBehaviour
         CalculterRowScore.instance.DuobleScore2.Clear();
         CalculterRowScore.instance.DuobleScore1.Clear();
     }
-    /// <summary>
-    /// trun of player clint
-    /// </summary>
-    /// <param name="obj"></param>
+   
+  /// <summary>
+  /// A function that is called when the IsTurn event is raised.
+  /// </summary>
+  /// <param name="obj">This is a boolean value that tells you if it's your turn or not.</param>
     private void Instance_IsTurn(bool obj)
     {
         if (obj)
@@ -539,9 +546,10 @@ public class UiManager : MonoBehaviour
         }
 
     }
-    /// <summary>
-    /// check first turn in start game
-    /// </summary>
+
+  /// <summary>
+  /// The function is called when the player's turn is over
+  /// </summary>
     private void Instance_onTurnMe()
     {
 
@@ -554,9 +562,10 @@ public class UiManager : MonoBehaviour
 
 
     }
-    /// <summary>
-    /// call Event leave of room 
-    /// </summary>
+  
+ /// <summary>
+ /// It's a function that leaves the match
+ /// </summary>
     public void Leave()
     {
         MultiplayerManager.Instance.LeaveMatchAsync();

@@ -33,6 +33,9 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onConnected -= Instance_onConnected;
         }
 
+     /// <summary>
+     /// It tries to login to the server.
+     /// </summary>
         private void TryLogin()
         {
             NakamaManager.Instance.LoginWithUdid();
@@ -43,6 +46,9 @@ namespace Nakama.Helpers
             }
         }
 
+   /// <summary>
+   /// If the login fails, try again in a few seconds
+   /// </summary>
         private void LoginFailed()
         {
             Invoke(nameof(TryLogin), retryTime);
