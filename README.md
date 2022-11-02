@@ -45,11 +45,10 @@ The game consist of 7 scenes, numbered from 0 to 6, each scene handle different 
 | 0-Initializer | Initialize all singletons, this scene is run only once per session. |
 | 1-Splash | Handles the Nakama login. |
 | 2-Home | Main menu of the app in here you can see your trophies, change your name and start a match |
-| 3-Lobby | The lobby where you wait for another players, in this scene you are already on a match. |
-| 4-Battle | This is where the gameplay occcurs. |
-| 5-RoundResults | Shows how many rounds each player has won. |
-| 6-FinalResults | Show the winner of the game. |
-
+| 4-VerticalAndHorizontal | This is where the gameplay occcurs 3*3 (row and column) |
+| 5-FourByThree |This is where the gameplay occcurs 4*3|
+| 6-FourByFour |This is where the gameplay occcurs 4*4|
+| 7-TrheeByThree|This is where the gameplay occcurs 3*3|
 ## Nakama Manager
 `NakamaManager` is the base script of all the Nakama Helpers, on this script you can Login and Logout and send RPC to the server.
 
