@@ -142,41 +142,44 @@ public class UiManager : MonoBehaviour
     }
 
 
-/// <summary>
-/// A callback function that is called when a rematch is requested.
-/// </summary>
-/// <param name="RematchData"></param>
+    /// <summary>
+    /// A callback function that is called when a rematch is requested.
+    /// </summary>
+    /// <param name="RematchData"></param>
     private void Instance_onRematch(RematchData obj)
     {
         //if (obj.UserId == MultiplayerManager.Instance.Self.UserId)
         //    return;
 
+
         if (obj.Answer == "req")
         {
+
             rematchPanle.SetActive(true);
             ActionEndGame.instance.ResultPanel.SetActive(false);
             AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
             AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
+
+
+
         }
         if (obj.Answer == "yes")
         {
+
+
             rematchPanle.SetActive(false);
             ActionEndGame.instance.ResultPanel.SetActive(false);
             _ = Task.Delay(1000);
             ResetGame();
             obj.Answer = "";
+
         }
+
+
         if (obj.Answer == "left")
         {
-            messageLeftPalyerInRematch.text = "Player is Left";
-            acceptRematchButton.gameObject.SetActive(true);
-            acceptRematchButton.gameObject.SetActive(false);
-            exitRematchButton.gameObject.SetActive(false);
-            exitButton.gameObject.SetActive(true);
-            ActionEndGame.instance.ResultPanel.SetActive(false);
-            loading.gameObject.SetActive(false);
-            AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
-            AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
+            TurnOnExitButtonWhenFinishGame("Player is Left");
+
         }
         if (obj.Answer == "no")
         {
@@ -189,12 +192,25 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    private void TurnOnExitButtonWhenFinishGame(string message)
+    {
+        messageLeftPalyerInRematch.text = message;
+        acceptRematchButton.gameObject.SetActive(true);
+        acceptRematchButton.gameObject.SetActive(false);
+        exitRematchButton.gameObject.SetActive(false);
+        exitButton.gameObject.SetActive(true);
+        ActionEndGame.instance.ResultPanel.SetActive(false);
+        loading.gameObject.SetActive(false);
+        AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
+        AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
+    }
     /// <summary>
     /// Button for send answer For Rematch
     /// </summary>
     /// <param name="answerOpp"></param>
     public void SendAcceptForRematch(string answerOpp)
     {
+        var hxdTotal = PlayerPrefs.GetInt("HXD");
         rematchPanle.SetActive(true);
         AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
         AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
@@ -207,9 +223,18 @@ public class UiManager : MonoBehaviour
         };
         if (answer.Answer == "send")
         {
-            acceptRematchButton.gameObject.SetActive(false);
-            exitRematchButton.gameObject.SetActive(false);
-            loading.gameObject.SetActive(true);
+            if (hxdTotal > MultiplayerManager.Instance.ValueHXDInGameTurn)
+            {
+
+                acceptRematchButton.gameObject.SetActive(false);
+                exitRematchButton.gameObject.SetActive(false);
+                loading.gameObject.SetActive(true);
+            }
+            else
+            {
+                TurnOnExitButtonWhenFinishGame("You dont have enough HXD to play");
+                return;
+            }
         }
         else if (answer.Answer == "req")
         {
@@ -217,13 +242,27 @@ public class UiManager : MonoBehaviour
             ActionEndGame.instance.ResultPanel.SetActive(false);
 
         }
+        else if (answer.Answer == "yes")
+        {
+            if (hxdTotal < MultiplayerManager.Instance.ValueHXDInGameTurn)
+            {
+                answer.Answer = "no";
+                TurnOnExitButtonWhenFinishGame("You dont have enough HXD to play");
+            }
+            else
+            {
+                answer.Answer = "yes";
+                hxdTotal-=MultiplayerManager.Instance.ValueHXDInGameTurn;
+                PlayerPrefs.SetInt("HXD", hxdTotal);
+            }
+        }
 
         MultiplayerManager.Instance.Send(MultiplayerManager.Code.Rematch, answer);
     }
 
-/// <summary>
-/// It resets the game.
-/// </summary>
+    /// <summary>
+    /// It resets the game.
+    /// </summary>
     private async void ResetGame()
     {
         foreach (var opp in tileDataOpps)
@@ -249,7 +288,7 @@ public class UiManager : MonoBehaviour
         ClearList();
         ScoreTextMe.text = "0";
         ScoreTextOpp.text = "0";
-        RowSum();
+        TotalScoreTiles();
 
         await Task.Delay(1000);
         AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(true);
@@ -293,13 +332,13 @@ public class UiManager : MonoBehaviour
 
     }
 
-   /// <summary>
-   /// This function is called when the score of the player is changed
-   /// </summary>
-   /// <param name="obj">The score of the player</param>
-   /// <param name="mines">the number of mines that were hit</param>
-   /// <param name="DataPlayer">This is a class that contains the player's name, score, and
-   /// mines.</param>
+    /// <summary>
+    /// This function is called when the score of the player is changed
+    /// </summary>
+    /// <param name="obj">The score of the player</param>
+    /// <param name="mines">the number of mines that were hit</param>
+    /// <param name="DataPlayer">This is a class that contains the player's name, score, and
+    /// mines.</param>
     private void Instance_onSetScoreMe(int obj, int mines, DataPlayer data)
     {
         if (mines > 0)
@@ -315,14 +354,14 @@ public class UiManager : MonoBehaviour
 
 
     }
- 
-/// <summary>
-   /// This function is called when the score of the player opp is changed
-/// </summary>
-/// <param name="obj">The score of the opponent</param>
-/// <param name="mines">the number of mines that were destroyed</param>
-/// <param name="DataPlayer">This is a class that contains the player's name, score, and other
-/// information.</param>
+
+    /// <summary>
+    /// This function is called when the score of the player opp is changed
+    /// </summary>
+    /// <param name="obj">The score of the opponent</param>
+    /// <param name="mines">the number of mines that were destroyed</param>
+    /// <param name="DataPlayer">This is a class that contains the player's name, score, and other
+    /// information.</param>
     private void Instance_onSetScoreOpp(int obj, int mines, DataPlayer data)
     {
         if (mines > 0)
@@ -338,10 +377,10 @@ public class UiManager : MonoBehaviour
     }
 
 
-/// <summary>
-/// It adds the numbers in the row together.
-/// </summary>
-    public void RowSum()
+    /// <summary>
+    /// It adds the numbers in the row together.
+    /// </summary>
+    public void TotalScoreTiles()
     {
 
         foreach (var item in tileDataMe)
@@ -421,10 +460,7 @@ public class UiManager : MonoBehaviour
             ParticleSystem.MainModule settings = clone.particleDouble.main;
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
         }
-        RowSum();
-
-
-
+        TotalScoreTiles();
 
     }
     /// <summary>
@@ -450,16 +486,16 @@ public class UiManager : MonoBehaviour
             meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
         }
 
-        RowSum();
+        TotalScoreTiles();
 
 
 
     }
 
-/// <summary>
-/// A function that is called when the SetDataInTurn event is raised.
-/// </summary>
-/// <param name="DataPlayer">The player who's turn it is.</param>
+    /// <summary>
+    /// A function that is called when the SetDataInTurn event is raised.
+    /// </summary>
+    /// <param name="DataPlayer">The player who's turn it is.</param>
     private void Instance_SetDataInTurn(DataPlayer obj)
     {
         //MultiplayerManager.Instance.end = DateTime.Now;
@@ -486,22 +522,21 @@ public class UiManager : MonoBehaviour
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerText.text = "30";
             TimerTurn.instance.TimerCount = 30;
-         
-            RowSum();
+
+            TotalScoreTiles();
 
         }
         else
         {
             if (!obj.EndGame)
                 TextTurnOpp.Play("OppTurn", 0, 0);
-            RowSum();
+            TotalScoreTiles();
             AniamtionManager.instance.AnimGoToUpMe.GetComponentInChildren<ParticleSystem>().Stop();
             AniamtionManager.instance.AnimGoToUpOpp.GetComponentInChildren<ParticleSystem>().Play();
             TimerTurn.instance.TimerRunning = false;
             TimerTurn.instance.TimerText.text = "-";
-         
-        }
 
+        }
 
     }
     /// <summary>
@@ -512,11 +547,11 @@ public class UiManager : MonoBehaviour
         CalculterRowScore.instance.DuobleScore2.Clear();
         CalculterRowScore.instance.DuobleScore1.Clear();
     }
-   
-  /// <summary>
-  /// A function that is called when the IsTurn event is raised.
-  /// </summary>
-  /// <param name="obj">This is a boolean value that tells you if it's your turn or not.</param>
+
+    /// <summary>
+    /// A function that is called when the IsTurn event is raised.
+    /// </summary>
+    /// <param name="obj">This is a boolean value that tells you if it's your turn or not.</param>
     private void Instance_IsTurn(bool obj)
     {
         if (obj)
@@ -547,9 +582,9 @@ public class UiManager : MonoBehaviour
 
     }
 
-  /// <summary>
-  /// The function is called when the player's turn is over
-  /// </summary>
+    /// <summary>
+    /// The function is called when the player's turn is over
+    /// </summary>
     private void Instance_onTurnMe()
     {
 
@@ -562,10 +597,10 @@ public class UiManager : MonoBehaviour
 
 
     }
-  
- /// <summary>
- /// It's a function that leaves the match
- /// </summary>
+
+    /// <summary>
+    /// It's a function that leaves the match
+    /// </summary>
     public void Leave()
     {
         MultiplayerManager.Instance.LeaveMatchAsync();

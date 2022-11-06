@@ -57,8 +57,6 @@ public class CalculterRowScore : MonoBehaviour
             case 2: return colorParticle2Count;
             case 3: return colorParticle3Count;
             case 4: return colorParticle4Count;
-            default:
-                break;
         }
         return whitecolor;
     }
@@ -69,7 +67,6 @@ public class CalculterRowScore : MonoBehaviour
 /// <param name="cell">The list of tiles that are in the cell.</param>
     public int TilesOpp(List<TileDataOpp> cell)
     {
-        //  DuobleScore2.Clear();
         var total = 0;
         var freqMap = cell.GroupBy(x => x.ValueTile)
                                                     .Where(g => g.Count() > 1).Where(r => r.Key > 0)

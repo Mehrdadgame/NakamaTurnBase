@@ -62,7 +62,6 @@ namespace Nakama.Helpers
             var udid = PlayerPrefs.GetString(UdidKey, Guid.NewGuid().ToString());
             PlayerPrefs.SetString(UdidKey, udid);
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
-            Debug.Log(client.Host + " Host");
             LoginAsync(connectionData, client.AuthenticateDeviceAsync(udid));
         }
 

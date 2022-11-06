@@ -667,6 +667,14 @@ PrefabInstance:
       propertyPath: connectionData
       value: 
       objectReference: {fileID: 11400000, guid: 8819417b4327a42eaaea535e5d73b643, type: 2}
+    - target: {fileID: 33490676702169086, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
+      propertyPath: autoLoadObjects.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 33490676702169086, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
+      propertyPath: autoLoadObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: a13365e23f9b0de4ca7549a86f88343d, type: 2}
     - target: {fileID: 33490677032360848, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
       propertyPath: m_RootOrder
       value: 3

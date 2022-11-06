@@ -33,6 +33,10 @@ namespace NinjaBattle.Game
             Application.targetFrameRate = 60;
         }
 
+      /// <summary>
+      /// The Start function is called when the script is first loaded. It subscribes to the
+      /// MultiplayerManager's ChangeScene event, and sets up the onMatchJoin and onMatchLeave events
+      /// </summary>
         private void Start()
         {
             MultiplayerManager.Instance.Subscribe(MultiplayerManager.Code.ChangeScene, ReceivedChangeScene);

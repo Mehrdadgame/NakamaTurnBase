@@ -44,6 +44,8 @@ var joinOrCreateMatch = function (context, logger, nakama, payload) {
     if (matches.length > 0) {
         return matches[0].matchId;
     }
+    //test
+    ///
     var persons = {};
     persons = { "mode": payload };
     return nakama.matchCreate(MatchModuleName, persons);
@@ -92,7 +94,8 @@ var matchInit = function (context, logger, nakama, params) {
         VerticalMode: Checkmode(value)[2],
         array3DPlayerSecend: Checkmode(value)[1],
         array3DPlayerFirst: Checkmode(value)[0],
-        ModeText: value
+        ModeText: value,
+        ValueHXD: Checkmode(value)[3]
     };
     return {
         state: gameState,
@@ -108,25 +111,30 @@ var matchInit = function (context, logger, nakama, params) {
 function Checkmode(value) {
     var arraOne = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
     var arraTow = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+    var valueHXD = 0;
     var vertical = false;
     if (value == "VerticalAndHorizontal") {
         vertical = true;
         arraOne = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
         arraTow = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+        valueHXD = 50;
     }
     if (value == "FourByThree") {
         arraOne = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
         arraTow = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+        valueHXD = 500;
     }
     if (value == "FourByFour") {
         arraOne = [[-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1]];
         arraTow = [[-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1]];
+        valueHXD = 5000;
     }
     if (value == "ThreeByThree") {
         arraOne = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
         arraTow = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+        valueHXD = 50;
     }
-    return [arraOne, arraTow, vertical];
+    return [arraOne, arraTow, vertical, valueHXD];
 }
 /**
  * If the game is in the lobby, accept the player.
@@ -146,6 +154,12 @@ var matchJoinAttempt = function (context, logger, nakama, dispatcher, tick, stat
         accept: gameState.scene == 3 /* Lobby */,
     };
 };
+function SaveAndReadHXD(idUser, nakama, decimal, mines) {
+    var hxd = new ScoreCalss();
+    hxd = ReadHXD(idUser, decimal, nakama);
+    hxd.hxdAmount = hxd.hxdAmount - mines;
+    SaveHXD(idUser, 0, decimal, nakama, hxd);
+}
 /**
  * The match join function is called when a player joins the match
  * @param context - nkruntime.Context
@@ -386,12 +400,23 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             if (end == true) {
                 if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
                     dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+                    var hxd = ReadHXD(dataPlayer.PlayerWin, 0, nakama);
+                    hxd.hxdAmount += gameState.ValueHXD * 2;
+                    SaveHXD(dataPlayer.PlayerWin, 0, 2, nakama, hxd);
                 }
                 else if (gameState.players[1].ScorePlayer > gameState.players[0].ScorePlayer) {
                     dataPlayer.PlayerWin = gameState.players[1].presence.userId;
+                    var hxd = ReadHXD(dataPlayer.PlayerWin, 0, nakama);
+                    hxd.hxdAmount += gameState.ValueHXD * 2;
+                    SaveHXD(dataPlayer.PlayerWin, 0, 2, nakama, hxd);
                 }
                 else {
                     dataPlayer.PlayerWin = "";
+                    for (var index = 0; index < gameState.players.length; index++) {
+                        var hxd = ReadHXD(gameState.players[index].presence.userId, 0, nakama);
+                        hxd.hxdAmount += gameState.ValueHXD;
+                        SaveHXD(gameState.players[index].presence.userId, 0, 2, nakama, hxd);
+                    }
                 }
                 dataPlayer.EndGame = true;
                 gameState.BeforeEndGame = true;
@@ -449,12 +474,23 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
             if (end == true) {
                 if (gameState.players[1].ScorePlayer < gameState.players[0].ScorePlayer) {
                     dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+                    var hxd = ReadHXD(dataPlayer.PlayerWin, 0, nakama);
+                    hxd.hxdAmount += gameState.ValueHXD * 2;
+                    SaveHXD(dataPlayer.PlayerWin, 0, 2, nakama, hxd);
                 }
                 else if (gameState.players[1].ScorePlayer > gameState.players[0].ScorePlayer) {
                     dataPlayer.PlayerWin = gameState.players[1].presence.userId;
+                    var hxd = ReadHXD(dataPlayer.PlayerWin, 0, nakama);
+                    hxd.hxdAmount += gameState.ValueHXD * 2;
+                    SaveHXD(dataPlayer.PlayerWin, 0, 2, nakama, hxd);
                 }
                 else {
                     dataPlayer.PlayerWin = "";
+                    for (var index = 0; index < gameState.players.length; index++) {
+                        var hxd = ReadHXD(gameState.players[index].presence.userId, 0, nakama);
+                        hxd.hxdAmount += gameState.ValueHXD;
+                        SaveHXD(gameState.players[index].presence.userId, 0, 2, nakama, hxd);
+                    }
                 }
                 dataPlayer.EndGame = true;
                 gameState.BeforeEndGame = true;
@@ -577,11 +613,6 @@ function Rematch(message, gameState, dispatcher, nakama, logger) {
             dataPlayer.Answer = "";
             gameState.CountTurnPlayer1 = 0;
             gameState.CountTurnPlayer2 = 0;
-            var s = new ScoreCalss;
-            s.ScoreF = 0;
-            for (var index = 0; index < gameState.players.length; index++) {
-                SaveScore(gameState.players[index].presence.userId, 0, nakama, s);
-            }
         }
     }
     if (dataPlayer.Answer == "send") {
@@ -601,16 +632,38 @@ function Rematch(message, gameState, dispatcher, nakama, logger) {
  * @param {ScoreCalss} Scorecalss - is a class that contains the score and the name of the player
  * @returns The return value is the value of the ScoreF property of the ScoreCalss object.
  */
-function SaveScore(id, mines, nakama, Scorecalss) {
-    Scorecalss.ScoreF -= mines;
+function SaveHXD(id, mines, decimal, nakama, Scorecalss) {
+    Scorecalss.hxdAmount -= mines;
+    Scorecalss._decimal = decimal;
     var storageWriteRequests2 = [{
             collection: CollectionUser,
-            key: "Score",
+            key: "HXD",
             userId: id,
             value: Scorecalss
         }];
     nakama.storageWrite(storageWriteRequests2);
-    return Scorecalss.ScoreF;
+    return Scorecalss.hxdAmount;
+}
+/**
+ * It reads the score of the user from the database and returns it
+ * @param {string} id - The user ID of the player.
+ * @param nakama - nkruntime.Nakama
+ * @returns ScoreCalss
+ */
+function ReadHXD(id, decimal, nakama) {
+    var score1 = new ScoreCalss;
+    var storagReadRequestsFirst = [{
+            collection: CollectionUser,
+            key: "HXD",
+            userId: id,
+        }];
+    var resultScore = nakama.storageRead(storagReadRequestsFirst);
+    for (var _i = 0, resultScore_1 = resultScore; _i < resultScore_1.length; _i++) {
+        var storageObject = resultScore_1[_i];
+        score1 = storageObject.value;
+        break;
+    }
+    return score1;
 }
 /**
  * This function is used to save the score of the player in the leaderboard
@@ -642,33 +695,12 @@ function ReadScoreLeaderboard(id, nakama) {
             userId: id,
         }];
     var resultScore = nakama.storageRead(storagReadRequestsFirst);
-    for (var _i = 0, resultScore_1 = resultScore; _i < resultScore_1.length; _i++) {
-        var storageObject = resultScore_1[_i];
+    for (var _i = 0, resultScore_2 = resultScore; _i < resultScore_2.length; _i++) {
+        var storageObject = resultScore_2[_i];
         score = storageObject.value;
         break;
     }
     return score;
-}
-/**
- * It reads the score of the user from the database and returns it
- * @param {string} id - The user ID of the player.
- * @param nakama - nkruntime.Nakama
- * @returns ScoreCalss
- */
-function ReadScore(id, nakama) {
-    var score1 = new ScoreCalss;
-    var storagReadRequestsFirst = [{
-            collection: CollectionUser,
-            key: "Score",
-            userId: id,
-        }];
-    var resultScore = nakama.storageRead(storagReadRequestsFirst);
-    for (var _i = 0, resultScore_2 = resultScore; _i < resultScore_2.length; _i++) {
-        var storageObject = resultScore_2[_i];
-        score1 = storageObject.value;
-        break;
-    }
-    return score1;
 }
 /**
  * It returns true if the array is full of numbers, and false if it's not.
@@ -798,6 +830,9 @@ function matchLoopLobby(gameState, nakama, dispatcher) {
             gameState.scene = 4 /* Battle */;
             dispatcher.broadcastMessage(5 /* ChangeScene */, JSON.stringify(gameState.scene));
             dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
+            for (var index = 0; index < gameState.players.length; index++) {
+                SaveAndReadHXD(gameState.players[index].presence.userId, nakama, 0, gameState.ValueHXD);
+            }
         }
     }
 }
@@ -910,7 +945,8 @@ function playerNumberIsUsed(players, playerNumber) {
 }
 var ScoreCalss = /** @class */ (function () {
     function ScoreCalss() {
-        this.ScoreF = 0;
+        this.hxdAmount = 0;
+        this._decimal = 0;
     }
     return ScoreCalss;
 }());
@@ -927,7 +963,7 @@ var GameMode;
     GameMode[GameMode["VerticalAndHorizontal"] = 2] = "VerticalAndHorizontal";
 })(GameMode || (GameMode = {}));
 var TickRate = 16;
-var DurationLobby = 10;
+var DurationLobby = 5;
 var DurationRoundResults = 5;
 var DurationBattleEnding = 3;
 var NecessaryWins = 3;

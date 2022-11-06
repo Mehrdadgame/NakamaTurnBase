@@ -37,7 +37,9 @@ let matchInit: nkruntime.MatchInitFunction = function (context: nkruntime.Contex
         VerticalMode:Checkmode(value)[2],
         array3DPlayerSecend:Checkmode(value)[1],
         array3DPlayerFirst:Checkmode(value)[0],
-        ModeText:value
+
+        ModeText:value,
+        ValueHXD :Checkmode(value)[3]
 
     }
 
@@ -52,28 +54,33 @@ let matchInit: nkruntime.MatchInitFunction = function (context: nkruntime.Contex
  * boolean
  * @param {string} value - the value of the dropdown
  */
-function Checkmode(value:string):[any[][],any[][],boolean]{
+function Checkmode(value:string):[any[][],any[][],boolean,number]{
     let arraOne :any[][] =   [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
     let arraTow :any[][]=  [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
+    let valueHXD:number=0;
    let vertical =false;
     if(value == "VerticalAndHorizontal"){
         vertical=true;
         arraOne=    [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
         arraTow= [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
+        valueHXD=50;
     }
     if(value =="FourByThree" ){
         arraOne=    [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
         arraTow= [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
+        valueHXD = 500;
     }
     if(value == "FourByFour"){
         arraOne=    [[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]];
         arraTow= [[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]];
+        valueHXD =5000;
     }
     if(value == "ThreeByThree"){
         arraOne=    [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
         arraTow= [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
+        valueHXD=50;
     }
-    return[arraOne,arraTow,vertical];
+    return[arraOne,arraTow,vertical,valueHXD];
     
    
 }
@@ -95,9 +102,15 @@ let matchJoinAttempt: nkruntime.MatchJoinAttemptFunction = function (context: nk
     return {
         state: gameState,
         accept: gameState.scene == Scene.Lobby,
+    
     }
 }
-
+function SaveAndReadHXD( idUser:string,nakama: nkruntime.Nakama ,decimal:number , mines:number){
+    var hxd=new ScoreCalss();
+    hxd = ReadHXD(idUser,decimal,nakama);
+   hxd.hxdAmount =hxd.hxdAmount - mines ;
+    SaveHXD(idUser,0,decimal,nakama,hxd);
+}
 
 /**
  * The match join function is called when a player joins the match
@@ -130,8 +143,11 @@ let matchJoin: nkruntime.MatchJoinFunction = function (context: nkruntime.Contex
             amuntMony :0
             
         }
+      
+     
         let nextPlayerNumber: number = getNextPlayerNumber(gameState.players);
         gameState.players[nextPlayerNumber] = player;
+      
         gameState.playersWins[nextPlayerNumber] = 0;
         dispatcher.broadcastMessage(OperationCode.PlayerJoined, JSON.stringify(player), presencesOnMatch);
         presencesOnMatch.push(presence);
@@ -192,10 +208,9 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
     {
         let playerNumber: number = getPlayerNumber(gameState.players, presence.sessionId);
         var nameplayer = JSON.stringify(gameState.players[playerNumber].displayName);
-        if(   gameState.BeforeEndGame ==false){
-            
+        if(   gameState.BeforeEndGame ==false)
+        {
             dispatcher.broadcastMessage(9,nameplayer);
-         
         }
 
         delete gameState.players[playerNumber];
@@ -382,12 +397,26 @@ if(gameState.VerticalMode == true){
 
             if (gameState.players[1].ScorePlayer< gameState.players[0].ScorePlayer) {
                 dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+
+                var hxd= ReadHXD( dataPlayer.PlayerWin,0,nakama);
+                hxd.hxdAmount += gameState.ValueHXD*2;
+                SaveHXD( dataPlayer.PlayerWin,0,2,nakama,hxd);
             }
             else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer){
                 dataPlayer.PlayerWin =gameState.players[1].presence.userId;
+                var hxd= ReadHXD( dataPlayer.PlayerWin,0,nakama);
+                hxd.hxdAmount += gameState.ValueHXD*2;
+                SaveHXD(  dataPlayer.PlayerWin,0,2,nakama,hxd);
             }
             else{
                 dataPlayer.PlayerWin="";
+                for (let index = 0; index <  gameState.players.length; index++) {
+                  
+                    var hxd= ReadHXD( gameState.players[index].presence.userId,0,nakama);
+                    hxd.hxdAmount+= gameState.ValueHXD;
+                    SaveHXD( gameState.players[index].presence.userId,0,2,nakama,hxd);
+                }
+               
             }
             dataPlayer.EndGame =true;
             gameState.BeforeEndGame=true;
@@ -461,14 +490,26 @@ if(end == true)
 
     if (gameState.players[1].ScorePlayer< gameState.players[0].ScorePlayer) {
         dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+
+        var hxd= ReadHXD( dataPlayer.PlayerWin,0,nakama);
+        hxd.hxdAmount += gameState.ValueHXD*2;
+        SaveHXD(  dataPlayer.PlayerWin,0,2,nakama,hxd);
     }
-    else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer)
-    {
-    
-        dataPlayer.PlayerWin =  gameState.players[1].presence.userId;
+    else if(gameState.players[1].ScorePlayer> gameState.players[0].ScorePlayer){
+        dataPlayer.PlayerWin =gameState.players[1].presence.userId;
+        var hxd= ReadHXD( dataPlayer.PlayerWin,0,nakama);
+        hxd.hxdAmount += gameState.ValueHXD*2;
+        SaveHXD(  dataPlayer.PlayerWin,0,2,nakama,hxd);
     }
     else{
         dataPlayer.PlayerWin="";
+        for (let index = 0; index <  gameState.players.length; index++) {
+          
+            var hxd= ReadHXD( gameState.players[index].presence.userId,0,nakama);
+            hxd.hxdAmount+= gameState.ValueHXD;
+            SaveHXD( gameState.players[index].presence.userId,0,2,nakama,hxd);
+        }
+       
     }
     dataPlayer.EndGame=true;
     gameState.BeforeEndGame=true;
@@ -613,13 +654,8 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
          gameState.CountTurnPlayer1=0;
          gameState.CountTurnPlayer2=0;
  
-      var s= new ScoreCalss;
-     s.ScoreF=0;
-     for (let index = 0; index < gameState.players.length; index++) {
-     
-         
-         SaveScore(gameState.players[index].presence.userId,0,nakama,s);
-     }
+    
+
     }
     }
      if(dataPlayer.Answer =="send"){
@@ -642,11 +678,12 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
   * @param {ScoreCalss} Scorecalss - is a class that contains the score and the name of the player
   * @returns The return value is the value of the ScoreF property of the ScoreCalss object.
   */
- function SaveScore(id:string,mines:number ,nakama:nkruntime.Nakama, Scorecalss:ScoreCalss): number{
-    Scorecalss.ScoreF -= mines;
+ function SaveHXD(id:string,mines : number, decimal: number ,nakama:nkruntime.Nakama, Scorecalss:ScoreCalss): number{
+    Scorecalss.hxdAmount -= mines;
+    Scorecalss._decimal = decimal;
     let storageWriteRequests2: nkruntime.StorageWriteRequest[] = [{
         collection: CollectionUser,
-        key: "Score",
+        key: "HXD",
         userId:id,
         value: Scorecalss
       
@@ -654,8 +691,37 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
     }];
   
     nakama.storageWrite(storageWriteRequests2);
-    return Scorecalss.ScoreF
+    return Scorecalss.hxdAmount
     
+ }
+
+ 
+/**
+ * It reads the score of the user from the database and returns it
+ * @param {string} id - The user ID of the player.
+ * @param nakama - nkruntime.Nakama
+ * @returns ScoreCalss
+ */
+function ReadHXD(id:string, decimal:number ,nakama:nkruntime.Nakama ):ScoreCalss{
+    var score1:ScoreCalss=new ScoreCalss;
+    let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
+        collection: CollectionUser,
+        key: "HXD",
+        userId:id,
+        
+       }];
+ 
+       let resultScore: nkruntime.StorageObject[] = nakama.storageRead(storagReadRequestsFirst);
+       
+       for (let storageObject of resultScore)
+       {
+        score1 = <ScoreCalss>storageObject.value;
+           break;
+       }
+      
+    
+ 
+    return score1;
  }
 /**
  * This function is used to save the score of the player in the leaderboard
@@ -674,11 +740,11 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
       
         
     }];
-  
-    nakama.storageWrite(storageWriteRequests2);
-   
     
- }
+    nakama.storageWrite(storageWriteRequests2);
+    
+    
+}
 
  /**
   * Reads the leaderboard score of the user with the given id
@@ -709,33 +775,6 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
  }
 
 
- /**
-  * It reads the score of the user from the database and returns it
-  * @param {string} id - The user ID of the player.
-  * @param nakama - nkruntime.Nakama
-  * @returns ScoreCalss
-  */
- function ReadScore(id:string  ,nakama:nkruntime.Nakama ):ScoreCalss{
-    var score1:ScoreCalss=new ScoreCalss;
-    let storagReadRequestsFirst: nkruntime.StorageReadRequest[] = [{
-        collection: CollectionUser,
-        key: "Score",
-        userId:id,
-        
-       }];
-
-       let resultScore: nkruntime.StorageObject[] = nakama.storageRead(storagReadRequestsFirst);
-       
-       for (let storageObject of resultScore)
-       {
-        score1 = <ScoreCalss>storageObject.value;
-           break;
-       }
-      
-    
-
-    return score1;
- }
 
 /**
  * It returns true if the array is full of numbers, and false if it's not.
@@ -862,6 +901,7 @@ function processMatchLoop(gameState: GameState, nakama: nkruntime.Nakama, dispat
         case Scene.Lobby: matchLoopLobby(gameState, nakama, dispatcher); break;
         case Scene.RoundResults: matchLoopRoundResults(gameState, nakama, dispatcher); break;
     }
+   
 }
 
 function matchLoopBattle(gameState: GameState, nakama: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher): void
@@ -890,7 +930,10 @@ function matchLoopLobby(gameState: GameState, nakama: nkruntime.Nakama, dispatch
             gameState.scene = Scene.Battle;
             dispatcher.broadcastMessage(OperationCode.ChangeScene, JSON.stringify(gameState.scene));
             dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
-          
+            for (let index = 0; index < gameState.players.length; index++)
+            {
+               SaveAndReadHXD(gameState.players[index].presence.userId,nakama,0,gameState.ValueHXD);
+            }
         }
     }
 }
@@ -1045,7 +1088,8 @@ function playerNumberIsUsed(players: Player[], playerNumber: number): boolean
 }
 
 class ScoreCalss{
-     ScoreF:number=0;
+     hxdAmount:number=0;
+     _decimal:number=0;
 }
 class CountWin{
     win : number=0;

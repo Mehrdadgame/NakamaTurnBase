@@ -179,7 +179,7 @@ namespace Nakama.Helpers
             if (enableLog)
                 LogData(SendingDataLog, (long)code, json);
 
-            NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, json, player);
+                NakamaManager.Instance.Socket.SendMatchStateAsync(match.Id, (long)code, json, player);
         }
 
         public void Send(Code code, byte[] bytes)
@@ -239,6 +239,12 @@ namespace Nakama.Helpers
                 onReceiveData[code] -= action;
         }
 
+       /// <summary>
+       /// Logs the data to the console
+       /// </summary>
+       /// <param name="description">A string that describes the data.</param>
+       /// <param name="dataCode">The code that identifies the type of data being sent.</param>
+       /// <param name="json">The JSON string that you want to send to the server.</param>
         private void LogData(string description, long dataCode, string json)
         {
             Debug.Log(string.Format(LogFormat, description, (Code)dataCode, json));

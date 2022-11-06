@@ -1,6 +1,6 @@
 
 const TickRate = 16;
-const DurationLobby = 10;
+const DurationLobby = 5;
 const DurationRoundResults = 5;
 const DurationBattleEnding = 3;
 const NecessaryWins = 3;

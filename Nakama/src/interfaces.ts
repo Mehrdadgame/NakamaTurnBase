@@ -25,7 +25,8 @@ interface GameState
   VerticalMode:boolean,
   array3DPlayerFirst:any[][],
   array3DPlayerSecend:any[][],
-  ModeText:string
+  ModeText:string,
+  ValueHXD:number
   
 }
 

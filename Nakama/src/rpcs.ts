@@ -18,7 +18,9 @@ let joinOrCreateMatch: nkruntime.RpcFunction = function (context: nkruntime.Cont
     {
         return matches[0].matchId;
     }
-
+    //test
+   
+    ///
    var persons: { [id: string] : string; } = {};
    persons= { "mode": payload };
     return nakama.matchCreate(MatchModuleName,persons);

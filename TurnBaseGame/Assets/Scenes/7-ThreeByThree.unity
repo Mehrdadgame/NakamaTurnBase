@@ -16714,18 +16714,6 @@ MonoBehaviour:
           m_StringArgument: no
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 298025780}
-        m_TargetAssemblyTypeName: NinjaBattle.General.SceneChanger, Assembly-CSharp
-        m_MethodName: ChangeScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 519420033}
         m_TargetAssemblyTypeName: UiManager, Assembly-CSharp
         m_MethodName: Leave

@@ -9,7 +9,7 @@ namespace Nakama.Helpers
     {
         #region FIELDS
 
-        [SerializeField] private List<NakamaCollectionObject> autoLoadObjects;
+        public List<NakamaCollectionObject> autoLoadObjects;
 
         #endregion
 
@@ -66,36 +66,44 @@ namespace Nakama.Helpers
                 onLoadedData?.Invoke();
                 return;
             }
-
-            List<IApiReadStorageObjectId> storageObjectIds = new List<IApiReadStorageObjectId>();
-            foreach (NakamaCollectionObject collectionObject in collectionObjects)
+            try
             {
-                collectionObject.ResetData();
-                StorageObjectId storageObjectId = new StorageObjectId
-                {
-                    Collection = collectionObject.Collection,
-                    Key = collectionObject.Key,
-                    UserId = NakamaManager.Instance.Session.UserId
-                };
-
-                storageObjectIds.Add(storageObjectId);
-            }
-
-            var result = await NakamaManager.Instance.Client.ReadStorageObjectsAsync(NakamaManager.Instance.Session,
-                storageObjectIds.ToArray<IApiReadStorageObjectId>());
-            foreach (IApiStorageObject storageObject in result.Objects)
-            {
+                List<IApiReadStorageObjectId> storageObjectIds = new List<IApiReadStorageObjectId>();
                 foreach (NakamaCollectionObject collectionObject in collectionObjects)
                 {
-                    if (storageObject.Key != collectionObject.Key)
-                        continue;
+                    collectionObject.ResetData();
+                    StorageObjectId storageObjectId = new StorageObjectId
+                    {
+                        Collection = collectionObject.Collection,
+                        Key = collectionObject.Key,
+                        UserId = NakamaManager.Instance.Session.UserId
+                    };
 
-                    collectionObject.SetDatabaseValue(storageObject.Value, storageObject.Version);
+                    storageObjectIds.Add(storageObjectId);
                 }
-            }
 
-            LoadingFinished = true;
-            onLoadedData?.Invoke();
+                var result = await NakamaManager.Instance.Client.ReadStorageObjectsAsync(NakamaManager.Instance.Session,
+                    storageObjectIds.ToArray<IApiReadStorageObjectId>());
+                foreach (IApiStorageObject storageObject in result.Objects)
+                {
+                    foreach (NakamaCollectionObject collectionObject in collectionObjects)
+                    {
+                        if (storageObject.Key != collectionObject.Key)
+                            continue;
+
+                        collectionObject.SetDatabaseValue(storageObject.Value, storageObject.Version);
+                    }
+                }
+
+                LoadingFinished = true;
+                onLoadedData?.Invoke();
+            }
+            catch (Exception e)
+            {
+
+                Debug.Log(e.Message);
+            }
+           
         }
 
         public async void SendValueToServer(NakamaCollectionObject collectionObject, object newValue)
