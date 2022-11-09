@@ -109,8 +109,6 @@ public class UiManager : MonoBehaviour
     private void Instance_LeftPlayer(string obj)
     {
         PanelLeftPalyer.SetActive(true);
-        var hxdTotal = PlayerPrefs.GetInt("HXD");
-        PlayerPrefs.SetInt("HXD", hxdTotal + (MultiplayerManager.Instance.ValueHXDInGameTurn * 2));
         NamePalyerLeft.text = $"{obj} Is Left of match \n Add {(MultiplayerManager.Instance.ValueHXDInGameTurn * 2)} HXD to your wallet";
     }
     /// <summary>
@@ -210,11 +208,14 @@ public class UiManager : MonoBehaviour
     /// <param name="answerOpp"></param>
     public void SendAcceptForRematch(string answerOpp)
     {
-        var hxdTotal = PlayerPrefs.GetInt("HXD");
+        NakamaStorageManager.Instance.UpdateCollectionObject(NakamaStorageManager.Instance.NakamaCollectionObjectWallet);
+        var collction = NakamaStorageManager.Instance.NakamaCollectionObjectWallet.GetValue<WalletData>();
+        var hxdTotal = collction.hxdAmount;
         rematchPanle.SetActive(true);
         AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
         AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
         ActionEndGame.instance.ResultPanel.SetActive(false);
+        Debug.Log(hxdTotal);
         var answer = new RematchData
         {
             Answer = answerOpp,
@@ -223,7 +224,7 @@ public class UiManager : MonoBehaviour
         };
         if (answer.Answer == "send")
         {
-            if (hxdTotal > MultiplayerManager.Instance.ValueHXDInGameTurn)
+            if (hxdTotal >= MultiplayerManager.Instance.ValueHXDInGameTurn)
             {
 
                 acceptRematchButton.gameObject.SetActive(false);
@@ -252,12 +253,13 @@ public class UiManager : MonoBehaviour
             else
             {
                 answer.Answer = "yes";
-                hxdTotal-=MultiplayerManager.Instance.ValueHXDInGameTurn;
+                hxdTotal -= MultiplayerManager.Instance.ValueHXDInGameTurn;
                 PlayerPrefs.SetInt("HXD", hxdTotal);
             }
         }
 
         MultiplayerManager.Instance.Send(MultiplayerManager.Code.Rematch, answer);
+        answer.Answer = "";
     }
 
     /// <summary>

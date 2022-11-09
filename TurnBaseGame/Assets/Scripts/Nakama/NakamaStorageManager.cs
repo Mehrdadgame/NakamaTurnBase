@@ -10,7 +10,7 @@ namespace Nakama.Helpers
         #region FIELDS
 
         public List<NakamaCollectionObject> autoLoadObjects;
-
+        public NakamaCollectionObject NakamaCollectionObjectWallet;
         #endregion
 
         #region EVENTS
@@ -23,6 +23,7 @@ namespace Nakama.Helpers
 
         public static NakamaStorageManager Instance { get; private set; } = null;
         public bool LoadingFinished { get; private set; } = false;
+        public WalletData wallet;
 
         #endregion
 
@@ -59,7 +60,7 @@ namespace Nakama.Helpers
             UpdateCollectionObjectsAsync(collectionObjects);
         }
 
-        private async void UpdateCollectionObjectsAsync(IEnumerable<NakamaCollectionObject> collectionObjects)
+        public async void UpdateCollectionObjectsAsync(IEnumerable<NakamaCollectionObject> collectionObjects)
         {
             if (collectionObjects.Count() == default(int))
             {

@@ -75,6 +75,7 @@ namespace Nakama.Helpers
         {
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
             LoginAsync(connectionData, client.AuthenticateCustomAsync(customId));
+           
         }
 
         private async void LoginAsync(NakamaConnectionData connectionData, Task<ISession> sessionTask)

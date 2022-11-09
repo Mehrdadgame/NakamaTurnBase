@@ -111,6 +111,11 @@ function SaveAndReadHXD( idUser:string,nakama: nkruntime.Nakama ,decimal:number 
    hxd.hxdAmount =hxd.hxdAmount - mines ;
     SaveHXD(idUser,0,decimal,nakama,hxd);
 }
+function SaveAndReadHXDPluse(idUser:string,nakama: nkruntime.Nakama ,decimal:number ,gameState:GameState){
+    var hxd= ReadHXD( idUser,0,nakama);
+    hxd.hxdAmount += gameState.ValueHXD*2;
+    SaveHXD( idUser,0,2,nakama,hxd);
+}
 
 /**
  * The match join function is called when a player joins the match
@@ -210,7 +215,13 @@ let matchLeave: nkruntime.MatchLeaveFunction = function (context: nkruntime.Cont
         var nameplayer = JSON.stringify(gameState.players[playerNumber].displayName);
         if(   gameState.BeforeEndGame ==false)
         {
-            dispatcher.broadcastMessage(9,nameplayer);
+            if(gameState.players.length>1){
+                
+                dispatcher.broadcastMessage(9,nameplayer);
+                var playerWin= gameState.players.filter(e=>e.presence.userId!=gameState.players[playerNumber].presence.userId);
+                SaveAndReadHXDPluse(playerWin[0].presence.userId,nakama,0,gameState);
+                logger.info("Win Player !!!!!!!!!!!!" +playerWin[0].displayName );
+            }
         }
 
         delete gameState.players[playerNumber];
@@ -650,7 +661,11 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
            }
              
          }
-         dataPlayer.Answer ="";
+         for (let index = 0; index < gameState.players.length; index++) {
+           SaveAndReadHXD(gameState.players[index].presence.userId,nakama,0,gameState.ValueHXD);
+            
+         }
+      
          gameState.CountTurnPlayer1=0;
          gameState.CountTurnPlayer2=0;
  
@@ -664,7 +679,7 @@ function Rematch(message: nkruntime.MatchMessage, gameState: GameState, dispatch
        var send = JSON.stringify(dataPlayer);
         dispatcher.broadcastMessage(message.opCode,send,null,message.sender);
     }
-  
+    dataPlayer.Answer ="";
 }
 
 

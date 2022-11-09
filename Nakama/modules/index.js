@@ -160,6 +160,11 @@ function SaveAndReadHXD(idUser, nakama, decimal, mines) {
     hxd.hxdAmount = hxd.hxdAmount - mines;
     SaveHXD(idUser, 0, decimal, nakama, hxd);
 }
+function SaveAndReadHXDPluse(idUser, nakama, decimal, gameState) {
+    var hxd = ReadHXD(idUser, 0, nakama);
+    hxd.hxdAmount += gameState.ValueHXD * 2;
+    SaveHXD(idUser, 0, 2, nakama, hxd);
+}
 /**
  * The match join function is called when a player joins the match
  * @param context - nkruntime.Context
@@ -238,14 +243,23 @@ var matchLoop = function (context, logger, nakama, dispatcher, tick, state, mess
  */
 var matchLeave = function (context, logger, nakama, dispatcher, tick, state, presences) {
     var gameState = state;
-    for (var _i = 0, presences_2 = presences; _i < presences_2.length; _i++) {
-        var presence = presences_2[_i];
+    var _loop_1 = function (presence) {
         var playerNumber = getPlayerNumber(gameState.players, presence.sessionId);
-        var nameplayer = JSON.stringify(gameState.players[playerNumber].displayName);
+        nameplayer = JSON.stringify(gameState.players[playerNumber].displayName);
         if (gameState.BeforeEndGame == false) {
-            dispatcher.broadcastMessage(9, nameplayer);
+            if (gameState.players.length > 1) {
+                dispatcher.broadcastMessage(9, nameplayer);
+                playerWin = gameState.players.filter(function (e) { return e.presence.userId != gameState.players[playerNumber].presence.userId; });
+                SaveAndReadHXDPluse(playerWin[0].presence.userId, nakama, 0, gameState);
+                logger.info("Win Player !!!!!!!!!!!!" + playerWin[0].displayName);
+            }
         }
         delete gameState.players[playerNumber];
+    };
+    var nameplayer, playerWin;
+    for (var _i = 0, presences_2 = presences; _i < presences_2.length; _i++) {
+        var presence = presences_2[_i];
+        _loop_1(presence);
     }
     return { state: gameState };
 };
@@ -516,11 +530,11 @@ function TotalScore(array2D, logger, mode) {
     }
     if (mode == true) {
         {
-            var _loop_1 = function (indexx) {
+            var _loop_2 = function (indexx) {
                 score += CalculatorArray(array2D.map(function (d) { return d[indexx]; }), logger);
             };
             for (var indexx = 0; indexx < array2D.length; indexx++) {
-                _loop_1(indexx);
+                _loop_2(indexx);
             }
         }
     }
@@ -610,7 +624,9 @@ function Rematch(message, gameState, dispatcher, nakama, logger) {
                     gameState.array3DPlayerSecend[index][index1] = -1;
                 }
             }
-            dataPlayer.Answer = "";
+            for (var index = 0; index < gameState.players.length; index++) {
+                SaveAndReadHXD(gameState.players[index].presence.userId, nakama, 0, gameState.ValueHXD);
+            }
             gameState.CountTurnPlayer1 = 0;
             gameState.CountTurnPlayer2 = 0;
         }
@@ -621,6 +637,7 @@ function Rematch(message, gameState, dispatcher, nakama, logger) {
         var send = JSON.stringify(dataPlayer);
         dispatcher.broadcastMessage(message.opCode, send, null, message.sender);
     }
+    dataPlayer.Answer = "";
 }
 /**
  * It takes in a string, a number, a Nakama object, and a ScoreCalss object. It subtracts the number
@@ -963,7 +980,7 @@ var GameMode;
     GameMode[GameMode["VerticalAndHorizontal"] = 2] = "VerticalAndHorizontal";
 })(GameMode || (GameMode = {}));
 var TickRate = 16;
-var DurationLobby = 5;
+var DurationLobby = 4;
 var DurationRoundResults = 5;
 var DurationBattleEnding = 3;
 var NecessaryWins = 3;

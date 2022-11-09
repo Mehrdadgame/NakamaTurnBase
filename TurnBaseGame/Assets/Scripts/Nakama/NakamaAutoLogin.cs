@@ -10,7 +10,7 @@ namespace Nakama.Helpers
         [SerializeField] private float retryTime = 5f;
         private int countTry;
         [SerializeField] TextMeshProUGUI dicconnectText;
-        [SerializeField] private NakamaCollectionObject nakamaCollectionObjectWallet = NakamaStorageManager.Instance.autoLoadObjects[1];
+       
         #endregion
 
         #region BEHAVIORS
@@ -27,16 +27,10 @@ namespace Nakama.Helpers
         {
             dicconnectText.text = "Loading...";
             countTry = 0;
-            NakamaStorageManager.Instance.onLoadedData += Instance_onLoadedData;
+            
         }
 
-        private void Instance_onLoadedData()
-        {
-            var collction = nakamaCollectionObjectWallet.GetValue<WalletData>();
-
-            Debug.Log(collction.hxdAmount);
-
-        }
+       
 
         private void OnDestroy()
         {

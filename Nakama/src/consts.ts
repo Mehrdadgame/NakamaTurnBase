@@ -1,6 +1,6 @@
 
 const TickRate = 16;
-const DurationLobby = 5;
+const DurationLobby = 4;
 const DurationRoundResults = 5;
 const DurationBattleEnding = 3;
 const NecessaryWins = 3;
@@ -11,7 +11,7 @@ const KeyTrophies = "Trophies";
 let ScoreFirstPlayer = 0;
 let ScoreSecendPlayer =0;
 let IdLeaderboard ="b7c182b36521Win"
-var Mode :string = "ThreeByThree";
+var Mode :string = "ThreeByThree"
 
 /* A dictionary of functions. */
 const MessagesLogic: { [opCode: number]: (message: nkruntime.MatchMessage, state: GameState, dispatcher: nkruntime.MatchDispatcher, nakama: nkruntime.Nakama , logger : nkruntime.Logger) => void } =
