@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
@@ -91,7 +92,7 @@ namespace Nakama.Helpers
             yield return new WaitWhile(() => !loginActionSuccessful);
             Debug.Log(loginActionSuccessful);
             LoginTask();
-            NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
+           // NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
 
 
 
@@ -102,13 +103,14 @@ namespace Nakama.Helpers
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
             string name = PlayerPrefs.GetString("USERNAME").Replace(" ", "_");
             PlayerPrefs.SetString("USERNAME", name);
-            LoginAsync(connectionData, client.AuthenticateCustomAsync(PlayerPrefs.GetString("USERNAME")));
+     
+            LoginAsync(connectionData, client.AuthenticateCustomAsync(PlayerPrefs.GetString("USERNAME"),"",true));
             var wallet = new WalletData
             {
                 hxdAmount = 500,
                 _decimal = 1
             };
-           await Task.Delay(2000);
+           await Task.Delay(1000);
             NakamaStorageManager.Instance.SendValueToServer(NakamaStorageManager.Instance.NakamaCollectionObjectWallet, wallet);
 
         }

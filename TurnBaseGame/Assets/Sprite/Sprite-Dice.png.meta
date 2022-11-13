@@ -790,6 +790,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice_32
+      rect:
+        serializedVersion: 2
+        x: 1030
+        y: 1764
+        width: 54
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cb182d626f4b1d4c8fbd0fb0ce83c88
+      internalID: 1059562723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -807,6 +828,7 @@ TextureImporter:
       Sprite-Dice_0: -712058315
       Sprite-Dice_18: -643206390
       Sprite-Dice_29: 955218397
+      Sprite-Dice_32: 1059562723
       Sprite-Dice_23: -1047294473
       Sprite-Dice_22: -1686203677
       Sprite-Dice_16: 914369998

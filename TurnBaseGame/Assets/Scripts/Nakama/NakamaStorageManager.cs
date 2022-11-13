@@ -109,7 +109,7 @@ namespace Nakama.Helpers
 
         public async void SendValueToServer(NakamaCollectionObject collectionObject, object newValue)
         {
-            WriteStorageObject writeStorageObject = new WriteStorageObject
+            WriteStorageObject writeStorageObject = new ()
             {
                 Collection = collectionObject.Collection,
                 Key = collectionObject.Key,

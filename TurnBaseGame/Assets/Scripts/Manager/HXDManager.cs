@@ -1,24 +1,29 @@
 using Nakama.Helpers;
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 public class HXDManager : Singelton<HXDManager>
 {
 
     public int HXDAmount;
     public TextMeshProUGUI textHXD;
-   
+
 
     // Start is called before the first frame update
-    void Start()
+    private IEnumerator Start()
     {
-        var collction =NakamaStorageManager.Instance.NakamaCollectionObjectWallet.GetValue<WalletData>();
+
+        var collction = NakamaStorageManager.Instance.NakamaCollectionObjectWallet.GetValue<WalletData>();
+        if (collction ==null)
+        {
+            yield return new WaitForSeconds(1);
+            collction = NakamaStorageManager.Instance.NakamaCollectionObjectWallet.GetValue<WalletData>();
+        }
         NakamaStorageManager.Instance.wallet = collction;
-        Debug.Log(collction.hxdAmount);
         HXDAmount = collction.hxdAmount;
         textHXD.text = HXDAmount.ToString();
+
 
     }
 
@@ -29,18 +34,7 @@ public class HXDManager : Singelton<HXDManager>
     /// <returns>
     /// Nothing
     /// </returns>
-    public void SetHXD(int amunt)
-    {
-        if (amunt > HXDAmount)
-        {
-
-            return;
-        }
-        HXDAmount -= amunt;
-        PlayerPrefs.SetInt("HXD", HXDAmount);
-        textHXD.text = HXDAmount.ToString();
-        MultiplayerManager.Instance.ValueHXDInGameTurn = amunt;
-    }
+  
 
 
 }

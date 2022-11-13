@@ -16,7 +16,7 @@ namespace Game
         public GameObject cellLeaderboard;
 
         public Transform parentPos;
-        public TextMeshProUGUI TextMeshProUGUI;
+      //  public TextMeshProUGUI TextMeshProUGUI;
         public Image PlayerIcon;
         // Start is called before the first frame update
         private void Awake()

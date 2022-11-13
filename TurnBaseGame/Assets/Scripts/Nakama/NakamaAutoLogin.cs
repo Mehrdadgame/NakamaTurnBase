@@ -13,6 +13,7 @@ namespace Nakama.Helpers
         [SerializeField] TextMeshProUGUI dicconnectText;
         public GameObject loadingDice;
         public Button LoginWithGoogle;
+        public GameObject LoginWithCrypto;
         #endregion
 
         #region BEHAVIORS
@@ -21,12 +22,17 @@ namespace Nakama.Helpers
         {
             if (!PlayerPrefs.HasKey("Web3Token"))
             {
-                LoginWithGoogle.gameObject.SetActive(true);
-                LoginWithGoogle.onClick.AddListener(delegate { StartCoroutine(NakamaManager.Instance.LoginWithGoogle()); }); 
+                LoginWithCrypto.SetActive(true);
+                LoginWithGoogle.onClick.AddListener(delegate
+                {
+                    loadingDice.SetActive(true);
+                    StartCoroutine(NakamaManager.Instance.LoginWithGoogle());
+                    LoginWithGoogle.interactable = false;
+                });
             }
             else
             {
-              
+
                 NakamaManager.Instance.onLoginFail += LoginFailed;
                 NakamaManager.Instance.onConnected += Instance_onConnected;
                 TryLogin();
@@ -40,7 +46,7 @@ namespace Nakama.Helpers
         {
             dicconnectText.text = "Loading...";
             countTry = 0;
-            LoginWithGoogle.gameObject.SetActive(false);
+            LoginWithCrypto.SetActive(false);
 
         }
 
@@ -72,6 +78,7 @@ namespace Nakama.Helpers
         private void LoginFailed()
         {
             Invoke(nameof(TryLogin), retryTime);
+            loadingDice.SetActive(false);
         }
 
         #endregion

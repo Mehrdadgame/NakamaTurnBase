@@ -370,6 +370,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice-2_12
+      rect:
+        serializedVersion: 2
+        x: 1282
+        y: 387
+        width: 633
+        height: 164
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa4ac61b2ce25344cbec8748c1588111
+      internalID: 1390926000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice-2_13
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 23
+        width: 800
+        height: 335
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 341e714bd0d47874e8f9ebadebaa7fe9
+      internalID: 655703490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice-2_14
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 1962
+        width: 88
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74334c34f0ec86e41b2cdf6be2586d82
+      internalID: 394744223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice-2_15
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 1962
+        width: 88
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e9de275e35549b743a4a6c5be7ed5c31
+      internalID: 231129268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -384,14 +468,18 @@ TextureImporter:
       Sprite-Dice-2_6: 2030970929
       Sprite-Dice-2_0: 356413036
       Sprite-Dice-2_11: 104242626
+      Sprite-Dice-2_14: 394744223
+      Sprite-Dice-2_15: 231129268
       Sprite-Dice-2_10: 1824474033
       Sprite-Dice-2_3: -2047160346
       Sprite-Dice-2_8: -1118543235
+      Sprite-Dice-2_13: 655703490
       Sprite-Dice-2_9: -33627901
       Sprite-Dice-2_1: -302152837
       Sprite-Dice-2_7: 477804645
       Sprite-Dice-2_5: -2062493059
       Sprite-Dice-2_2: -764782707
+      Sprite-Dice-2_12: 1390926000
       Sprite-Dice-2_4: 1325044263
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
