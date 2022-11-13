@@ -69,11 +69,11 @@ namespace Nakama.Helpers
             }
             try
             {
-                List<IApiReadStorageObjectId> storageObjectIds = new List<IApiReadStorageObjectId>();
+                List<IApiReadStorageObjectId> storageObjectIds = new ();
                 foreach (NakamaCollectionObject collectionObject in collectionObjects)
                 {
                     collectionObject.ResetData();
-                    StorageObjectId storageObjectId = new StorageObjectId
+                    StorageObjectId storageObjectId = new ()
                     {
                         Collection = collectionObject.Collection,
                         Key = collectionObject.Key,

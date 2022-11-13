@@ -208,14 +208,14 @@ public class UiManager : MonoBehaviour
     /// <param name="answerOpp"></param>
     public void SendAcceptForRematch(string answerOpp)
     {
-        NakamaStorageManager.Instance.UpdateCollectionObject(NakamaStorageManager.Instance.NakamaCollectionObjectWallet);
-        var collction = NakamaStorageManager.Instance.NakamaCollectionObjectWallet.GetValue<WalletData>();
-        var hxdTotal = collction.hxdAmount;
+        //NakamaStorageManager.Instance.UpdateCollectionObject(NakamaStorageManager.Instance.NakamaCollectionObjectWallet);
+        //var collction = NakamaStorageManager.Instance.NakamaCollectionObjectWallet.GetValue<WalletData>();
+        //var hxdTotal = collction.hxdAmount;
         rematchPanle.SetActive(true);
         AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
         AniamtionManager.instance.AnimGoToUpOpp.gameObject.SetActive(false);
         ActionEndGame.instance.ResultPanel.SetActive(false);
-        Debug.Log(hxdTotal);
+       // Debug.Log(hxdTotal);
         var answer = new RematchData
         {
             Answer = answerOpp,
@@ -224,18 +224,18 @@ public class UiManager : MonoBehaviour
         };
         if (answer.Answer == "send")
         {
-            if (hxdTotal >= MultiplayerManager.Instance.ValueHXDInGameTurn)
+          //  if (hxdTotal >= MultiplayerManager.Instance.ValueHXDInGameTurn)
             {
 
                 acceptRematchButton.gameObject.SetActive(false);
                 exitRematchButton.gameObject.SetActive(false);
                 loading.gameObject.SetActive(true);
             }
-            else
-            {
-                TurnOnExitButtonWhenFinishGame("You dont have enough HXD to play");
-                return;
-            }
+            //else
+            //{
+            //    TurnOnExitButtonWhenFinishGame("You dont have enough HXD to play");
+            //    return;
+            //}
         }
         else if (answer.Answer == "req")
         {
@@ -245,17 +245,17 @@ public class UiManager : MonoBehaviour
         }
         else if (answer.Answer == "yes")
         {
-            if (hxdTotal < MultiplayerManager.Instance.ValueHXDInGameTurn)
+           // if (hxdTotal < MultiplayerManager.Instance.ValueHXDInGameTurn)
             {
                 answer.Answer = "no";
                 TurnOnExitButtonWhenFinishGame("You dont have enough HXD to play");
             }
-            else
-            {
-                answer.Answer = "yes";
-                hxdTotal -= MultiplayerManager.Instance.ValueHXDInGameTurn;
-                PlayerPrefs.SetInt("HXD", hxdTotal);
-            }
+            //else
+            //{
+            //    answer.Answer = "yes";
+            //    hxdTotal -= MultiplayerManager.Instance.ValueHXDInGameTurn;
+            //    PlayerPrefs.SetInt("HXD", hxdTotal);
+            //}
         }
 
         MultiplayerManager.Instance.Send(MultiplayerManager.Code.Rematch, answer);

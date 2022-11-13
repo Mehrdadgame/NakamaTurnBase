@@ -15150,7 +15150,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2138857428}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.18978754
+  m_Size: 0.1511354
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -17230,6 +17230,7 @@ MonoBehaviour:
   AnimIconOpp: {fileID: 1269454842}
   IconMe: {fileID: 33389139}
   IconOpp: {fileID: 2117713588}
+  PlayerIcon: {fileID: 1700130785}
 --- !u!114 &519420036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19543,7 +19544,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: -825.10016}
+  m_AnchoredPosition: {x: 0, y: -825.1001}
   m_SizeDelta: {x: 0, y: 825.1}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &653795010

@@ -1244,6 +1244,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellLeaderboard: {fileID: 2704476703026032281, guid: 231d8c4d92543914a9dae8084ee4fc79, type: 3}
   parentPos: {fileID: 0}
+  TextMeshProUGUI: {fileID: 0}
+  PlayerIcon: {fileID: 908008237}
 --- !u!1 &549030818
 GameObject:
   m_ObjectHideFlags: 0
@@ -2476,7 +2478,7 @@ GameObject:
   - component: {fileID: 908008238}
   - component: {fileID: 908008237}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ImagePlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5876,8 +5878,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 734221432}
   m_HandleRect: {fileID: 734221431}
   m_Direction: 2
-  m_Value: 0.9999998
-  m_Size: 0.64962965
+  m_Value: 0.99999934
+  m_Size: 0.89633673
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

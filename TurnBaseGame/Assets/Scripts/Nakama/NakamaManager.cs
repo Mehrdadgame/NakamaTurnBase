@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Threading.Tasks;
+using TMPro;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 namespace Nakama.Helpers
@@ -10,7 +13,7 @@ namespace Nakama.Helpers
 
         private const string UdidKey = "udid";
 
-/* A reference to the NakamaConnectionData scriptable object.  set local and host*/
+        /* A reference to the NakamaConnectionData scriptable object.  set local and host*/
         [SerializeField] private NakamaConnectionData connectionData = null;
 
         private IClient client = null;
@@ -37,7 +40,10 @@ namespace Nakama.Helpers
         public ISocket Socket { get => socket; }
         public ISession Session { get => session; }
         public IClient Client { get => client; }
+        private bool conncet;
+        private bool loginActionSuccessful;
 
+        public Sprite SpritePlayerIcon;
         #endregion
 
         #region BEHAVIORS
@@ -53,10 +59,10 @@ namespace Nakama.Helpers
 
         }
 
-     /// <summary>
-     /// It gets the UDID from the PlayerPrefs, if it doesn't exist, it creates a new one and saves it
-     /// to the PlayerPrefs
-     /// </summary>
+        /// <summary>
+        /// It gets the UDID from the PlayerPrefs, if it doesn't exist, it creates a new one and saves it
+        /// to the PlayerPrefs
+        /// </summary>
         public void LoginWithUdid()
         {
             var udid = PlayerPrefs.GetString(UdidKey, Guid.NewGuid().ToString());
@@ -75,7 +81,52 @@ namespace Nakama.Helpers
         {
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
             LoginAsync(connectionData, client.AuthenticateCustomAsync(customId));
+
+        }
+        public IEnumerator LoginWithGoogle()
+        {
+            loginActionSuccessful = false;
+            GetPublicKey();
            
+            yield return new WaitWhile(() => !loginActionSuccessful);
+            Debug.Log(loginActionSuccessful);
+            LoginTask();
+            NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
+
+
+
+        }
+        public async void LoginTask()
+        {
+          
+            client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
+            string name = PlayerPrefs.GetString("USERNAME").Replace(" ", "_");
+            PlayerPrefs.SetString("USERNAME", name);
+            LoginAsync(connectionData, client.AuthenticateCustomAsync(PlayerPrefs.GetString("USERNAME")));
+            var wallet = new WalletData
+            {
+                hxdAmount = 500,
+                _decimal = 1
+            };
+           await Task.Delay(2000);
+            NakamaStorageManager.Instance.SendValueToServer(NakamaStorageManager.Instance.NakamaCollectionObjectWallet, wallet);
+
+        }
+        public void GetPublicKey()
+        {
+            Web3Manager.instance.Login((e, r) =>
+           {
+               loginActionSuccessful = true;
+               Debug.Log($"idToken={e} publicKey={r}");
+           }, Onfail, OnUrl);
+        }
+        private void Onfail()
+        {
+            Debug.Log("Fial");
+        }
+        private void OnUrl()
+        {
+            Debug.Log("ssss");
         }
 
         private async void LoginAsync(NakamaConnectionData connectionData, Task<ISession> sessionTask)
@@ -86,7 +137,7 @@ namespace Nakama.Helpers
                 session = await sessionTask;
                 socket = client.NewSocket(true);
                 socket.Connected += Connected;
-             
+
                 socket.Closed += Disconnected;
                 await socket.ConnectAsync(session);
                 onLoginSuccess?.Invoke();
@@ -96,7 +147,7 @@ namespace Nakama.Helpers
                 Debug.Log(exception);
                 onLoginFail?.Invoke();
             }
-            
+
         }
 
         public void LogOut()
@@ -107,7 +158,7 @@ namespace Nakama.Helpers
         private void Connected()
         {
             onConnected?.Invoke();
-           
+
         }
 
         private void Disconnected()
@@ -116,14 +167,14 @@ namespace Nakama.Helpers
 
         }
 
-     /// <summary>
-     /// > Send an RPC to the server
-     /// </summary>
-     /// <param name="rpc">The name of the RPC you want to call.</param>
-     /// <param name="payload">The JSON payload to send to the server.</param>
-     /// <returns>
-     /// The return value is an object of type IApiRpc.
-     /// </returns>
+        /// <summary>
+        /// > Send an RPC to the server
+        /// </summary>
+        /// <param name="rpc">The name of the RPC you want to call.</param>
+        /// <param name="payload">The JSON payload to send to the server.</param>
+        /// <returns>
+        /// The return value is an object of type IApiRpc.
+        /// </returns>
         public async Task<IApiRpc> SendRPC(string rpc, string payload = "{}")
         {
             if (client == null || session == null)

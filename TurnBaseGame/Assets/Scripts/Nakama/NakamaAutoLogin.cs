@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Nakama.Helpers
 {
@@ -7,30 +8,43 @@ namespace Nakama.Helpers
     {
         #region FIELDS
 
-        [SerializeField] private float retryTime = 5f;
+        [SerializeField] private float retryTime = 20f;
         private int countTry;
         [SerializeField] TextMeshProUGUI dicconnectText;
-       
+        public GameObject loadingDice;
+        public Button LoginWithGoogle;
         #endregion
 
         #region BEHAVIORS
 
         private void Start()
         {
-            NakamaManager.Instance.onLoginFail += LoginFailed;
-            NakamaManager.Instance.onConnected += Instance_onConnected;
-           
-            TryLogin();
+            if (!PlayerPrefs.HasKey("Web3Token"))
+            {
+                LoginWithGoogle.gameObject.SetActive(true);
+                LoginWithGoogle.onClick.AddListener(delegate { StartCoroutine(NakamaManager.Instance.LoginWithGoogle()); }); 
+            }
+            else
+            {
+              
+                NakamaManager.Instance.onLoginFail += LoginFailed;
+                NakamaManager.Instance.onConnected += Instance_onConnected;
+                TryLogin();
+                LoginWithGoogle.onClick.RemoveAllListeners();
+            }
+
+
         }
 
         private void Instance_onConnected()
         {
             dicconnectText.text = "Loading...";
             countTry = 0;
-            
+            LoginWithGoogle.gameObject.SetActive(false);
+
         }
 
-       
+
 
         private void OnDestroy()
         {
@@ -38,22 +52,23 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onConnected -= Instance_onConnected;
         }
 
-     /// <summary>
-     /// It tries to login to the server.
-     /// </summary>
+        /// <summary>
+        /// It tries to login to the server.
+        /// </summary>
         private void TryLogin()
         {
-            NakamaManager.Instance.LoginWithUdid();
+            NakamaManager.Instance.LoginTask();
+            loadingDice.SetActive(true);
             countTry++;
-            if (countTry>2)
+            if (countTry > 2)
             {
                 dicconnectText.text = "Please check internet...";
             }
         }
 
-   /// <summary>
-   /// If the login fails, try again in a few seconds
-   /// </summary>
+        /// <summary>
+        /// If the login fails, try again in a few seconds
+        /// </summary>
         private void LoginFailed()
         {
             Invoke(nameof(TryLogin), retryTime);

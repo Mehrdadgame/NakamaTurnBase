@@ -1,3 +1,4 @@
+using Nakama.Helpers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,11 +14,13 @@ public class AniamtionManager : MonoBehaviour
     public Animator AnimIconOpp;
     public RectTransform IconMe;
     public RectTransform IconOpp;
+    public Image PlayerIcon;
     // Start is called before the first frame update
     void Awake()
     {
         instance = this;
         AnimIconOpp.Play("IconMatchMaking", 0, 0);
+        PlayerIcon.sprite = NakamaManager.Instance.SpritePlayerIcon;
         //AnimGoToUpOpp.GetComponent<Animator>().Play("ScleIcon",0,0);
     }
 
