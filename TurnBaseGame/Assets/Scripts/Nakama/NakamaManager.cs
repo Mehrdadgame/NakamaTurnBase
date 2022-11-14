@@ -88,31 +88,36 @@ namespace Nakama.Helpers
         {
             loginActionSuccessful = false;
             GetPublicKey();
-           
+
             yield return new WaitWhile(() => !loginActionSuccessful);
             Debug.Log(loginActionSuccessful);
             LoginTask();
-           // NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
+            // NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
 
 
 
         }
-        public async void LoginTask()
+        public void Login()
         {
-          
+
+            client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
+
+            LoginAsync(connectionData, client.AuthenticateCustomAsync(PlayerPrefs.GetString("USERNAME"), "", true));
+        }
+        private async void LoginTask()
+        {
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
             string name = PlayerPrefs.GetString("USERNAME").Replace(" ", "_");
             PlayerPrefs.SetString("USERNAME", name);
-     
-            LoginAsync(connectionData, client.AuthenticateCustomAsync(PlayerPrefs.GetString("USERNAME"),"",true));
+
+            LoginAsync(connectionData, client.AuthenticateCustomAsync(PlayerPrefs.GetString("USERNAME"), "", true));
             var wallet = new WalletData
             {
                 hxdAmount = 500,
                 _decimal = 1
             };
-           await Task.Delay(1000);
+            await Task.Delay(1000);
             NakamaStorageManager.Instance.SendValueToServer(NakamaStorageManager.Instance.NakamaCollectionObjectWallet, wallet);
-
         }
         public void GetPublicKey()
         {

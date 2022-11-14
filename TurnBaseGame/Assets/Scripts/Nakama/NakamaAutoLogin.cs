@@ -63,7 +63,7 @@ namespace Nakama.Helpers
         /// </summary>
         private void TryLogin()
         {
-            NakamaManager.Instance.LoginTask();
+            NakamaManager.Instance.Login();
             loadingDice.SetActive(true);
             countTry++;
             if (countTry > 2)

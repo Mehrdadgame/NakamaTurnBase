@@ -20,6 +20,7 @@ public class DiceRoller : MonoBehaviour
     public bool isRolling;
     private float totalTime;
     private float intervalTime;
+    private float intervalTimeOppTurn;
     public int currrentDie = -1;
     public bool dieRolled;
     public bool isRootDice;
@@ -75,21 +76,27 @@ public class DiceRoller : MonoBehaviour
 
         if (isRootDice)
         {
-            dice.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360) * Time.deltaTime * 2);
-            currrentDie = UnityEngine.Random.Range(0, 6);
-            dice.sprite = Dice[currrentDie];
+            intervalTimeOppTurn += Time.deltaTime;
+            if (intervalTimeOppTurn >= 0.2f)
+            {
+                dice.transform.Rotate(0, 0, UnityEngine.Random.Range(0, 360));
+                currrentDie = UnityEngine.Random.Range(0, 6);
+                dice.sprite = Dice[currrentDie];
+                intervalTimeOppTurn -= 0.2f;
+            }
         }
         else
         {
+            intervalTimeOppTurn=0;
             dice.GetComponent<RectTransform>().eulerAngles = Vector3.zero;
         }
     }
 
-  /// <summary>
-  /// If the die hasn't been rolled, then set the die to rolling. If the die isn't rolling, then
-  /// initialize the die and set it to rolling
-  /// </summary>
-  /// <param name="Button">The button that was clicked</param>
+    /// <summary>
+    /// If the die hasn't been rolled, then set the die to rolling. If the die isn't rolling, then
+    /// initialize the die and set it to rolling
+    /// </summary>
+    /// <param name="Button">The button that was clicked</param>
     public void DieImage_Click(Button button)
     {
         if (!dieRolled)

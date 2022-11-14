@@ -10,10 +10,11 @@ public class HXDManager : Singelton<HXDManager>
     public TextMeshProUGUI textHXD;
 
 
+
     // Start is called before the first frame update
     private IEnumerator Start()
     {
-
+        NakamaStorageManager.Instance.UpdateCollectionObject(NakamaStorageManager.Instance.NakamaCollectionObjectWallet);
         var collction = NakamaStorageManager.Instance.NakamaCollectionObjectWallet.GetValue<WalletData>();
         if (collction ==null)
         {
@@ -23,18 +24,5 @@ public class HXDManager : Singelton<HXDManager>
         NakamaStorageManager.Instance.wallet = collction;
         HXDAmount = collction.hxdAmount;
         textHXD.text = HXDAmount.ToString();
-
-
     }
-
-    /// <summary>
-    /// It takes an integer as a parameter and subtracts it from the current amount of HXD
-    /// </summary>
-    /// <param name="amunt">The amount of HXD to be set.</param>
-    /// <returns>
-    /// Nothing
-    /// </returns>
-  
-
-
 }

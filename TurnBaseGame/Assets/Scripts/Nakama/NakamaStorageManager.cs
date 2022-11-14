@@ -39,7 +39,7 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onLoginSuccess += AutoLoad;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             NakamaManager.Instance.onLoginSuccess -= AutoLoad;
         }
@@ -47,6 +47,7 @@ namespace Nakama.Helpers
         private void AutoLoad()
         {
             UpdateCollectionObjectsAsync(autoLoadObjects);
+            UpdateCollectionObject(NakamaCollectionObjectWallet);
           // 
         }
 
