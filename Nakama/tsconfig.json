@@ -7,17 +7,19 @@
     "./src/enums.ts",
     "./src/consts.ts"
   ],
-  
+ 
   "compilerOptions": {
     "target": "ES5",
+    "module": "System",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outFile": "./modules/index.js",
     "typeRoots": [
-      "./node_modules"
+      "./node_modules" , "./node_modules/@types"
     ]
   }
+  
   
 }

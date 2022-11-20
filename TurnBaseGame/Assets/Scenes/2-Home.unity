@@ -1223,7 +1223,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 50b7ae4d0c8a3934eae41f53a460d0f1, type: 3}
   m_Name: 
@@ -1244,7 +1244,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellLeaderboard: {fileID: 2704476703026032281, guid: 231d8c4d92543914a9dae8084ee4fc79, type: 3}
   parentPos: {fileID: 0}
-  TextMeshProUGUI: {fileID: 0}
   PlayerIcon: {fileID: 908008237}
 --- !u!1 &549030818
 GameObject:

@@ -1,17 +1,19 @@
-const TickRate = 16;
-const DurationLobby = 10;
-const DurationRoundResults = 5;
-const DurationBattleEnding = 3;
-const NecessaryWins = 3;
-const MaxPlayers = 2;
-const PlayerNotFound = -1;
-const CollectionUser = "User";
-const KeyTrophies = "Trophies";
-let ScoreFirstPlayer = 0;
-let ScoreSecendPlayer = 0;
-let IdLeaderboard = "b7c182b36521Win";
+"use strict";
+var TickRate = 16;
+var DurationLobby = 4;
+var DurationRoundResults = 5;
+var DurationBattleEnding = 3;
+var NecessaryWins = 3;
+var MaxPlayers = 2;
+var PlayerNotFound = -1;
+var CollectionUser = "User";
+var KeyTrophies = "Trophies";
+var ScoreFirstPlayer = 0;
+var ScoreSecendPlayer = 0;
+var IdLeaderboard = "b7c182b36521Win";
 var Mode = "ThreeByThree";
-const MessagesLogic = {
+/* A dictionary of functions. */
+var MessagesLogic = {
     7: ChooseTurnPlayer,
     8: Rematch,
     10: StickersManager

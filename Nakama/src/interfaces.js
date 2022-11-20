@@ -1,3 +1,4 @@
+"use strict";
 var GameMode;
 (function (GameMode) {
     GameMode[GameMode["ThreeByThree"] = 0] = "ThreeByThree";

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nakama.TinyJson;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -76,35 +77,40 @@ namespace Nakama.Helpers
         {
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
             LoginAsync(connectionData, client.AuthenticateDeviceAsync(SystemInfo.deviceUniqueIdentifier));
+            PlayerPrefs.SetString("Web3Token", "web");
         }
 
         public void LoginWithCustomId(string customId)
         {
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
             LoginAsync(connectionData, client.AuthenticateCustomAsync(customId));
-
+            PlayerPrefs.SetString("Web3Token", "web");
         }
         public IEnumerator LoginWithGoogle()
         {
-            loginActionSuccessful = false;
-            GetPublicKey();
+            loginActionSuccessful = true;
+            //GetPublicKey();
 
             yield return new WaitWhile(() => !loginActionSuccessful);
             Debug.Log(loginActionSuccessful);
-            LoginTask();
+            LoginCustome();
             // NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
 
 
 
         }
-        public void Login()
+        public void LoginCustome()
         {
 
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
-
-            LoginAsync(connectionData, client.AuthenticateCustomAsync(PlayerPrefs.GetString("USERNAME"), "", true));
+           
+            LoginAsync(connectionData, client.AuthenticateCustomAsync("sfsfwegrewhgy3yer"));
         }
-        private async void LoginTask()
+
+        /// <summary>
+        /// get value HXD and set on storage
+        /// </summary>
+        public async void LoginWithSetHXDToStorage()
         {
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
             string name = PlayerPrefs.GetString("USERNAME").Replace(" ", "_");
@@ -192,4 +198,9 @@ namespace Nakama.Helpers
 
         #endregion
     }
+}
+public class Claims
+{
+    public string id;
+    public string username;
 }

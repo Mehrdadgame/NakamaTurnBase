@@ -43,9 +43,9 @@ namespace NinjaBattle.General
         private void ObtainName()
         {
             if (string.IsNullOrEmpty(nakamaUserManager.DisplayName))
-                inputField.text = PlayerPrefs.GetString("USERNAME"); //firstPart[Random.Range(0, firstPart.Length)] + secondPart[Random.Range(0, secondPart.Length)];
+                inputField.text = firstPart[Random.Range(0, firstPart.Length)] + secondPart[Random.Range(0, secondPart.Length)];
             else
-                inputField.text = PlayerPrefs.GetString("USERNAME");
+                inputField.text = nakamaUserManager.DisplayName;//firstPart[Random.Range(0, firstPart.Length)] + secondPart[Random.Range(0, secondPart.Length)];
         }
 
     /// <summary>

@@ -454,6 +454,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Sprite-Dice-2_16
+      rect:
+        serializedVersion: 2
+        x: 1183
+        y: 1337
+        width: 720
+        height: 216
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99e04abc2ec017b4cb1d04ae4ab9592f
+      internalID: 149883327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -466,9 +487,10 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Sprite-Dice-2_6: 2030970929
-      Sprite-Dice-2_0: 356413036
+      Sprite-Dice-2_4: 1325044263
       Sprite-Dice-2_11: 104242626
       Sprite-Dice-2_14: 394744223
+      Sprite-Dice-2_16: 149883327
       Sprite-Dice-2_15: 231129268
       Sprite-Dice-2_10: 1824474033
       Sprite-Dice-2_3: -2047160346
@@ -480,7 +502,7 @@ TextureImporter:
       Sprite-Dice-2_5: -2062493059
       Sprite-Dice-2_2: -764782707
       Sprite-Dice-2_12: 1390926000
-      Sprite-Dice-2_4: 1325044263
+      Sprite-Dice-2_0: 356413036
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

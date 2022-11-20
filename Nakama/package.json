@@ -1,5 +1,5 @@
 {
-  "name": "Nakama",
+  "name": "nakama",
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,13 +11,8 @@
   "devDependencies": {
     "typescript": "^4.4.3"
   },
-
-  
-   
-  
   "dependencies": {
+    "@types/jsonwebtoken": "^8.5.9",
     "nakama-runtime": "github:heroiclabs/nakama-common"
   }
-  
-  
 }

@@ -26,7 +26,9 @@ namespace Nakama.Helpers
                 LoginWithGoogle.onClick.AddListener(delegate
                 {
                     loadingDice.SetActive(true);
-                    StartCoroutine(NakamaManager.Instance.LoginWithGoogle());
+                    ///for login and set HXD used (LoginWithSetHXDToStorage) on NakamaManager
+                    //NakamaManager.Instance.LoginWithSetHXDToStorage();
+                    NakamaManager.Instance.LoginWithDevice();
                     LoginWithGoogle.interactable = false;
                 });
             }
@@ -63,7 +65,7 @@ namespace Nakama.Helpers
         /// </summary>
         private void TryLogin()
         {
-            NakamaManager.Instance.Login();
+            NakamaManager.Instance.LoginWithDevice();
             loadingDice.SetActive(true);
             countTry++;
             if (countTry > 2)
