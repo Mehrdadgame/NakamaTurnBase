@@ -12,7 +12,6 @@
     "typescript": "^4.4.3"
   },
   "dependencies": {
-    "@types/jsonwebtoken": "^8.5.9",
     "nakama-runtime": "github:heroiclabs/nakama-common"
   }
 }

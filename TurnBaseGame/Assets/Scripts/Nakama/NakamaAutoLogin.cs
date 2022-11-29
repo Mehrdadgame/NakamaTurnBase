@@ -20,19 +20,19 @@ namespace Nakama.Helpers
 
         private void Start()
         {
-            if (!PlayerPrefs.HasKey("Web3Token"))
-            {
-                LoginWithCrypto.SetActive(true);
-                LoginWithGoogle.onClick.AddListener(delegate
-                {
-                    loadingDice.SetActive(true);
-                    ///for login and set HXD used (LoginWithSetHXDToStorage) on NakamaManager
-                    //NakamaManager.Instance.LoginWithSetHXDToStorage();
-                    NakamaManager.Instance.LoginWithDevice();
-                    LoginWithGoogle.interactable = false;
-                });
-            }
-            else
+        //    if (!PlayerPrefs.HasKey("Web3Token"))
+        //    {
+        //        LoginWithCrypto.SetActive(true);
+        //        LoginWithGoogle.onClick.AddListener(delegate
+        //        {
+        //            loadingDice.SetActive(true);
+        //            ///for login and set HXD used (LoginWithSetHXDToStorage) on NakamaManager
+        //            //NakamaManager.Instance.LoginWithSetHXDToStorage();
+        //            NakamaManager.Instance.LoginWithDevice();
+        //            LoginWithGoogle.interactable = false;
+        //        });
+        //    }
+        //    else
             {
 
                 NakamaManager.Instance.onLoginFail += LoginFailed;
@@ -65,7 +65,7 @@ namespace Nakama.Helpers
         /// </summary>
         private void TryLogin()
         {
-            NakamaManager.Instance.LoginWithDevice();
+            NakamaManager.Instance.LoginWithCustomId ("123456789999999999");
             loadingDice.SetActive(true);
             countTry++;
             if (countTry > 2)

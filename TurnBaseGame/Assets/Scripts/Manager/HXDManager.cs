@@ -3,14 +3,17 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-public class HXDManager : Singelton<HXDManager>
+public class HXDManager :MonoBehaviour
 {
 
     public int HXDAmount;
     public TextMeshProUGUI textHXD;
+    public static HXDManager instance;
 
-
-
+    private void Awake()
+    {
+        instance = this;    
+    }
     // Start is called before the first frame update
     private IEnumerator Start()
     {

@@ -5,7 +5,7 @@
     "./src/match_handler.ts",
     "./src/interfaces.ts",
     "./src/enums.ts",
-    "./src/consts.ts"
+    "./src/consts.ts",
   ],
  
   "compilerOptions": {
@@ -17,7 +17,7 @@
     "forceConsistentCasingInFileNames": true,
     "outFile": "./modules/index.js",
     "typeRoots": [
-      "./node_modules" , "./node_modules/@types"
+      "./node_modules" 
     ]
   }
   

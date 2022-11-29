@@ -10,28 +10,34 @@ namespace Nakama.Helpers
         #region FIELDS
 
         [SerializeField] private Button button = null;
-
+        public int AmountHXDPlayer;
+        
         #endregion
 
         #region BEHAVIORS
 
         private void Awake()
         {
+            
             button.onClick.AddListener(FindMatch);
         }
 
     /// <summary>
     /// The function FindMatch() is called when the player clicks the button to find a match
     /// </summary>
-        private void FindMatch()
+        public void FindMatch()
         {
-            GameManager.Instance.modeGame = GetComponent<SetModeGame>().modeGame;
-        
-            button.interactable = false;
-            MultiplayerManager.Instance.JoinMatchAsync(GameManager.Instance.modeGame);
-        
-         
 
+            if (AmountHXDPlayer<= HXDManager.instance.HXDAmount)
+            {
+                button.interactable = false;
+                MultiplayerManager.Instance.JoinMatchAsync(GameManager.Instance.modeGame);
+            }
+            else
+            {
+                Debug.Log("Low Coin");
+            }
+          
         }
 
         #endregion

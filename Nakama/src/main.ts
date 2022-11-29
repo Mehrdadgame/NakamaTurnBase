@@ -1,7 +1,7 @@
+
 const JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
 const LogicLoadedLoggerInfo = "Custom logic loaded.";
 const MatchModuleName = "match";
-
 /**
  * "Register the RPC and the match module with the initializer."
  * 
@@ -16,7 +16,7 @@ const MatchModuleName = "match";
 function InitModule(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, initializer: nkruntime.Initializer)
 {
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
-   // initializer.registerBeforeAuthenticateCustom(BeforeAuthenticateCustom);
+    initializer.registerBeforeAuthenticateCustom(BeforeAuthenticateCustom);
     initializer.registerMatch(MatchModuleName, {
         matchInit,
         matchJoinAttempt,
@@ -29,4 +29,3 @@ function InitModule(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkrunt
 
     logger.info(LogicLoadedLoggerInfo);
 }
- 
