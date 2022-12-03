@@ -2,7 +2,7 @@ version: '3'
 services:
   cockroachdb:
     image: cockroachdb/cockroach:latest-v20.2
-    command: start-single-node --insecure --store=attrs=ssd,path=/var/lib/cockroach/
+    command: start-single-node --insecure --store=attrs=ssd,path=/var/lib/cockroach/  
     restart: "always"
     volumes:
       - data:/var/lib/cockroach
@@ -13,13 +13,13 @@ services:
       - "26257:26257"
       - "8080:8080"
   nakama:
-    image: registry.heroiclabs.com/heroiclabs/nakama:3.13.1
+    image: registry.heroiclabs.com/heroiclabs/nakama:3.13.1 
     entrypoint:
       - "/bin/sh"
       - "-ecx"
       - >
           /nakama/nakama migrate up --database.address root@cockroachdb:26257 &&
-          exec /nakama/nakama --name nakama1 --database.address root@cockroachdb:26257 --logger.level DEBUG --session.token_expiry_sec 7200
+          exec /nakama/nakama --name DiceWar --database.address root@cockroachdb:26257 --logger.level DEBUG --session.token_expiry_sec 7200  --logger.level DEBUG --runtime.env  "JWT_SECRET_KEY=2SoPDHoqJvSId__63qgzpKEPqgnEJCl_jayxdGt1mOo"
     restart: "always"
     links:
       - "cockroachdb:db"

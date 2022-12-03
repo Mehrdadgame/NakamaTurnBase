@@ -45,33 +45,37 @@ try {
 }
 interface Claims {
   id: string,
+  username: string
 }
-
 
 
 const BeforeAuthenticateCustom: nkruntime.BeforeHookFunction<nkruntime.AuthenticateCustomRequest> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, data: nkruntime.AuthenticateCustomRequest): nkruntime.AuthenticateCustomRequest | void {
 
 if(data.account?.id==null )
 return data;
+const secretKey = ctx.env["JWT_SECRET_KEY"];
+ var token = nk.jwtGenerate('HS256',secretKey,{'id':data.account.id});
+ 
+  logger.info(secretKey+ " IIIIIIIIIIII"); 
+ //const claims = verifyAndParseJwt(secretKey, data.account.id,nk,logger);
+//  // Update the incoming authenticate request with the user ID and username
+//  data.account.id = claims.id;
+//  data.username = claims.username;
 
-logger.debug(data.account?.id+ " sfgfdgeryerhyerEEEEEEEEEEEEEEEEEEEE");
-
-var token = nk.jwtGenerate('HS256','2SoPDHoqJvSId__63qgzpKEPqgnEJCl_jayxdGt1mOo',{'id':data.account?.id});
-
-// const claims = verifyAndParseJwt(secretKey,token,nk);
-
-// // Update the incoming authenticate request with the user ID and username
-// data.account.id = claims.id;
 
 return data;
-
 }
-const verifyAndParseJwt = function (secretKey: string, jwt: string ,nk: nkruntime.Nakama): Claims {
 
-  var decode = nk.base64UrlDecode(jwt);
- var decodejson:Claims = JSON.parse( decode)
 
+const verifyAndParseJwt = function (secretKey: string, jwt: string ,nk: nkruntime.Nakama ,logger: nkruntime.Logger ): Claims {
+  
   // Use your favourite JWT library to verify the signature and decode the JWT contents
+  var token = nk.jwtGenerate('HS256',secretKey,{'id':jwt});
+  var decode =nk.base64UrlDecode(token,true);
+
+  logger.debug(decode + " Decode @@@@@@@");
+ var decodejson:Claims = JSON.parse( decode);
+
   // Once verified and decoded, return a Claims object accordingly
   return decodejson;
 }
