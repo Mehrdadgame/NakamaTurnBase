@@ -18,7 +18,9 @@
     "outFile": "./modules/index.js",
     "typeRoots": [
       "./node_modules" 
-    ]
+    ],
+   
+
   }
   
   

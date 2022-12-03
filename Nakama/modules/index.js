@@ -66,16 +66,20 @@ function CreateLeaderborad(context, logger, nakama) {
     }
 }
 var BeforeAuthenticateCustom = function (ctx, logger, nk, data) {
-    var _a;
+    var _a, _b, _c;
     if (((_a = data.account) === null || _a === void 0 ? void 0 : _a.id) == null)
         return data;
-    logger.debug(data.account.id + " sfgfdgeryerhyerEEEEEEEEEEEEEEEEEEEE");
-    var token = nk.jwtGenerate('RS256', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ', { 'sub': data.account.id });
-    logger.debug(token + " FFFFFFFFFFFFFFFFFFFFFFFFFFF");
+    logger.debug(((_b = data.account) === null || _b === void 0 ? void 0 : _b.id) + " sfgfdgeryerhyerEEEEEEEEEEEEEEEEEEEE");
+    var token = nk.jwtGenerate('HS256', '2SoPDHoqJvSId__63qgzpKEPqgnEJCl_jayxdGt1mOo', { 'id': (_c = data.account) === null || _c === void 0 ? void 0 : _c.id });
+    var secretKey = ctx.env["oxhcFiAGXJo5SRBL39I4Sm3o89CydPrgPSAQTGyGnVs"];
+    logger.debug(secretKey);
+    // const claims = verifyAndParseJwt(secretKey,token,nk);
+    // // Update the incoming authenticate request with the user ID and username
+    // data.account.id = claims.id;
     return data;
 };
 var verifyAndParseJwt = function (secretKey, jwt, nk) {
-    var decode = nk.base64Decode(jwt);
+    var decode = nk.base64UrlDecode(jwt);
     var decodejson = JSON.parse(decode);
     // Use your favourite JWT library to verify the signature and decode the JWT contents
     // Once verified and decoded, return a Claims object accordingly

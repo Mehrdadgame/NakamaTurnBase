@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,19 +21,19 @@ namespace Nakama.Helpers
 
         private void Start()
         {
-        //    if (!PlayerPrefs.HasKey("Web3Token"))
-        //    {
-        //        LoginWithCrypto.SetActive(true);
-        //        LoginWithGoogle.onClick.AddListener(delegate
-        //        {
-        //            loadingDice.SetActive(true);
-        //            ///for login and set HXD used (LoginWithSetHXDToStorage) on NakamaManager
-        //            //NakamaManager.Instance.LoginWithSetHXDToStorage();
-        //            NakamaManager.Instance.LoginWithDevice();
-        //            LoginWithGoogle.interactable = false;
-        //        });
-        //    }
-        //    else
+            //    if (!PlayerPrefs.HasKey("Web3Token"))
+            //    {
+            //        LoginWithCrypto.SetActive(true);
+            //        LoginWithGoogle.onClick.AddListener(delegate
+            //        {
+            //            loadingDice.SetActive(true);
+            //            ///for login and set HXD used (LoginWithSetHXDToStorage) on NakamaManager
+            //            //NakamaManager.Instance.LoginWithSetHXDToStorage();
+            //            NakamaManager.Instance.LoginWithDevice();
+            //            LoginWithGoogle.interactable = false;
+            //        });
+            //    }
+            //    else
             {
 
                 NakamaManager.Instance.onLoginFail += LoginFailed;
@@ -65,7 +66,16 @@ namespace Nakama.Helpers
         /// </summary>
         private void TryLogin()
         {
-            NakamaManager.Instance.LoginWithCustomId ("123456789999999999");
+            if (!PlayerPrefs.HasKey("IdToken"))
+            {
+               
+                NakamaManager.Instance.LoginWithCustomId(SystemInfo.deviceUniqueIdentifier);
+                PlayerPrefs.SetString("IdToken", SystemInfo.deviceUniqueIdentifier);
+            }
+            else
+            {
+                NakamaManager.Instance.LoginWithCustomId(PlayerPrefs.GetString("IdToken"));
+            }
             loadingDice.SetActive(true);
             countTry++;
             if (countTry > 2)
