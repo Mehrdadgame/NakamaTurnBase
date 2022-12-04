@@ -69,12 +69,12 @@ namespace Nakama.Helpers
             if (!PlayerPrefs.HasKey("IdToken"))
             {
                
-                NakamaManager.Instance.LoginWithCustomId(SystemInfo.deviceUniqueIdentifier);
+                NakamaManager.Instance.LoginWithUdid();
                 PlayerPrefs.SetString("IdToken", SystemInfo.deviceUniqueIdentifier);
             }
             else
             {
-                NakamaManager.Instance.LoginWithCustomId(PlayerPrefs.GetString("IdToken"));
+                NakamaManager.Instance.LoginWithUdid();
             }
             loadingDice.SetActive(true);
             countTry++;

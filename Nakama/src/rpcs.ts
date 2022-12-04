@@ -55,7 +55,7 @@ if(data.account?.id==null )
 return data;
 const secretKey = ctx.env["JWT_SECRET_KEY"];
  var token = nk.jwtGenerate('HS256',secretKey,{'id':data.account.id});
- 
+
   logger.info(secretKey+ " IIIIIIIIIIII"); 
  //const claims = verifyAndParseJwt(secretKey, data.account.id,nk,logger);
 //  // Update the incoming authenticate request with the user ID and username
@@ -64,6 +64,18 @@ const secretKey = ctx.env["JWT_SECRET_KEY"];
 
 
 return data;
+}
+let initializeUser : nkruntime.AfterHookFunction<nkruntime.Session, nkruntime.AuthenticateDeviceRequest> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, out: nkruntime.Session, data: nkruntime.AuthenticateDeviceRequest) : nkruntime.Session {
+
+
+
+nk.walletUpdate(ctx.userId,{"HXD":100 ,"decimal":0});
+const secretKey = ctx.env["JWT_SECRET_KEY"];
+var token = nk.jwtGenerate('HS256',secretKey,{'id':ctx.userId});
+ let decode= nk.base64Decode(token);
+logger.info(decode + " After @@@@@@@@@@@@@@@@@@@@@@@@@");
+
+  return out;
 }
 
 

@@ -17,6 +17,7 @@ function InitModule(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkrunt
 {
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
     initializer.registerBeforeAuthenticateCustom(BeforeAuthenticateCustom);
+    initializer.registerAfterAuthenticateDevice(initializeUser);
     initializer.registerMatch(MatchModuleName, {
         matchInit,
         matchJoinAttempt,

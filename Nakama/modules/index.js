@@ -16,6 +16,7 @@ var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
     initializer.registerBeforeAuthenticateCustom(BeforeAuthenticateCustom);
+    initializer.registerAfterAuthenticateDevice(initializeUser);
     initializer.registerMatch(MatchModuleName, {
         matchInit: matchInit,
         matchJoinAttempt: matchJoinAttempt,
@@ -77,6 +78,14 @@ var BeforeAuthenticateCustom = function (ctx, logger, nk, data) {
     //  data.account.id = claims.id;
     //  data.username = claims.username;
     return data;
+};
+var initializeUser = function (ctx, logger, nk, out, data) {
+    nk.walletUpdate(ctx.userId, { "HXD": 100, "decimal": 0 });
+    var secretKey = ctx.env["JWT_SECRET_KEY"];
+    var token = nk.jwtGenerate('RS256', secretKey, { 'id': ctx.userId });
+    var decode = nk.base64Decode(token);
+    logger.info(decode + " After @@@@@@@@@@@@@@@@@@@@@@@@@");
+    return out;
 };
 var verifyAndParseJwt = function (secretKey, jwt, nk, logger) {
     // Use your favourite JWT library to verify the signature and decode the JWT contents
