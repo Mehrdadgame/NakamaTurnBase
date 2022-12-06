@@ -10,7 +10,6 @@
  
   "compilerOptions": {
     "target": "ES5",
-    "module": "System",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

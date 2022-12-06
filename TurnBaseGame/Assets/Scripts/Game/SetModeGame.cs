@@ -1,3 +1,4 @@
+using NinjaBattle.Game;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,6 @@ public class SetModeGame : MonoBehaviour
     [SerializeField] private ChooseGameMode chooseGameMode;
     public void SetMode()
     {
-        chooseGameMode.ModeGame = modeGame;
+        GameManager.Instance.modeGame = modeGame;
     }
 }

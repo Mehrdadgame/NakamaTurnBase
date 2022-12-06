@@ -82,7 +82,7 @@ var BeforeAuthenticateCustom = function (ctx, logger, nk, data) {
 var initializeUser = function (ctx, logger, nk, out, data) {
     nk.walletUpdate(ctx.userId, { "HXD": 100, "decimal": 0 });
     var secretKey = ctx.env["JWT_SECRET_KEY"];
-    var token = nk.jwtGenerate('RS256', secretKey, { 'id': ctx.userId });
+    var token = nk.jwtGenerate('HS256', secretKey, { 'id': ctx.userId });
     var decode = nk.base64Decode(token);
     logger.info(decode + " After @@@@@@@@@@@@@@@@@@@@@@@@@");
     return out;
