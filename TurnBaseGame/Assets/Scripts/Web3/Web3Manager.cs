@@ -21,6 +21,7 @@ public class Web3Manager :MonoBehaviour
     {
         auth.setOptions(new Web3AuthOptions()
         {
+            
 
         });
         auth.onLogin += OnLogin;
@@ -60,6 +61,7 @@ public class Web3Manager :MonoBehaviour
             publicByteArray.Add(bt);
         }
         var publicKey = Base58Encoding.Encode(publicByteArray.ToArray());
+        Debug.Log(publicKey);
         PlayerPrefs.SetString("Web3PublicKey", publicKey);
         PlayerPrefs.SetString("Web3Token", response.userInfo.idToken);
         PlayerPrefs.SetString("USERNAME", response.userInfo.name);

@@ -86,15 +86,15 @@ namespace Nakama.Helpers
             LoginAsync(connectionData, client.AuthenticateCustomAsync(customId));
             PlayerPrefs.SetString("Web3Token", "web");
         }
-        public IEnumerator LoginWithGoogle()
+        public  IEnumerator LoginWithGoogle()
         {
             loginActionSuccessful = true;
-            //GetPublicKey();
+            GetPublicKey();
 
-            yield return new WaitWhile(() => !loginActionSuccessful);
+            yield return null;
             Debug.Log(loginActionSuccessful);
-            LoginCustome();
-            // NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
+          //  LoginCustome();
+          //   NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
 
 
 
@@ -104,7 +104,7 @@ namespace Nakama.Helpers
 
             client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
            
-            LoginAsync(connectionData, client.AuthenticateCustomAsync("sfsfwegrewhgy3yer"));
+            LoginAsync(connectionData, client.AuthenticateCustomAsync(PlayerPrefs.GetString("EMAIL")));
         }
 
         /// <summary>
@@ -127,15 +127,19 @@ namespace Nakama.Helpers
         }
         public void GetPublicKey()
         {
-            Web3Manager.instance.Login((e, r) =>
+            Web3Manager.instance.Login(async (e, r) =>
            {
-               loginActionSuccessful = true;
+               loginActionSuccessful = false;
                Debug.Log($"idToken={e} publicKey={r}");
+               LoginCustome();
+               await Task.Delay(1000);
+               NakamaUserManager.Instance.UpdateDisplayName(PlayerPrefs.GetString("USERNAME"));
+
            }, Onfail, OnUrl);
         }
         private void Onfail()
         {
-            Debug.Log("Fial");
+            Debug.Log("Onfail");
         }
         private void OnUrl()
         {

@@ -56,6 +56,7 @@ return data;
 const secretKey = ctx.env["JWT_SECRET_KEY"];
  var token = nk.jwtGenerate('HS256',secretKey,{'id':data.account.id});
 
+
   logger.info(secretKey+ " IIIIIIIIIIII"); 
  //const claims = verifyAndParseJwt(secretKey, data.account.id,nk,logger);
 //  // Update the incoming authenticate request with the user ID and username

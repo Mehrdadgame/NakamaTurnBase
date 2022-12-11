@@ -31,6 +31,7 @@ namespace Nakama.Helpers
             if (AmountHXDPlayer<= HXDManager.instance.HXDAmount)
             {
                 button.interactable = false;
+               
                 MultiplayerManager.Instance.JoinMatchAsync(GameManager.Instance.modeGame);
             }
             else
