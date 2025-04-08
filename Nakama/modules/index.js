@@ -49,7 +49,7 @@ var joinOrCreateMatch = function (context, logger, nakama, payload) {
 function CreateLeaderborad(context, logger, nakama) {
     var id = IdLeaderboard;
     var authoritative = true;
-    var sort = "desc" /* DESCENDING */;
+    var sort = "descending" /* DESCENDING */;
     var operator = "best" /* BEST */;
     var reset = null;
     var metadata = {};

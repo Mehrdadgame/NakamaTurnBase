@@ -11,13 +11,7 @@
   "devDependencies": {
     "typescript": "^4.4.3"
   },
-
-  
-   
-  
   "dependencies": {
     "nakama-runtime": "github:heroiclabs/nakama-common"
   }
-  
-  
 }

@@ -16,8 +16,11 @@
     "forceConsistentCasingInFileNames": true,
     "outFile": "./modules/index.js",
     "typeRoots": [
-      "./node_modules"
-    ]
+      "./node_modules",
+      "./types"
+    ],
+    "types": ["nakama-runtime"],
+    "noImplicitAny": true,
+    "moduleResolution": "node"
   }
-  
 }
