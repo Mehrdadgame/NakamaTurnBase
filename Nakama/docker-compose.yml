@@ -1,4 +1,3 @@
-version: '3'
 services:
   cockroachdb:
     image: cockroachdb/cockroach:latest-v23.2
@@ -21,7 +20,7 @@ services:
       - "-ecx"
       - >
         /nakama/nakama migrate up --database.address root@cockroachdb:26257 &&
-        exec /nakama/nakama --name nakama1 --database.address root@cockroachdb:26257 --logger.level DEBUG --session.token_expiry_sec 7200
+        exec /nakama/nakama --name ninjabattle --database.address root@cockroachdb:26257 --logger.level DEBUG --session.token_expiry_sec 7200
     restart: "always"
     links:
       - "cockroachdb:db"
