@@ -1,10 +1,18 @@
-const JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
+const JoinOrCreateMatchRpc  = "JoinOrCreateMatchRpc";
+const PurchaseCardRpc       = "PurchaseCardRpc";
+const GetCardsRpc           = "GetCardsRpc";
 const LogicLoadedLoggerInfo = "Custom logic loaded.";
-const MatchModuleName = "match";
+const MatchModuleName       = "match";
 
-function InitModule(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, initializer: nkruntime.Initializer)
-{
+function InitModule(
+    ctx: nkruntime.Context,
+    logger: nkruntime.Logger,
+    nk: nkruntime.Nakama,
+    initializer: nkruntime.Initializer
+) {
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
+    initializer.registerRpc(PurchaseCardRpc,      purchaseCardRpc);
+    initializer.registerRpc(GetCardsRpc,          getCardsRpc);
 
     initializer.registerMatch(MatchModuleName, {
         matchInit,
@@ -18,4 +26,3 @@ function InitModule(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkrunt
 
     logger.info(LogicLoadedLoggerInfo);
 }
- 

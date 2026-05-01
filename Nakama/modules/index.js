@@ -1,9 +1,13 @@
 "use strict";
 var JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
+var PurchaseCardRpc = "PurchaseCardRpc";
+var GetCardsRpc = "GetCardsRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
+    initializer.registerRpc(PurchaseCardRpc, purchaseCardRpc);
+    initializer.registerRpc(GetCardsRpc, getCardsRpc);
     initializer.registerMatch(MatchModuleName, {
         matchInit: matchInit,
         matchJoinAttempt: matchJoinAttempt,
@@ -18,14 +22,71 @@ function InitModule(ctx, logger, nk, initializer) {
 var gameMode = "";
 var joinOrCreateMatch = function (context, logger, nakama, payload) {
     var label = { open: true, game_mode: payload };
-    // Try to find an existing open match for this game mode (with at least 1 player waiting)
     var matches = nakama.matchList(1, true, JSON.stringify(label), 1, MaxPlayers);
     if (matches.length > 0) {
         return matches[0].matchId;
     }
-    // No open match found — create a new one
     var persons = { mode: payload };
     return nakama.matchCreate(MatchModuleName, persons);
+};
+function findCardById(id) {
+    for (var i = 0; i < CARD_DEFINITIONS.length; i++) {
+        if (CARD_DEFINITIONS[i].id === id)
+            return CARD_DEFINITIONS[i];
+    }
+    return null;
+}
+var purchaseCardRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId)
+        throw new Error("User not authenticated");
+    var data = JSON.parse(payload);
+    var card = findCardById(data.cardId);
+    if (!card)
+        throw new Error("Invalid card id: " + data.cardId);
+    // Deduct coins — nakama.walletUpdate throws if balance goes negative
+    try {
+        nakama.walletUpdate(userId, { coins: -card.cost }, { source: "card_purchase", cardId: data.cardId }, true);
+    }
+    catch (e) {
+        throw new Error("Insufficient coins to purchase this card.");
+    }
+    // Increment card count in storage
+    var stored = nakama.storageRead([{
+            collection: CollectionCards,
+            key: KeyOwnedCards,
+            userId: userId,
+        }]);
+    var owned = { cards: {} };
+    if (stored.length > 0) {
+        owned = stored[0].value;
+    }
+    var key = String(data.cardId);
+    owned.cards[key] = (owned.cards[key] || 0) + 1;
+    nakama.storageWrite([{
+            collection: CollectionCards,
+            key: KeyOwnedCards,
+            userId: userId,
+            value: owned,
+            permissionRead: 1,
+            permissionWrite: 0,
+        }]);
+    return JSON.stringify({ success: true, cardId: data.cardId, newCount: owned.cards[key] });
+};
+var getCardsRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId)
+        throw new Error("User not authenticated");
+    var stored = nakama.storageRead([{
+            collection: CollectionCards,
+            key: KeyOwnedCards,
+            userId: userId,
+        }]);
+    var owned = { cards: {} };
+    if (stored.length > 0) {
+        owned = stored[0].value;
+    }
+    return JSON.stringify(owned);
 };
 function CreateLeaderboard(context, logger, nakama) {
     try {
@@ -64,6 +125,9 @@ var matchInit = function (context, logger, nakama, params) {
         botDifficulty: 0,
         botNeedsToMove: false,
         botThinkTick: 0,
+        // Card/shield state
+        shields: [0, 0],
+        counterActive: [false, false],
     };
     return {
         state: gameState,
@@ -101,7 +165,6 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
     var gameState = state;
     if (gameState.scene !== 3 /* Lobby */)
         return { state: gameState };
-    // Collect existing presences to notify new joiners about
     var existingPresences = [];
     gameState.players.forEach(function (player) {
         if (player && !player.isBot)
@@ -118,16 +181,13 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
         var slot = getNextPlayerNumber(gameState.players);
         gameState.players[slot] = player;
         gameState.playersWins[slot] = 0;
-        // Notify existing players that someone joined
         dispatcher.broadcastMessage(1 /* PlayerJoined */, JSON.stringify(player), existingPresences);
         existingPresences.push(presence);
     }
-    // Send full player list and turn info to all new joiners
     dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players), presences);
     if (gameState.players[0]) {
         dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
     }
-    // Reset countdown so the 10-second window starts fresh on each join
     gameState.countdown = DurationLobby * TickRate;
     return { state: gameState };
 };
@@ -183,7 +243,6 @@ function processMatchLoop(gameState, nakama, dispatcher, logger) {
 }
 function matchLoopLobby(gameState, nakama, dispatcher, logger) {
     var playerCount = getPlayersCount(gameState.players);
-    // Nothing to do until at least one real player is in the match
     if (playerCount === 0)
         return;
     if (gameState.countdown <= 0)
@@ -191,13 +250,10 @@ function matchLoopLobby(gameState, nakama, dispatcher, logger) {
     gameState.countdown--;
     if (gameState.countdown > 0)
         return;
-    // Countdown reached zero
     if (playerCount >= 2) {
-        // Two real players — start normally
         startBattle(gameState, dispatcher);
     }
     else {
-        // Only one player — add a bot and start
         addBotAndStartBattle(gameState, dispatcher, logger);
     }
 }
@@ -207,13 +263,10 @@ function startBattle(gameState, dispatcher) {
     dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
 }
 function addBotAndStartBattle(gameState, dispatcher, logger) {
-    // Pick a random human-looking name
     var nameIndex = Math.floor(Math.random() * BOT_NAMES.length);
     var botName = BOT_NAMES[nameIndex];
-    // Pick random difficulty
     var diffIndex = Math.floor(Math.random() * BOT_DIFFICULTIES.length);
     var difficulty = BOT_DIFFICULTIES[diffIndex];
-    // Build a fake presence (bot never actually connects via socket)
     var botUserId = "bot_" + generateId();
     var botSessionId = "bot_" + generateId();
     var botPresence = {
@@ -234,18 +287,14 @@ function addBotAndStartBattle(gameState, dispatcher, logger) {
     gameState.hasBot = true;
     gameState.botDifficulty = difficulty;
     logger.info("Bot added: name=" + botName + " difficulty=" + difficulty);
-    // Broadcast updated player list so the real player sees the bot as opponent
     dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players));
-    // Real player (index 0) goes first
     dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
     startBattle(gameState, dispatcher);
 }
-/** Simple random ID for bot session/userId */
 function generateId() {
     return Math.random().toString(36).substring(2, 10);
 }
 function matchLoopBattle(gameState, nakama, dispatcher, logger) {
-    // Handle ongoing battle countdown (used for round/ending transitions)
     if (gameState.countdown > 0) {
         gameState.countdown--;
         if (gameState.countdown === 0) {
@@ -257,13 +306,12 @@ function matchLoopBattle(gameState, nakama, dispatcher, logger) {
         }
         return;
     }
-    // Bot thinking timer
     if (gameState.hasBot && gameState.botNeedsToMove) {
         if (gameState.botThinkTick > 0) {
             gameState.botThinkTick--;
         }
         else {
-            executeBotTurn(gameState, dispatcher, logger);
+            executeBotTurn(gameState, nakama, dispatcher, logger);
         }
     }
 }
@@ -275,7 +323,6 @@ function matchLoopRoundResults(gameState, nakama, dispatcher) {
         return;
     var winner = getWinner(gameState.playersWins, gameState.players);
     if (winner !== null) {
-        // Trophy only goes to real players
         if (!winner.isBot) {
             var storageRead = [{
                     collection: CollectionUser,
@@ -312,42 +359,32 @@ function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
     gameState.BeforeEndGame = false;
     var isPlayer0 = message.sender.userId === gameState.players[0].presence.userId;
     if (isPlayer0) {
-        processTurn(dataPlayer, gameState.array3DPlayerFirst, gameState.array3DPlayerSecend, gameState, 0, true, logger);
+        processTurn(dataPlayer, gameState.array3DPlayerFirst, gameState.array3DPlayerSecend, gameState, 0, true, nakama, logger);
     }
     else {
-        processTurn(dataPlayer, gameState.array3DPlayerSecend, gameState.array3DPlayerFirst, gameState, 1, false, logger);
+        processTurn(dataPlayer, gameState.array3DPlayerSecend, gameState.array3DPlayerFirst, gameState, 1, false, nakama, logger);
     }
     var wasEndGame = dataPlayer.EndGame;
     var dataSend = JSON.stringify(dataPlayer);
     if (wasEndGame && gameState.hasBot) {
-        // In bot game, when EndGame occurs on player0's turn the sender would normally not
-        // receive the result — send to everyone so player0 sees the endgame screen.
         dispatcher.broadcastMessage(message.opCode, dataSend);
     }
     else {
-        // Normal case: send result to everyone EXCEPT the sender
         dispatcher.broadcastMessage(message.opCode, dataSend, null, message.sender);
     }
     dataPlayer.EndGame = false;
-    // If playing against bot and the real player just moved without ending the game
-    // → schedule bot response
     if (gameState.hasBot && isPlayer0 && !wasEndGame) {
         gameState.botNeedsToMove = true;
         gameState.botThinkTick = BotThinkMinTicks +
             Math.floor(Math.random() * (BotThinkMaxTicks - BotThinkMinTicks));
     }
 }
-/**
- * Shared turn logic for both real players and bot.
- * moverGrid = grid of the player making the move
- * targetGrid = grid of the opponent
- */
-function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, isMaster, logger) {
+function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, isMaster, nakama, logger) {
     var line = dataPlayer.NumberLine, row = dataPlayer.NumberRow, tile = dataPlayer.NumberTile;
     dataPlayer.master = isMaster;
     dataPlayer.MinesScore = false;
     dataPlayer.ValueMines = 0;
-    // Place tile
+    dataPlayer.shieldBlocked = false;
     moverGrid[line][row] = tile;
     if (moverIndex === 0) {
         gameState.CountTurnPlayer1++;
@@ -355,48 +392,62 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
     else {
         gameState.CountTurnPlayer2++;
     }
-    // Calculate mover's total score
     dataPlayer.Score = TotalScore(moverGrid, logger, gameState.VerticalMode);
     gameState.players[moverIndex].ScorePlayer = dataPlayer.Score;
-    // Check for mine triggers on the target's grid
+    var opponentIndex = 1 - moverIndex;
+    // Check shields before applying mine damage
+    var shieldActive = gameState.shields[opponentIndex] > 0;
     var valuMines = 0;
     var mineCount = 0;
     if (gameState.VerticalMode) {
         var verticalHits = CalculatorArray2DWithVertical(targetGrid, line, row, tile, logger);
-        for (var _i = 0, verticalHits_1 = verticalHits; _i < verticalHits_1.length; _i++) {
-            var hitRow = verticalHits_1[_i];
-            targetGrid[hitRow][row] = -1;
-            mineCount++;
+        if (verticalHits.length > 0) {
+            if (shieldActive) {
+                gameState.shields[opponentIndex]--;
+                dataPlayer.shieldBlocked = true;
+            }
+            else {
+                for (var _i = 0, verticalHits_1 = verticalHits; _i < verticalHits_1.length; _i++) {
+                    var hitRow = verticalHits_1[_i];
+                    targetGrid[hitRow][row] = -1;
+                    mineCount++;
+                }
+                if (mineCount > 0) {
+                    valuMines = tile + 1;
+                    dataPlayer.ValueMines = (valuMines * mineCount) * mineCount;
+                    gameState.players[opponentIndex].ScorePlayer = TotalScore(targetGrid, logger, gameState.VerticalMode);
+                    dataPlayer.ScoreOtherPlayer = gameState.players[opponentIndex].ScorePlayer;
+                    dataPlayer.MinesScore = true;
+                }
+            }
+            mineCount = 0;
         }
-        if (mineCount > 0) {
-            valuMines = tile + 1;
-            dataPlayer.ValueMines = (valuMines * mineCount) * mineCount;
-            var opponentIndex = 1 - moverIndex;
-            gameState.players[opponentIndex].ScorePlayer = TotalScore(targetGrid, logger, gameState.VerticalMode);
-            dataPlayer.ScoreOtherPlayer = gameState.players[opponentIndex].ScorePlayer;
-            dataPlayer.MinesScore = true;
-        }
-        mineCount = 0;
     }
-    if (!dataPlayer.MinesScore) {
+    if (!dataPlayer.MinesScore && !dataPlayer.shieldBlocked) {
         var horizontalHits = CalculatorArray2D(targetGrid, line, row, tile, logger);
-        for (var _a = 0, horizontalHits_1 = horizontalHits; _a < horizontalHits_1.length; _a++) {
-            var hitCol = horizontalHits_1[_a];
-            targetGrid[line][hitCol] = -1;
-            mineCount++;
-        }
-        if (mineCount > 0) {
-            valuMines = tile + 1;
-            dataPlayer.ValueMines = (valuMines * mineCount) * mineCount;
-            var opponentIndex = 1 - moverIndex;
-            gameState.players[opponentIndex].ScorePlayer = TotalScore(targetGrid, logger, gameState.VerticalMode);
-            dataPlayer.ScoreOtherPlayer = gameState.players[opponentIndex].ScorePlayer;
-            dataPlayer.MinesScore = true;
+        if (horizontalHits.length > 0) {
+            if (shieldActive) {
+                gameState.shields[opponentIndex]--;
+                dataPlayer.shieldBlocked = true;
+            }
+            else {
+                for (var _a = 0, horizontalHits_1 = horizontalHits; _a < horizontalHits_1.length; _a++) {
+                    var hitCol = horizontalHits_1[_a];
+                    targetGrid[line][hitCol] = -1;
+                    mineCount++;
+                }
+                if (mineCount > 0) {
+                    valuMines = tile + 1;
+                    dataPlayer.ValueMines = (valuMines * mineCount) * mineCount;
+                    gameState.players[opponentIndex].ScorePlayer = TotalScore(targetGrid, logger, gameState.VerticalMode);
+                    dataPlayer.ScoreOtherPlayer = gameState.players[opponentIndex].ScorePlayer;
+                    dataPlayer.MinesScore = true;
+                }
+            }
         }
     }
     dataPlayer.Array2DTilesPlayer = moverGrid;
     dataPlayer.Array2DTilesOtherPlayer = targetGrid;
-    // Check end-game condition
     var moverGridFull = ActionWinPlayer(moverGrid);
     var targetGridFull = ActionWinPlayer(targetGrid);
     var turnsEqual = parseInt(gameState.CountTurnPlayer1) === parseInt(gameState.CountTurnPlayer2);
@@ -414,14 +465,100 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
         }
         dataPlayer.EndGame = true;
         gameState.BeforeEndGame = true;
+        // Award coins to real players
+        awardCoins(gameState, nakama, dataPlayer.PlayerWin, logger);
     }
 }
+// ─── Currency Award ───────────────────────────────────────────────────────────
+function awardCoins(gameState, nakama, winnerId, logger) {
+    var updates = [];
+    for (var i = 0; i < gameState.players.length; i++) {
+        var player = gameState.players[i];
+        if (!player || player.isBot)
+            continue;
+        var coins = COINS_LOSE;
+        if (winnerId === "") {
+            coins = COINS_DRAW;
+        }
+        else if (player.presence.userId === winnerId) {
+            coins = COINS_WIN;
+        }
+        updates.push({
+            userId: player.presence.userId,
+            changeset: { coins: coins },
+            metadata: { source: "match_result" },
+        });
+    }
+    if (updates.length > 0) {
+        try {
+            nakama.walletsUpdate(updates, false);
+        }
+        catch (e) {
+            logger.warn("walletsUpdate failed: " + e);
+        }
+    }
+}
+// ─── Card Handler ─────────────────────────────────────────────────────────────
+function UseCard(message, gameState, dispatcher, nakama, logger) {
+    var _a;
+    var data = JSON.parse(nakama.binaryToString(message.data));
+    var senderIndex = message.sender.userId === ((_a = gameState.players[0]) === null || _a === void 0 ? void 0 : _a.presence.userId) ? 0 : 1;
+    var opponentIndex = 1 - senderIndex;
+    // Counter Pulse intercepts the card
+    if (gameState.counterActive[opponentIndex]) {
+        gameState.counterActive[opponentIndex] = false;
+        data.countered = true;
+        dispatcher.broadcastMessage(11 /* UseCard */, JSON.stringify(data), null, message.sender);
+        return;
+    }
+    // Apply server-side card effects
+    switch (data.cardId) {
+        case 2: // GuardianShield
+            gameState.shields[senderIndex]++;
+            break;
+        case 6: { // Breaker — clear a row in opponent's grid
+            var targetGrid = opponentIndex === 0 ? gameState.array3DPlayerFirst : gameState.array3DPlayerSecend;
+            var line = data.targetLine !== undefined ? data.targetLine : -1;
+            if (line >= 0 && line < targetGrid.length) {
+                for (var c = 0; c < targetGrid[line].length; c++) {
+                    targetGrid[line][c] = -1;
+                }
+            }
+            break;
+        }
+        case 11: { // DiceThief — remove opponent's highest-value filled cell
+            var targetGrid = opponentIndex === 0 ? gameState.array3DPlayerFirst : gameState.array3DPlayerSecend;
+            removeBestTile(targetGrid);
+            break;
+        }
+        case 12: // CounterPulse — arm a counter for the sender
+            gameState.counterActive[senderIndex] = true;
+            break;
+    }
+    // Broadcast to opponent so their client can react
+    var realPresences = gameState.players
+        .filter(function (p) { return p && !p.isBot; })
+        .map(function (p) { return p.presence; });
+    dispatcher.broadcastMessage(11 /* UseCard */, JSON.stringify(data), realPresences, message.sender);
+}
+function removeBestTile(grid) {
+    var bestVal = -1;
+    var bestLine = -1;
+    var bestCol = -1;
+    for (var i = 0; i < grid.length; i++) {
+        for (var j = 0; j < grid[i].length; j++) {
+            if (grid[i][j] > bestVal) {
+                bestVal = grid[i][j];
+                bestLine = i;
+                bestCol = j;
+            }
+        }
+    }
+    if (bestLine >= 0)
+        grid[bestLine][bestCol] = -1;
+}
 // ─── Bot AI ───────────────────────────────────────────────────────────────────
-/**
- * Called from matchLoopBattle when botThinkTick reaches 0.
- * Generates the bot's move, processes it, and sends the result to the real player.
- */
-function executeBotTurn(gameState, dispatcher, logger) {
+function executeBotTurn(gameState, nakama, dispatcher, logger) {
     gameState.botNeedsToMove = false;
     var realPlayer = gameState.players[0];
     var botPlayer = gameState.players[1];
@@ -450,16 +587,9 @@ function executeBotTurn(gameState, dispatcher, logger) {
         Array2DTilesPlayer: [],
         Array2DTilesOtherPlayer: [],
     };
-    processTurn(dataPlayer, gameState.array3DPlayerSecend, gameState.array3DPlayerFirst, gameState, 1, false, logger);
-    // Send bot's turn result to the real player only
+    processTurn(dataPlayer, gameState.array3DPlayerSecend, gameState.array3DPlayerFirst, gameState, 1, false, nakama, logger);
     dispatcher.broadcastMessage(7 /* ChosseTurn */, JSON.stringify(dataPlayer), [realPlayer.presence], null);
 }
-/**
- * Generate a move for the bot based on difficulty:
- *   0 (Easy)   → fully random
- *   1 (Normal) → 50% random, 50% strategic
- *   2 (Hard)   → always picks the best scored move
- */
 function generateBotMove(gameState, logger) {
     var botGrid = gameState.array3DPlayerSecend;
     var playerGrid = gameState.array3DPlayerFirst;
@@ -467,7 +597,6 @@ function generateBotMove(gameState, logger) {
     var numCols = botGrid[0].length;
     var maxTile = numCols - 1;
     var difficulty = gameState.botDifficulty;
-    // Collect all empty cells in the bot's grid
     var emptyCells = [];
     for (var i = 0; i < numRows; i++) {
         for (var j = 0; j < numCols; j++) {
@@ -478,19 +607,16 @@ function generateBotMove(gameState, logger) {
     }
     if (emptyCells.length === 0)
         return null;
-    // Easy: fully random
     if (difficulty === 0) {
         var cell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         var tile = Math.floor(Math.random() * (maxTile + 1));
         return { line: cell.line, col: cell.col, tile: tile };
     }
-    // Normal: 50% random, 50% strategic
     if (difficulty === 1 && Math.random() < 0.5) {
         var cell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         var tile = Math.floor(Math.random() * (maxTile + 1));
         return { line: cell.line, col: cell.col, tile: tile };
     }
-    // Hard (or Normal strategic half): pick move with highest combined score
     var bestScore = -1;
     var bestMove = {
         line: emptyCells[0].line,
@@ -500,23 +626,18 @@ function generateBotMove(gameState, logger) {
     for (var _i = 0, emptyCells_1 = emptyCells; _i < emptyCells_1.length; _i++) {
         var cell = emptyCells_1[_i];
         var _loop_1 = function (tile) {
-            // Simulate mover's score after placing this tile
             var tempBot = botGrid.map(function (r) { return r.slice(); });
             tempBot[cell.line][cell.col] = tile;
             var ownScore = simulateTotalScore(tempBot, gameState.VerticalMode);
-            // Count how many opponent tiles this tile would destroy
             var mineHits = 0;
-            // Horizontal mines
             var playerRow = playerGrid[cell.line];
             mineHits += playerRow.filter(function (v) { return v === tile; }).length;
-            // Vertical mines (only in VerticalAndHorizontal mode)
             if (gameState.VerticalMode) {
                 for (var r = 0; r < numRows; r++) {
                     if (playerGrid[r][cell.col] === tile)
                         mineHits++;
                 }
             }
-            // Combined score: own improvement + weighted mine damage
             var moveScore = ownScore + mineHits * 6;
             if (moveScore > bestScore) {
                 bestScore = moveScore;
@@ -529,9 +650,6 @@ function generateBotMove(gameState, logger) {
     }
     return bestMove;
 }
-/**
- * Score simulation without a logger (used only for bot AI evaluation).
- */
 function simulateTotalScore(grid, verticalMode) {
     var score = 0;
     for (var i = 0; i < grid.length; i++) {
@@ -579,7 +697,6 @@ function StickersManager(message, gameState, dispatcher, nakama, logger) {
 }
 function Rematch(message, gameState, dispatcher, nakama, logger) {
     var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
-    // In a bot game the bot never sends a rematch request, so auto-confirm immediately
     if (gameState.hasBot) {
         if (dataPlayer.Answer === "no") {
             gameState.endMatch = true;
@@ -594,7 +711,6 @@ function Rematch(message, gameState, dispatcher, nakama, logger) {
         }
         return;
     }
-    // Normal 2-player rematch flow
     gameState.namesForrematch.push(dataPlayer.userId);
     if (getPlayersCount(gameState.players) === 1) {
         dataPlayer.Answer = "left";
@@ -627,6 +743,8 @@ function resetGameForRematch(gameState, nakama) {
     gameState.CountTurnPlayer1 = 0;
     gameState.CountTurnPlayer2 = 0;
     gameState.namesForrematch = [];
+    gameState.shields = [0, 0];
+    gameState.counterActive = [false, false];
     for (var i = 0; i < gameState.array3DPlayerFirst.length; i++) {
         for (var j = 0; j < gameState.array3DPlayerFirst[i].length; j++) {
             gameState.array3DPlayerFirst[i][j] = -1;
@@ -834,19 +952,41 @@ var PlayerNotFound = -1;
 var CollectionUser = "User";
 var KeyTrophies = "Trophies";
 var IdLeaderboard = "b7c182b36521Win";
+// Currency rewards
+var COINS_WIN = 150;
+var COINS_DRAW = 50;
+var COINS_LOSE = 20;
+// Card storage
+var CollectionCards = "Cards";
+var KeyOwnedCards = "owned_cards";
 // Bot configuration
-var BotThinkMinTicks = TickRate * 1; // min 1 second thinking delay
-var BotThinkMaxTicks = TickRate * 3; // max 3 seconds thinking delay
+var BotThinkMinTicks = TickRate * 1;
+var BotThinkMaxTicks = TickRate * 3;
 var BOT_NAMES = [
     "Ali_K99", "Daniel_P", "Sara_GG", "xX_Cobra_Xx", "Reza_77",
     "ProGamer88", "IronWolf7", "NightStar", "Champion_K", "Shadow_X9",
     "MasterPlay", "Kamran_Ace", "DarkFire", "QuickShot9", "EliteKing",
     "Arash_Pro", "Ninja_Storm", "CoolBreeze", "FlashPlayer", "TitanFist"
 ];
-// 0=Easy, 1=Normal, 2=Hard
 var BOT_DIFFICULTIES = [0, 1, 2];
+var CARD_DEFINITIONS = [
+    { id: 0, name: "PowerRow", cost: 300 },
+    { id: 1, name: "PowerColumn", cost: 300 },
+    { id: 2, name: "GuardianShield", cost: 400 },
+    { id: 3, name: "SecondChance", cost: 250 },
+    { id: 4, name: "DiceLock", cost: 350 },
+    { id: 5, name: "IceLock", cost: 450 },
+    { id: 6, name: "Breaker", cost: 650 },
+    { id: 7, name: "MirrorDice", cost: 500 },
+    { id: 8, name: "ChaosSwap", cost: 500 },
+    { id: 9, name: "LuckyRow", cost: 450 },
+    { id: 10, name: "LuckySix", cost: 700 },
+    { id: 11, name: "DiceThief", cost: 750 },
+    { id: 12, name: "CounterPulse", cost: 500 },
+];
 var MessagesLogic = {
     7: ChooseTurnPlayer,
     8: Rematch,
     10: StickersManager,
+    11: UseCard,
 };

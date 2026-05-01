@@ -383,7 +383,9 @@ public class UiManager : MonoBehaviour
             _ = Task.Delay(200);
             GameManager.Instance.diceRoller.GetComponent<Image>().sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
             GameManager.Instance.diceRoller.currrentDie = -1;
-            var tile = transformOpp.Find(obj.NameTile).GetComponentInChildren<TileDataOpp>();
+            var tile = tileDataOpps.Find(t => t.line == obj.NumberLine && t.row == obj.NumberRow);
+            if (tile == null) tile = transformOpp.Find(obj.NameTile)?.GetComponentInChildren<TileDataOpp>();
+            if (tile == null) { Debug.LogWarning($"Tile not found: line={obj.NumberLine} row={obj.NumberRow} name={obj.NameTile}"); return; }
             tile.IsLock = true;
             tile.SpriteDice.transform.parent.gameObject.SetActive(true);
             tile.SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);

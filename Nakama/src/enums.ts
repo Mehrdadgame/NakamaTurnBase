@@ -17,7 +17,9 @@ const enum OperationCode
     PlayerWon = 3,
     Draw = 4,
     ChangeScene = 5,
-    TurnMe=6,
-    ChosseTurn=7,
-    Sticker =10
+    TurnMe = 6,
+    ChosseTurn = 7,
+    Rematch = 8,
+    Sticker = 10,
+    UseCard = 11,
 }

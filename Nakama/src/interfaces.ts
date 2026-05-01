@@ -9,6 +9,11 @@ enum GameMode {
     VerticalAndHorizontal,
 }
 
+interface FrozenCell {
+    line: number;
+    col: number;
+}
+
 interface GameState {
     players: Player[];
     playersWins: number[];
@@ -30,6 +35,9 @@ interface GameState {
     botDifficulty: number; // 0=easy, 1=normal, 2=hard
     botNeedsToMove: boolean;
     botThinkTick: number;
+    // Card / shield state
+    shields: number[];          // shields[i] = remaining shield count for player i
+    counterActive: boolean[];   // counterActive[i] = player i's counter pulse is armed
 }
 
 interface Player {
@@ -65,6 +73,7 @@ interface DataPlayer {
     master: boolean;
     Array2DTilesPlayer: number[][];
     Array2DTilesOtherPlayer: number[][];
+    shieldBlocked?: boolean;
 }
 
 interface IReMatch {
@@ -83,4 +92,21 @@ interface DrawData {
 
 interface TrophiesData {
     amount: number;
+}
+
+interface UseCardMessage {
+    cardId: number;
+    senderUserId: string;
+    targetLine?: number;
+    targetCol?: number;
+    targetValue?: number;
+    countered?: boolean;
+}
+
+interface OwnedCardsData {
+    cards: { [cardId: string]: number };
+}
+
+interface WalletData {
+    coins: number;
 }

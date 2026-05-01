@@ -11,10 +11,11 @@ namespace Nakama.Helpers
             Draw = 4,
             ChangeScene = 5,
             TurnMe = 6,
-            ChosseTurn=7,
+            ChosseTurn = 7,
             Rematch = 8,
             PlayerLeft = 9,
-            SendSticker =10,
+            SendSticker = 10,
+            UseCard = 11,
         }
     }
 }
