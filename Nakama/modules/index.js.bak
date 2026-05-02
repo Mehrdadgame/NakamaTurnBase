@@ -1,0 +1,912 @@
+"use strict";
+var JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
+var CheckPendingRewardsRpc = "CheckPendingRewardsRpc";
+var GetLeaderboardRpc = "GetLeaderboardRpc";
+var LogicLoadedLoggerInfo = "Custom logic loaded.";
+var MatchModuleName = "match";
+function InitModule(ctx, logger, nk, initializer) {
+    // Create leaderboards (idempotent — skips if already exist)
+    CreateLeaderboards(ctx, logger, nk);
+    // Register RPCs
+    initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
+    initializer.registerRpc(CheckPendingRewardsRpc, checkPendingRewardsRpc);
+    initializer.registerRpc(GetLeaderboardRpc, getLeaderboardRpc);
+    // Leaderboard reset → distribute rewards
+    initializer.registerLeaderboardReset(onLeaderboardReset);
+    // Match handler
+    initializer.registerMatch(MatchModuleName, {
+        matchInit: matchInit,
+        matchJoinAttempt: matchJoinAttempt,
+        matchJoin: matchJoin,
+        matchLeave: matchLeave,
+        matchLoop: matchLoop,
+        matchTerminate: matchTerminate,
+        matchSignal: matchSignal,
+    });
+    logger.info(LogicLoadedLoggerInfo);
+}
+var joinOrCreateMatch = function (context, logger, nakama, payload) {
+    var label = { open: true, game_mode: payload };
+    var matches = nakama.matchList(1, true, JSON.stringify(label), 1, MaxPlayers);
+    if (matches.length > 0)
+        return matches[0].matchId;
+    return nakama.matchCreate(MatchModuleName, { mode: payload });
+};
+// Called on login — returns unclaimed weekly/monthly rewards and marks them claimed.
+// Coins were already added to the wallet during the leaderboard reset hook.
+var checkPendingRewardsRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId)
+        throw new Error("Not authenticated");
+    var stored = nakama.storageRead([
+        { collection: CollectionSeason, key: KeyPendingRewardWeekly, userId: userId },
+        { collection: CollectionSeason, key: KeyPendingRewardMonthly, userId: userId },
+    ]);
+    var weekly = null;
+    var monthly = null;
+    for (var _i = 0, stored_1 = stored; _i < stored_1.length; _i++) {
+        var obj = stored_1[_i];
+        var val = obj.value;
+        if (!val.claimed) {
+            if (obj.key === KeyPendingRewardWeekly)
+                weekly = val;
+            if (obj.key === KeyPendingRewardMonthly)
+                monthly = val;
+        }
+    }
+    // Mark as claimed so popup only shows once
+    var toWrite = [];
+    if (weekly) {
+        weekly.claimed = true;
+        toWrite.push({ collection: CollectionSeason, key: KeyPendingRewardWeekly, userId: userId, value: weekly, permissionRead: 1, permissionWrite: 0 });
+    }
+    if (monthly) {
+        monthly.claimed = true;
+        toWrite.push({ collection: CollectionSeason, key: KeyPendingRewardMonthly, userId: userId, value: monthly, permissionRead: 1, permissionWrite: 0 });
+    }
+    if (toWrite.length > 0)
+        nakama.storageWrite(toWrite);
+    return JSON.stringify({ weekly: weekly, monthly: monthly });
+};
+// Returns top-N records for weekly or monthly leaderboard + caller's own record.
+var getLeaderboardRpc = function (context, logger, nakama, payload) {
+    var data = JSON.parse(payload || "{}");
+    var lbId = data.type === "monthly" ? LeaderboardMonthly : LeaderboardWeekly;
+    var limit = data.limit || 100;
+    var userId = context.userId;
+    var records = [];
+    var ownRecord = null;
+    try {
+        var result = nakama.leaderboardRecordsList(lbId, [], limit, "", 0);
+        records = result.records || [];
+        // Own rank (ownerRecords query)
+        if (userId) {
+            var own = nakama.leaderboardRecordsList(lbId, [userId], 1, "", 0);
+            ownRecord = (own.ownerRecords && own.ownerRecords.length > 0) ? own.ownerRecords[0] : null;
+        }
+    }
+    catch (e) {
+        logger.warn("getLeaderboardRpc failed: " + e);
+    }
+    return JSON.stringify({ records: records, ownRecord: ownRecord });
+};
+function CreateLeaderboards(context, logger, nakama) {
+    var configs = [
+        { id: LeaderboardWeekly, reset: "0 0 * * 1" },
+        { id: LeaderboardMonthly, reset: "0 0 1 * *" },
+    ];
+    for (var _i = 0, configs_1 = configs; _i < configs_1.length; _i++) {
+        var cfg = configs_1[_i];
+        try {
+            // Nakama 3.x JS runtime expects "desc" and "incr" (not enum string values)
+            nakama.leaderboardCreate(cfg.id, true, "desc", "incr", cfg.reset, {});
+            logger.info("Leaderboard created: " + cfg.id);
+        }
+        catch (e) {
+            logger.info("Leaderboard " + cfg.id + ": " + e);
+        }
+    }
+}
+// ─── Match Lifecycle ──────────────────────────────────────────────────────────
+var matchInit = function (context, logger, nakama, params) {
+    var value = "";
+    for (var key in params)
+        value = params[key];
+    var label = { open: true, game_mode: value };
+    var _a = buildGrids(value), arrayFirst = _a[0], arraySecond = _a[1], vertical = _a[2];
+    var gameState = {
+        players: [], playersWins: [], roundDeclaredWins: [[]], roundDeclaredDraw: [],
+        scene: 3 /* Lobby */,
+        countdown: DurationLobby * TickRate,
+        endMatch: false,
+        CountTurnPlayer1: 0, CountTurnPlayer2: 0,
+        namesForrematch: [],
+        BeforeEndGame: false,
+        VerticalMode: vertical,
+        array3DPlayerFirst: arrayFirst, array3DPlayerSecend: arraySecond,
+        ModeText: value,
+        hasBot: false, botDifficulty: 0, botNeedsToMove: false, botThinkTick: 0,
+    };
+    return { state: gameState, tickRate: TickRate, label: JSON.stringify(label) };
+};
+function buildGrids(mode) {
+    var rowFirst = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+    var rowSecond = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+    var vertical = false;
+    if (mode === "VerticalAndHorizontal") {
+        vertical = true;
+    }
+    else if (mode === "FourByThree") {
+        rowFirst = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+        rowSecond = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+    }
+    else if (mode === "ThreeByThree") {
+        rowFirst = [[-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1]];
+        rowSecond = [[-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1]];
+    }
+    return [rowFirst, rowSecond, vertical];
+}
+// ─── Join ─────────────────────────────────────────────────────────────────────
+var matchJoinAttempt = function (context, logger, nakama, dispatcher, tick, state, presence, metadata) {
+    var gameState = state;
+    if (gameState.scene !== 3 /* Lobby */)
+        return { state: gameState, accept: false };
+    // Check entry fee balance before accepting
+    var league = LEAGUES[gameState.ModeText];
+    if (league) {
+        try {
+            var account = nakama.accountGetId(presence.userId);
+            var wallet = account.wallet || {};
+            if ((wallet["coins"] || 0) < league.entryFee) {
+                logger.info("Join rejected \u2014 insufficient coins for " + gameState.ModeText + ": userId=" + presence.userId);
+                return { state: gameState, accept: false };
+            }
+        }
+        catch (e) {
+            logger.warn("matchJoinAttempt wallet check failed: " + e);
+            return { state: gameState, accept: false };
+        }
+    }
+    return { state: gameState, accept: true };
+};
+var matchJoin = function (context, logger, nakama, dispatcher, tick, state, presences) {
+    var gameState = state;
+    if (gameState.scene !== 3 /* Lobby */)
+        return { state: gameState };
+    var existingPresences = [];
+    gameState.players.forEach(function (p) { if (p && !p.isBot)
+        existingPresences.push(p.presence); });
+    for (var _i = 0, presences_1 = presences; _i < presences_1.length; _i++) {
+        var presence = presences_1[_i];
+        var account = nakama.accountGetId(presence.userId);
+        // Deduct entry fee
+        var league = LEAGUES[gameState.ModeText];
+        if (league) {
+            try {
+                nakama.walletUpdate(presence.userId, { coins: -league.entryFee }, { source: "entry_fee", league: gameState.ModeText }, true);
+            }
+            catch (e) {
+                logger.warn("Entry fee deduction failed for " + presence.userId + ": " + e);
+            }
+        }
+        var player = {
+            presence: presence,
+            displayName: account.user.displayName, ScorePlayer: 0,
+        };
+        var slot = getNextPlayerNumber(gameState.players);
+        gameState.players[slot] = player;
+        gameState.playersWins[slot] = 0;
+        dispatcher.broadcastMessage(1 /* PlayerJoined */, JSON.stringify(player), existingPresences);
+        existingPresences.push(presence);
+    }
+    dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players), presences);
+    if (gameState.players[0]) {
+        dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
+    }
+    gameState.countdown = DurationLobby * TickRate;
+    return { state: gameState };
+};
+// ─── Match Loop ───────────────────────────────────────────────────────────────
+var matchLoop = function (context, logger, nakama, dispatcher, tick, state, messages) {
+    var gameState = state;
+    processMessages(messages, gameState, dispatcher, nakama, logger);
+    processMatchLoop(gameState, nakama, dispatcher, logger);
+    return gameState.endMatch ? null : { state: gameState };
+};
+var matchLeave = function (context, logger, nakama, dispatcher, tick, state, presences) {
+    var gameState = state;
+    for (var _i = 0, presences_2 = presences; _i < presences_2.length; _i++) {
+        var presence = presences_2[_i];
+        var num = getPlayerNumber(gameState.players, presence.sessionId);
+        if (num === PlayerNotFound)
+            continue;
+        var name_1 = JSON.stringify(gameState.players[num].displayName);
+        if (!gameState.BeforeEndGame)
+            dispatcher.broadcastMessage(9, name_1);
+        delete gameState.players[num];
+    }
+    return { state: gameState };
+};
+var matchTerminate = function (context, logger, nakama, dispatcher, tick, state, graceSeconds) { return { state: state }; };
+var matchSignal = function (context, logger, nk, dispatcher, tick, state, data) { return { state: state }; };
+// ─── Message Routing ──────────────────────────────────────────────────────────
+function processMessages(messages, gameState, dispatcher, nakama, logger) {
+    for (var _i = 0, messages_1 = messages; _i < messages_1.length; _i++) {
+        var message = messages_1[_i];
+        if (MessagesLogic.hasOwnProperty(message.opCode)) {
+            MessagesLogic[message.opCode](message, gameState, dispatcher, nakama, logger);
+        }
+    }
+}
+function processMatchLoop(gameState, nakama, dispatcher, logger) {
+    switch (gameState.scene) {
+        case 3 /* Lobby */:
+            matchLoopLobby(gameState, nakama, dispatcher, logger);
+            break;
+        case 4 /* Battle */:
+            matchLoopBattle(gameState, nakama, dispatcher, logger);
+            break;
+        case 5 /* RoundResults */:
+            matchLoopRoundResults(gameState, nakama, dispatcher);
+            break;
+    }
+}
+// ─── Lobby ────────────────────────────────────────────────────────────────────
+function matchLoopLobby(gameState, nakama, dispatcher, logger) {
+    if (getPlayersCount(gameState.players) === 0)
+        return;
+    if (gameState.countdown <= 0)
+        return;
+    gameState.countdown--;
+    if (gameState.countdown > 0)
+        return;
+    if (getPlayersCount(gameState.players) >= 2) {
+        startBattle(gameState, dispatcher);
+    }
+    else {
+        addBotAndStartBattle(gameState, dispatcher, logger);
+    }
+}
+function startBattle(gameState, dispatcher) {
+    gameState.scene = 4 /* Battle */;
+    dispatcher.broadcastMessage(5 /* ChangeScene */, JSON.stringify(gameState.scene));
+    dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
+}
+function addBotAndStartBattle(gameState, dispatcher, logger) {
+    var botName = BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)];
+    var diff = BOT_DIFFICULTIES[Math.floor(Math.random() * BOT_DIFFICULTIES.length)];
+    var botPresence = {
+        userId: "bot_" + generateId(), sessionId: "bot_" + generateId(),
+        username: botName, node: "server", status: "",
+    };
+    gameState.players[1] = { presence: botPresence, displayName: botName, ScorePlayer: 0, isBot: true };
+    gameState.playersWins[1] = 0;
+    gameState.hasBot = true;
+    gameState.botDifficulty = diff;
+    logger.info("Bot added: name=" + botName + " difficulty=" + diff);
+    dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players));
+    dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
+    startBattle(gameState, dispatcher);
+}
+function generateId() {
+    return Math.random().toString(36).substring(2, 10);
+}
+// ─── Battle ───────────────────────────────────────────────────────────────────
+function matchLoopBattle(gameState, nakama, dispatcher, logger) {
+    if (gameState.countdown > 0) {
+        gameState.countdown--;
+        if (gameState.countdown === 0) {
+            gameState.roundDeclaredWins = [];
+            gameState.roundDeclaredDraw = [];
+            gameState.countdown = DurationRoundResults * TickRate;
+            gameState.scene = 5 /* RoundResults */;
+            dispatcher.broadcastMessage(5 /* ChangeScene */, JSON.stringify(gameState.scene));
+        }
+        return;
+    }
+    if (gameState.hasBot && gameState.botNeedsToMove) {
+        if (gameState.botThinkTick > 0) {
+            gameState.botThinkTick--;
+        }
+        else {
+            executeBotTurn(gameState, nakama, dispatcher, logger);
+        }
+    }
+}
+function matchLoopRoundResults(gameState, nakama, dispatcher) {
+    if (gameState.countdown <= 0)
+        return;
+    gameState.countdown--;
+    if (gameState.countdown > 0)
+        return;
+    var winner = getWinner(gameState.playersWins, gameState.players);
+    if (winner !== null) {
+        if (!winner.isBot) {
+            var read = nakama.storageRead([{ collection: CollectionUser, key: KeyTrophies, userId: winner.presence.userId }]);
+            var td = { amount: 0 };
+            for (var _i = 0, read_1 = read; _i < read_1.length; _i++) {
+                var obj = read_1[_i];
+                td = obj.value;
+                break;
+            }
+            td.amount++;
+            nakama.storageWrite([{ collection: CollectionUser, key: KeyTrophies, userId: winner.presence.userId, value: td }]);
+        }
+        gameState.endMatch = true;
+        gameState.scene = 6 /* FinalResults */;
+    }
+    else {
+        gameState.scene = 4 /* Battle */;
+    }
+    dispatcher.broadcastMessage(5 /* ChangeScene */, JSON.stringify(gameState.scene));
+}
+// ─── Turn ─────────────────────────────────────────────────────────────────────
+function ChooseTurnPlayer(message, gameState, dispatcher, nakama, logger) {
+    var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
+    dataPlayer.MinesScore = false;
+    gameState.BeforeEndGame = false;
+    var isPlayer0 = message.sender.userId === gameState.players[0].presence.userId;
+    if (isPlayer0) {
+        processTurn(dataPlayer, gameState.array3DPlayerFirst, gameState.array3DPlayerSecend, gameState, 0, true, nakama, logger);
+    }
+    else {
+        processTurn(dataPlayer, gameState.array3DPlayerSecend, gameState.array3DPlayerFirst, gameState, 1, false, nakama, logger);
+    }
+    var wasEndGame = dataPlayer.EndGame;
+    var dataSend = JSON.stringify(dataPlayer);
+    if (wasEndGame && gameState.hasBot) {
+        dispatcher.broadcastMessage(message.opCode, dataSend);
+    }
+    else {
+        dispatcher.broadcastMessage(message.opCode, dataSend, null, message.sender);
+    }
+    dataPlayer.EndGame = false;
+    if (gameState.hasBot && isPlayer0 && !wasEndGame) {
+        gameState.botNeedsToMove = true;
+        gameState.botThinkTick = BotThinkMinTicks + Math.floor(Math.random() * (BotThinkMaxTicks - BotThinkMinTicks));
+    }
+}
+function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, isMaster, nakama, logger) {
+    var line = dataPlayer.NumberLine, row = dataPlayer.NumberRow, tile = dataPlayer.NumberTile;
+    dataPlayer.master = isMaster;
+    dataPlayer.MinesScore = false;
+    dataPlayer.ValueMines = 0;
+    moverGrid[line][row] = tile;
+    if (moverIndex === 0)
+        gameState.CountTurnPlayer1++;
+    else
+        gameState.CountTurnPlayer2++;
+    dataPlayer.Score = TotalScore(moverGrid, logger, gameState.VerticalMode);
+    gameState.players[moverIndex].ScorePlayer = dataPlayer.Score;
+    var opponentIndex = 1 - moverIndex;
+    var mineCount = 0;
+    if (gameState.VerticalMode) {
+        var hits = CalculatorArray2DWithVertical(targetGrid, line, row, tile, logger);
+        for (var _i = 0, hits_1 = hits; _i < hits_1.length; _i++) {
+            var hitRow = hits_1[_i];
+            targetGrid[hitRow][row] = -1;
+            mineCount++;
+        }
+        if (mineCount > 0)
+            applyMineResult(dataPlayer, mineCount, tile, targetGrid, gameState, opponentIndex, logger);
+        mineCount = 0;
+    }
+    if (!dataPlayer.MinesScore) {
+        var hits = CalculatorArray2D(targetGrid, line, row, tile, logger);
+        for (var _a = 0, hits_2 = hits; _a < hits_2.length; _a++) {
+            var hitCol = hits_2[_a];
+            targetGrid[line][hitCol] = -1;
+            mineCount++;
+        }
+        if (mineCount > 0)
+            applyMineResult(dataPlayer, mineCount, tile, targetGrid, gameState, opponentIndex, logger);
+    }
+    dataPlayer.Array2DTilesPlayer = moverGrid;
+    dataPlayer.Array2DTilesOtherPlayer = targetGrid;
+    var moverFull = ActionWinPlayer(moverGrid);
+    var targetFull = ActionWinPlayer(targetGrid);
+    var turnsEqual = parseInt(gameState.CountTurnPlayer1) === parseInt(gameState.CountTurnPlayer2);
+    if ((moverFull || targetFull) && turnsEqual) {
+        var s0 = gameState.players[0].ScorePlayer;
+        var s1 = gameState.players[1].ScorePlayer;
+        if (s0 > s1)
+            dataPlayer.PlayerWin = gameState.players[0].presence.userId;
+        else if (s1 > s0)
+            dataPlayer.PlayerWin = gameState.players[1].presence.userId;
+        else
+            dataPlayer.PlayerWin = "";
+        dataPlayer.EndGame = true;
+        gameState.BeforeEndGame = true;
+        awardMatchResult(gameState, nakama, dataPlayer.PlayerWin, logger);
+    }
+}
+function applyMineResult(dataPlayer, mineCount, tile, targetGrid, gameState, opponentIndex, logger) {
+    var valuMines = tile + 1;
+    dataPlayer.ValueMines = (valuMines * mineCount) * mineCount;
+    dataPlayer.ScoreOtherPlayer = TotalScore(targetGrid, logger, gameState.VerticalMode);
+    gameState.players[opponentIndex].ScorePlayer = dataPlayer.ScoreOtherPlayer;
+    dataPlayer.MinesScore = true;
+}
+// ─── Economy ──────────────────────────────────────────────────────────────────
+function awardMatchResult(gameState, nakama, winnerId, logger) {
+    var league = LEAGUES[gameState.ModeText];
+    if (!league)
+        return;
+    var updates = [];
+    for (var i = 0; i < gameState.players.length; i++) {
+        var player = gameState.players[i];
+        if (!player || player.isBot)
+            continue;
+        if (winnerId === "") {
+            // Draw — return 50%
+            updates.push({
+                userId: player.presence.userId,
+                changeset: { coins: league.drawRefund },
+                metadata: { source: "draw_refund" },
+            });
+        }
+        else if (player.presence.userId === winnerId) {
+            // Win
+            updates.push({
+                userId: player.presence.userId,
+                changeset: { coins: league.winnerReward },
+                metadata: { source: "match_win", league: gameState.ModeText },
+            });
+            // Record rank points in both leaderboards
+            try {
+                nakama.leaderboardRecordWrite(LeaderboardWeekly, player.presence.userId, player.displayName, league.rankPoints);
+                nakama.leaderboardRecordWrite(LeaderboardMonthly, player.presence.userId, player.displayName, league.rankPoints);
+            }
+            catch (e) {
+                logger.warn("leaderboardRecordWrite failed: " + e);
+            }
+        }
+        // Lose: entry fee already deducted on join, nothing extra
+    }
+    if (updates.length > 0) {
+        try {
+            nakama.walletsUpdate(updates, false);
+        }
+        catch (e) {
+            logger.warn("walletsUpdate failed: " + e);
+        }
+    }
+}
+// ─── Leaderboard Reset Hook ───────────────────────────────────────────────────
+var onLeaderboardReset = function (ctx, logger, nk, leaderboard, reset) {
+    var isWeekly = leaderboard.id === LeaderboardWeekly;
+    var rewards = isWeekly ? WEEKLY_REWARDS : MONTHLY_REWARDS;
+    var pendingKey = isWeekly ? KeyPendingRewardWeekly : KeyPendingRewardMonthly;
+    var typeLabel = isWeekly ? "weekly" : "monthly";
+    var records = [];
+    try {
+        var result = nk.leaderboardRecordsList(leaderboard.id, [], rewards.length, "", 0);
+        records = result.records || [];
+    }
+    catch (e) {
+        logger.warn("leaderboardRecordsList failed during reset: " + e);
+        return;
+    }
+    var walletUpdates = [];
+    var storageWrites = [];
+    for (var i = 0; i < records.length && i < rewards.length; i++) {
+        var record = records[i];
+        var reward = rewards[i];
+        walletUpdates.push({
+            userId: record.ownerId,
+            changeset: { coins: reward },
+            metadata: { source: "leaderboard_reward", type: typeLabel, rank: i + 1 },
+        });
+        var pendingData = { rank: i + 1, reward: reward, type: typeLabel, claimed: false };
+        storageWrites.push({
+            collection: CollectionSeason,
+            key: pendingKey,
+            userId: record.ownerId,
+            value: pendingData,
+            permissionRead: 1,
+            permissionWrite: 0,
+        });
+    }
+    if (walletUpdates.length > 0) {
+        try {
+            nk.walletsUpdate(walletUpdates, false);
+        }
+        catch (e) {
+            logger.warn("Reward distribution failed: " + e);
+        }
+    }
+    if (storageWrites.length > 0) {
+        try {
+            nk.storageWrite(storageWrites);
+        }
+        catch (e) {
+            logger.warn("Pending reward storage failed: " + e);
+        }
+    }
+    logger.info(typeLabel + " leaderboard reset: distributed rewards to " + records.length + " players");
+};
+// ─── Sticker & Rematch ────────────────────────────────────────────────────────
+function StickersManager(message, gameState, dispatcher, nakama, logger) {
+    var data = JSON.parse(nakama.binaryToString(message.data));
+    dispatcher.broadcastMessage(10 /* Sticker */, JSON.stringify(data));
+}
+function Rematch(message, gameState, dispatcher, nakama, logger) {
+    var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
+    if (gameState.hasBot) {
+        if (dataPlayer.Answer === "no") {
+            gameState.endMatch = true;
+            dispatcher.broadcastMessage(message.opCode, JSON.stringify(dataPlayer), null, message.sender);
+            return;
+        }
+        if (dataPlayer.Answer === "send" || dataPlayer.Answer === "yes") {
+            // Deduct entry fee again for rematch
+            var league = LEAGUES[gameState.ModeText];
+            if (league) {
+                try {
+                    nakama.walletUpdate(gameState.players[0].presence.userId, { coins: -league.entryFee }, { source: "entry_fee_rematch" }, true);
+                }
+                catch (e) {
+                    logger.warn("Rematch entry fee failed: " + e);
+                }
+            }
+            resetGameForRematch(gameState);
+            dataPlayer.Answer = "yes";
+            dispatcher.broadcastMessage(message.opCode, JSON.stringify(dataPlayer), null, message.sender);
+            dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
+        }
+        return;
+    }
+    gameState.namesForrematch.push(dataPlayer.userId);
+    if (getPlayersCount(gameState.players) === 1) {
+        dataPlayer.Answer = "left";
+        dispatcher.broadcastMessage(message.opCode, JSON.stringify(dataPlayer), null, message.sender);
+        return;
+    }
+    if (gameState.namesForrematch.length > 1) {
+        if (dataPlayer.Answer === "no") {
+            gameState.endMatch = true;
+            dispatcher.broadcastMessage(message.opCode, JSON.stringify(dataPlayer), null, message.sender);
+            return;
+        }
+        if (dataPlayer.Answer === "yes" || dataPlayer.Answer === "send") {
+            // Deduct entry fee for both players
+            var league = LEAGUES[gameState.ModeText];
+            if (league) {
+                var feeUpdates = [];
+                for (var _i = 0, _a = gameState.players; _i < _a.length; _i++) {
+                    var p = _a[_i];
+                    if (p && !p.isBot) {
+                        feeUpdates.push({ userId: p.presence.userId, changeset: { coins: -league.entryFee }, metadata: { source: "entry_fee_rematch" } });
+                    }
+                }
+                try {
+                    nakama.walletsUpdate(feeUpdates, true);
+                }
+                catch (e) {
+                    logger.warn("Rematch entry fees failed: " + e);
+                }
+            }
+            resetGameForRematch(gameState);
+            dataPlayer.Answer = "yes";
+            dispatcher.broadcastMessage(message.opCode, JSON.stringify(dataPlayer), null, message.sender);
+            dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
+        }
+    }
+    if (dataPlayer.Answer === "send") {
+        dataPlayer.userId = message.sender.userId;
+        dataPlayer.Answer = "req";
+        dispatcher.broadcastMessage(message.opCode, JSON.stringify(dataPlayer), null, message.sender);
+    }
+}
+function resetGameForRematch(gameState) {
+    gameState.endMatch = false;
+    gameState.BeforeEndGame = false;
+    gameState.botNeedsToMove = false;
+    gameState.CountTurnPlayer1 = 0;
+    gameState.CountTurnPlayer2 = 0;
+    gameState.namesForrematch = [];
+    for (var i = 0; i < gameState.array3DPlayerFirst.length; i++) {
+        for (var j = 0; j < gameState.array3DPlayerFirst[i].length; j++) {
+            gameState.array3DPlayerFirst[i][j] = -1;
+            gameState.array3DPlayerSecend[i][j] = -1;
+        }
+    }
+    for (var _i = 0, _a = gameState.players; _i < _a.length; _i++) {
+        var player = _a[_i];
+        if (player)
+            player.ScorePlayer = 0;
+    }
+}
+// ─── Bot AI ───────────────────────────────────────────────────────────────────
+function executeBotTurn(gameState, nakama, dispatcher, logger) {
+    gameState.botNeedsToMove = false;
+    var realPlayer = gameState.players[0];
+    var botPlayer = gameState.players[1];
+    if (!realPlayer || !botPlayer)
+        return;
+    var move = generateBotMove(gameState, logger);
+    if (!move) {
+        logger.warn("Bot could not find a valid move");
+        return;
+    }
+    var dataPlayer = {
+        UserId: botPlayer.presence.userId,
+        Score: 0, NumberTile: move.tile, NameTile: move.tile.toString(),
+        NumberLine: move.line, NumberRow: move.col,
+        EndGame: false, PlayerWin: "", ScoreOtherPlayer: 0,
+        MinesScore: false, ValueMines: 0, sumRow1: [], sumRow2: [],
+        master: false, Array2DTilesPlayer: [], Array2DTilesOtherPlayer: [],
+    };
+    processTurn(dataPlayer, gameState.array3DPlayerSecend, gameState.array3DPlayerFirst, gameState, 1, false, nakama, logger);
+    dispatcher.broadcastMessage(7 /* ChosseTurn */, JSON.stringify(dataPlayer), [realPlayer.presence], null);
+}
+function generateBotMove(gameState, logger) {
+    var botGrid = gameState.array3DPlayerSecend;
+    var playerGrid = gameState.array3DPlayerFirst;
+    var numRows = botGrid.length;
+    var numCols = botGrid[0].length;
+    var maxTile = numCols - 1;
+    var difficulty = gameState.botDifficulty;
+    var emptyCells = [];
+    for (var i = 0; i < numRows; i++)
+        for (var j = 0; j < numCols; j++)
+            if (botGrid[i][j] === -1)
+                emptyCells.push({ line: i, col: j });
+    if (emptyCells.length === 0)
+        return null;
+    if (difficulty === 0 || (difficulty === 1 && Math.random() < 0.5)) {
+        var cell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        return { line: cell.line, col: cell.col, tile: Math.floor(Math.random() * (maxTile + 1)) };
+    }
+    var bestScore = -1;
+    var bestMove = { line: emptyCells[0].line, col: emptyCells[0].col, tile: Math.floor(Math.random() * (maxTile + 1)) };
+    for (var _i = 0, emptyCells_1 = emptyCells; _i < emptyCells_1.length; _i++) {
+        var cell = emptyCells_1[_i];
+        var _loop_1 = function (tile) {
+            var tempBot = botGrid.map(function (r) { return r.slice(); });
+            tempBot[cell.line][cell.col] = tile;
+            var mineHits = playerGrid[cell.line].filter(function (v) { return v === tile; }).length;
+            if (gameState.VerticalMode) {
+                for (var r = 0; r < numRows; r++)
+                    if (playerGrid[r][cell.col] === tile)
+                        mineHits++;
+            }
+            var moveScore = simulateTotalScore(tempBot, gameState.VerticalMode) + mineHits * 6;
+            if (moveScore > bestScore) {
+                bestScore = moveScore;
+                bestMove = { line: cell.line, col: cell.col, tile: tile };
+            }
+        };
+        for (var tile = 0; tile <= maxTile; tile++) {
+            _loop_1(tile);
+        }
+    }
+    return bestMove;
+}
+function simulateTotalScore(grid, verticalMode) {
+    var score = 0;
+    for (var i = 0; i < grid.length; i++)
+        score += scoreRow(grid[i]);
+    if (verticalMode) {
+        var _loop_2 = function (col) {
+            score += scoreRow(grid.map(function (r) { return r[col]; }));
+        };
+        for (var col = 0; col < grid[0].length; col++) {
+            _loop_2(col);
+        }
+    }
+    return score;
+}
+function scoreRow(arr) {
+    var counts = {};
+    for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
+        var v = arr_1[_i];
+        if (v === -1)
+            continue;
+        counts[v] = (counts[v] || 0) + 1;
+    }
+    var sum = 0;
+    for (var _a = 0, _b = Object.keys(counts); _a < _b.length; _a++) {
+        var k = _b[_a];
+        var key = Number(k);
+        var count = counts[k];
+        if (count === 4)
+            return (key + 1) * 16;
+        else if (count === 3)
+            sum += (key + 1) * 9;
+        else if (count === 2)
+            sum += (key + 1) * 4;
+        else
+            sum += (key + 1);
+    }
+    return sum;
+}
+// ─── Score / Grid Helpers ─────────────────────────────────────────────────────
+function TotalScore(array2D, logger, mode) {
+    var score = 0;
+    for (var i = 0; i < array2D.length; i++)
+        score += CalculatorArray(array2D[i], logger);
+    if (mode) {
+        var _loop_3 = function (col) {
+            score += CalculatorArray(array2D.map(function (d) { return d[col]; }), logger);
+        };
+        for (var col = 0; col < array2D[0].length; col++) {
+            _loop_3(col);
+        }
+    }
+    return score;
+}
+function CalculatorArray(arrayInput, logger) {
+    var counts = {};
+    for (var _i = 0, arrayInput_1 = arrayInput; _i < arrayInput_1.length; _i++) {
+        var v = arrayInput_1[_i];
+        if (v === -1)
+            continue;
+        var k = String(v);
+        counts[k] = (counts[k] || 0) + 1;
+    }
+    var sum = 0;
+    for (var _a = 0, _b = Object.keys(counts); _a < _b.length; _a++) {
+        var k = _b[_a];
+        var key = Number(k);
+        var count = counts[k];
+        if (count === 4)
+            return (key + 1) * 16;
+        else if (count === 3)
+            sum += (key + 1) * 9;
+        else if (count === 2)
+            sum += (key + 1) * 4;
+        else
+            sum += (key + 1);
+    }
+    return sum;
+}
+function CalculatorArray2D(array1, x, y, input, logger) {
+    var result = [];
+    array1[x].forEach(function (element, index) { if (element === input)
+        result.push(index); });
+    return result;
+}
+function CalculatorArray2DWithVertical(array1, x, y, input, logger) {
+    var result = [];
+    array1.map(function (r) { return r[y]; }).forEach(function (element, index) { if (element === input)
+        result.push(index); });
+    return result;
+}
+function ActionWinPlayer(array1) {
+    for (var i = 0; i < array1.length; i++)
+        for (var j = 0; j < array1[i].length; j++)
+            if (array1[i][j] === -1)
+                return false;
+    return true;
+}
+// ─── Player Utilities ─────────────────────────────────────────────────────────
+function getPlayersCount(players) {
+    var count = 0;
+    for (var i = 0; i < MaxPlayers; i++)
+        if (players[i] !== undefined)
+            count++;
+    return count;
+}
+function getNextPlayerNumber(players) {
+    for (var i = 0; i < MaxPlayers; i++)
+        if (!players[i])
+            return i;
+    return PlayerNotFound;
+}
+function getPlayerNumber(players, sessionId) {
+    for (var i = 0; i < MaxPlayers; i++)
+        if (players[i] && players[i].presence.sessionId === sessionId)
+            return i;
+    return PlayerNotFound;
+}
+function getWinner(playersWins, players) {
+    for (var i = 0; i < MaxPlayers; i++)
+        if (playersWins[i] === NecessaryWins)
+            return players[i];
+    return null;
+}
+function playerWon(message, gameState, dispatcher, nakama) {
+    if (gameState.scene !== 4 /* Battle */ || gameState.countdown > 0)
+        return;
+    var data = JSON.parse(nakama.binaryToString(message.data));
+    var tick = data.tick, playerNumber = data.playerNumber;
+    if (!gameState.roundDeclaredWins[tick])
+        gameState.roundDeclaredWins[tick] = [];
+    if (!gameState.roundDeclaredWins[tick][playerNumber])
+        gameState.roundDeclaredWins[tick][playerNumber] = 0;
+    gameState.roundDeclaredWins[tick][playerNumber]++;
+    if (gameState.roundDeclaredWins[tick][playerNumber] < getPlayersCount(gameState.players))
+        return;
+    gameState.playersWins[playerNumber]++;
+    gameState.countdown = DurationBattleEnding * TickRate;
+    dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);
+}
+function draw(message, gameState, dispatcher, nakama, logger) {
+    if (gameState.scene !== 4 /* Battle */ || gameState.countdown > 0)
+        return;
+    var data = JSON.parse(nakama.binaryToString(message.data));
+    var tick = data.tick;
+    if (!gameState.roundDeclaredDraw[tick])
+        gameState.roundDeclaredDraw[tick] = 0;
+    gameState.roundDeclaredDraw[tick]++;
+    if (gameState.roundDeclaredDraw[tick] < getPlayersCount(gameState.players))
+        return;
+    gameState.countdown = DurationBattleEnding * TickRate;
+    dispatcher.broadcastMessage(message.opCode, message.data, null, message.sender);
+}
+var ScoreClass = /** @class */ (function () {
+    function ScoreClass() {
+        this.ScoreF = 0;
+    }
+    return ScoreClass;
+}());
+var CountWin = /** @class */ (function () {
+    function CountWin() {
+        this.win = 0;
+    }
+    return CountWin;
+}());
+var GameMode;
+(function (GameMode) {
+    GameMode[GameMode["ThreeByThree"] = 0] = "ThreeByThree";
+    GameMode[GameMode["FourByThree"] = 1] = "FourByThree";
+    GameMode[GameMode["VerticalAndHorizontal"] = 2] = "VerticalAndHorizontal";
+})(GameMode || (GameMode = {}));
+var TickRate = 16;
+var DurationLobby = 10;
+var DurationRoundResults = 5;
+var DurationBattleEnding = 3;
+var NecessaryWins = 3;
+var MaxPlayers = 2;
+var PlayerNotFound = -1;
+var CollectionUser = "User";
+var KeyTrophies = "Trophies";
+var LEAGUES = {
+    "ThreeByThree": {
+        displayName: "SHOWDOWN DICE",
+        entryFee: 50,
+        winnerReward: 80,
+        drawRefund: 25,
+        rankPoints: 50,
+    },
+    "FourByThree": {
+        displayName: "DICEPUNK LEAGUE",
+        entryFee: 150,
+        winnerReward: 250,
+        drawRefund: 75,
+        rankPoints: 120,
+    },
+    "VerticalAndHorizontal": {
+        displayName: "DICE MASTER",
+        entryFee: 250,
+        winnerReward: 420,
+        drawRefund: 125,
+        rankPoints: 250,
+    },
+};
+// ─── Leaderboards ─────────────────────────────────────────────────────────────
+var LeaderboardWeekly = "weekly_leaderboard";
+var LeaderboardMonthly = "monthly_leaderboard";
+// Top-10 reward tables (index 0 = rank 1)
+var WEEKLY_REWARDS = [1000, 500, 250, 150, 125, 100, 75, 50, 25, 10];
+var MONTHLY_REWARDS = [5000, 2500, 1000, 750, 500, 300, 200, 100, 50, 10];
+var CollectionSeason = "Season";
+var KeyPendingRewardWeekly = "pending_weekly";
+var KeyPendingRewardMonthly = "pending_monthly";
+// ─── Bot ──────────────────────────────────────────────────────────────────────
+var BotThinkMinTicks = TickRate * 1;
+var BotThinkMaxTicks = TickRate * 3;
+var BOT_NAMES = [
+    "Ali_K99", "Daniel_P", "Sara_GG", "xX_Cobra_Xx", "Reza_77",
+    "ProGamer88", "IronWolf7", "NightStar", "Champion_K", "Shadow_X9",
+    "MasterPlay", "Kamran_Ace", "DarkFire", "QuickShot9", "EliteKing",
+    "Arash_Pro", "Ninja_Storm", "CoolBreeze", "FlashPlayer", "TitanFist"
+];
+var BOT_DIFFICULTIES = [0, 1, 2];
+// ─── Message routing ──────────────────────────────────────────────────────────
+var MessagesLogic = {
+    7: ChooseTurnPlayer,
+    8: Rematch,
+    10: StickersManager,
+};

@@ -7,18 +7,71 @@ const MaxPlayers = 2;
 const PlayerNotFound = -1;
 const CollectionUser = "User";
 const KeyTrophies = "Trophies";
-const IdLeaderboard = "b7c182b36521Win";
 
-// Currency rewards
-const COINS_WIN  = 150;
-const COINS_DRAW = 50;
-const COINS_LOSE = 20;
+// ─── Leagues ──────────────────────────────────────────────────────────────────
 
-// Card storage
-const CollectionCards = "Cards";
-const KeyOwnedCards   = "owned_cards";
+interface LeagueConfig {
+    displayName: string;
+    entryFee:     number;
+    winnerReward: number;
+    drawRefund:   number;  // 50% of entry fee returned on draw
+    rankPoints:   number;
+}
 
-// Bot configuration
+const LEAGUES: { [mode: string]: LeagueConfig } = {
+    "ThreeByThree": {
+        displayName:  "SHOWDOWN DICE",
+        entryFee:     50,
+        winnerReward: 80,
+        drawRefund:   25,
+        rankPoints:   50,
+    },
+    "FourByThree": {
+        displayName:  "DICEPUNK LEAGUE",
+        entryFee:     150,
+        winnerReward: 250,
+        drawRefund:   75,
+        rankPoints:   120,
+    },
+    "VerticalAndHorizontal": {
+        displayName:  "DICE MASTER",
+        entryFee:     250,
+        winnerReward: 420,
+        drawRefund:   125,
+        rankPoints:   250,
+    },
+};
+
+// ─── Leaderboards ─────────────────────────────────────────────────────────────
+
+const LeaderboardWeekly  = "weekly_leaderboard";
+const LeaderboardMonthly = "monthly_leaderboard";
+
+// Top-10 reward tables (index 0 = rank 1)
+const WEEKLY_REWARDS:  number[] = [1000, 500, 250, 150, 125, 100, 75, 50, 25, 10];
+const MONTHLY_REWARDS: number[] = [5000, 2500, 1000, 750, 500, 300, 200, 100, 50, 10];
+
+const CollectionSeason        = "Season";
+const CollectionProfile       = "Profile";
+const KeyProfileData          = "profile_data";
+
+// Avatar catalog — prices validated server-side (client cannot lie about price)
+// id must match AvatarLibrary ScriptableObject ids in Unity client
+const AVATAR_PRICES: { [id: string]: number } = {
+    "avatar_0": 0,
+    "avatar_1": 0,
+    "avatar_2": 250,
+    "avatar_3": 300,
+    "avatar_4": 500,
+    "avatar_5": 600,
+    "avatar_6": 700
+    
+};
+const KeyPendingRewardWeekly  = "pending_weekly";
+const KeyPendingRewardMonthly = "pending_monthly";
+
+// ─── Bot ──────────────────────────────────────────────────────────────────────
+
 const BotThinkMinTicks = TickRate * 1;
 const BotThinkMaxTicks = TickRate * 3;
 
@@ -28,31 +81,9 @@ const BOT_NAMES: string[] = [
     "MasterPlay", "Kamran_Ace", "DarkFire", "QuickShot9", "EliteKing",
     "Arash_Pro", "Ninja_Storm", "CoolBreeze", "FlashPlayer", "TitanFist"
 ];
-
 const BOT_DIFFICULTIES = [0, 1, 2];
 
-// Card definitions (id, name, cost)
-interface CardDefinition {
-    id: number;
-    name: string;
-    cost: number;
-}
-
-const CARD_DEFINITIONS: CardDefinition[] = [
-    { id: 0,  name: "PowerRow",       cost: 300 },
-    { id: 1,  name: "PowerColumn",    cost: 300 },
-    { id: 2,  name: "GuardianShield", cost: 400 },
-    { id: 3,  name: "SecondChance",   cost: 250 },
-    { id: 4,  name: "DiceLock",       cost: 350 },
-    { id: 5,  name: "IceLock",        cost: 450 },
-    { id: 6,  name: "Breaker",        cost: 650 },
-    { id: 7,  name: "MirrorDice",     cost: 500 },
-    { id: 8,  name: "ChaosSwap",      cost: 500 },
-    { id: 9,  name: "LuckyRow",       cost: 450 },
-    { id: 10, name: "LuckySix",       cost: 700 },
-    { id: 11, name: "DiceThief",      cost: 750 },
-    { id: 12, name: "CounterPulse",   cost: 500 },
-];
+// ─── Message routing ──────────────────────────────────────────────────────────
 
 const MessagesLogic: {
     [opCode: number]: (
@@ -66,5 +97,4 @@ const MessagesLogic: {
     7:  ChooseTurnPlayer,
     8:  Rematch,
     10: StickersManager,
-    11: UseCard,
 };

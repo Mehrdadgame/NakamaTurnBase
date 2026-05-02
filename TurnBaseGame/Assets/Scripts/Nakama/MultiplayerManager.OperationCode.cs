@@ -4,18 +4,17 @@ namespace Nakama.Helpers
     {
         public enum Code
         {
-            Players = 0,
+            Players     = 0,
             PlayerJoined = 1,
-            PlayerInput = 2,
-            PlayerWon = 3,
-            Draw = 4,
+            PlayerInput  = 2,
+            PlayerWon   = 3,
+            Draw        = 4,
             ChangeScene = 5,
-            TurnMe = 6,
-            ChosseTurn = 7,
-            Rematch = 8,
-            PlayerLeft = 9,
+            TurnMe      = 6,
+            ChosseTurn  = 7,
+            Rematch     = 8,
+            PlayerLeft  = 9,
             SendSticker = 10,
-            UseCard = 11,
         }
     }
 }

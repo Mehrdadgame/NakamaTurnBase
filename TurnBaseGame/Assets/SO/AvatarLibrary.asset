@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56088a0a6fafe1449c495fc75b2c2fc, type: 3}
+  m_Name: AvatarLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarLibrary
+  avatars:
+  - id: avatar_0
+    sprite: {fileID: 21300000, guid: b3c2e702647c2b54888adad06b222260, type: 3}
+    price: 0
+  - id: avatar_1
+    sprite: {fileID: 21300000, guid: fa55052ba3978f842bcbe82d23d3dd14, type: 3}
+    price: 0
+  - id: avatar_2
+    sprite: {fileID: 21300000, guid: 8dae601db4909154d812a97952add7c8, type: 3}
+    price: 250
+  - id: avatar_3
+    sprite: {fileID: 21300000, guid: 9ca03fae3c7330e44956d28415442901, type: 3}
+    price: 300
+  - id: avatar_4
+    sprite: {fileID: 21300000, guid: 7f3589821a2bc744cba37f35ee81b110, type: 3}
+    price: 500
+  - id: avatar_5
+    sprite: {fileID: 21300000, guid: 4fdeb79f3ed49894ea4fed339e651297, type: 3}
+    price: 600
+  - id: avatar_6
+    sprite: {fileID: 21300000, guid: 8e82dba3b2cf600418f5b7a9cf7ca24b, type: 3}
+    price: 700

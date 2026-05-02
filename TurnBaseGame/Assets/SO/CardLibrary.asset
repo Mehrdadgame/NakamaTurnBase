@@ -12,4 +12,95 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dba66608c1fcd94ca0d041cf85aa359, type: 3}
   m_Name: CardLibrary
   m_EditorClassIdentifier: Assembly-CSharp::CardLibrary
-  cards: []
+  cards:
+  - id: 0
+    cardName: "\u062F\u0648 \u0628\u0631\u0627\u0628\u0631 \u06A9\u0646"
+    description: "\u0627\u0646\u062A\u062E\u0627\u0628 \u06CC\u06A9 \u0631\u062F\u06CC\u0641\n\u0627\u0645\u062A\u06CC\u0627\u0632
+      \u0622\u0646 \u0631\u062F\u06CC\u0641 \xD72"
+    cost: 300
+    icon: {fileID: -515214724387223597, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 1
+  - id: 1
+    cardName: "\u062F\u0648 \u0628\u0631\u0627\u0628\u0631 \u06A9\u0646"
+    description: "\u0627\u0646\u062A\u062E\u0627\u0628 \u06CC\u06A9 \u0633\u062A\u0648\u0646\n\u0627\u0645\u062A\u06CC\u0627\u0632
+      \u0622\u0646 \u0633\u062A\u0648\u0646 \xD72"
+    cost: 300
+    icon: {fileID: -515214724387223597, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 1
+  - id: 2
+    cardName: "\u0645\u062D\u0627\u0638\u062A"
+    description: "\u06CC\u06A9 \u0631\u062F\u06CC\u0641\n\u06CC\u0627 \u06CC\u06A9
+      \u0633\u062A\u0648\u0646\n\u0627\u0648\u0644\u06CC\u0646 \u062D\u0630\u0641
+      \u0631\u0627 Block \u0645\u06CC\u200C\u06A9\u0646\u062F."
+    cost: 400
+    icon: {fileID: -215526945089507269, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 0
+  - id: 3
+    cardName: "\u0634\u0627\u0646\u0633 \u062F\u0648\u0628\u0627\u0631\u0647"
+    description: "\u062A\u0627\u0633 \u0641\u0639\u0644\u06CC \u0631\u0627 \u062F\u0648\u0628\u0627\u0631\u0647
+      \u0628\u0646\u062F\u0627\u0632 "
+    cost: 250
+    icon: {fileID: -8652152237790440607, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 0
+  - id: 4
+    cardName: "\u062A\u0627\u0633 \u0642\u0641\u0644"
+    description: "\u0627\u0646\u062A\u062E\u0627\u0628 \u06CC\u06A9 \u062E\u0627\u0646\u0647
+      \u0622\u0646 \u062A\u0627\u0633 \u062A\u0627 \u0646\u0648\u0628\u062A \u0628\u0639\u062F
+      \u062D\u0630\u0641 \u0646\u0645\u06CC\u200C\u0634\u0648\u062F"
+    cost: 350
+    icon: {fileID: -3311757888807321705, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 0
+  - id: 5
+    cardName: "\u062A\u0627\u0633 \u06CC\u062E\u06CC"
+    description: "\u0627\u0646\u062A\u062E\u0627\u0628 \u06CC\u06A9 \u062E\u0627\u0646\u0647
+      \u062D\u0631\u06CC\u0641 \u062D\u0631\u06CC\u0641 \u06CC\u06A9 \u0646\u0648\u0628\u062A 
+      \u0646\u0645\u06CC\u200C\u062A\u0648\u0627\u0646\u062F \u0622\u0646\u062C\u0627
+      \u062A\u0627\u0633 \u0628\u06AF\u0630\u0627\u0631\u062F"
+    cost: 450
+    icon: {fileID: 7338494770004913499, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 0
+  - id: 6
+    cardName: "\u062D\u0630\u0641 \u06CC\u06A9 \u062A\u0627\u0633"
+    description: "\u062D\u0630\u0641 \u06CC\u06A9 \u062A\u0627\u0633 \u062F\u0634\u0645\u0646\n\n\u0645\u062D\u062F\u0648\u062F\u06CC\u062A:\n\n\u0631\u0648\u06CC
+      Shielded Dice \u06A9\u0627\u0631 \u0646\u0645\u06CC\u200C\u06A9\u0646\u062F"
+    cost: 650
+    icon: {fileID: 3430244772734218599, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 0
+  - id: 7
+    cardName: "\u062A\u0627\u0633 \u0627\u06CC\u0646\u0647"
+    description: "\u0639\u062F\u062F \u0622\u062E\u0631\u06CC \u06A9\u0647 \u062D\u0631\u06CC\u0641
+      Roll \u06A9\u0631\u062F\u0647 \u0631\u0627 Copy \u0645\u06CC\u200C\u06A9\u0646\u062F 
+      \u0645\u062B\u0627\u0644: \u062D\u0631\u06CC\u0641 6 \u0622\u0648\u0631\u062F
+      \u062A\u0648 \u0647\u0645 6 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u06CC"
+    cost: 500
+    icon: {fileID: 4859922123030796996, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 0
+  - id: 8
+    cardName: "\u062C\u0627\u0628\u062C\u0627\u06CC\u06CC"
+    description: "\u062C\u0627\u0628\u062C\u0627\u06CC\u06CC \u062C\u0627\u06CC \u062F\u0648
+      \u062A\u0627\u0633 \u062E\u0648\u062F\u062A"
+    cost: 500
+    icon: {fileID: -7927407186245795806, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 0
+  - id: 9
+    cardName: "\u0634\u0627\u0646\u0633\u06CC"
+    description: "\u0639\u0645\u0644\u06A9\u0631\u062F:\n\n\u06CC\u06A9 Row:\n+50%
+      Bonus Score\n\n\u0646\u0647 \xD72\n\n\u0627\u06CC\u0646 \u062E\u06CC\u0644\u06CC
+      \u0645\u0647\u0645\u0647 \u0628\u0631\u0627\u06CC \u0628\u0627\u0644\u0627\u0646\u0633.\n\nCounter:"
+    cost: 450
+    icon: {fileID: -7918530071511943794, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 1
+  - id: 10
+    cardName: "\u0634\u0627\u0646\u0633\u06CC 6"
+    description: "Roll \u0628\u0639\u062F\u06CC = 6"
+    cost: 700
+    icon: {fileID: -2333803385761983662, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 1
+  - id: 11
+    cardName: "\u062A\u0627\u0633 \u0632\u062F\u06CC"
+    description: "\u0627\u0646\u062A\u062E\u0627\u0628 \u06CC\u06A9 \u062A\u0627\u0633
+      \u062F\u0634\u0645\u0646\n\u0639\u062F\u062F \u0622\u0646 \u0631\u0627 Copy
+      \u0645\u06CC\u200C\u06A9\u0646\u062F"
+    cost: 750
+    icon: {fileID: 1637374965507441859, guid: 45d57bfea638cec4bbbe165f3d2f779c, type: 3}
+    isCounter: 1

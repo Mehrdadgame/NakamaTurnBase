@@ -9,11 +9,6 @@ enum GameMode {
     VerticalAndHorizontal,
 }
 
-interface FrozenCell {
-    line: number;
-    col: number;
-}
-
 interface GameState {
     players: Player[];
     playersWins: number[];
@@ -30,14 +25,11 @@ interface GameState {
     array3DPlayerFirst: any[][];
     array3DPlayerSecend: any[][];
     ModeText: string;
-    // Bot fields
+    // Bot
     hasBot: boolean;
-    botDifficulty: number; // 0=easy, 1=normal, 2=hard
+    botDifficulty: number;
     botNeedsToMove: boolean;
     botThinkTick: number;
-    // Card / shield state
-    shields: number[];          // shields[i] = remaining shield count for player i
-    counterActive: boolean[];   // counterActive[i] = player i's counter pulse is armed
 }
 
 interface Player {
@@ -47,9 +39,7 @@ interface Player {
     isBot?: boolean;
 }
 
-interface TimeRemainingData {
-    time: number;
-}
+interface TimeRemainingData { time: number; }
 
 interface PlayerWonData {
     tick: number;
@@ -73,7 +63,6 @@ interface DataPlayer {
     master: boolean;
     Array2DTilesPlayer: number[][];
     Array2DTilesOtherPlayer: number[][];
-    shieldBlocked?: boolean;
 }
 
 interface IReMatch {
@@ -86,27 +75,37 @@ interface StickerData {
     nameSticker: string;
 }
 
-interface DrawData {
-    tick: number;
+interface DrawData { tick: number; }
+
+interface TrophiesData { amount: number; }
+
+interface PendingRewardData {
+    rank:    number;
+    reward:  number;
+    type:    string;  // "weekly" | "monthly"
+    claimed: boolean;
 }
 
-interface TrophiesData {
-    amount: number;
+interface WalletSnapshot {
+    coins?: number;
 }
 
-interface UseCardMessage {
-    cardId: number;
-    senderUserId: string;
-    targetLine?: number;
-    targetCol?: number;
-    targetValue?: number;
-    countered?: boolean;
+interface ProfileData {
+    email:             string;
+    phone:             string;
+    emailLocked:       boolean;
+    phoneLocked:       boolean;
+    emailBonusClaimed: boolean;
+    phoneBonusClaimed: boolean;
+    avatarId:          string;    // selected avatar id, e.g. "avatar_0"
 }
 
-interface OwnedCardsData {
-    cards: { [cardId: string]: number };
-}
-
-interface WalletData {
-    coins: number;
+interface UpdateProfileResult {
+    displayName:  string;
+    email:        string;
+    phone:        string;
+    emailLocked:  boolean;
+    phoneLocked:  boolean;
+    coinsAwarded: number;
+    error:        string;
 }

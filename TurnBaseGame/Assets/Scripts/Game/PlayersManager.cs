@@ -134,9 +134,11 @@ namespace NinjaBattle.Game
         }
         private void ChosseTurnPlayer(MultiplayerMessage message)
         {
-            var hxdTotal = PlayerPrefs.GetInt("HXD");
             var data = message.GetData<DataPlayer>();
             onSetDataInTurn?.Invoke(data);
+
+            var league = ClientLeagues.Get(GameManager.Instance.modeGame);
+
             if (multiplayerManager.Self.UserId != data.UserId)
             {
                 if (data.MinesScore)
@@ -149,27 +151,13 @@ namespace NinjaBattle.Game
                     for (int j = 0; j < data.Array2DTilesOtherPlayer[i].Length; j++)
                     {
                         if (data.Array2DTilesOtherPlayer[i][j] == -1)
-                        {
                             onSetDataInRowMe(i, j);
-                        
-                
-
-                        }
-
                     }
                 }
                 ScoreMe = data.Score;
                 if (data.ScoreOtherPlayer > 0)
                     ScoreOpp = data.ScoreOtherPlayer;
-                //if (data.ResultRow.Length > 0)
-                //{
-                //    for (int i = 0; i < data.ResultRow.Length; i++)
-                //    {
-                //        Debug.Log(data.ResultRow[i] + data.ResultLine);
-                //        onSetDataInRowMe(data.ResultLine, data.ResultRow[i]);
-                //    }
 
-                //}
                 if (data.EndGame != true)
                     IsTurn?.Invoke(true);
 
@@ -179,58 +167,40 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "+" + (multiplayerManager.ValueHXDInGameTurn * 2).ToString() + "HXD";
-                        PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn * 2));
+                        UiManager.instance.HXDWin.text = "+" + league.winnerReward + " Coin";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "-" + (multiplayerManager.ValueHXDInGameTurn).ToString() + "HXD";
-                        PlayerPrefs.SetInt("HXD", hxdTotal - multiplayerManager.ValueHXDInGameTurn);
+                        UiManager.instance.HXDWin.text = "-" + league.entryFee + " Coin";
                     }
                     else
                     {
-                        UiManager.instance.HXDWin.text = "+" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
-                        PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
+                        UiManager.instance.HXDWin.text = "+" + league.drawRefund + " Coin";
                     }
                     multiplayerManager.isTurn = false;
                     if (data.EndGame != true)
                         IsTurn?.Invoke(false);
                 }
-
             }
             else
             {
-
                 if (data.MinesScore)
                     onSetScoreMe.Invoke(data.ScoreOtherPlayer, data.ValueMines, data);
                 onSetScoreOpp?.Invoke(data.Score, 0, data);
                 ScoreOpp = data.Score;
                 if (data.ScoreOtherPlayer > 0)
                     ScoreMe = data.ScoreOtherPlayer;
+
                 for (int i = 0; i < data.Array2DTilesOtherPlayer.Length; i++)
                 {
                     for (int j = 0; j < data.Array2DTilesOtherPlayer[i].Length; j++)
                     {
                         if (data.Array2DTilesOtherPlayer[i][j] == -1)
-                        {
                             onSetDataInRowOpp(i, j);
-                          
-
-                        }
-                      
                     }
                 }
-                //if (data.ResultRow.Length > 0)
-                //{
-                //    for (int i = 0; i < data.ResultRow.Length; i++)
-                //    {
-                //        onSetDataInRowOpp(data.ResultLine, data.ResultRow[i]);
-                //    }
-
-                //}
-
 
                 if (data.EndGame == true)
                 {
@@ -238,31 +208,23 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-
-                        PlayerPrefs.SetInt("HXD", hxdTotal + (multiplayerManager.ValueHXDInGameTurn * 2));
-                        UiManager.instance.HXDWin.text = "+" + (multiplayerManager.ValueHXDInGameTurn * 2).ToString() + "HXD";
+                        UiManager.instance.HXDWin.text = "+" + league.winnerReward + " Coin";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-                        PlayerPrefs.SetInt("HXD", hxdTotal - (multiplayerManager.ValueHXDInGameTurn));
-                        UiManager.instance.HXDWin.text = "-" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
+                        UiManager.instance.HXDWin.text = "-" + league.entryFee + " Coin";
                     }
                     else
                     {
-                        PlayerPrefs.SetInt("HXD", hxdTotal + multiplayerManager.ValueHXDInGameTurn);
-                        UiManager.instance.HXDWin.text = "+" + multiplayerManager.ValueHXDInGameTurn.ToString() + "HXD";
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
+                        UiManager.instance.HXDWin.text = "+" + league.drawRefund + " Coin";
                     }
                     multiplayerManager.isTurn = false;
-
                 }
                 if (data.EndGame != true)
                     IsTurn?.Invoke(false);
-
-
             }
-
         }
 
         private void SetPlayers(MultiplayerMessage message)

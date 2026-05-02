@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 namespace Nakama.Helpers
@@ -17,7 +18,8 @@ namespace Nakama.Helpers
 
         public int Coins { get; private set; }
 
-        public event Action onCoinsChanged;
+        public event Action<int> onCoinsChanged;
+        public TextMeshProUGUI CoinText;
 
         private void Awake()
         {
@@ -26,25 +28,29 @@ namespace Nakama.Helpers
 
         private void Start()
         {
-            NakamaUserManager.Instance.onLoaded += OnUserLoaded;
+            StartCoroutine(WaitAndLoad());
         }
 
-        private void OnDestroy()
+        // Polls every frame until NakamaUserManager has finished loading the account,
+        // then reads the wallet. Works regardless of whether login happened before or after this Start().
+        private IEnumerator WaitAndLoad()
         {
-            if (NakamaUserManager.Instance != null)
-                NakamaUserManager.Instance.onLoaded -= OnUserLoaded;
-        }
+            while (NakamaUserManager.Instance == null || !NakamaUserManager.Instance.LoadingFinished)
+                yield return null;
 
-        private void OnUserLoaded()
-        {
-            RefreshFromAccount();
+            // Always fetch from server so we get up-to-date balance after a match
+            var task = RefreshAsync();
+            yield return new WaitUntil(() => task.IsCompleted);
         }
 
         public void RefreshFromAccount()
         {
             var wallet = NakamaUserManager.Instance.GetWallet<WalletData>();
             Coins = wallet != null ? wallet.coins : 0;
-            onCoinsChanged?.Invoke();
+            Debug.Log("WalletManager: Loaded wallet with " + Coins + " coins.");
+            onCoinsChanged?.Invoke(Coins);
+            // if (CoinText != null)
+            //     CoinText.text = Coins.ToString();
         }
 
         public async Task RefreshAsync()
@@ -62,7 +68,7 @@ namespace Nakama.Helpers
                 {
                     Coins = 0;
                 }
-                onCoinsChanged?.Invoke();
+                onCoinsChanged?.Invoke(Coins);
             }
             catch (Exception e)
             {
@@ -73,7 +79,7 @@ namespace Nakama.Helpers
         public void SetCoins(int amount)
         {
             Coins = amount;
-            onCoinsChanged?.Invoke();
+            onCoinsChanged?.Invoke(Coins);
         }
     }
 }

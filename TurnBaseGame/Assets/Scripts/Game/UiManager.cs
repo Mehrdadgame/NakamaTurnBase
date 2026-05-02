@@ -276,46 +276,52 @@ public class UiManager : MonoBehaviour
     [ContextMenu("sum")]
     public void RowSum()
     {
-  
-        arryRowSumOpp[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps, out Count).ToString();
-    
-        arryRowSumOpp[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2, out Count).ToString();
-       
-        arryRowSumOpp[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3, out Count).ToString();
-       
-
-        arryRowSumMe[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells, out Count).ToString();
-      
-        arryRowSumMe[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1, out Count).ToString();
-     
-         arryRowSumMe[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2, out Count).ToString();
-      
+        var calc = CalculterRowScore.instance;
 
         if (GameManager.Instance.modeGame == ModeGame.VerticalAndHorizontal)
         {
-            arryRowSumOppCal[0].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOppsCal, out Count).ToString();
-          
-            arryRowSumOppCal[1].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps2Cal, out Count).ToString();
-           
-            arryRowSumOppCal[2].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps3Cal, out Count).ToString();
-           
+            // VerticalAndHorizontal: each cell belongs to BOTH a row list and a column list.
+            // Stop all particles upfront (using row lists, which cover every cell),
+            // then run all calculations with skipClear=true so row matches don't
+            // get erased when column processing runs.
 
-            arryRowSumMeCal[0].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCellsCal, out Count).ToString();
-         
-            arryRowSumMeCal[1].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells1Cal, out Count).ToString();
-         
-            arryRowSumMeCal[2].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells2Cal, out Count).ToString();
+            calc.StopParticlesOpp(calc.tileDataOpps);
+            calc.StopParticlesOpp(calc.tileDataOpps2);
+            calc.StopParticlesOpp(calc.tileDataOpps3);
+            calc.StopParticlesMe(calc.clickInCells);
+            calc.StopParticlesMe(calc.clickInCells1);
+            calc.StopParticlesMe(calc.clickInCells2);
+
+            // Rows (activate row-match particles)
+            arryRowSumOpp[0].text = calc.TilesOpp(calc.tileDataOpps,  out Count, skipClear: true).ToString();
+            arryRowSumOpp[1].text = calc.TilesOpp(calc.tileDataOpps2, out Count, skipClear: true).ToString();
+            arryRowSumOpp[2].text = calc.TilesOpp(calc.tileDataOpps3, out Count, skipClear: true).ToString();
+            arryRowSumMe[0].text  = calc.TileMe(calc.clickInCells,  out Count, skipClear: true).ToString();
+            arryRowSumMe[1].text  = calc.TileMe(calc.clickInCells1, out Count, skipClear: true).ToString();
+            arryRowSumMe[2].text  = calc.TileMe(calc.clickInCells2, out Count, skipClear: true).ToString();
+
+            // Columns (activate column-match particles — without stopping row matches)
+            arryRowSumOppCal[0].text = calc.TilesOpp(calc.tileDataOppsCal,   out Count, skipClear: true).ToString();
+            arryRowSumOppCal[1].text = calc.TilesOpp(calc.tileDataOpps2Cal,  out Count, skipClear: true).ToString();
+            arryRowSumOppCal[2].text = calc.TilesOpp(calc.tileDataOpps3Cal,  out Count, skipClear: true).ToString();
+            arryRowSumMeCal[0].text  = calc.TileMe(calc.clickInCellsCal,   out Count, skipClear: true).ToString();
+            arryRowSumMeCal[1].text  = calc.TileMe(calc.clickInCells1Cal,  out Count, skipClear: true).ToString();
+            arryRowSumMeCal[2].text  = calc.TileMe(calc.clickInCells2Cal,  out Count, skipClear: true).ToString();
         }
-     
-        if (GameManager.Instance.modeGame != ModeGame.VerticalAndHorizontal)
+        else
         {
-            arryRowSumOpp[3].text = CalculterRowScore.instance.TilesOpp(CalculterRowScore.instance.tileDataOpps4, out Count).ToString();
-         
-            arryRowSumMe[3].text = CalculterRowScore.instance.TileMe(CalculterRowScore.instance.clickInCells3, out Count).ToString();
-           
+            // Normal modes: each row owns its cells exclusively — no overlap, no issue.
+            arryRowSumOpp[0].text = calc.TilesOpp(calc.tileDataOpps,  out Count).ToString();
+            arryRowSumOpp[1].text = calc.TilesOpp(calc.tileDataOpps2, out Count).ToString();
+            arryRowSumOpp[2].text = calc.TilesOpp(calc.tileDataOpps3, out Count).ToString();
+            arryRowSumMe[0].text  = calc.TileMe(calc.clickInCells,  out Count).ToString();
+            arryRowSumMe[1].text  = calc.TileMe(calc.clickInCells1, out Count).ToString();
+            arryRowSumMe[2].text  = calc.TileMe(calc.clickInCells2, out Count).ToString();
+            arryRowSumOpp[3].text = calc.TilesOpp(calc.tileDataOpps4,  out Count).ToString();
+            arryRowSumMe[3].text  = calc.TileMe(calc.clickInCells3, out Count).ToString();
         }
-        CheckShowLight();
 
+        CheckShowLight();
     }
 
     private void Instance_onSetDataInRowOpp(int arg1, int arg2)

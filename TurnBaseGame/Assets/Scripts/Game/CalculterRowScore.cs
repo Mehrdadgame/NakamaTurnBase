@@ -50,7 +50,29 @@ public class CalculterRowScore : MonoBehaviour
         }
         return whitecolor;
     }
-    public int TilesOpp(List<TileDataOpp> cell , out int count)
+    // Call this before RowSum in VerticalAndHorizontal mode to stop all particles at once
+    public void StopParticlesOpp(List<TileDataOpp> cell)
+    {
+        foreach (var item in cell)
+        {
+            item.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
+        }
+    }
+
+    public void StopParticlesMe(List<ClickInCell> cell)
+    {
+        foreach (var item in cell)
+        {
+            item.GetComponentInChildren<ParticleSystem>().Stop();
+            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
+            settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
+        }
+    }
+
+    // skipClear: true = don't stop particles first (used when caller already cleared them)
+    public int TilesOpp(List<TileDataOpp> cell, out int count, bool skipClear = false)
     {
         //  DuobleScore2.Clear();
         var total = 0;
@@ -58,13 +80,14 @@ public class CalculterRowScore : MonoBehaviour
                                                     .Where(g => g.Count() > 1).Where(r => r.Key > 0)
                                                     .ToDictionary(x => x.Key, x => x.Count());
 
-
-
-        foreach (var item in cell)
+        if (!skipClear)
         {
-            item.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
+            foreach (var item in cell)
+            {
+                item.GetComponentInChildren<ParticleSystem>().Stop();
+                ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
+                settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
+            }
         }
        
         var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
@@ -172,19 +195,22 @@ public class CalculterRowScore : MonoBehaviour
 
     }
 
-    public int TileMe(List<ClickInCell> cell , out int count)
+    public int TileMe(List<ClickInCell> cell, out int count, bool skipClear = false)
     {
-
         var total = 0;
         // DuobleScore1.Clear();
         Dictionary<int, int> freqMap = cell.GroupBy(x => x.ValueTile)
                                            .Where(g => g.Count() > 1).Where(r => r.Key > 0)
                                             .ToDictionary(x => x.Key, x => x.Count());
-        foreach (var itemm in cell)
+
+        if (!skipClear)
         {
-            itemm.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = itemm.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
+            foreach (var itemm in cell)
+            {
+                itemm.GetComponentInChildren<ParticleSystem>().Stop();
+                ParticleSystem.MainModule settings = itemm.GetComponentInChildren<ParticleSystem>().main;
+                settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
+            }
         }
 
 

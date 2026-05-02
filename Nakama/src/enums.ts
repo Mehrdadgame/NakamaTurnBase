@@ -21,5 +21,4 @@ const enum OperationCode
     ChosseTurn = 7,
     Rematch = 8,
     Sticker = 10,
-    UseCard = 11,
 }
