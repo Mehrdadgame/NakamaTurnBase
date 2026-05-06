@@ -1,0 +1,5 @@
+E:/UnityProject/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/6k5g4q5r/arm64-v8a/CMakeFiles/edit_cache.dir
+E:/UnityProject/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/6k5g4q5r/arm64-v8a/CMakeFiles/rebuild_cache.dir
+E:/UnityProject/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/6k5g4q5r/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir
+E:/UnityProject/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/6k5g4q5r/arm64-v8a/FramePacing/CMakeFiles/edit_cache.dir
+E:/UnityProject/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/6k5g4q5r/arm64-v8a/FramePacing/CMakeFiles/rebuild_cache.dir

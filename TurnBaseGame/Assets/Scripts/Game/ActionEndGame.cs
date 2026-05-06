@@ -4,15 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Nakama.Helpers;
+using RTLTMPro;
 
 public class ActionEndGame : MonoBehaviour
 {
     public static ActionEndGame instance;
     public GameObject ResultPanel;
-    public TextMeshProUGUI ResultText;
-    public TextMeshProUGUI ScoreMe;
-    public TextMeshProUGUI ScoreOpp;
-    public TextMeshProUGUI NameOpp;
+    public RTLTextMeshPro ResultText;
+    public RTLTextMeshPro ScoreMe;
+    public RTLTextMeshPro ScoreOpp;
+    public RTLTextMeshPro NameOpp;
     public Animator IconMe;
     public Animator IconOpp;
     public Button BackToHome;
@@ -20,6 +21,6 @@ public class ActionEndGame : MonoBehaviour
     private void Start()
     {
         instance = this;
-        NameOpp.text = PlayerPrefs.GetString("Opp");
+        NameOpp.text = PlayerPrefs.GetString("Opp", "Opponent");
     }
 }

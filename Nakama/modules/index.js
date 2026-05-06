@@ -75,6 +75,7 @@ var checkPendingRewardsRpc = function (context, logger, nakama, payload) {
     return JSON.stringify({ weekly: weekly, monthly: monthly });
 };
 // Returns top-N records for weekly or monthly leaderboard + caller's own record.
+// Each record includes avatarId fetched from profile storage.
 var getLeaderboardRpc = function (context, logger, nakama, payload) {
     var data = JSON.parse(payload || "{}");
     var lbId = data.type === "monthly" ? LeaderboardMonthly : LeaderboardWeekly;
@@ -85,16 +86,45 @@ var getLeaderboardRpc = function (context, logger, nakama, payload) {
     try {
         var result = nakama.leaderboardRecordsList(lbId, [], limit, "", 0);
         records = result.records || [];
-        // Own rank (ownerRecords query)
         if (userId) {
             var own = nakama.leaderboardRecordsList(lbId, [userId], 1, "", 0);
             ownRecord = (own.ownerRecords && own.ownerRecords.length > 0) ? own.ownerRecords[0] : null;
         }
-    }
-    catch (e) {
+    } catch (e) {
         logger.warn("getLeaderboardRpc failed: " + e);
     }
-    return JSON.stringify({ records: records, ownRecord: ownRecord });
+    // Batch-read profile storage to get avatarId for each player
+    var storageReads = [];
+    var seenIds = {};
+    for (var i = 0; i < records.length; i++) {
+        var oid = records[i].ownerId;
+        if (oid && !seenIds[oid]) { storageReads.push({ collection: CollectionProfile, key: KeyProfileData, userId: oid }); seenIds[oid] = true; }
+    }
+    if (ownRecord && ownRecord.ownerId && !seenIds[ownRecord.ownerId]) {
+        storageReads.push({ collection: CollectionProfile, key: KeyProfileData, userId: ownRecord.ownerId });
+    }
+    var profileMap = {};
+    if (storageReads.length > 0) {
+        try {
+            var profiles = nakama.storageRead(storageReads);
+            for (var j = 0; j < profiles.length; j++) {
+                profileMap[profiles[j].userId] = profiles[j].value;
+            }
+        } catch (e) { logger.warn("Profile batch read failed: " + e); }
+    }
+    // Enrich records with avatarId
+    var enriched = [];
+    for (var i = 0; i < records.length; i++) {
+        var r = records[i];
+        var p = profileMap[r.ownerId] || {};
+        enriched.push({ ownerId: r.ownerId, username: r.username, score: r.score, rank: r.rank, avatarId: p.avatarId || "avatar_0" });
+    }
+    var enrichedOwn = null;
+    if (ownRecord) {
+        var p = profileMap[ownRecord.ownerId] || {};
+        enrichedOwn = { ownerId: ownRecord.ownerId, username: ownRecord.username, score: ownRecord.score, rank: ownRecord.rank, avatarId: p.avatarId || "avatar_0" };
+    }
+    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn });
 };
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 var selectAvatarRpc = function (context, logger, nakama, payload) {
@@ -135,17 +165,53 @@ var getProfileRpc = function (context, logger, nakama, payload) {
     if (!userId)
         throw new Error("Not authenticated");
     var account = nakama.accountGetId(userId);
-    var displayName = account.user.displayName || "";
+    var displayName = account.user.displayName || account.user.username || "";
     var stored = nakama.storageRead([
         { collection: CollectionProfile, key: KeyProfileData, userId: userId },
     ]);
+    var profileObj = stored.length > 0 ? stored[0] : null;
     var profile = {
         email: "", phone: "",
         emailLocked: false, phoneLocked: false,
         emailBonusClaimed: false, phoneBonusClaimed: false,
         avatarId: "avatar_0", ownedAvatars: [],
+        welcomeBonusClaimed: false,
     };
-    if (stored.length > 0) profile = stored[0].value;
+    if (stored.length > 0)
+        profile = stored[0].value;
+    if (!profile.welcomeBonusClaimed) {
+        var updatedProfile = {
+            email: profile.email || "",
+            phone: profile.phone || "",
+            emailLocked: !!profile.emailLocked,
+            phoneLocked: !!profile.phoneLocked,
+            emailBonusClaimed: !!profile.emailBonusClaimed,
+            phoneBonusClaimed: !!profile.phoneBonusClaimed,
+            avatarId: profile.avatarId || "avatar_0",
+            ownedAvatars: profile.ownedAvatars || [],
+            welcomeBonusClaimed: true,
+        };
+        var writeReq = {
+            collection: CollectionProfile,
+            key: KeyProfileData,
+            userId: userId,
+            value: updatedProfile,
+            permissionRead: 1,
+            permissionWrite: 0,
+            version: profileObj && profileObj.version ? profileObj.version : "*",
+        };
+        try {
+            nakama.storageWrite([writeReq]);
+            nakama.walletUpdate(userId, { coins: FirstLoginBonusCoins }, { source: "first_login_bonus" }, true);
+            profile = updatedProfile;
+            logger.info("First login bonus granted: userId=" + userId + " coins=" + FirstLoginBonusCoins);
+        } catch (e) {
+            logger.info("First login bonus skipped (already claimed or conflict): " + e);
+            var latest = nakama.storageRead([{ collection: CollectionProfile, key: KeyProfileData, userId: userId }]);
+            if (latest.length > 0)
+                profile = latest[0].value;
+        }
+    }
     // Effective owned list: free avatars always owned + purchased ones
     var ownedAvatars = profile.ownedAvatars || [];
     var effectiveOwned = [];
@@ -237,7 +303,7 @@ var updateProfileRpc = function (context, logger, nakama, payload) {
         }]);
     var updated = nakama.accountGetId(userId);
     return JSON.stringify({
-        displayName: updated.user.displayName || "",
+        displayName: updated.user.displayName || updated.user.username || "",
         email: profile.email,
         phone: profile.phone,
         emailLocked: profile.emailLocked,
@@ -335,6 +401,9 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
     for (var _i = 0, presences_1 = presences; _i < presences_1.length; _i++) {
         var presence = presences_1[_i];
         var account = nakama.accountGetId(presence.userId);
+        var resolvedName = account.user.displayName && account.user.displayName.trim().length > 0
+            ? account.user.displayName.trim()
+            : (presence.username || account.user.username || "Player");
         // Deduct entry fee
         var league = LEAGUES[gameState.ModeText];
         if (league) {
@@ -347,7 +416,7 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
         }
         var player = {
             presence: presence,
-            displayName: account.user.displayName, ScorePlayer: 0,
+            displayName: resolvedName, ScorePlayer: 0,
         };
         var slot = getNextPlayerNumber(gameState.players);
         gameState.players[slot] = player;
@@ -1062,6 +1131,7 @@ var MONTHLY_REWARDS = [5000, 2500, 1000, 750, 500, 300, 200, 100, 50, 10];
 var CollectionSeason = "Season";
 var CollectionProfile = "Profile";
 var KeyProfileData = "profile_data";
+var FirstLoginBonusCoins = 2000;
 // Avatar catalog — prices validated server-side (client cannot lie about price)
 // id must match AvatarLibrary ScriptableObject ids in Unity client
 var AVATAR_PRICES = {

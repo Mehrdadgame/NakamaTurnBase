@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using RTLTMPro;
 
 public class TimerTurn : MonoBehaviour
 {
     public static TimerTurn instance;
-    public TextMeshProUGUI TimerText;
+    public RTLTextMeshPro TimerText;
     public bool TimerRunning = false;
     public bool TimerPause = false;
     public float TimerCount = 30;
@@ -24,7 +25,7 @@ public class TimerTurn : MonoBehaviour
         if (TimerRunning && !TimerPause)
         {
             TimerCount -= Time.deltaTime * 1;
-            TimerText.text = TimerCount.ToString("F0")+"s";
+            TimerText.text = TimerCount.ToString("F0");
             if (TimerCount <= 5)
             {
                 TimerText.color = Color.red;

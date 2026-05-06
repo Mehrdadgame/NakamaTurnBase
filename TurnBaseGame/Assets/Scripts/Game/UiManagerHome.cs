@@ -7,7 +7,7 @@ using NinjaBattle.Game;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using RTLTMPro;
 namespace Game
 {
     public class UiManagerHome : MonoBehaviour
@@ -18,7 +18,7 @@ namespace Game
 
         public Transform parentPos;
 
-        public TextMeshProUGUI Cointext;
+        public RTLTextMeshPro Cointext;
 
         [Header("Avatar")]
         [SerializeField] private Image avatarImage;   // player avatar shown on home screen

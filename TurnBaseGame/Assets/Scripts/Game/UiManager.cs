@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine.U2D;
 using Unity.VisualScripting;
+using RTLTMPro;
 
 public class UiManager : MonoBehaviour
 {
@@ -19,15 +20,15 @@ public class UiManager : MonoBehaviour
     [SerializeField] private List<TileDataOpp> tileDataOpps = new List<TileDataOpp>();
     [SerializeField] private List<ClickInCell> tileDataMe = new List<ClickInCell>();
 
-    [SerializeField] private TextMeshProUGUI ScoreTextMe;
-    [SerializeField] private TextMeshProUGUI ScoreTextOpp;
+    [SerializeField] private RTLTextMeshPro ScoreTextOpp;
+    [SerializeField] private RTLTextMeshPro ScoreTextMe;
 
     [SerializeField] private Animator TextTurnYou;
     [SerializeField] private Animator TextTurnOpp;
     [SerializeField] private Animator TextValueMines;
     [SerializeField] private Sprite[] DiceRollsSprite;
     [SerializeField] private GameObject rematchPanle;
-    [SerializeField] private TextMeshProUGUI messageLeftPalyerInRematch;
+    [SerializeField] private RTLTextMeshPro messageLeftPalyerInRematch;
     [SerializeField] private Button rematchButton;
 
     [SerializeField] private Button acceptRematchButton;
@@ -44,7 +45,7 @@ public class UiManager : MonoBehaviour
     public static UiManager instance;
 
 
-    public TextMeshProUGUI HXDWin;
+    public RTLTextMeshPro TasiWin;
     public GameObject PanelLeftPalyer;
     public TextMeshProUGUI NamePalyerLeft;
 
@@ -55,20 +56,19 @@ public class UiManager : MonoBehaviour
     private void Start()
     {
         instance = this;
+        NameOpp.text = PlayerPrefs.GetString("Opp", "Opponent");
         if (MultiplayerManager.Instance.isTurn)
         {
             dicRollButton.interactable = true;
             dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
             TextTurnYou.Play("YouTurn", 0, 0);
             TimerTurn.instance.TimerRunning = true;
-            NameOpp.text = PlayerPrefs.GetString("Opp");
         }
         else
         {
             dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[1];
             TextTurnOpp.Play("OppTurn", 0, 0);
             TimerTurn.instance.TimerRunning = false;
-            NameOpp.text = PlayerPrefs.GetString("Opp");
             GameManager.Instance.diceRoller.Rotation(true);
         }
 
@@ -136,7 +136,7 @@ public class UiManager : MonoBehaviour
         }
         if (obj.Answer == "left")
         {
-            messageLeftPalyerInRematch.text = "Player is Left";
+            messageLeftPalyerInRematch.text = "متاسفانه بازیکن از بازی خارج شد.";
             acceptRematchButton.gameObject.SetActive(true);
             acceptRematchButton.gameObject.SetActive(false);
             exitRematchButton.gameObject.SetActive(false);
@@ -148,7 +148,7 @@ public class UiManager : MonoBehaviour
         }
         if (obj.Answer == "no")
         {
-            messageLeftPalyerInRematch.text = "Player dont accept";
+            messageLeftPalyerInRematch.text = "حریف قبول نکرد";
             loading.gameObject.SetActive(false);
             exitButton.gameObject.SetActive(true);
             AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
@@ -204,7 +204,7 @@ public class UiManager : MonoBehaviour
             settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
             me.SpriteDice.transform.parent.gameObject.SetActive(false);
         }
-        ScoreTextMe.text = "0";
+        ScoreTextOpp.text = "0";
         ScoreTextOpp.text = "0";
         RowSum();
         await Task.Delay(750);
@@ -253,7 +253,7 @@ public class UiManager : MonoBehaviour
 
             mines = 0;
         }
-        ScoreTextMe.text = obj.ToString();
+        ScoreTextOpp.text = obj.ToString();
 
 
     }
@@ -273,7 +273,7 @@ public class UiManager : MonoBehaviour
     }
    
     int Count;
-    [ContextMenu("sum")]
+    [UnityEngine.ContextMenu("sum")]
     public void RowSum()
     {
         var calc = CalculterRowScore.instance;

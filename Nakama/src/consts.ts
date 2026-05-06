@@ -54,6 +54,7 @@ const MONTHLY_REWARDS: number[] = [5000, 2500, 1000, 750, 500, 300, 200, 100, 50
 const CollectionSeason        = "Season";
 const CollectionProfile       = "Profile";
 const KeyProfileData          = "profile_data";
+const FirstLoginBonusCoins    = 2000;
 
 // Avatar catalog — prices validated server-side (client cannot lie about price)
 // id must match AvatarLibrary ScriptableObject ids in Unity client
@@ -64,7 +65,8 @@ const AVATAR_PRICES: { [id: string]: number } = {
     "avatar_3": 300,
     "avatar_4": 500,
     "avatar_5": 600,
-    "avatar_6": 700
+    "avatar_6": 700,
+    "avatar_7": 700
     
 };
 const KeyPendingRewardWeekly  = "pending_weekly";

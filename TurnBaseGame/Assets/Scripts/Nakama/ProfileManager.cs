@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using DG.Tweening;
+using RTLTMPro;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -67,6 +68,7 @@ namespace Nakama.Helpers
         [Header("Coin Bonus Popup (optional)")]
         [SerializeField] private TextMeshProUGUI coinBonusPopup;
         [SerializeField] private RectTransform coinBonusRect;
+        [SerializeField] private RTLTextMeshPro displayName; // for refreshing coin display after bonus
 
         #endregion
 
@@ -82,6 +84,7 @@ namespace Nakama.Helpers
         private void OnEnable()
         {
             SetStatus("", Color.white);
+            RefreshDisplayNameLabel(null);
             StartCoroutine(WaitAndLoad());
 
             // Subscribe to avatar changes so the button image stays in sync
@@ -199,6 +202,39 @@ namespace Nakama.Helpers
                 phoneInput.interactable = !data.phoneLocked;
             }
             if (phoneLockIcon != null) phoneLockIcon.SetActive(data.phoneLocked);
+            RefreshDisplayNameLabel(data.displayName);
+        }
+
+        private void RefreshDisplayNameLabel(string rawDisplayName)
+        {
+            if (displayName == null) return;
+
+            if (ProfileService.Instance != null)
+            {
+                displayName.text = ProfileService.Instance.ResolveDisplayNameOrUsername(rawDisplayName);
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(rawDisplayName))
+            {
+                displayName.text = rawDisplayName.Trim();
+                return;
+            }
+
+            var userManager = NakamaUserManager.Instance;
+            if (userManager != null && userManager.LoadingFinished)
+            {
+                var user = userManager.User;
+                if (user != null)
+                {
+                    displayName.text = !string.IsNullOrWhiteSpace(user.Username)
+                        ? user.Username.Trim()
+                        : string.Empty;
+                    return;
+                }
+            }
+
+            displayName.text = string.Empty;
         }
 
         #endregion

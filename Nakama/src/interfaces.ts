@@ -98,6 +98,8 @@ interface ProfileData {
     emailBonusClaimed: boolean;
     phoneBonusClaimed: boolean;
     avatarId:          string;    // selected avatar id, e.g. "avatar_0"
+    ownedAvatars:      string[];
+    welcomeBonusClaimed: boolean;
 }
 
 interface UpdateProfileResult {

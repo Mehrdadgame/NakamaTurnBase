@@ -7,6 +7,64 @@ let joinOrCreateMatch: nkruntime.RpcFunction = function (
     return nakama.matchCreate(MatchModuleName, { mode: payload });
 };
 
+function createDefaultProfile(): ProfileData {
+    return {
+        email: "", phone: "",
+        emailLocked: false, phoneLocked: false,
+        emailBonusClaimed: false, phoneBonusClaimed: false,
+        avatarId: "avatar_0",
+        ownedAvatars: [],
+        welcomeBonusClaimed: false,
+    };
+}
+
+function grantFirstLoginBonusIfNeeded(
+    userId: string,
+    profileObj: nkruntime.StorageObject | null,
+    profile: ProfileData,
+    logger: nkruntime.Logger,
+    nakama: nkruntime.Nakama
+): ProfileData {
+    if (profile.welcomeBonusClaimed)
+        return profile;
+
+    const updatedProfile: ProfileData = {
+        ...profile,
+        welcomeBonusClaimed: true,
+    };
+
+    const writeRequest: nkruntime.StorageWriteRequest = {
+        collection: CollectionProfile,
+        key: KeyProfileData,
+        userId: userId,
+        value: updatedProfile,
+        permissionRead: 1,
+        permissionWrite: 0,
+    };
+
+    // Compare-and-swap prevents duplicate bonus on concurrent first-login RPC calls.
+    writeRequest.version = profileObj && profileObj.version ? profileObj.version : "*";
+
+    try {
+        nakama.storageWrite([writeRequest]);
+        nakama.walletUpdate(
+            userId,
+            { coins: FirstLoginBonusCoins },
+            { source: "first_login_bonus" },
+            true
+        );
+        logger.info(`First login bonus granted: userId=${userId} coins=${FirstLoginBonusCoins}`);
+        return updatedProfile;
+    } catch (e) {
+        // Another concurrent request may have already claimed the bonus.
+        logger.info("First login bonus skipped (already claimed or conflict): " + e);
+        const latest = nakama.storageRead([{ collection: CollectionProfile, key: KeyProfileData, userId }]);
+        if (latest.length > 0)
+            return latest[0].value as ProfileData;
+        return updatedProfile;
+    }
+}
+
 // Called on login — returns unclaimed weekly/monthly rewards and marks them claimed.
 // Coins were already added to the wallet during the leaderboard reset hook.
 let checkPendingRewardsRpc: nkruntime.RpcFunction = function (
@@ -41,6 +99,7 @@ let checkPendingRewardsRpc: nkruntime.RpcFunction = function (
 };
 
 // Returns top-N records for weekly or monthly leaderboard + caller's own record.
+// Each record includes avatarId fetched from profile storage.
 let getLeaderboardRpc: nkruntime.RpcFunction = function (
     context, logger, nakama, payload
 ): string {
@@ -55,8 +114,6 @@ let getLeaderboardRpc: nkruntime.RpcFunction = function (
     try {
         const result = nakama.leaderboardRecordsList(lbId, [], limit, "", 0);
         records = result.records || [];
-
-        // Own rank (ownerRecords query)
         if (userId) {
             const own = nakama.leaderboardRecordsList(lbId, [userId], 1, "", 0);
             ownRecord = (own.ownerRecords && own.ownerRecords.length > 0) ? own.ownerRecords[0] : null;
@@ -65,7 +122,46 @@ let getLeaderboardRpc: nkruntime.RpcFunction = function (
         logger.warn("getLeaderboardRpc failed: " + e);
     }
 
-    return JSON.stringify({ records, ownRecord });
+    // Batch-read profiles to get avatarId for each player
+    const storageReads: nkruntime.StorageReadRequest[] = [];
+    const seenIds: { [id: string]: boolean } = {};
+    for (const r of records) {
+        if (r.ownerId && !seenIds[r.ownerId]) {
+            storageReads.push({ collection: CollectionProfile, key: KeyProfileData, userId: r.ownerId });
+            seenIds[r.ownerId] = true;
+        }
+    }
+    if (ownRecord && ownRecord.ownerId && !seenIds[ownRecord.ownerId]) {
+        storageReads.push({ collection: CollectionProfile, key: KeyProfileData, userId: ownRecord.ownerId });
+    }
+
+    const profileMap: { [userId: string]: ProfileData } = {};
+    if (storageReads.length > 0) {
+        try {
+            const profiles = nakama.storageRead(storageReads);
+            for (const obj of profiles) {
+                profileMap[obj.userId] = obj.value as ProfileData;
+            }
+        } catch (e) { logger.warn("Profile batch read failed: " + e); }
+    }
+
+    const enriched = records.map(r => ({
+        ownerId:  r.ownerId,
+        username: r.username,
+        score:    r.score,
+        rank:     r.rank,
+        avatarId: (profileMap[r.ownerId]?.avatarId) || "avatar_0",
+    }));
+
+    const enrichedOwn = ownRecord ? {
+        ownerId:  ownRecord.ownerId,
+        username: ownRecord.username,
+        score:    ownRecord.score,
+        rank:     ownRecord.rank,
+        avatarId: (profileMap[ownRecord.ownerId]?.avatarId) || "avatar_0",
+    } : null;
+
+    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn });
 };
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
@@ -79,7 +175,6 @@ let selectAvatarRpc: nkruntime.RpcFunction = function (
     const input = JSON.parse(payload || "{}") as { avatarId: string };
     if (!input.avatarId) return JSON.stringify({ success: false, error: "Missing avatarId" });
 
-    // Server-side price lookup — client cannot spoof the price
     const price: number = AVATAR_PRICES.hasOwnProperty(input.avatarId)
         ? AVATAR_PRICES[input.avatarId]
         : -1;
@@ -87,7 +182,16 @@ let selectAvatarRpc: nkruntime.RpcFunction = function (
     if (price < 0)
         return JSON.stringify({ success: false, error: "Unknown avatar id" });
 
-    if (price > 0) {
+    const stored = nakama.storageRead([
+        { collection: CollectionProfile, key: KeyProfileData, userId },
+    ]);
+    let profile: ProfileData = createDefaultProfile();
+    if (stored.length > 0) profile = stored[0].value as ProfileData;
+
+    const ownedAvatars = profile.ownedAvatars || [];
+    const alreadyOwned = ownedAvatars.indexOf(input.avatarId) >= 0;
+
+    if (price > 0 && !alreadyOwned) {
         const account = nakama.accountGetId(userId);
         const wallet  = account.wallet || {};
         if ((wallet["coins"] || 0) < price)
@@ -104,20 +208,11 @@ let selectAvatarRpc: nkruntime.RpcFunction = function (
             logger.warn("Avatar purchase wallet deduct failed: " + e);
             return JSON.stringify({ success: false, error: "Payment failed" });
         }
+
+        ownedAvatars.push(input.avatarId);
     }
 
-    // Load profile, update avatarId, save
-    const stored = nakama.storageRead([
-        { collection: CollectionProfile, key: KeyProfileData, userId },
-    ]);
-    let profile: ProfileData = {
-        email: "", phone: "",
-        emailLocked: false, phoneLocked: false,
-        emailBonusClaimed: false, phoneBonusClaimed: false,
-        avatarId: "avatar_0",
-    };
-    if (stored.length > 0) profile = stored[0].value as ProfileData;
-
+    profile.ownedAvatars = ownedAvatars;
     profile.avatarId = input.avatarId;
 
     nakama.storageWrite([{
@@ -129,11 +224,9 @@ let selectAvatarRpc: nkruntime.RpcFunction = function (
         permissionWrite: 0,
     }]);
 
-    logger.info(`Avatar selected: userId=${userId} avatarId=${input.avatarId} price=${price}`);
-    return JSON.stringify({ success: true, avatarId: input.avatarId, error: "" });
+    logger.info(`Avatar selected: userId=${userId} avatarId=${input.avatarId} price=${price} alreadyOwned=${alreadyOwned}`);
+    return JSON.stringify({ success: true, avatarId: input.avatarId, ownedAvatars, error: "" });
 };
-
-// ─── Profile ──────────────────────────────────────────────────────────────────
 
 let getProfileRpc: nkruntime.RpcFunction = function (
     context, logger, nakama, payload
@@ -142,19 +235,37 @@ let getProfileRpc: nkruntime.RpcFunction = function (
     if (!userId) throw new Error("Not authenticated");
 
     const account = nakama.accountGetId(userId);
-    const displayName = account.user.displayName || "";
+    const displayName = account.user.displayName || account.user.username || "";
 
     const stored = nakama.storageRead([
         { collection: CollectionProfile, key: KeyProfileData, userId },
     ]);
 
-    let profile: ProfileData = {
-        email: "", phone: "",
-        emailLocked: false, phoneLocked: false,
-        emailBonusClaimed: false, phoneBonusClaimed: false,
-        avatarId: "avatar_0",
-    };
-    if (stored.length > 0) profile = stored[0].value as ProfileData;
+    const profileObj = stored.length > 0 ? stored[0] : null;
+    let profile: ProfileData = profileObj
+        ? profileObj.value as ProfileData
+        : createDefaultProfile();
+
+    profile = grantFirstLoginBonusIfNeeded(userId, profileObj, profile, logger, nakama);
+
+    const ownedAvatars = profile.ownedAvatars || [];
+    const effectiveOwned: string[] = [];
+    const allIds = Object.keys(AVATAR_PRICES);
+
+    for (const id of allIds) {
+        if (AVATAR_PRICES[id] === 0)
+            effectiveOwned.push(id);
+    }
+
+    for (const id of ownedAvatars) {
+        if (effectiveOwned.indexOf(id) < 0)
+            effectiveOwned.push(id);
+    }
+
+    const avatarPriceList = allIds.map(id => ({
+        id,
+        price: AVATAR_PRICES[id],
+    }));
 
     return JSON.stringify({
         displayName,
@@ -162,6 +273,9 @@ let getProfileRpc: nkruntime.RpcFunction = function (
         phone:       profile.phone,
         emailLocked: profile.emailLocked,
         phoneLocked: profile.phoneLocked,
+        avatarId: profile.avatarId || "avatar_0",
+        ownedAvatars: effectiveOwned,
+        avatarPrices: avatarPriceList,
     });
 };
 
@@ -181,12 +295,7 @@ let updateProfileRpc: nkruntime.RpcFunction = function (
     const stored = nakama.storageRead([
         { collection: CollectionProfile, key: KeyProfileData, userId },
     ]);
-    let profile: ProfileData = {
-        email: "", phone: "",
-        emailLocked: false, phoneLocked: false,
-        emailBonusClaimed: false, phoneBonusClaimed: false,
-        avatarId: "avatar_0",
-    };
+    let profile: ProfileData = createDefaultProfile();
     if (stored.length > 0) profile = stored[0].value as ProfileData;
 
     // ── Display name ────────────────────────────────────────────────────────
@@ -249,7 +358,7 @@ let updateProfileRpc: nkruntime.RpcFunction = function (
 
     const updated = nakama.accountGetId(userId);
     return JSON.stringify({
-        displayName:  updated.user.displayName || "",
+        displayName:  updated.user.displayName || updated.user.username || "",
         email:        profile.email,
         phone:        profile.phone,
         emailLocked:  profile.emailLocked,
@@ -276,3 +385,4 @@ function CreateLeaderboards(
         }
     }
 }
+

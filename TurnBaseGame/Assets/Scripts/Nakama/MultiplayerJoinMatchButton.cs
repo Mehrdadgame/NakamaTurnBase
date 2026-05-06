@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Game;
 using NinjaBattle.Game;
+using RTLTMPro;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,10 +13,20 @@ namespace Nakama.Helpers
         #region FIELDS
 
         [SerializeField] private Button button;
+        [SerializeField] private GameObject shopPanelToOpen;
 
         [Header("Coin Animation")]
         [SerializeField] private TextMeshProUGUI costPopupText;   // optional: shows "-50 Coin"
         [SerializeField] private RectTransform   costPopupRect;   // optional: same object, floats up
+
+        [Header("Insufficient Coins Popup")]
+        [SerializeField] private GameObject insufficientCoinsPopup;
+        [SerializeField] private RTLTextMeshPro insufficientCoinsText;
+        [SerializeField] private Button buyCoinsButton;
+        [SerializeField] private Button watchAdButton;
+        [SerializeField] private Button closePopupButton;
+
+        private bool _isJoining;
 
         #endregion
 
@@ -23,7 +34,40 @@ namespace Nakama.Helpers
 
         private void Awake()
         {
-            button.onClick.AddListener(OnClick);
+            if (button != null)
+                button.onClick.AddListener(OnClick);
+
+            if (buyCoinsButton != null)
+                buyCoinsButton.onClick.AddListener(OnBuyCoinsClicked);
+            if (watchAdButton != null)
+                watchAdButton.onClick.AddListener(OnWatchAdClicked);
+            if (closePopupButton != null)
+                closePopupButton.onClick.AddListener(HideInsufficientCoinsPopup);
+
+            if (insufficientCoinsPopup != null)
+                insufficientCoinsPopup.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            _isJoining = false;
+            if (button != null)
+                button.interactable = true;
+            if (insufficientCoinsPopup != null)
+                insufficientCoinsPopup.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            if (button != null)
+                button.onClick.RemoveListener(OnClick);
+
+            if (buyCoinsButton != null)
+                buyCoinsButton.onClick.RemoveListener(OnBuyCoinsClicked);
+            if (watchAdButton != null)
+                watchAdButton.onClick.RemoveListener(OnWatchAdClicked);
+            if (closePopupButton != null)
+                closePopupButton.onClick.RemoveListener(HideInsufficientCoinsPopup);
         }
 
         #endregion
@@ -32,12 +76,64 @@ namespace Nakama.Helpers
 
         private void OnClick()
         {
-            var mode = GetComponent<SetModeGame>().modeGame;
-            GameManager.Instance.modeGame = mode;
-            button.interactable = false;
+            if (_isJoining)
+                return;
 
+            var modeSetter = GetComponent<SetModeGame>();
+            if (modeSetter == null)
+            {
+                Debug.LogWarning("[MultiplayerJoinMatchButton] SetModeGame component is missing.");
+                return;
+            }
+
+            var mode = modeSetter.modeGame;
             int fee = ClientLeagues.Get(mode).entryFee;
+            int coins = WalletManager.Instance != null ? WalletManager.Instance.Coins : 0;
+
+            if (fee > 0 && coins < fee)
+            {
+                ShowInsufficientCoinsPopup(coins, fee);
+                return;
+            }
+
+            GameManager.Instance.modeGame = mode;
+            if (button != null)
+                button.interactable = false;
+            _isJoining = true;
+
             PlayCoinAnimation(fee, () => MultiplayerManager.Instance.JoinMatchAsync(mode));
+        }
+
+        private void ShowInsufficientCoinsPopup(int currentCoins, int requiredCoins)
+        {
+            if (insufficientCoinsText != null)
+            {
+                insufficientCoinsText.text =
+                    $"مقدار کافی تاسی نداری {requiredCoins}, شما دارید {currentCoins} تاسی. یا تاسی بخر یا تبلغ ببین.";
+            }
+
+            if (insufficientCoinsPopup != null)
+                insufficientCoinsPopup.SetActive(true);
+        }
+
+        private void HideInsufficientCoinsPopup()
+        {
+            if (insufficientCoinsPopup != null)
+                insufficientCoinsPopup.SetActive(false);
+        }
+
+        private void OnBuyCoinsClicked()
+        {
+            Debug.Log("[MultiplayerJoinMatchButton] Buy Coins clicked. Hook your shop flow here.");
+            if (shopPanelToOpen != null)
+                shopPanelToOpen.SetActive(true);
+            HideInsufficientCoinsPopup();
+        }
+
+        private void OnWatchAdClicked()
+        {
+            Debug.Log("[MultiplayerJoinMatchButton] Watch Ad clicked. Integrate rewarded ads SDK here.");
+            HideInsufficientCoinsPopup();
         }
 
         #endregion

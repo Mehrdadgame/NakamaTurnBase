@@ -19,6 +19,13 @@ namespace NinjaBattle.Game
         private NakamaManager nakamaManager = null;
         private MultiplayerManager multiplayerManager = null;
         private bool blockJoinsAndLeaves = false;
+        private readonly Dictionary<string, string> botNamesByUserId = new Dictionary<string, string>();
+
+        private static readonly string[] BotNamePool =
+        {
+            "DiceBot", "NinjaBot", "StormBot", "BladeBot", "ShadowBot",
+            "CobraBot", "FalconBot", "TigerBot", "NovaBot", "IronBot"
+        };
 
         #endregion
 
@@ -167,17 +174,17 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "+" + league.winnerReward + " Coin";
+                        UiManager.instance.TasiWin.text = "+" + league.winnerReward + " تاسی";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "-" + league.entryFee + " Coin";
+                        UiManager.instance.TasiWin.text = "-" + league.entryFee + " تاسی";
                     }
                     else
                     {
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "+" + league.drawRefund + " Coin";
+                        UiManager.instance.TasiWin.text = "+" + league.drawRefund + " تاسی";
                     }
                     multiplayerManager.isTurn = false;
                     if (data.EndGame != true)
@@ -208,17 +215,17 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "+" + league.winnerReward + " Coin";
+                        UiManager.instance.TasiWin.text = "+" + league.winnerReward + " تاسی";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "-" + league.entryFee + " Coin";
+                        UiManager.instance.TasiWin.text = "-" + league.entryFee + " تاسی";
                     }
                     else
                     {
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
-                        UiManager.instance.HXDWin.text = "+" + league.drawRefund + " Coin";
+                        UiManager.instance.TasiWin.text = "+" + league.drawRefund + " تاسی";
                     }
                     multiplayerManager.isTurn = false;
                 }
@@ -230,25 +237,25 @@ namespace NinjaBattle.Game
         private void SetPlayers(MultiplayerMessage message)
         {
             Players = message.GetData<List<PlayerData>>();
-            PlayerPrefs.SetString("Opp", Players.Find(e => e != CurrentPlayer).DisplayName);
-            onPlayersReceived?.Invoke(Players);
             GetCurrentPlayer();
+            UpdateOpponentNameCache();
+            onPlayersReceived?.Invoke(Players);
         }
 
         private void PlayerJoined(MultiplayerMessage message)
         {
             PlayerData player = message.GetData<PlayerData>();
+            if (Players == null)
+                Players = new List<PlayerData>();
+
             int index = Players.IndexOf(null);
             if (index > -1)
                 Players[index] = player;
             else
-            {
                 Players.Add(player);
-                PlayerPrefs.SetString("Opp", player.DisplayName);
-            }
 
-
-
+            GetCurrentPlayer();
+            UpdateOpponentNameCache();
             onPlayerJoined?.Invoke(player);
         }
 
@@ -275,6 +282,7 @@ namespace NinjaBattle.Game
         {
             nakamaManager.Socket.ReceivedMatchPresence += PlayersChanged;
             GetCurrentPlayer();
+            UpdateOpponentNameCache();
 
         }
         private void ShowResultEndGame(string resutlText, int score1, int score2)
@@ -300,13 +308,13 @@ namespace NinjaBattle.Game
             if (multiplayerManager.Self == null)
                 return;
 
-            if (CurrentPlayer != null)
-                return;
-
-            CurrentPlayer = Players.Find(player => player.Presence.SessionId == multiplayerManager.Self.SessionId);
+            CurrentPlayer = Players.Find(player => player != null &&
+                                                   player.Presence != null &&
+                                                   player.Presence.SessionId == multiplayerManager.Self.SessionId);
             CurrentPlayerNumber = Players.IndexOf(CurrentPlayer);
 
-            onLocalPlayerObtained?.Invoke(CurrentPlayer, CurrentPlayerNumber);
+            if (CurrentPlayer != null)
+                onLocalPlayerObtained?.Invoke(CurrentPlayer, CurrentPlayerNumber);
 
 
         }
@@ -318,7 +326,65 @@ namespace NinjaBattle.Game
             Players = null;
             CurrentPlayer = null;
             CurrentPlayerNumber = -1;
+            botNamesByUserId.Clear();
 
+        }
+
+        private void UpdateOpponentNameCache()
+        {
+            if (Players == null || multiplayerManager == null || multiplayerManager.Self == null)
+                return;
+
+            string mySessionId = multiplayerManager.Self.SessionId;
+            var opponent = Players.Find(player => player != null &&
+                                                  player.Presence != null &&
+                                                  player.Presence.SessionId != mySessionId);
+
+            if (opponent == null)
+                return;
+
+            string name = ResolvePlayerDisplayName(opponent);
+            if (string.IsNullOrWhiteSpace(name))
+                name = "Opponent";
+
+            PlayerPrefs.SetString("Opp", name);
+        }
+
+        private string ResolvePlayerDisplayName(PlayerData player)
+        {
+            if (player == null)
+                return string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(player.DisplayName))
+                return player.DisplayName.Trim();
+
+            if (player.Presence != null && !string.IsNullOrWhiteSpace(player.Presence.Username))
+                return player.Presence.Username.Trim();
+
+            if (player.Presence != null && IsBotUser(player.Presence.UserId))
+                return GetOrCreateBotName(player.Presence.UserId);
+
+            return string.Empty;
+        }
+
+        private static bool IsBotUser(string userId)
+        {
+            return !string.IsNullOrWhiteSpace(userId) &&
+                   userId.StartsWith("bot_", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private string GetOrCreateBotName(string botUserId)
+        {
+            if (string.IsNullOrWhiteSpace(botUserId))
+                return "Bot";
+
+            if (botNamesByUserId.TryGetValue(botUserId, out var cached))
+                return cached;
+
+            string baseName = BotNamePool[UnityEngine.Random.Range(0, BotNamePool.Length)];
+            string randomName = $"{baseName}_{UnityEngine.Random.Range(10, 99)}";
+            botNamesByUserId[botUserId] = randomName;
+            return randomName;
         }
 
         public void MatchStarted(MultiplayerMessage message)

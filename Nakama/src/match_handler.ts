@@ -83,6 +83,9 @@ let matchJoin: nkruntime.MatchJoinFunction = function (
 
     for (const presence of presences) {
         const account: nkruntime.Account = nakama.accountGetId(presence.userId);
+        const resolvedName = account.user.displayName && account.user.displayName.trim().length > 0
+            ? account.user.displayName.trim()
+            : (presence.username || account.user.username || "Player");
 
         // Deduct entry fee
         const league = LEAGUES[gameState.ModeText];
@@ -96,7 +99,7 @@ let matchJoin: nkruntime.MatchJoinFunction = function (
         }
 
         const player: Player = {
-            presence, displayName: account.user.displayName, ScorePlayer: 0,
+            presence, displayName: resolvedName, ScorePlayer: 0,
         };
         const slot = getNextPlayerNumber(gameState.players);
         gameState.players[slot]     = player;

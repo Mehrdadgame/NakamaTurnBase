@@ -35,7 +35,12 @@ namespace Nakama.Helpers
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+                Instance = null;
         }
 
         private void Start() => StartCoroutine(WaitAndLoad());
@@ -59,10 +64,11 @@ namespace Nakama.Helpers
                 var data = rpc.Payload.Deserialize<ProfileServiceData>();
                 if (data == null) return;
 
-                bool nameChanged = data.displayName != DisplayName;
+                string resolvedName = ResolveDisplayNameOrUsername(data.displayName);
+                bool nameChanged = resolvedName != DisplayName;
 
                 CurrentAvatarId = string.IsNullOrEmpty(data.avatarId) ? "avatar_0" : data.avatarId;
-                DisplayName     = data.displayName ?? "";
+                DisplayName     = resolvedName;
 
                 if (data.ownedAvatars != null && data.ownedAvatars.Count > 0)
                     OwnedAvatarIds = data.ownedAvatars;
@@ -104,6 +110,33 @@ namespace Nakama.Helpers
         }
 
         public bool IsOwned(string avatarId) => OwnedAvatarIds.Contains(avatarId);
+
+        /// <summary>
+        /// Uses displayName when available; otherwise falls back to the Nakama username.
+        /// </summary>
+        public string ResolveDisplayNameOrUsername(string rawDisplayName)
+        {
+            if (!string.IsNullOrWhiteSpace(rawDisplayName))
+                return rawDisplayName.Trim();
+
+            var userManager = NakamaUserManager.Instance;
+            if (userManager != null && userManager.LoadingFinished)
+            {
+                var user = userManager.User;
+                if (user != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(user.DisplayName))
+                        return user.DisplayName.Trim();
+                    if (!string.IsNullOrWhiteSpace(user.Username))
+                        return user.Username.Trim();
+                }
+            }
+
+            if (NakamaManager.Instance != null && !string.IsNullOrWhiteSpace(NakamaManager.Instance.Username))
+                return NakamaManager.Instance.Username.Trim();
+
+            return string.Empty;
+        }
 
         /// <summary>
         /// Called by AvatarPopupManager after a successful SelectAvatarRpc.

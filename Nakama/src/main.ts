@@ -3,6 +3,7 @@ const CheckPendingRewardsRpc   = "CheckPendingRewardsRpc";
 const GetLeaderboardRpc        = "GetLeaderboardRpc";
 const GetProfileRpc            = "GetProfileRpc";
 const UpdateProfileRpc         = "UpdateProfileRpc";
+const SelectAvatarRpc          = "SelectAvatarRpc";
 const LogicLoadedLoggerInfo    = "Custom logic loaded.";
 const MatchModuleName          = "match";
 
@@ -21,6 +22,7 @@ function InitModule(
     initializer.registerRpc(GetLeaderboardRpc,       getLeaderboardRpc);
     initializer.registerRpc(GetProfileRpc,           getProfileRpc);
     initializer.registerRpc(UpdateProfileRpc,        updateProfileRpc);
+    initializer.registerRpc(SelectAvatarRpc,         selectAvatarRpc);
 
     // Leaderboard reset → distribute rewards
     initializer.registerLeaderboardReset(onLeaderboardReset);
