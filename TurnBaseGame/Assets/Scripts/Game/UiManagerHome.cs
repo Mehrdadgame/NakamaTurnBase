@@ -23,6 +23,9 @@ namespace Game
         [Header("Avatar")]
         [SerializeField] private Image avatarImage;   // player avatar shown on home screen
 
+        [Header("Profile")]
+        [SerializeField] private RTLTextMeshPro displayNameText;  // player name on home screen
+
         private int _displayedCoins = -1;
         private Tweener _coinTween;
         // Start is called before the first frame update
@@ -43,13 +46,16 @@ namespace Game
                 StartCoroutine(WaitForWallet());
             }
 
-            // Avatar — subscribe then immediately show current value if already loaded
+            // Avatar + DisplayName — subscribe then immediately show current value if already loaded
             if (ProfileService.Instance != null)
             {
-                ProfileService.Instance.onAvatarChanged += RefreshAvatarDisplay;
-                // If already loaded, apply right now. If not, the event will fire when done.
+                ProfileService.Instance.onAvatarChanged      += RefreshAvatarDisplay;
+                ProfileService.Instance.onDisplayNameChanged += RefreshDisplayName;
                 if (ProfileService.Instance.IsLoaded)
+                {
                     RefreshAvatarDisplay(ProfileService.Instance.CurrentAvatarId);
+                    RefreshDisplayName(ProfileService.Instance.DisplayName);
+                }
             }
             else
             {
@@ -66,7 +72,10 @@ namespace Game
                 WalletManager.Instance.onCoinsChanged -= RefreshCoinsDisplay;
 
             if (ProfileService.Instance != null)
-                ProfileService.Instance.onAvatarChanged -= RefreshAvatarDisplay;
+            {
+                ProfileService.Instance.onAvatarChanged      -= RefreshAvatarDisplay;
+                ProfileService.Instance.onDisplayNameChanged -= RefreshDisplayName;
+            }
         }
 
         private System.Collections.IEnumerator WaitForWallet()
@@ -81,11 +90,13 @@ namespace Game
         {
             while (ProfileService.Instance == null)
                 yield return null;
-            ProfileService.Instance.onAvatarChanged += RefreshAvatarDisplay;
-            // If already loaded by the time we get here, apply immediately
+            ProfileService.Instance.onAvatarChanged      += RefreshAvatarDisplay;
+            ProfileService.Instance.onDisplayNameChanged += RefreshDisplayName;
             if (ProfileService.Instance.IsLoaded)
+            {
                 RefreshAvatarDisplay(ProfileService.Instance.CurrentAvatarId);
-            // else event will fire when LoadProfileAsync completes
+                RefreshDisplayName(ProfileService.Instance.DisplayName);
+            }
         }
 
         private void RefreshCoinsDisplay(int amount)
@@ -124,6 +135,14 @@ namespace Game
             if (avatarImage == null || ProfileService.Instance == null) return;
             var sprite = ProfileService.Instance.GetSprite(avatarId);
             if (sprite != null) avatarImage.sprite = sprite;
+        }
+
+        private void RefreshDisplayName(string name)
+        {
+            if (displayNameText == null) return;
+            displayNameText.text = string.IsNullOrWhiteSpace(name)
+                ? (ProfileService.Instance != null ? ProfileService.Instance.ResolveDisplayNameOrUsername(null) : "")
+                : name;
         }
 
         public void GetLeaderboard()

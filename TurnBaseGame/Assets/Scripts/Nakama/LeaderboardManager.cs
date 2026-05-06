@@ -131,7 +131,7 @@ namespace Nakama.Helpers
             if (all == null || all.Count == 0) return;
 
             var slice = GetContextSlice(all, own);
-            string myId = NakamaUserManager.Instance != null
+            string myId = NakamaUserManager.Instance != null && NakamaUserManager.Instance.User != null
                 ? NakamaUserManager.Instance.User.Id : "";
 
             foreach (var rec in slice)
@@ -154,10 +154,19 @@ namespace Nakama.Helpers
                 }
                 else
                 {
-                    // Fallback for old prefabs without LeaderboardRowUI
-                    var texts = go.GetComponentsInChildren<RTLTextMeshPro>();
-                    if (texts.Length >= 1) texts[0].text = "#" + rec.rank;
-                    if (texts.Length >= 2) texts[1].text = rec.username ?? "???";
+                    // Fallback for prefabs without LeaderboardRowUI — try RTL first, then TMP
+                    var rtlTexts = go.GetComponentsInChildren<RTLTextMeshPro>(true);
+                    if (rtlTexts.Length >= 1) rtlTexts[0].text = "#" + rec.rank;
+                    if (rtlTexts.Length >= 2) rtlTexts[1].text = rec.username ?? "???";
+                    if (rtlTexts.Length >= 3) rtlTexts[2].text = rec.score + " RP";
+
+                    if (rtlTexts.Length == 0)
+                    {
+                        var tmpTexts = go.GetComponentsInChildren<TextMeshProUGUI>(true);
+                        if (tmpTexts.Length >= 1) tmpTexts[0].text = "#" + rec.rank;
+                        if (tmpTexts.Length >= 2) tmpTexts[1].text = rec.username ?? "???";
+                        if (tmpTexts.Length >= 3) tmpTexts[2].text = rec.score + " RP";
+                    }
                 }
             }
         }

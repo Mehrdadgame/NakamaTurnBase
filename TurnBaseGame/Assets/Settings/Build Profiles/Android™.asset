@@ -208,7 +208,7 @@ MonoBehaviour:
     - line: '|   androidMaxAspectRatio: 2.1'
     - line: '|   androidMinAspectRatio: 1'
     - line: '|   applicationIdentifier:'
-    - line: '|     Android: com.GoodVillain.DiceWar'
+    - line: '|     Android: com.goodvillains.DiceWar'
     - line: '|     Standalone: com.PGS.DiceWar'
     - line: '|   buildNumber:'
     - line: '|     Standalone: 0'

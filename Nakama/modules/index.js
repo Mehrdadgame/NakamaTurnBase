@@ -5,6 +5,7 @@ var GetLeaderboardRpc = "GetLeaderboardRpc";
 var GetProfileRpc = "GetProfileRpc";
 var UpdateProfileRpc = "UpdateProfileRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
+var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
@@ -17,6 +18,7 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(GetProfileRpc, getProfileRpc);
     initializer.registerRpc(UpdateProfileRpc, updateProfileRpc);
     initializer.registerRpc(SelectAvatarRpc, selectAvatarRpc);
+    initializer.registerRpc(VerifyCoinPurchaseRpc, verifyCoinPurchaseRpc);
     // Leaderboard reset → distribute rewards
     initializer.registerLeaderboardReset(onLeaderboardReset);
     // Match handler
@@ -311,6 +313,53 @@ var updateProfileRpc = function (context, logger, nakama, payload) {
         coinsAwarded: coinsAwarded,
         error: "",
     });
+};
+// ─── Coin Shop (Cafebazaar IAP) ───────────────────────────────────────────────
+var COIN_PACKS = {
+    "coin_pack_1": 2000,
+    "coin_pack_2": 4500,
+    "coin_pack_3": 7000,
+    "coin_pack_4": 15000,
+    "coin_pack_5": 25000,
+    "coin_pack_6": 40000,
+    "coin_pack_7": 60000,
+    "coin_pack_8": 100000,
+};
+var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId) throw new Error("Not authenticated");
+    var input = JSON.parse(payload || "{}");
+    if (!input.productId || !input.purchaseToken)
+        return JSON.stringify({ success: false, error: "Missing purchase data" });
+    var coins = COIN_PACKS[input.productId];
+    if (!coins)
+        return JSON.stringify({ success: false, error: "Unknown product: " + input.productId });
+    var storageKey = (input.orderId && input.orderId.length > 0) ? input.orderId : input.purchaseToken;
+    // Idempotency — reject duplicate tokens
+    var existing = nakama.storageRead([{ collection: "payment", key: storageKey, userId: userId }]);
+    if (existing.length > 0)
+        return JSON.stringify({ success: false, error: "Already processed" });
+    // Log payment record
+    nakama.storageWrite([{
+        collection: "payment",
+        key: storageKey,
+        userId: userId,
+        value: {
+            productId:     input.productId,
+            purchaseToken: input.purchaseToken,
+            orderId:       input.orderId,
+            dataSignature: input.dataSignature,
+            originalJson:  input.originalJson,
+            coinsAwarded:  coins,
+            timestamp:     Date.now(),
+        },
+        permissionRead:  1,
+        permissionWrite: 0,
+    }]);
+    // Award coins
+    nakama.walletUpdate(userId, { coins: coins }, { source: "iap", productId: input.productId, orderId: input.orderId }, true);
+    logger.info("IAP purchase: userId=" + userId + " product=" + input.productId + " coins=" + coins);
+    return JSON.stringify({ success: true, coinsAwarded: coins });
 };
 function CreateLeaderboards(context, logger, nakama) {
     var configs = [
