@@ -1,4 +1,4 @@
-using TMPro;
+using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +15,7 @@ namespace Nakama.Helpers
     {
         [Header("References")]
         [SerializeField] private Image           avatarImage;
-        [SerializeField] private TextMeshProUGUI priceLabel;
+        [SerializeField] private RTLTextMeshPro priceLabel;
         [SerializeField] private GameObject      selectedRing;   // orange/gold border when selected
         [SerializeField] private GameObject      ownedBadge;     // small "✓" badge (optional)
         [SerializeField] private Button          selectButton;
@@ -44,11 +44,11 @@ namespace Nakama.Helpers
             if (priceLabel != null)
             {
                 if (price == 0)
-                    priceLabel.text = "Free";
+                    priceLabel.text = "مجانی";
                 else if (isOwned)
-                    priceLabel.text = "Owned";
+                    priceLabel.text = "خریدی";
                 else
-                    priceLabel.text = price + " Coin";
+                    priceLabel.text = price + " تاسی";
             }
 
             if (selectedRing != null) selectedRing.SetActive(isSelected);

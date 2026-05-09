@@ -14,23 +14,74 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AvatarLibrary
   avatars:
   - id: avatar_0
-    sprite: {fileID: 21300000, guid: b3c2e702647c2b54888adad06b222260, type: 3}
+    sprite: {fileID: 3444719845731740895, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
     price: 0
   - id: avatar_1
-    sprite: {fileID: 21300000, guid: fa55052ba3978f842bcbe82d23d3dd14, type: 3}
+    sprite: {fileID: 573084974540555586, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
     price: 0
   - id: avatar_2
-    sprite: {fileID: 21300000, guid: 8dae601db4909154d812a97952add7c8, type: 3}
+    sprite: {fileID: 527945349106209428, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
     price: 250
   - id: avatar_3
-    sprite: {fileID: 21300000, guid: 9ca03fae3c7330e44956d28415442901, type: 3}
+    sprite: {fileID: 1958998005573590418, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
     price: 300
   - id: avatar_4
-    sprite: {fileID: 21300000, guid: 7f3589821a2bc744cba37f35ee81b110, type: 3}
+    sprite: {fileID: -9055702102570219345, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
     price: 500
   - id: avatar_5
-    sprite: {fileID: 21300000, guid: 4fdeb79f3ed49894ea4fed339e651297, type: 3}
+    sprite: {fileID: 8828797441795249179, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
     price: 600
   - id: avatar_6
-    sprite: {fileID: 21300000, guid: 8e82dba3b2cf600418f5b7a9cf7ca24b, type: 3}
+    sprite: {fileID: -8798158395546740257, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
     price: 700
+  - id: avatar_7
+    sprite: {fileID: 3453042368794729245, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 720
+  - id: avatar_8
+    sprite: {fileID: 1780616162400206611, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 750
+  - id: avatar_9
+    sprite: {fileID: -8152646124506975933, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 770
+  - id: avatar_10
+    sprite: {fileID: -4405890740266516001, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 800
+  - id: avatar_11
+    sprite: {fileID: -5408801096692774245, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 820
+  - id: avatar_12
+    sprite: {fileID: -1383911744755153625, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 830
+  - id: avatar_13
+    sprite: {fileID: 9118982995449868019, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 840
+  - id: avatar_14
+    sprite: {fileID: -8487548572048817940, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 860
+  - id: avatar_15
+    sprite: {fileID: 1143503436044477247, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 880
+  - id: avatar_16
+    sprite: {fileID: -7063893495295752254, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 900
+  - id: avatar_17
+    sprite: {fileID: -564180218621434385, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 920
+  - id: avatar_18
+    sprite: {fileID: 2809230738874451131, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 940
+  - id: avatar_20
+    sprite: {fileID: 5648470833791228274, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 980
+  - id: avatar_21
+    sprite: {fileID: 8231747526242956350, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 1000
+  - id: avatar_22
+    sprite: {fileID: 3537077841300845832, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 1050
+  - id: avatar_23
+    sprite: {fileID: 2829748890750459716, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 1100
+  - id: avatar_24
+    sprite: {fileID: -1383911744755153625, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+    price: 1200

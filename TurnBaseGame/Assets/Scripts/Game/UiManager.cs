@@ -268,7 +268,7 @@ public class UiManager : MonoBehaviour
 
             mines = 0;
         }
-        ScoreTextOpp.text = obj.ToString();
+        ScoreTextMe.text = obj.ToString();
 
     }
    
