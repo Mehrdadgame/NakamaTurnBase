@@ -440,6 +440,25 @@ let verifyCoinPurchaseRpc: nkruntime.RpcFunction = function (
     return JSON.stringify({ success: true, coinsAwarded: coins });
 };
 
+// ─── Force Update ─────────────────────────────────────────────────────────────
+
+// Returns { requiredVersion, updateUrl } stored under the system config collection.
+// Admin updates the value via Nakama console → Storage → collection "config", key "app_version".
+let getAppVersionRpc: nkruntime.RpcFunction = function (
+    context, logger, nakama, payload
+): string {
+    const stored = nakama.storageRead([
+        { collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId },
+    ]);
+
+    if (stored.length === 0) {
+        // Default: no update required — returns empty requiredVersion
+        return JSON.stringify({ requiredVersion: "", updateUrl: "" } as AppVersionConfig);
+    }
+
+    return JSON.stringify(stored[0].value as AppVersionConfig);
+};
+
 function CreateLeaderboards(
     context: nkruntime.Context, logger: nkruntime.Logger, nakama: nkruntime.Nakama
 ): void {

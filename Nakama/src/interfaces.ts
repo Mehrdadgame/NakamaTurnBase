@@ -102,6 +102,11 @@ interface ProfileData {
     welcomeBonusClaimed: boolean;
 }
 
+interface AppVersionConfig {
+    requiredVersion: string;  // e.g. "1.2.0"
+    updateUrl:       string;  // store/download link
+}
+
 interface UpdateProfileResult {
     displayName:  string;
     email:        string;
