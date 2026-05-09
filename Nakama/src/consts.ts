@@ -72,6 +72,13 @@ const AVATAR_PRICES: { [id: string]: number } = {
 const KeyPendingRewardWeekly  = "pending_weekly";
 const KeyPendingRewardMonthly = "pending_monthly";
 
+// ─── App Version (Force Update) ───────────────────────────────────────────────
+
+const CollectionConfig     = "config";
+const KeyAppVersion        = "app_version";
+// System user ID — used to store global config readable by all authenticated users
+const SystemUserId         = "00000000-0000-0000-0000-000000000000";
+
 // ─── Bot ──────────────────────────────────────────────────────────────────────
 
 const BotThinkMinTicks = TickRate * 1;
