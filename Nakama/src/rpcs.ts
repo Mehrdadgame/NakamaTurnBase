@@ -29,7 +29,14 @@ function grantFirstLoginBonusIfNeeded(
         return profile;
 
     const updatedProfile: ProfileData = {
-        ...profile,
+        email:             profile.email,
+        phone:             profile.phone,
+        emailLocked:       profile.emailLocked,
+        phoneLocked:       profile.phoneLocked,
+        emailBonusClaimed: profile.emailBonusClaimed,
+        phoneBonusClaimed: profile.phoneBonusClaimed,
+        avatarId:          profile.avatarId,
+        ownedAvatars:      profile.ownedAvatars,
         welcomeBonusClaimed: true,
     };
 
@@ -371,14 +378,14 @@ let updateProfileRpc: nkruntime.RpcFunction = function (
 // ─── Coin Shop (Cafebazaar IAP) ───────────────────────────────────────────────
 
 const COIN_PACKS: { [id: string]: number } = {
-    "coin_pack_1": 2000,
-    "coin_pack_2": 4500,
-    "coin_pack_3": 7000,
-    "coin_pack_4": 15000,
-    "coin_pack_5": 25000,
-    "coin_pack_6": 40000,
-    "coin_pack_7": 60000,
-    "coin_pack_8": 100000,
+    "coin_pack_1": 3500,    // کوچک
+    "coin_pack_2": 8000,    // استاندارد
+    "coin_pack_3": 13000,   // بزرگ
+    "coin_pack_4": 18000,   // ویژه
+    "coin_pack_5": 28000,   // شاهانه
+    "coin_pack_6": 40000,   // اضافه‌ای
+    "coin_pack_7": 55000,   // الماس
+    "coin_pack_8": 100000,  // امپراتور
 };
 
 let verifyCoinPurchaseRpc: nkruntime.RpcFunction = function (

@@ -63,7 +63,7 @@ namespace Nakama.Helpers
 
         [Header("Buttons & Feedback")]
         [SerializeField] private Button saveButton;
-        [SerializeField] private TextMeshProUGUI statusText;
+        [SerializeField] private RTLTextMeshPro statusText;
 
         [Header("Coin Bonus Popup (optional)")]
         [SerializeField] private TextMeshProUGUI coinBonusPopup;
@@ -140,7 +140,7 @@ namespace Nakama.Helpers
                 yield return null;
 
             SetSaveInteractable(false);
-            SetStatus("Loading...", Color.white);
+            SetStatus("در حال بارگذاری...", Color.white);
             LoadProfileAsync();
         }
 
@@ -151,7 +151,7 @@ namespace Nakama.Helpers
                 var rpc = await NakamaManager.Instance.SendRPC(GetProfileRpcId, "{}");
                 if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
                 {
-                    SetStatus("Could not load profile.", Color.red);
+                    SetStatus("بارگذاری پروفایل ناموفق بود.", Color.red);
                     SetSaveInteractable(true);
                     return;
                 }
@@ -176,7 +176,7 @@ namespace Nakama.Helpers
             catch (Exception e)
             {
                 Debug.LogWarning("[ProfileManager] Load error: " + e.Message);
-                SetStatus("Load failed.", Color.red);
+                SetStatus("خطا در بارگذاری پروفایل.", Color.red);
             }
             finally
             {
@@ -250,22 +250,22 @@ namespace Nakama.Helpers
             // Validation
             if (name.Length == 0 && email.Length == 0 && phone.Length == 0)
             {
-                SetStatus("Nothing to save.", Color.yellow);
+                SetStatus("چیزی برای ذخیره وجود ندارد.", Color.yellow);
                 return;
             }
             if (email.Length > 0 && !email.Contains("@"))
             {
-                SetStatus("Invalid email address.", Color.red);
+                SetStatus("آدرس ایمیل نامعتبر است.", Color.red);
                 return;
             }
             if (phone.Length > 0 && phone.Length < 7)
             {
-                SetStatus("Phone number too short.", Color.red);
+                SetStatus("شماره همراه خیلی کوتاه است.", Color.red);
                 return;
             }
 
             SetSaveInteractable(false);
-            SetStatus("Saving...", Color.white);
+            SetStatus("در حال ذخیره...", Color.white);
             SaveAsync(name, email, phone);
         }
 
@@ -286,7 +286,7 @@ namespace Nakama.Helpers
 
                 if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
                 {
-                    SetStatus("No response from server.", Color.red);
+                    SetStatus("پاسخی از سرور دریافت نشد.", Color.red);
                     return;
                 }
 
@@ -295,7 +295,7 @@ namespace Nakama.Helpers
                 var result = rpc.Payload.Deserialize<UpdateProfileResult>();
                 if (result == null)
                 {
-                    SetStatus("Could not read server response.", Color.red);
+                    SetStatus("خطا در خواندن پاسخ سرور.", Color.red);
                     return;
                 }
 
@@ -309,7 +309,7 @@ namespace Nakama.Helpers
                     phoneLocked = result.phoneLocked,
                 });
 
-                SetStatus("Profile saved!", new Color(0.25f, 1f, 0.25f));
+                SetStatus("پروفایل ذخیره شد!", new Color(0.25f, 1f, 0.25f));
 
                 // Coin bonus
                 if (result.coinsAwarded > 0)
@@ -322,7 +322,7 @@ namespace Nakama.Helpers
             catch (Exception e)
             {
                 Debug.LogWarning("[ProfileManager] Save error: " + e.Message);
-                SetStatus("Save failed: " + e.Message, Color.red);
+                SetStatus("ذخیره ناموفق بود.", Color.red);
             }
             finally
             {
@@ -350,7 +350,7 @@ namespace Nakama.Helpers
         {
             if (coinBonusPopup == null) return;
 
-            coinBonusPopup.text = "+" + amount + " Coin!";
+            coinBonusPopup.text = "+" + amount + " کوین!";
             coinBonusPopup.color = new Color(1f, 0.85f, 0.2f, 1f);
             coinBonusPopup.gameObject.SetActive(true);
 

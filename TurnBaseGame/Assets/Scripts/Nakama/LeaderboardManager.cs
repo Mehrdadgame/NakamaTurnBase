@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using RTLTMPro;
 using TMPro;
 using UnityEngine;
@@ -54,6 +55,8 @@ namespace Nakama.Helpers
         [Header("Tabs")]
         [SerializeField] private Button weeklyButton;
         [SerializeField] private Button monthlyButton;
+        [SerializeField] private Color tabActiveColor = new Color(1f, 0.85f, 0.2f, 1f);
+        [SerializeField] private Color tabInactiveColor = new Color(0.55f, 0.55f, 0.55f, 1f);
 
         private string _currentType = "weekly";
 
@@ -63,7 +66,21 @@ namespace Nakama.Helpers
         {
             if (weeklyButton  != null) weeklyButton.onClick.AddListener(()  => LoadLeaderboard("weekly"));
             if (monthlyButton != null) monthlyButton.onClick.AddListener(() => LoadLeaderboard("monthly"));
+
+            // Set initial tab color immediately (no tween)
+            SetTabColorImmediate(weeklyButton, true);
+            SetTabColorImmediate(monthlyButton, false);
+
             LoadLeaderboard("weekly");
+        }
+
+        private void SetTabColorImmediate(Button btn, bool active)
+        {
+            if (btn == null) return;
+            var img = btn.GetComponent<Image>();
+            if (img != null) img.color = active ? tabActiveColor : tabInactiveColor;
+            var rect = btn.GetComponent<RectTransform>();
+            if (rect != null) rect.localScale = active ? Vector3.one * 1.08f : Vector3.one;
         }
 
         private void OnEnable()
@@ -76,6 +93,7 @@ namespace Nakama.Helpers
         private async void LoadLeaderboard(string type)
         {
             _currentType = type;
+            UpdateTabVisual(type);
 
             try
             {
@@ -96,14 +114,43 @@ namespace Nakama.Helpers
             }
         }
 
+        private void UpdateTabVisual(string activeType)
+        {
+            SetTabColor(weeklyButton, activeType == "weekly");
+            SetTabColor(monthlyButton, activeType == "monthly");
+        }
+
+        private void SetTabColor(Button btn, bool active)
+        {
+            if (btn == null) return;
+            var img = btn.GetComponent<Image>();
+            if (img == null) return;
+            img.DOColor(active ? tabActiveColor : tabInactiveColor, 0.2f);
+
+            var rect = btn.GetComponent<RectTransform>();
+            if (rect == null) return;
+            rect.DOScale(active ? 1.08f : 1f, 0.18f).SetEase(Ease.OutBack);
+        }
+
         // ── Podium (top 3) ────────────────────────────────────────────────────────
 
         private void BuildPodium(List<LeaderboardRecord> records)
         {
             // Layout: 2nd left, 1st centre, 3rd right  (matches screenshot)
-            SetPodiumSlot(pod2Root, pod2Avatar, pod2Name, pod2Score, records, 1); // rank 2
-            SetPodiumSlot(pod1Root, pod1Avatar, pod1Name, pod1Score, records, 0); // rank 1
-            SetPodiumSlot(pod3Root, pod3Avatar, pod3Name, pod3Score, records, 2); // rank 3
+            SetPodiumSlot(pod2Root, pod2Avatar, pod2Name, pod2Score, records, 1);
+            SetPodiumSlot(pod1Root, pod1Avatar, pod1Name, pod1Score, records, 0);
+            SetPodiumSlot(pod3Root, pod3Avatar, pod3Name, pod3Score, records, 2);
+
+            AnimatePodiumSlot(pod2Root, 0.05f);
+            AnimatePodiumSlot(pod1Root, 0f);
+            AnimatePodiumSlot(pod3Root, 0.1f);
+        }
+
+        private void AnimatePodiumSlot(GameObject root, float delay)
+        {
+            if (root == null || !root.activeSelf) return;
+            root.transform.localScale = Vector3.zero;
+            root.transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack).SetDelay(delay);
         }
 
         private void SetPodiumSlot(
@@ -119,7 +166,7 @@ namespace Nakama.Helpers
             var rec = records[index];
             if (avatarImg != null) avatarImg.sprite = GetSprite(rec.avatarId);
             if (nameText  != null) nameText.text    = rec.username ?? "???";
-            if (scoreText != null) scoreText.text   = rec.score + " RP";
+            if (scoreText != null) scoreText.text = rec.score + " دایسو";
         }
 
         // ── Context list ──────────────────────────────────────────────────────────
@@ -134,6 +181,7 @@ namespace Nakama.Helpers
             string myId = NakamaUserManager.Instance != null && NakamaUserManager.Instance.User != null
                 ? NakamaUserManager.Instance.User.Id : "";
 
+            int index = 0;
             foreach (var rec in slice)
             {
                 var go  = Instantiate(rowPrefab, rowContainer);
@@ -144,7 +192,7 @@ namespace Nakama.Helpers
                     if (row.avatarImage  != null) row.avatarImage.sprite = GetSprite(rec.avatarId);
                     if (row.rankText     != null) row.rankText.text      = "#" + rec.rank;
                     if (row.nameText     != null) row.nameText.text      = rec.username ?? "???";
-                    if (row.scoreText    != null) row.scoreText.text     = rec.score + " RP";
+                    if (row.scoreText != null) row.scoreText.text = rec.score + " دایسو";
 
                     bool isMe = !string.IsNullOrEmpty(myId) && rec.ownerId == myId;
                     if (row.rowBackground != null)
@@ -158,16 +206,19 @@ namespace Nakama.Helpers
                     var rtlTexts = go.GetComponentsInChildren<RTLTextMeshPro>(true);
                     if (rtlTexts.Length >= 1) rtlTexts[0].text = "#" + rec.rank;
                     if (rtlTexts.Length >= 2) rtlTexts[1].text = rec.username ?? "???";
-                    if (rtlTexts.Length >= 3) rtlTexts[2].text = rec.score + " RP";
+                    if (rtlTexts.Length >= 3) rtlTexts[2].text = rec.score + "دایسو";
 
                     if (rtlTexts.Length == 0)
                     {
                         var tmpTexts = go.GetComponentsInChildren<TextMeshProUGUI>(true);
                         if (tmpTexts.Length >= 1) tmpTexts[0].text = "#" + rec.rank;
                         if (tmpTexts.Length >= 2) tmpTexts[1].text = rec.username ?? "???";
-                        if (tmpTexts.Length >= 3) tmpTexts[2].text = rec.score + " RP";
+                        if (tmpTexts.Length >= 3) tmpTexts[2].text = rec.score + " دایسو";
                     }
                 }
+
+                AnimateRowIn(go, index);
+                index++;
             }
         }
 
@@ -208,6 +259,15 @@ namespace Nakama.Helpers
             return all.GetRange(start, end - start + 1);
         }
 
+        private void AnimateRowIn(GameObject go, int index)
+        {
+            var cg = go.GetComponent<CanvasGroup>();
+            if (cg == null) cg = go.AddComponent<CanvasGroup>();
+
+            cg.alpha = 0f;
+            cg.DOFade(1f, 0.25f).SetDelay(index * 0.06f);
+        }
+
         // ── Own info bar ──────────────────────────────────────────────────────────
 
         private void UpdateOwnBar(LeaderboardRecord own)
@@ -215,11 +275,11 @@ namespace Nakama.Helpers
             if (own == null)
             {
                 if (myRankText  != null) myRankText.text  = "شما: -";
-                if (myScoreText != null) myScoreText.text = "0 RP";
+                if (myScoreText != null) myScoreText.text = "0 دایسو";
                 return;
             }
             if (myRankText  != null) myRankText.text  = "#" + own.rank;
-            if (myScoreText != null) myScoreText.text = own.score + " RP";
+            if (myScoreText != null) myScoreText.text = own.score + " دایسو";
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────────

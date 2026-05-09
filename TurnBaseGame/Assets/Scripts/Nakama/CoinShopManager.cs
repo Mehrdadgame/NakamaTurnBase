@@ -90,6 +90,7 @@ namespace Nakama.Helpers
         private void OnEnable()
         {
             SetStatus("", Color.white);
+
         }
 
         // ── Connect ───────────────────────────────────────────────────────────────

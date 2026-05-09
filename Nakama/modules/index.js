@@ -1,10 +1,20 @@
 "use strict";
+var __assign = function () {
+    var t = arguments[0];
+    for (var i = 1; i < arguments.length; i++) {
+        var s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
 var CheckPendingRewardsRpc = "CheckPendingRewardsRpc";
 var GetLeaderboardRpc = "GetLeaderboardRpc";
 var GetProfileRpc = "GetProfileRpc";
 var UpdateProfileRpc = "UpdateProfileRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
+var GetAppVersionRpc = "GetAppVersionRpc";
 var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
@@ -18,7 +28,21 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(GetProfileRpc, getProfileRpc);
     initializer.registerRpc(UpdateProfileRpc, updateProfileRpc);
     initializer.registerRpc(SelectAvatarRpc, selectAvatarRpc);
+    initializer.registerRpc(GetAppVersionRpc, getAppVersionRpc);
     initializer.registerRpc(VerifyCoinPurchaseRpc, verifyCoinPurchaseRpc);
+    // Seed default app version config if it doesn't exist yet
+    var existing = nk.storageRead([{ collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId }]);
+    if (existing.length === 0) {
+        nk.storageWrite([{
+                collection: CollectionConfig,
+                key: KeyAppVersion,
+                userId: SystemUserId,
+                value: { requiredVersion: "", updateUrl: "" },
+                permissionRead: 2,
+                permissionWrite: 0,
+            }]);
+        logger.info("App version config seeded with defaults.");
+    }
     // Leaderboard reset → distribute rewards
     initializer.registerLeaderboardReset(onLeaderboardReset);
     // Match handler
@@ -40,6 +64,45 @@ var joinOrCreateMatch = function (context, logger, nakama, payload) {
         return matches[0].matchId;
     return nakama.matchCreate(MatchModuleName, { mode: payload });
 };
+function createDefaultProfile() {
+    return {
+        email: "", phone: "",
+        emailLocked: false, phoneLocked: false,
+        emailBonusClaimed: false, phoneBonusClaimed: false,
+        avatarId: "avatar_0",
+        ownedAvatars: [],
+        welcomeBonusClaimed: false,
+    };
+}
+function grantFirstLoginBonusIfNeeded(userId, profileObj, profile, logger, nakama) {
+    if (profile.welcomeBonusClaimed)
+        return profile;
+    var updatedProfile = __assign(__assign({}, profile), { welcomeBonusClaimed: true });
+    var writeRequest = {
+        collection: CollectionProfile,
+        key: KeyProfileData,
+        userId: userId,
+        value: updatedProfile,
+        permissionRead: 1,
+        permissionWrite: 0,
+    };
+    // Compare-and-swap prevents duplicate bonus on concurrent first-login RPC calls.
+    writeRequest.version = profileObj && profileObj.version ? profileObj.version : "*";
+    try {
+        nakama.storageWrite([writeRequest]);
+        nakama.walletUpdate(userId, { coins: FirstLoginBonusCoins }, { source: "first_login_bonus" }, true);
+        logger.info("First login bonus granted: userId=" + userId + " coins=" + FirstLoginBonusCoins);
+        return updatedProfile;
+    }
+    catch (e) {
+        // Another concurrent request may have already claimed the bonus.
+        logger.info("First login bonus skipped (already claimed or conflict): " + e);
+        var latest = nakama.storageRead([{ collection: CollectionProfile, key: KeyProfileData, userId: userId }]);
+        if (latest.length > 0)
+            return latest[0].value;
+        return updatedProfile;
+    }
+}
 // Called on login — returns unclaimed weekly/monthly rewards and marks them claimed.
 // Coins were already added to the wallet during the leaderboard reset hook.
 var checkPendingRewardsRpc = function (context, logger, nakama, payload) {
@@ -79,6 +142,7 @@ var checkPendingRewardsRpc = function (context, logger, nakama, payload) {
 // Returns top-N records for weekly or monthly leaderboard + caller's own record.
 // Each record includes avatarId fetched from profile storage.
 var getLeaderboardRpc = function (context, logger, nakama, payload) {
+    var _a;
     var data = JSON.parse(payload || "{}");
     var lbId = data.type === "monthly" ? LeaderboardMonthly : LeaderboardWeekly;
     var limit = data.limit || 100;
@@ -92,15 +156,19 @@ var getLeaderboardRpc = function (context, logger, nakama, payload) {
             var own = nakama.leaderboardRecordsList(lbId, [userId], 1, "", 0);
             ownRecord = (own.ownerRecords && own.ownerRecords.length > 0) ? own.ownerRecords[0] : null;
         }
-    } catch (e) {
+    }
+    catch (e) {
         logger.warn("getLeaderboardRpc failed: " + e);
     }
-    // Batch-read profile storage to get avatarId for each player
+    // Batch-read profiles to get avatarId for each player
     var storageReads = [];
     var seenIds = {};
-    for (var i = 0; i < records.length; i++) {
-        var oid = records[i].ownerId;
-        if (oid && !seenIds[oid]) { storageReads.push({ collection: CollectionProfile, key: KeyProfileData, userId: oid }); seenIds[oid] = true; }
+    for (var _i = 0, records_1 = records; _i < records_1.length; _i++) {
+        var r = records_1[_i];
+        if (r.ownerId && !seenIds[r.ownerId]) {
+            storageReads.push({ collection: CollectionProfile, key: KeyProfileData, userId: r.ownerId });
+            seenIds[r.ownerId] = true;
+        }
     }
     if (ownRecord && ownRecord.ownerId && !seenIds[ownRecord.ownerId]) {
         storageReads.push({ collection: CollectionProfile, key: KeyProfileData, userId: ownRecord.ownerId });
@@ -109,37 +177,53 @@ var getLeaderboardRpc = function (context, logger, nakama, payload) {
     if (storageReads.length > 0) {
         try {
             var profiles = nakama.storageRead(storageReads);
-            for (var j = 0; j < profiles.length; j++) {
-                profileMap[profiles[j].userId] = profiles[j].value;
+            for (var _b = 0, profiles_1 = profiles; _b < profiles_1.length; _b++) {
+                var obj = profiles_1[_b];
+                profileMap[obj.userId] = obj.value;
             }
-        } catch (e) { logger.warn("Profile batch read failed: " + e); }
+        }
+        catch (e) {
+            logger.warn("Profile batch read failed: " + e);
+        }
     }
-    // Enrich records with avatarId
-    var enriched = [];
-    for (var i = 0; i < records.length; i++) {
-        var r = records[i];
-        var p = profileMap[r.ownerId] || {};
-        enriched.push({ ownerId: r.ownerId, username: r.username, score: r.score, rank: r.rank, avatarId: p.avatarId || "avatar_0" });
-    }
-    var enrichedOwn = null;
-    if (ownRecord) {
-        var p = profileMap[ownRecord.ownerId] || {};
-        enrichedOwn = { ownerId: ownRecord.ownerId, username: ownRecord.username, score: ownRecord.score, rank: ownRecord.rank, avatarId: p.avatarId || "avatar_0" };
-    }
+    var enriched = records.map(function (r) {
+        var _a;
+        return ({
+            ownerId: r.ownerId,
+            username: r.username,
+            score: r.score,
+            rank: r.rank,
+            avatarId: ((_a = profileMap[r.ownerId]) === null || _a === void 0 ? void 0 : _a.avatarId) || "avatar_0",
+        });
+    });
+    var enrichedOwn = ownRecord ? {
+        ownerId: ownRecord.ownerId,
+        username: ownRecord.username,
+        score: ownRecord.score,
+        rank: ownRecord.rank,
+        avatarId: ((_a = profileMap[ownRecord.ownerId]) === null || _a === void 0 ? void 0 : _a.avatarId) || "avatar_0",
+    } : null;
     return JSON.stringify({ records: enriched, ownRecord: enrichedOwn });
 };
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 var selectAvatarRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
-    if (!userId) throw new Error("Not authenticated");
+    if (!userId)
+        throw new Error("Not authenticated");
     var input = JSON.parse(payload || "{}");
-    if (!input.avatarId) return JSON.stringify({ success: false, error: "Missing avatarId" });
-    var price = AVATAR_PRICES.hasOwnProperty(input.avatarId) ? AVATAR_PRICES[input.avatarId] : -1;
-    if (price < 0) return JSON.stringify({ success: false, error: "Unknown avatar id" });
-    // Load profile first — need ownedAvatars before charging
-    var stored = nakama.storageRead([{ collection: CollectionProfile, key: KeyProfileData, userId: userId }]);
-    var profile = { email: "", phone: "", emailLocked: false, phoneLocked: false, emailBonusClaimed: false, phoneBonusClaimed: false, avatarId: "avatar_0", ownedAvatars: [] };
-    if (stored.length > 0) profile = stored[0].value;
+    if (!input.avatarId)
+        return JSON.stringify({ success: false, error: "Missing avatarId" });
+    var price = AVATAR_PRICES.hasOwnProperty(input.avatarId)
+        ? AVATAR_PRICES[input.avatarId]
+        : -1;
+    if (price < 0)
+        return JSON.stringify({ success: false, error: "Unknown avatar id" });
+    var stored = nakama.storageRead([
+        { collection: CollectionProfile, key: KeyProfileData, userId: userId },
+    ]);
+    var profile = createDefaultProfile();
+    if (stored.length > 0)
+        profile = stored[0].value;
     var ownedAvatars = profile.ownedAvatars || [];
     var alreadyOwned = ownedAvatars.indexOf(input.avatarId) >= 0;
     if (price > 0 && !alreadyOwned) {
@@ -149,7 +233,8 @@ var selectAvatarRpc = function (context, logger, nakama, payload) {
             return JSON.stringify({ success: false, error: "Insufficient coins" });
         try {
             nakama.walletUpdate(userId, { coins: -price }, { source: "avatar_purchase", avatarId: input.avatarId }, true);
-        } catch (e) {
+        }
+        catch (e) {
             logger.warn("Avatar purchase wallet deduct failed: " + e);
             return JSON.stringify({ success: false, error: "Payment failed" });
         }
@@ -157,11 +242,17 @@ var selectAvatarRpc = function (context, logger, nakama, payload) {
     }
     profile.ownedAvatars = ownedAvatars;
     profile.avatarId = input.avatarId;
-    nakama.storageWrite([{ collection: CollectionProfile, key: KeyProfileData, userId: userId, value: profile, permissionRead: 1, permissionWrite: 0 }]);
+    nakama.storageWrite([{
+            collection: CollectionProfile,
+            key: KeyProfileData,
+            userId: userId,
+            value: profile,
+            permissionRead: 1,
+            permissionWrite: 0,
+        }]);
     logger.info("Avatar selected: userId=" + userId + " avatarId=" + input.avatarId + " price=" + price + " alreadyOwned=" + alreadyOwned);
     return JSON.stringify({ success: true, avatarId: input.avatarId, ownedAvatars: ownedAvatars, error: "" });
 };
-// ─── Profile ──────────────────────────────────────────────────────────────────
 var getProfileRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
     if (!userId)
@@ -172,63 +263,27 @@ var getProfileRpc = function (context, logger, nakama, payload) {
         { collection: CollectionProfile, key: KeyProfileData, userId: userId },
     ]);
     var profileObj = stored.length > 0 ? stored[0] : null;
-    var profile = {
-        email: "", phone: "",
-        emailLocked: false, phoneLocked: false,
-        emailBonusClaimed: false, phoneBonusClaimed: false,
-        avatarId: "avatar_0", ownedAvatars: [],
-        welcomeBonusClaimed: false,
-    };
-    if (stored.length > 0)
-        profile = stored[0].value;
-    if (!profile.welcomeBonusClaimed) {
-        var updatedProfile = {
-            email: profile.email || "",
-            phone: profile.phone || "",
-            emailLocked: !!profile.emailLocked,
-            phoneLocked: !!profile.phoneLocked,
-            emailBonusClaimed: !!profile.emailBonusClaimed,
-            phoneBonusClaimed: !!profile.phoneBonusClaimed,
-            avatarId: profile.avatarId || "avatar_0",
-            ownedAvatars: profile.ownedAvatars || [],
-            welcomeBonusClaimed: true,
-        };
-        var writeReq = {
-            collection: CollectionProfile,
-            key: KeyProfileData,
-            userId: userId,
-            value: updatedProfile,
-            permissionRead: 1,
-            permissionWrite: 0,
-            version: profileObj && profileObj.version ? profileObj.version : "*",
-        };
-        try {
-            nakama.storageWrite([writeReq]);
-            nakama.walletUpdate(userId, { coins: FirstLoginBonusCoins }, { source: "first_login_bonus" }, true);
-            profile = updatedProfile;
-            logger.info("First login bonus granted: userId=" + userId + " coins=" + FirstLoginBonusCoins);
-        } catch (e) {
-            logger.info("First login bonus skipped (already claimed or conflict): " + e);
-            var latest = nakama.storageRead([{ collection: CollectionProfile, key: KeyProfileData, userId: userId }]);
-            if (latest.length > 0)
-                profile = latest[0].value;
-        }
-    }
-    // Effective owned list: free avatars always owned + purchased ones
+    var profile = profileObj
+        ? profileObj.value
+        : createDefaultProfile();
+    profile = grantFirstLoginBonusIfNeeded(userId, profileObj, profile, logger, nakama);
     var ownedAvatars = profile.ownedAvatars || [];
     var effectiveOwned = [];
     var allIds = Object.keys(AVATAR_PRICES);
-    for (var fi = 0; fi < allIds.length; fi++) {
-        if (AVATAR_PRICES[allIds[fi]] === 0) effectiveOwned.push(allIds[fi]);
+    for (var _i = 0, allIds_1 = allIds; _i < allIds_1.length; _i++) {
+        var id = allIds_1[_i];
+        if (AVATAR_PRICES[id] === 0)
+            effectiveOwned.push(id);
     }
-    for (var oi = 0; oi < ownedAvatars.length; oi++) {
-        if (effectiveOwned.indexOf(ownedAvatars[oi]) < 0) effectiveOwned.push(ownedAvatars[oi]);
+    for (var _a = 0, ownedAvatars_1 = ownedAvatars; _a < ownedAvatars_1.length; _a++) {
+        var id = ownedAvatars_1[_a];
+        if (effectiveOwned.indexOf(id) < 0)
+            effectiveOwned.push(id);
     }
-    // Price list for client display
-    var avatarPriceList = [];
-    for (var pi = 0; pi < allIds.length; pi++) {
-        avatarPriceList.push({ id: allIds[pi], price: AVATAR_PRICES[allIds[pi]] });
-    }
+    var avatarPriceList = allIds.map(function (id) { return ({
+        id: id,
+        price: AVATAR_PRICES[id],
+    }); });
     return JSON.stringify({
         displayName: displayName,
         email: profile.email,
@@ -249,12 +304,7 @@ var updateProfileRpc = function (context, logger, nakama, payload) {
     var stored = nakama.storageRead([
         { collection: CollectionProfile, key: KeyProfileData, userId: userId },
     ]);
-    var profile = {
-        email: "", phone: "",
-        emailLocked: false, phoneLocked: false,
-        emailBonusClaimed: false, phoneBonusClaimed: false,
-        avatarId: "avatar_0",
-    };
+    var profile = createDefaultProfile();
     if (stored.length > 0)
         profile = stored[0].value;
     // ── Display name ────────────────────────────────────────────────────────
@@ -316,24 +366,26 @@ var updateProfileRpc = function (context, logger, nakama, payload) {
 };
 // ─── Coin Shop (Cafebazaar IAP) ───────────────────────────────────────────────
 var COIN_PACKS = {
-    "coin_pack_1": 2000,
-    "coin_pack_2": 4500,
-    "coin_pack_3": 7000,
-    "coin_pack_4": 15000,
-    "coin_pack_5": 25000,
+    "coin_pack_1": 3500,
+    "coin_pack_2": 8000,
+    "coin_pack_3": 13000,
+    "coin_pack_4": 18000,
+    "coin_pack_5": 28000,
     "coin_pack_6": 40000,
-    "coin_pack_7": 60000,
-    "coin_pack_8": 100000,
+    "coin_pack_7": 55000,
+    "coin_pack_8": 100000, // امپراتور
 };
 var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
-    if (!userId) throw new Error("Not authenticated");
+    if (!userId)
+        throw new Error("Not authenticated");
     var input = JSON.parse(payload || "{}");
     if (!input.productId || !input.purchaseToken)
         return JSON.stringify({ success: false, error: "Missing purchase data" });
     var coins = COIN_PACKS[input.productId];
     if (!coins)
         return JSON.stringify({ success: false, error: "Unknown product: " + input.productId });
+    // Use orderId as storage key; fall back to purchaseToken if missing
     var storageKey = (input.orderId && input.orderId.length > 0) ? input.orderId : input.purchaseToken;
     // Idempotency — reject duplicate tokens
     var existing = nakama.storageRead([{ collection: "payment", key: storageKey, userId: userId }]);
@@ -341,25 +393,38 @@ var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
         return JSON.stringify({ success: false, error: "Already processed" });
     // Log payment record
     nakama.storageWrite([{
-        collection: "payment",
-        key: storageKey,
-        userId: userId,
-        value: {
-            productId:     input.productId,
-            purchaseToken: input.purchaseToken,
-            orderId:       input.orderId,
-            dataSignature: input.dataSignature,
-            originalJson:  input.originalJson,
-            coinsAwarded:  coins,
-            timestamp:     Date.now(),
-        },
-        permissionRead:  1,
-        permissionWrite: 0,
-    }]);
+            collection: "payment",
+            key: storageKey,
+            userId: userId,
+            value: {
+                productId: input.productId,
+                purchaseToken: input.purchaseToken,
+                orderId: input.orderId,
+                dataSignature: input.dataSignature,
+                originalJson: input.originalJson,
+                coinsAwarded: coins,
+                timestamp: Date.now(),
+            },
+            permissionRead: 1,
+            permissionWrite: 0,
+        }]);
     // Award coins
     nakama.walletUpdate(userId, { coins: coins }, { source: "iap", productId: input.productId, orderId: input.orderId }, true);
     logger.info("IAP purchase: userId=" + userId + " product=" + input.productId + " coins=" + coins);
     return JSON.stringify({ success: true, coinsAwarded: coins });
+};
+// ─── Force Update ─────────────────────────────────────────────────────────────
+// Returns { requiredVersion, updateUrl } stored under the system config collection.
+// Admin updates the value via Nakama console → Storage → collection "config", key "app_version".
+var getAppVersionRpc = function (context, logger, nakama, payload) {
+    var stored = nakama.storageRead([
+        { collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId },
+    ]);
+    if (stored.length === 0) {
+        // Default: no update required — returns empty requiredVersion
+        return JSON.stringify({ requiredVersion: "", updateUrl: "" });
+    }
+    return JSON.stringify(stored[0].value);
 };
 function CreateLeaderboards(context, logger, nakama) {
     var configs = [
@@ -1180,17 +1245,42 @@ var MONTHLY_REWARDS = [5000, 2500, 1000, 750, 500, 300, 200, 100, 50, 10];
 var CollectionSeason = "Season";
 var CollectionProfile = "Profile";
 var KeyProfileData = "profile_data";
-var FirstLoginBonusCoins = 2000;
+var FirstLoginBonusCoins = 3500;
 // Avatar catalog — prices validated server-side (client cannot lie about price)
 // id must match AvatarLibrary ScriptableObject ids in Unity client
 var AVATAR_PRICES = {
-    "avatar_0": 0,   "avatar_1": 0,
-    "avatar_2": 250, "avatar_3": 300,
-    "avatar_4": 500, "avatar_5": 600,
-    "avatar_6": 700, "avatar_7": 700,
+    "avatar_0": 0,
+    "avatar_1": 0,
+    "avatar_2": 250,
+    "avatar_3": 300,
+    "avatar_4": 500,
+    "avatar_5": 600,
+    "avatar_6": 700,
+    "avatar_7": 720,
+    "avatar_8": 750,
+    "avatar_9": 770,
+    "avatar_10": 800,
+    "avatar_11": 820,
+    "avatar_12": 830,
+    "avatar_13": 840,
+    "avatar_14": 860,
+    "avatar_15": 880,
+    "avatar_16": 900,
+    "avatar_17": 920,
+    "avatar_18": 940,
+    "avatar_20": 980,
+    "avatar_21": 1000,
+    "avatar_22": 1050,
+    "avatar_23": 1100,
+    "avatar_24": 1200,
 };
 var KeyPendingRewardWeekly = "pending_weekly";
 var KeyPendingRewardMonthly = "pending_monthly";
+// ─── App Version (Force Update) ───────────────────────────────────────────────
+var CollectionConfig = "config";
+var KeyAppVersion = "app_version";
+// System user ID — used to store global config readable by all authenticated users
+var SystemUserId = "00000000-0000-0000-0000-000000000000";
 // ─── Bot ──────────────────────────────────────────────────────────────────────
 var BotThinkMinTicks = TickRate * 1;
 var BotThinkMaxTicks = TickRate * 3;

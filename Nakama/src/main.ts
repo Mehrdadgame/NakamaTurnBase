@@ -5,6 +5,7 @@ const GetProfileRpc            = "GetProfileRpc";
 const UpdateProfileRpc         = "UpdateProfileRpc";
 const SelectAvatarRpc          = "SelectAvatarRpc";
 const GetAppVersionRpc         = "GetAppVersionRpc";
+const VerifyCoinPurchaseRpc    = "VerifyCoinPurchaseRpc";
 const LogicLoadedLoggerInfo    = "Custom logic loaded.";
 const MatchModuleName          = "match";
 
@@ -25,6 +26,7 @@ function InitModule(
     initializer.registerRpc(UpdateProfileRpc,        updateProfileRpc);
     initializer.registerRpc(SelectAvatarRpc,         selectAvatarRpc);
     initializer.registerRpc(GetAppVersionRpc,        getAppVersionRpc);
+    initializer.registerRpc(VerifyCoinPurchaseRpc,   verifyCoinPurchaseRpc);
 
     // Seed default app version config if it doesn't exist yet
     const existing = nk.storageRead([{ collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId }]);

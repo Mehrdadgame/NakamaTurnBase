@@ -75,7 +75,7 @@ namespace Nakama.Helpers
             }
 
             if (messageText != null)
-                messageText.text = "نسخه جدیدی از بازی موجود است.\nبرای ادامه بازی، لطفاً اپ را به‌روزرسانی کنید.";
+                messageText.text = "نسخه جدیدی از بازی موجود است.\nبرای ادامه بازی لطفا بازی را به‌روزرسانی کنید.";
 
             popupPanel.SetActive(true);
 
