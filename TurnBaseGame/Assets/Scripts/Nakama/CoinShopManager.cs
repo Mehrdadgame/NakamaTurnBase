@@ -231,6 +231,6 @@ namespace Nakama.Helpers
         }
 
         private static string FormatCoins(int amount) =>
-            amount >= 1000 ? (amount / 1000) + "K" : amount.ToString();
+             amount.ToString();
     }
 }
