@@ -21,6 +21,9 @@ namespace NinjaBattle.Game
         private bool blockJoinsAndLeaves = false;
         private readonly Dictionary<string, string> botNamesByUserId = new Dictionary<string, string>();
 
+        // Tutorial: hold the full bot message while the overlay is blocking
+        private MultiplayerMessage _pendingBotMessage = null;
+
         private static readonly string[] BotNamePool =
         {
             "DiceBot", "NinjaBot", "StormBot", "BladeBot", "ShadowBot",
@@ -78,6 +81,7 @@ namespace NinjaBattle.Game
             multiplayerManager.Subscribe(MultiplayerManager.Code.Rematch, RematchEvent);
             multiplayerManager.Subscribe(MultiplayerManager.Code.PlayerLeft, EventPlayerLeft);
             multiplayerManager.Subscribe(MultiplayerManager.Code.SendSticker, RiseveSticker);
+            TutorialManager.Instance?.SetBotReleaseCallback(ApplyPendingBotMessage);
         }
 
         private void OnDestroy()
@@ -139,15 +143,39 @@ namespace NinjaBattle.Game
             }
 
         }
+        public bool HasPendingBotMessage => _pendingBotMessage != null;
+
+        public void ApplyPendingBotMessage()
+        {
+            if (_pendingBotMessage == null)
+            {
+                Debug.Log("[Tutorial] ApplyPendingBotMessage called but no pending bot message");
+                return;
+            }
+            var msg = _pendingBotMessage;
+            _pendingBotMessage = null;
+            Debug.Log("[Tutorial] Applying pending bot message");
+            ChosseTurnPlayer(msg);
+        }
+
         private void ChosseTurnPlayer(MultiplayerMessage message)
         {
             var data = message.GetData<DataPlayer>();
-            onSetDataInTurn?.Invoke(data);
 
             var league = ClientLeagues.Get(GameManager.Instance.modeGame);
 
             if (multiplayerManager.Self.UserId != data.UserId)
             {
+                // Tutorial: buffer the entire message so ALL side-effects are deferred
+                if (TutorialManager.Instance != null && TutorialManager.Instance.IsBotMoveSuppressed)
+                {
+                    Debug.Log("[Tutorial] Buffering bot message (suppression on)");
+                    _pendingBotMessage = message;
+                    return;
+                }
+
+                Debug.Log($"[Tutorial] Processing bot message immediately (suppression off). Active={TutorialManager.Instance?.IsActive}, line={data.NumberLine}, row={data.NumberRow}, tile={data.NumberTile}");
+                onSetDataInTurn?.Invoke(data);
                 if (data.MinesScore)
                     onSetScoreOpp?.Invoke(data.ScoreOtherPlayer, data.ValueMines, data);
 
@@ -193,6 +221,7 @@ namespace NinjaBattle.Game
             }
             else
             {
+                onSetDataInTurn?.Invoke(data);
                 if (data.MinesScore)
                     onSetScoreMe.Invoke(data.ScoreOtherPlayer, data.ValueMines, data);
                 onSetScoreOpp?.Invoke(data.Score, 0, data);

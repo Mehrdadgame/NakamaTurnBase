@@ -53,16 +53,22 @@ public class UiManager : MonoBehaviour
     public Image StickerOpp;
     public SpriteAtlas AllAssets;
     public Color colroParticlewhite;
+
     private void Start()
     {
         instance = this;
         NameOpp.text = PlayerPrefs.GetString("Opp", "Opponent");
+
+        bool isTutorial = PlayerPrefs.GetInt(WelcomePopup.TutorialModeKey, 0) == 1;
+
         if (MultiplayerManager.Instance.isTurn)
         {
             dicRollButton.interactable = true;
             dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
             TextTurnYou.Play("YouTurn", 0, 0);
-            TimerTurn.instance.TimerRunning = true;
+            // Tutorial: keep timer paused until overlay guides the player
+            TimerTurn.instance.TimerRunning = !isTutorial;
+            if (isTutorial) TimerTurn.instance.TimerPause = true;
         }
         else
         {
@@ -97,6 +103,8 @@ public class UiManager : MonoBehaviour
 
     private void Instance_TimerStop()
     {
+        if (TutorialManager.Instance != null && TutorialManager.Instance.IsActive)
+            return;  // tutorial manages its own flow; never force-place tiles
         GameManager.Instance.diceRoller.currrentDie = Random.Range(0, 6);
         var cell = tileDataMe.First(e => e.isLock == false);
         cell.SetDataInCell();
@@ -228,16 +236,18 @@ public class UiManager : MonoBehaviour
         if (obj)
         {
             foreach (var item in list)
-            {
                 item.GetComponentInChildren<ParticleSystem>().Play();
-            }
+
+            TutorialManager.Instance?.OnDiceRolled();
+
+            // Fly bubble: player's dice value travels toward opponent's grid
+            int diceVal = GameManager.Instance.diceRoller.currrentDie + 1;
+            TutorialManager.Instance?.ShowDiceFlyBubble(diceVal, playerToOpp: true);
         }
         else
         {
             foreach (var item in list)
-            {
                 item.GetComponentInChildren<ParticleSystem>().Stop();
-            }
         }
         // RowSum();
     }
@@ -353,7 +363,7 @@ public class UiManager : MonoBehaviour
     /// <param name="arg2"></param>
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
-
+        TutorialManager.Instance?.OnEliminationOccurred();
 
         var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2 && r.isLock);
 
@@ -380,44 +390,60 @@ public class UiManager : MonoBehaviour
     /// <param name="obj"></param>
     private void Instance_SetDataInTurn(DataPlayer obj)
     {
-
         if (obj.UserId != MultiplayerManager.Instance.players.User.Id)
         {
-
-            GameManager.Instance.diceRoller.Rotation(false);
-
-            _ = Task.Delay(200);
-            GameManager.Instance.diceRoller.GetComponent<Image>().sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
-            GameManager.Instance.diceRoller.currrentDie = -1;
-            var tile = tileDataOpps.Find(t => t.line == obj.NumberLine && t.row == obj.NumberRow);
-            if (tile == null) tile = transformOpp.Find(obj.NameTile)?.GetComponentInChildren<TileDataOpp>();
-            if (tile == null) { Debug.LogWarning($"Tile not found: line={obj.NumberLine} row={obj.NumberRow} name={obj.NameTile}"); return; }
-            tile.IsLock = true;
-            tile.SpriteDice.transform.parent.gameObject.SetActive(true);
-            tile.SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
-            tile.ValueTile = obj.NumberTile + 1;
-            tile.SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
-            if (!obj.EndGame)
-                TextTurnYou.Play("YouTurn", 0, 0);
-            TimerTurn.instance.TimerRunning = true;
-            TimerTurn.instance.TimerPause = false;
-            TimerTurn.instance.TimerText.text = "30";
-            TimerTurn.instance.TimerCount = 30;
-            TimerTurn.instance.TimerText.color = Color.white;
-            RowSum();
-
+            ApplyBotMove(obj);
         }
         else
         {
             if (!obj.EndGame)
                 TextTurnOpp.Play("OppTurn", 0, 0);
+            TutorialManager.Instance?.OnCellPlaced(obj.NumberLine);
             RowSum();
 
             TimerTurn.instance.TimerRunning = false;
             TimerTurn.instance.TimerText.text = "-";
         }
+    }
 
+    private void ApplyBotMove(DataPlayer obj)
+    {
+        Debug.Log($"[Tutorial] ApplyBotMove: line={obj.NumberLine}, row={obj.NumberRow}, tile={obj.NumberTile}, name={obj.NameTile}, oppList={tileDataOpps?.Count}");
+        GameManager.Instance.diceRoller.Rotation(false);
 
+        _ = Task.Delay(200);
+        GameManager.Instance.diceRoller.GetComponent<Image>().sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
+        GameManager.Instance.diceRoller.currrentDie = -1;
+        var tile = tileDataOpps.Find(t => t.line == obj.NumberLine && t.row == obj.NumberRow);
+        if (tile == null) tile = transformOpp.Find(obj.NameTile)?.GetComponentInChildren<TileDataOpp>();
+        if (tile == null)
+        {
+            Debug.LogWarning($"[Tutorial] Bot tile not found! line={obj.NumberLine} row={obj.NumberRow} name={obj.NameTile}. Available cells:");
+            foreach (var t in tileDataOpps) Debug.LogWarning($"  cell line={t.line}, row={t.row}");
+            // Tutorial must not stay stuck — release the wait flag and proceed
+            TutorialManager.Instance?.OnBotMovePlayed();
+            return;
+        }
+        tile.IsLock = true;
+        tile.SpriteDice.transform.parent.gameObject.SetActive(true);
+        tile.SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
+        tile.ValueTile = obj.NumberTile + 1;
+        tile.SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
+        if (!obj.EndGame)
+            TextTurnYou.Play("YouTurn", 0, 0);
+        TimerTurn.instance.TimerRunning = true;
+        TimerTurn.instance.TimerPause = false;
+        TimerTurn.instance.TimerText.text = "30";
+        TimerTurn.instance.TimerCount = 30;
+        TimerTurn.instance.TimerText.color = Color.white;
+
+        // Fly bubble: bot's dice value travels toward player's grid
+        TutorialManager.Instance?.ShowDiceFlyBubble(obj.NumberTile + 1, playerToOpp: false);
+
+        RowSum();
+
+        // Notify tutorial that bot move is now visible on screen
+        TutorialManager.Instance?.OnBotMovePlayed();
     }
 
     private void CheckShowLight()
@@ -452,6 +478,7 @@ public class UiManager : MonoBehaviour
             MultiplayerManager.Instance.isTurn = false;
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerRunning = false;
+            TutorialManager.Instance?.OnOpponentTurnStarted();
         }
 
     }

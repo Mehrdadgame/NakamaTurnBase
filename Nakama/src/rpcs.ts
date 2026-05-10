@@ -7,6 +7,19 @@ let joinOrCreateMatch: nkruntime.RpcFunction = function (
     return nakama.matchCreate(MatchModuleName, { mode: payload });
 };
 
+// Creates a private tutorial match (bot-only, no entry fee, no rewards).
+// Lobby countdown is 3 s so the client has time to load the game scene before ChangeScene fires.
+let joinTutorialMatchRpc: nkruntime.RpcFunction = function (
+    context, logger, nakama, payload
+): string {
+    const matchId = nakama.matchCreate(MatchModuleName, {
+        mode:     "ThreeByThree",
+        tutorial: "true",
+    });
+    logger.info("Tutorial match created: " + matchId + " for userId=" + context.userId);
+    return matchId;
+};
+
 function createDefaultProfile(): ProfileData {
     return {
         email: "", phone: "",

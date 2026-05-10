@@ -22,6 +22,8 @@ let matchInit: nkruntime.MatchInitFunction = function (
         array3DPlayerFirst: arrayFirst, array3DPlayerSecend: arraySecond,
         ModeText: value,
         hasBot: false, botDifficulty: 0, botNeedsToMove: false, botThinkTick: 0,
+        isTutorial: params.tutorial === "true",
+        tutorialBotMoveIndex: 0,
     };
 
     return { state: gameState, tickRate: TickRate, label: JSON.stringify(label) };
@@ -53,19 +55,21 @@ let matchJoinAttempt: nkruntime.MatchJoinAttemptFunction = function (
     const gameState = state as GameState;
     if (gameState.scene !== Scene.Lobby) return { state: gameState, accept: false };
 
-    // Check entry fee balance before accepting
-    const league = LEAGUES[gameState.ModeText];
-    if (league) {
-        try {
-            const account = nakama.accountGetId(presence.userId);
-            const wallet  = account.wallet || {};
-            if ((wallet["coins"] || 0) < league.entryFee) {
-                logger.info(`Join rejected — insufficient coins for ${gameState.ModeText}: userId=${presence.userId}`);
+    // Tutorial mode: skip entry fee check entirely
+    if (!gameState.isTutorial) {
+        const league = LEAGUES[gameState.ModeText];
+        if (league) {
+            try {
+                const account = nakama.accountGetId(presence.userId);
+                const wallet  = account.wallet || {};
+                if ((wallet["coins"] || 0) < league.entryFee) {
+                    logger.info(`Join rejected — insufficient coins for ${gameState.ModeText}: userId=${presence.userId}`);
+                    return { state: gameState, accept: false };
+                }
+            } catch (e) {
+                logger.warn("matchJoinAttempt wallet check failed: " + e);
                 return { state: gameState, accept: false };
             }
-        } catch (e) {
-            logger.warn("matchJoinAttempt wallet check failed: " + e);
-            return { state: gameState, accept: false };
         }
     }
 
@@ -87,14 +91,16 @@ let matchJoin: nkruntime.MatchJoinFunction = function (
             ? account.user.displayName.trim()
             : (presence.username || account.user.username || "Player");
 
-        // Deduct entry fee
-        const league = LEAGUES[gameState.ModeText];
-        if (league) {
-            try {
-                nakama.walletUpdate(presence.userId, { coins: -league.entryFee },
-                    { source: "entry_fee", league: gameState.ModeText }, true);
-            } catch (e) {
-                logger.warn(`Entry fee deduction failed for ${presence.userId}: ${e}`);
+        // Deduct entry fee (skipped for tutorial)
+        if (!gameState.isTutorial) {
+            const league = LEAGUES[gameState.ModeText];
+            if (league) {
+                try {
+                    nakama.walletUpdate(presence.userId, { coins: -league.entryFee },
+                        { source: "entry_fee", league: gameState.ModeText }, true);
+                } catch (e) {
+                    logger.warn(`Entry fee deduction failed for ${presence.userId}: ${e}`);
+                }
             }
         }
 
@@ -184,6 +190,12 @@ function matchLoopLobby(
     if (gameState.countdown <= 0) return;
     gameState.countdown--;
     if (gameState.countdown > 0) return;
+
+    // Tutorial: always play against a bot
+    if (gameState.isTutorial) {
+        addBotAndStartBattle(gameState, dispatcher, logger);
+        return;
+    }
 
     if (getPlayersCount(gameState.players) >= 2) {
         startBattle(gameState, dispatcher);
@@ -399,6 +411,9 @@ function applyMineResult(
 function awardMatchResult(
     gameState: GameState, nakama: nkruntime.Nakama, winnerId: string, logger: nkruntime.Logger
 ): void {
+    // Tutorial matches: no rewards, no leaderboard updates
+    if (gameState.isTutorial) return;
+
     const league = LEAGUES[gameState.ModeText];
     if (!league) return;
 
@@ -628,7 +643,22 @@ function executeBotTurn(
 
 interface BotMove { line: number; col: number; tile: number; }
 
+// Scripted bot moves for tutorial mode (tile is 0-indexed dice value)
+const TUTORIAL_BOT_MOVES: BotMove[] = [
+    { line: 0, col: 0, tile: 1 }, // places value 2 at row-0 col-0
+];
+
 function generateBotMove(gameState: GameState, logger: nkruntime.Logger): BotMove | null {
+    // Tutorial: play scripted moves first, then fall through to random
+    if (gameState.isTutorial) {
+        const idx = gameState.tutorialBotMoveIndex;
+        if (idx < TUTORIAL_BOT_MOVES.length) {
+            gameState.tutorialBotMoveIndex++;
+            logger.info(`Tutorial bot scripted move ${idx}: ${JSON.stringify(TUTORIAL_BOT_MOVES[idx])}`);
+            return TUTORIAL_BOT_MOVES[idx];
+        }
+    }
+
     const botGrid    = gameState.array3DPlayerSecend;
     const playerGrid = gameState.array3DPlayerFirst;
     const numRows    = botGrid.length;

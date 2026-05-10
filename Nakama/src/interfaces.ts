@@ -30,6 +30,9 @@ interface GameState {
     botDifficulty: number;
     botNeedsToMove: boolean;
     botThinkTick: number;
+    // Tutorial
+    isTutorial: boolean;
+    tutorialBotMoveIndex: number;
 }
 
 interface Player {

@@ -15,7 +15,8 @@ namespace Nakama.Helpers
 
         private const int TickRate = 5;
         private const float SendRate = 1f / (float)TickRate;
-        private const string JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
+        private const string JoinOrCreateMatchRpc  = "JoinOrCreateMatchRpc";
+        private const string JoinTutorialMatchRpc  = "JoinTutorialMatchRpc";
         private const string LogFormat = "{0} with code {1}:\n{2}";
         private const string SendingDataLog = "Sending data";
         private const string ReceivedDataLog = "Received data";
@@ -92,9 +93,31 @@ namespace Nakama.Helpers
             IApiRpc rpcResult = await NakamaManager.Instance.SendRPC(JoinOrCreateMatchRpc, mode.ToString());
             string matchId = rpcResult.Payload;
 
-            var stringProperties = new Dictionary<string, string>() 
+            var stringProperties = new Dictionary<string, string>()
             {
                {"mode", mode.ToString()}
+            };
+            match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId, stringProperties);
+
+            onMatchJoin?.Invoke();
+        }
+
+        /// <summary>
+        /// مچ tutorial می‌سازد — بدون ورودی، بدون کسر کوین، همیشه با بات.
+        /// </summary>
+        public async void JoinTutorialMatchAsync()
+        {
+            PlayerPrefs.DeleteKey("Opp");
+            NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
+            NakamaManager.Instance.Socket.ReceivedMatchState += Receive;
+            NakamaManager.Instance.onDisconnected += Disconnected;
+
+            IApiRpc rpcResult = await NakamaManager.Instance.SendRPC(JoinTutorialMatchRpc, "");
+            string matchId = rpcResult.Payload;
+
+            var stringProperties = new Dictionary<string, string>()
+            {
+                { "mode", ModeGame.ThreeByThree.ToString() }
             };
             match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId, stringProperties);
 

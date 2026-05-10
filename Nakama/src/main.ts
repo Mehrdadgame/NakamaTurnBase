@@ -1,4 +1,5 @@
 const JoinOrCreateMatchRpc     = "JoinOrCreateMatchRpc";
+const JoinTutorialMatchRpc     = "JoinTutorialMatchRpc";
 const CheckPendingRewardsRpc   = "CheckPendingRewardsRpc";
 const GetLeaderboardRpc        = "GetLeaderboardRpc";
 const GetProfileRpc            = "GetProfileRpc";
@@ -20,6 +21,7 @@ function InitModule(
 
     // Register RPCs
     initializer.registerRpc(JoinOrCreateMatchRpc,   joinOrCreateMatch);
+    initializer.registerRpc(JoinTutorialMatchRpc,   joinTutorialMatchRpc);
     initializer.registerRpc(CheckPendingRewardsRpc,  checkPendingRewardsRpc);
     initializer.registerRpc(GetLeaderboardRpc,       getLeaderboardRpc);
     initializer.registerRpc(GetProfileRpc,           getProfileRpc);

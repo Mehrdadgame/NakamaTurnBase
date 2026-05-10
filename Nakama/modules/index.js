@@ -1,14 +1,6 @@
 "use strict";
-var __assign = function () {
-    var t = arguments[0];
-    for (var i = 1; i < arguments.length; i++) {
-        var s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
+var JoinTutorialMatchRpc = "JoinTutorialMatchRpc";
 var CheckPendingRewardsRpc = "CheckPendingRewardsRpc";
 var GetLeaderboardRpc = "GetLeaderboardRpc";
 var GetProfileRpc = "GetProfileRpc";
@@ -23,6 +15,7 @@ function InitModule(ctx, logger, nk, initializer) {
     CreateLeaderboards(ctx, logger, nk);
     // Register RPCs
     initializer.registerRpc(JoinOrCreateMatchRpc, joinOrCreateMatch);
+    initializer.registerRpc(JoinTutorialMatchRpc, joinTutorialMatchRpc);
     initializer.registerRpc(CheckPendingRewardsRpc, checkPendingRewardsRpc);
     initializer.registerRpc(GetLeaderboardRpc, getLeaderboardRpc);
     initializer.registerRpc(GetProfileRpc, getProfileRpc);
@@ -64,6 +57,16 @@ var joinOrCreateMatch = function (context, logger, nakama, payload) {
         return matches[0].matchId;
     return nakama.matchCreate(MatchModuleName, { mode: payload });
 };
+// Creates a private tutorial match (bot-only, no entry fee, no rewards).
+// Lobby countdown is 3 s so the client has time to load the game scene before ChangeScene fires.
+var joinTutorialMatchRpc = function (context, logger, nakama, payload) {
+    var matchId = nakama.matchCreate(MatchModuleName, {
+        mode: "ThreeByThree",
+        tutorial: "true",
+    });
+    logger.info("Tutorial match created: " + matchId + " for userId=" + context.userId);
+    return matchId;
+};
 function createDefaultProfile() {
     return {
         email: "", phone: "",
@@ -77,7 +80,17 @@ function createDefaultProfile() {
 function grantFirstLoginBonusIfNeeded(userId, profileObj, profile, logger, nakama) {
     if (profile.welcomeBonusClaimed)
         return profile;
-    var updatedProfile = __assign(__assign({}, profile), { welcomeBonusClaimed: true });
+    var updatedProfile = {
+        email: profile.email,
+        phone: profile.phone,
+        emailLocked: profile.emailLocked,
+        phoneLocked: profile.phoneLocked,
+        emailBonusClaimed: profile.emailBonusClaimed,
+        phoneBonusClaimed: profile.phoneBonusClaimed,
+        avatarId: profile.avatarId,
+        ownedAvatars: profile.ownedAvatars,
+        welcomeBonusClaimed: true,
+    };
     var writeRequest = {
         collection: CollectionProfile,
         key: KeyProfileData,
@@ -462,6 +475,8 @@ var matchInit = function (context, logger, nakama, params) {
         array3DPlayerFirst: arrayFirst, array3DPlayerSecend: arraySecond,
         ModeText: value,
         hasBot: false, botDifficulty: 0, botNeedsToMove: false, botThinkTick: 0,
+        isTutorial: params.tutorial === "true",
+        tutorialBotMoveIndex: 0,
     };
     return { state: gameState, tickRate: TickRate, label: JSON.stringify(label) };
 };
@@ -487,20 +502,22 @@ var matchJoinAttempt = function (context, logger, nakama, dispatcher, tick, stat
     var gameState = state;
     if (gameState.scene !== 3 /* Lobby */)
         return { state: gameState, accept: false };
-    // Check entry fee balance before accepting
-    var league = LEAGUES[gameState.ModeText];
-    if (league) {
-        try {
-            var account = nakama.accountGetId(presence.userId);
-            var wallet = account.wallet || {};
-            if ((wallet["coins"] || 0) < league.entryFee) {
-                logger.info("Join rejected \u2014 insufficient coins for " + gameState.ModeText + ": userId=" + presence.userId);
+    // Tutorial mode: skip entry fee check entirely
+    if (!gameState.isTutorial) {
+        var league = LEAGUES[gameState.ModeText];
+        if (league) {
+            try {
+                var account = nakama.accountGetId(presence.userId);
+                var wallet = account.wallet || {};
+                if ((wallet["coins"] || 0) < league.entryFee) {
+                    logger.info("Join rejected \u2014 insufficient coins for " + gameState.ModeText + ": userId=" + presence.userId);
+                    return { state: gameState, accept: false };
+                }
+            }
+            catch (e) {
+                logger.warn("matchJoinAttempt wallet check failed: " + e);
                 return { state: gameState, accept: false };
             }
-        }
-        catch (e) {
-            logger.warn("matchJoinAttempt wallet check failed: " + e);
-            return { state: gameState, accept: false };
         }
     }
     return { state: gameState, accept: true };
@@ -518,14 +535,16 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
         var resolvedName = account.user.displayName && account.user.displayName.trim().length > 0
             ? account.user.displayName.trim()
             : (presence.username || account.user.username || "Player");
-        // Deduct entry fee
-        var league = LEAGUES[gameState.ModeText];
-        if (league) {
-            try {
-                nakama.walletUpdate(presence.userId, { coins: -league.entryFee }, { source: "entry_fee", league: gameState.ModeText }, true);
-            }
-            catch (e) {
-                logger.warn("Entry fee deduction failed for " + presence.userId + ": " + e);
+        // Deduct entry fee (skipped for tutorial)
+        if (!gameState.isTutorial) {
+            var league = LEAGUES[gameState.ModeText];
+            if (league) {
+                try {
+                    nakama.walletUpdate(presence.userId, { coins: -league.entryFee }, { source: "entry_fee", league: gameState.ModeText }, true);
+                }
+                catch (e) {
+                    logger.warn("Entry fee deduction failed for " + presence.userId + ": " + e);
+                }
             }
         }
         var player = {
@@ -599,6 +618,11 @@ function matchLoopLobby(gameState, nakama, dispatcher, logger) {
     gameState.countdown--;
     if (gameState.countdown > 0)
         return;
+    // Tutorial: always play against a bot
+    if (gameState.isTutorial) {
+        addBotAndStartBattle(gameState, dispatcher, logger);
+        return;
+    }
     if (getPlayersCount(gameState.players) >= 2) {
         startBattle(gameState, dispatcher);
     }
@@ -780,6 +804,9 @@ function applyMineResult(dataPlayer, mineCount, tile, targetGrid, gameState, opp
 }
 // ─── Economy ──────────────────────────────────────────────────────────────────
 function awardMatchResult(gameState, nakama, winnerId, logger) {
+    // Tutorial matches: no rewards, no leaderboard updates
+    if (gameState.isTutorial)
+        return;
     var league = LEAGUES[gameState.ModeText];
     if (!league)
         return;
@@ -991,7 +1018,20 @@ function executeBotTurn(gameState, nakama, dispatcher, logger) {
     processTurn(dataPlayer, gameState.array3DPlayerSecend, gameState.array3DPlayerFirst, gameState, 1, false, nakama, logger);
     dispatcher.broadcastMessage(7 /* ChosseTurn */, JSON.stringify(dataPlayer), [realPlayer.presence], null);
 }
+// Scripted bot moves for tutorial mode (tile is 0-indexed dice value)
+var TUTORIAL_BOT_MOVES = [
+    { line: 0, col: 0, tile: 1 }, // places value 2 at row-0 col-0
+];
 function generateBotMove(gameState, logger) {
+    // Tutorial: play scripted moves first, then fall through to random
+    if (gameState.isTutorial) {
+        var idx = gameState.tutorialBotMoveIndex;
+        if (idx < TUTORIAL_BOT_MOVES.length) {
+            gameState.tutorialBotMoveIndex++;
+            logger.info("Tutorial bot scripted move " + idx + ": " + JSON.stringify(TUTORIAL_BOT_MOVES[idx]));
+            return TUTORIAL_BOT_MOVES[idx];
+        }
+    }
     var botGrid = gameState.array3DPlayerSecend;
     var playerGrid = gameState.array3DPlayerFirst;
     var numRows = botGrid.length;

@@ -26,6 +26,10 @@ public class DiceRoller : MonoBehaviour
     private int currentTotal;
     public bool isRootDice;
 
+    // Tutorial: when set (>0), overrides random roll with this value (1-based)
+    private int _forcedValue = -1;
+    public void ForceNextValue(int value) => _forcedValue = value;
+
     Image die;
 
     void Start()
@@ -134,15 +138,18 @@ public class DiceRoller : MonoBehaviour
     // removed the parameter because AddTotal() is called from wone place with same parameter
     public async void AddTotal()
     {
-        // value is the true amount of the die face (currrentDie is 0 base so add 1)
+        // Tutorial: if a forced value was set, use it instead of random
+        if (_forcedValue > 0)
+        {
+            currrentDie  = _forcedValue - 1;  // convert to 0-based index
+            die.sprite   = Dice[currrentDie];
+            _forcedValue = -1;
+        }
+
         int value = currrentDie + 1;
-        //   totalValue[currrentDie] += value; // add value to totalValue of current die
-        total += value;                   // add value to total
+        total += value;
         die.GetComponent<RectTransform>().eulerAngles = Vector3.zero;
         RollUp?.Invoke(true);
-
-
-
     }
 
 
