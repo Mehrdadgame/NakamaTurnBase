@@ -350,7 +350,7 @@ namespace Nakama.Helpers
         {
             if (coinBonusPopup == null) return;
 
-            coinBonusPopup.text = "+" + amount + " کوین!";
+            coinBonusPopup.text = "‏+" + PersianTextUtils.FormatNumber(amount) + " کوین!";
             coinBonusPopup.color = new Color(1f, 0.85f, 0.2f, 1f);
             coinBonusPopup.gameObject.SetActive(true);
 

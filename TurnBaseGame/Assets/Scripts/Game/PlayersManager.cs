@@ -202,17 +202,17 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "+" + league.winnerReward + " تاسی";
+                        UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "-" + league.entryFee + " تاسی";
+                        UiManager.instance.TasiWin.text = "‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی";
                     }
                     else
                     {
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "+" + league.drawRefund + " تاسی";
+                        UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی";
                     }
                     multiplayerManager.isTurn = false;
                     if (data.EndGame != true)
@@ -244,17 +244,17 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("You Win", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "+" + league.winnerReward + " تاسی";
+                        UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی";
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("You Loss", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "-" + league.entryFee + " تاسی";
+                        UiManager.instance.TasiWin.text = "‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی";
                     }
                     else
                     {
                         ShowResultEndGame("Match is Tied", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "+" + league.drawRefund + " تاسی";
+                        UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی";
                     }
                     multiplayerManager.isTurn = false;
                 }

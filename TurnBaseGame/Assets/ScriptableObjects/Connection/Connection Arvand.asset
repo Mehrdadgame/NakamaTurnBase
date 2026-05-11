@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Connection Arvand
   m_EditorClassIdentifier: 
   scheme: http
-  host: arvandgames.com
+  host: 37.32.22.134:33901
   port: 7350
   serverKey: defaultkey

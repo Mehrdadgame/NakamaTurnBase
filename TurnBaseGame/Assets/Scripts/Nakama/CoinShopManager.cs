@@ -72,7 +72,7 @@ namespace Nakama.Helpers
                     products[idx].coinsLabel.text = FormatCoins(products[idx].coinsAmount);
 
                 if (products[idx].priceText != null && !string.IsNullOrEmpty(products[idx].priceLabel))
-                    products[idx].priceText.text = products[idx].priceLabel;
+                    products[idx].priceText.text = PersianTextUtils.FixRTLPriceLabel(products[idx].priceLabel);
             }
         }
 
@@ -231,6 +231,6 @@ namespace Nakama.Helpers
         }
 
         private static string FormatCoins(int amount) =>
-             amount.ToString();
+            PersianTextUtils.FormatNumber(amount);
     }
 }

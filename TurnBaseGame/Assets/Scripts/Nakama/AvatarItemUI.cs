@@ -48,7 +48,7 @@ namespace Nakama.Helpers
                 else if (isOwned)
                     priceLabel.text = "خریدی";
                 else
-                    priceLabel.text = price + " تاسی";
+                    priceLabel.text = PersianTextUtils.FormatNumber(price) + " تاسی";
             }
 
             if (selectedRing != null) selectedRing.SetActive(isSelected);
