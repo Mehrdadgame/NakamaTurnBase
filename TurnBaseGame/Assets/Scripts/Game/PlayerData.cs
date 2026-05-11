@@ -13,17 +13,19 @@ namespace NinjaBattle.Game
 
         #region PROPERTIES
 
-        [JsonProperty(PresenceKey)] public PresenceData Presence { get; private set; }
-        [JsonProperty(DisplayNameKey)] public string DisplayName { get; private set; }
+        [JsonProperty(PresenceKey)]    public PresenceData Presence    { get; private set; }
+        [JsonProperty(DisplayNameKey)] public string      DisplayName { get; private set; }
+        [JsonProperty("avatarId")]     public string      AvatarId    { get; private set; }
 
         #endregion
 
         #region CONSTRUCTORS
 
-        public PlayerData(PresenceData presence, string displayName)
+        public PlayerData(PresenceData presence, string displayName, string avatarId = "avatar_0")
         {
-            Presence = presence;
+            Presence    = presence;
             DisplayName = displayName;
+            AvatarId    = avatarId;
         }
 
         #endregion

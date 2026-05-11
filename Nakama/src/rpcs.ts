@@ -391,14 +391,14 @@ let updateProfileRpc: nkruntime.RpcFunction = function (
 // ─── Coin Shop (Cafebazaar IAP) ───────────────────────────────────────────────
 
 const COIN_PACKS: { [id: string]: number } = {
-    "coin_pack_1": 3500,    // کوچک
-    "coin_pack_2": 8000,    // استاندارد
-    "coin_pack_3": 13000,   // بزرگ
-    "coin_pack_4": 18000,   // ویژه
-    "coin_pack_5": 28000,   // شاهانه
-    "coin_pack_6": 40000,   // اضافه‌ای
-    "coin_pack_7": 55000,   // الماس
-    "coin_pack_8": 100000,  // امپراتور
+    "SmallCoin_TasZan": 3500,    // کوچک
+    "Standard_TasZan": 8000,    // استاندارد
+    "Larg_TasZan": 13000,   // بزرگ
+    "VIP_TasZan": 18000,   // ویژه
+    "King_TasZan": 28000,   // شاهانه
+    "Legend_TasZan": 40000,   // اضافه‌ای
+    "Diamond_TasZan": 55000,   // الماس
+    "Empire_TasZan": 100000,  // امپراتور
 };
 
 let verifyCoinPurchaseRpc: nkruntime.RpcFunction = function (

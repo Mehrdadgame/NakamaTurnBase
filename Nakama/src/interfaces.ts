@@ -38,6 +38,7 @@ interface GameState {
 interface Player {
     presence: nkruntime.Presence;
     displayName: string;
+    avatarId: string;
     ScorePlayer: number;
     isBot?: boolean;
 }

@@ -13,13 +13,14 @@ public class AniamtionManager : MonoBehaviour
     public Animator AnimIconOpp;
     public RectTransform IconMe;
     public RectTransform IconOpp;
-    // Start is called before the first frame update
+
+    [Header("Avatar Images (assign the Image on each icon GameObject)")]
+    public Image AvatarImageMe;
+    public Image AvatarImageOpp;
+
     void Awake()
     {
         instance = this;
         AnimIconOpp.Play("IconMatchMaking", 0, 0);
-        //AnimGoToUpOpp.GetComponent<Animator>().Play("ScleIcon",0,0);
     }
-
- 
 }

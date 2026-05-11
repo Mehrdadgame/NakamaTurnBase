@@ -41,7 +41,7 @@ namespace Nakama.Helpers
 
     public class CoinShopManager : MonoBehaviour
     {
-        private const string RsaPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDSc64jaD0G9XdtMtV7UbKAEL6IAdcCV4NhqwzcwlvuD8nx8+jbAQh0uYUsNBRq/wIKQHw4tm6mvxlw13FPTUZRs7V2PEOlcws6PBSjkvJtBHM532WqT4qRcAN18QXP1VFSen2dRhRUgriTmSba1RzgYAIbXibRaYw5eHa51v6Xu4DL4CM0PYrjVMaznGC6Taf8FSYol7WhKxwNOP/Icb5iMcXGYAq/bd650f0iwbECAwEAAQ==";
+        private const string RsaPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwC0vw7ZN00/aJsQ/grNtpgM2UrOesv0nNRtVjYXHS4hSI9xBlacWrAtGjJ46LyfIooBxD3REprgv5d8xZPi7s0TTUW/VtbW5w0pgiEXSip0TGE5S2c41pdxPsqUe3tnSnsxdHoeq7Lnoa21JNLkqLuPShNCSRVjdlF56VxMTL2OKV+vLh3sscj0gkNzBzP21eyeI7OGXsa7Fe6crJePmOUGWWxg6eWe0DF6Nkf3XfkCAwEAAQ==";
         private const string VerifyRpcId = "VerifyCoinPurchaseRpc";
 
         [Header("Products (assign in Inspector)")]
@@ -141,13 +141,14 @@ namespace Nakama.Helpers
                 }
 
                 var info = result.data;
+
                 SetStatus("در حال تایید...", Color.white);
 
+                var consumeResult = await _payment.Consume(info.purchaseToken);
                 bool serverOk = await VerifyWithServer(info, product.coinsAmount);
                 if (!serverOk) return;
 
                 // Consume so user can purchase this product again (consumable / type 7)
-                var consumeResult = await _payment.Consume(info.purchaseToken);
                 if (consumeResult.status != Status.Success)
                     Debug.LogWarning("[CoinShop] Consume failed (non-critical): " + consumeResult.message);
 

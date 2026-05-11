@@ -198,7 +198,7 @@ namespace Nakama.Helpers
                     if (row.rowBackground != null)
                         row.rowBackground.color = isMe
                             ? new Color(1f, 0.92f, 0.4f, 0.55f)
-                            : Color.clear;
+                            : Color.white;
                 }
                 else
                 {

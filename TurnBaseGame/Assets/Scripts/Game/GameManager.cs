@@ -3,6 +3,7 @@ using NinjaBattle.General;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace NinjaBattle.Game
 {
@@ -73,10 +74,13 @@ namespace NinjaBattle.Game
 
         private async void ReceivedChangeScene(MultiplayerMessage message)
         {
-            // SceneManager.LoadScene(message.GetData<int>());
-
+            // 1. Stop matchmaking animation first
             AniamtionManager.instance.AnimIconOpp.enabled = false;
             AniamtionManager.instance.PageMatchMaking.gameObject.SetActive(false);
+
+            // 2. Set correct avatar sprites BEFORE fly-up animation plays
+            ApplyAvatarIcons();
+
             await Task.Delay(2000);
             AniamtionManager.instance.AnimGoToUpMe.Play("GotoUpPageMe", 0, 0);
             AniamtionManager.instance.AnimGoToUpOpp.Play("GoToUpOpp", 0, 0);
@@ -89,6 +93,40 @@ namespace NinjaBattle.Game
             AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().parent = AniamtionManager.instance.IconOpp;
             AniamtionManager.instance.AnimGoToUpOpp.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             AniamtionManager.instance.AnimGoToUpMe.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        }
+
+        private void ApplyAvatarIcons()
+        {
+            var anim = AniamtionManager.instance;
+            if (anim == null) return;
+
+            var players = PlayersManager.Instance?.Players;
+            var profile = Nakama.Helpers.ProfileService.Instance;
+            if (players == null || profile == null) return;
+
+            string mySessionId = MultiplayerManager.Instance?.Self?.SessionId;
+
+            foreach (var player in players)
+            {
+                if (player == null) continue;
+                string avatarId = string.IsNullOrEmpty(player.AvatarId) ? "avatar_0" : player.AvatarId;
+                Sprite sprite = profile.GetSprite(avatarId);
+                if (sprite == null) continue;
+
+                bool isMe = player.Presence?.SessionId == mySessionId;
+                Image img = isMe
+                    ? (anim.AvatarImageMe ?? anim.AnimGoToUpMe.GetComponent<Image>())
+                    : (anim.AvatarImageOpp ?? anim.AnimGoToUpOpp.GetComponent<Image>());
+
+                if (img != null)
+                {
+                    anim.AnimGoToUpMe.GetComponent<Animator>().enabled = false;
+                    anim.AnimGoToUpOpp.GetComponent<Animator>().enabled = false;
+                    img.sprite = sprite;
+
+                }
+
+            }
         }
 
         private async void JoinedMatch()

@@ -379,14 +379,14 @@ var updateProfileRpc = function (context, logger, nakama, payload) {
 };
 // ─── Coin Shop (Cafebazaar IAP) ───────────────────────────────────────────────
 var COIN_PACKS = {
-    "coin_pack_1": 3500,
-    "coin_pack_2": 8000,
-    "coin_pack_3": 13000,
-    "coin_pack_4": 18000,
-    "coin_pack_5": 28000,
-    "coin_pack_6": 40000,
-    "coin_pack_7": 55000,
-    "coin_pack_8": 100000, // امپراتور
+    "SmallCoin_TasZan": 3500,
+    "Standard_TasZan": 8000,
+    "Large_TasZan": 13000,
+    "VIP_TasZan": 18000,
+    "King_TasZan": 28000,
+    "Legend_TasZan": 40000,
+    "Diamond_TasZan": 55000,
+    "Empire_TasZan": 100000, // امپراتور
 };
 var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
@@ -395,6 +395,8 @@ var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
     var input = JSON.parse(payload || "{}");
     if (!input.productId || !input.purchaseToken)
         return JSON.stringify({ success: false, error: "Missing purchase data" });
+        logger.info(input.productId + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+
     var coins = COIN_PACKS[input.productId];
     if (!coins)
         return JSON.stringify({ success: false, error: "Unknown product: " + input.productId });
@@ -456,6 +458,12 @@ function CreateLeaderboards(context, logger, nakama) {
         }
     }
 }
+// ─── Reconnection Grace Period ────────────────────────────────────────────────
+var GraceSeconds   = 20;
+var GraceTicks     = GraceSeconds * TickRate;   // 320 ticks @ 16 TPS
+var OpCodeDisconnected  = 11;   // → client: show countdown popup, pause turn timer
+var OpCodeReconnected   = 12;   // → client: hide popup, resume turn timer
+var OpCodeDisconnectWin = 13;   // → client: show "you win" (opponent timed out)
 // ─── Match Lifecycle ──────────────────────────────────────────────────────────
 var matchInit = function (context, logger, nakama, params) {
     var value = "";
@@ -477,6 +485,7 @@ var matchInit = function (context, logger, nakama, params) {
         hasBot: false, botDifficulty: 0, botNeedsToMove: false, botThinkTick: 0,
         isTutorial: params.tutorial === "true",
         tutorialBotMoveIndex: 0,
+        disconnectedPlayers: {},   // userId → { playerNum, graceTick, player }
     };
     return { state: gameState, tickRate: TickRate, label: JSON.stringify(label) };
 };
@@ -500,8 +509,12 @@ function buildGrids(mode) {
 // ─── Join ─────────────────────────────────────────────────────────────────────
 var matchJoinAttempt = function (context, logger, nakama, dispatcher, tick, state, presence, metadata) {
     var gameState = state;
-    if (gameState.scene !== 3 /* Lobby */)
-        return { state: gameState, accept: false };
+    if (gameState.scene !== 3 /* Lobby */) {
+        // Allow reconnection if this userId has an active grace period
+        var isReconnecting = gameState.disconnectedPlayers && gameState.disconnectedPlayers[presence.userId];
+        if (!isReconnecting)
+            return { state: gameState, accept: false };
+    }
     // Tutorial mode: skip entry fee check entirely
     if (!gameState.isTutorial) {
         var league = LEAGUES[gameState.ModeText];
@@ -524,8 +537,25 @@ var matchJoinAttempt = function (context, logger, nakama, dispatcher, tick, stat
 };
 var matchJoin = function (context, logger, nakama, dispatcher, tick, state, presences) {
     var gameState = state;
-    if (gameState.scene !== 3 /* Lobby */)
+    // ── Reconnection path (Battle scene) ─────────────────────────────────────
+    if (gameState.scene !== 3 /* Lobby */) {
+        for (var _r = 0; _r < presences.length; _r++) {
+            var presence = presences[_r];
+            var grace = gameState.disconnectedPlayers && gameState.disconnectedPlayers[presence.userId];
+            if (!grace) continue;
+            // Restore player with the new session
+            var slot = grace.playerNum;
+            gameState.players[slot] = grace.player;
+            gameState.players[slot].presence = presence;   // new sessionId
+            delete gameState.disconnectedPlayers[presence.userId];
+            logger.info("Player reconnected: userId=" + presence.userId + " slot=" + slot);
+            // Tell the remaining player: opponent is back
+            dispatcher.broadcastMessage(OpCodeReconnected, JSON.stringify({ userId: presence.userId }));
+            // Re-send Players list so reconnected client knows game state
+            dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players));
+        }
         return { state: gameState };
+    }
     var existingPresences = [];
     gameState.players.forEach(function (p) { if (p && !p.isBot)
         existingPresences.push(p.presence); });
@@ -547,9 +577,17 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
                 }
             }
         }
+        var avatarId = "avatar_0";
+        try {
+            var profileObjects = nakama.storageRead([{ collection: "Profile", key: "profile_data", userId: presence.userId }]);
+            if (profileObjects.length > 0 && profileObjects[0].value && profileObjects[0].value.avatarId)
+                avatarId = profileObjects[0].value.avatarId;
+        } catch (e) {
+            logger.warn("Could not read avatarId for " + presence.userId + ": " + e);
+        }
         var player = {
             presence: presence,
-            displayName: resolvedName, ScorePlayer: 0,
+            displayName: resolvedName, avatarId: avatarId, ScorePlayer: 0,
         };
         var slot = getNextPlayerNumber(gameState.players);
         gameState.players[slot] = player;
@@ -578,10 +616,25 @@ var matchLeave = function (context, logger, nakama, dispatcher, tick, state, pre
         var num = getPlayerNumber(gameState.players, presence.sessionId);
         if (num === PlayerNotFound)
             continue;
-        var name_1 = JSON.stringify(gameState.players[num].displayName);
-        if (!gameState.BeforeEndGame)
-            dispatcher.broadcastMessage(9, name_1);
-        delete gameState.players[num];
+        var player = gameState.players[num];
+        // ── Grace period: only during active Battle, for human players ──────
+        if (gameState.scene === 4 /* Battle */ && !player.isBot && !gameState.BeforeEndGame) {
+            gameState.disconnectedPlayers[presence.userId] = {
+                playerNum: num,
+                graceTick: GraceTicks,
+                player: player,
+            };
+            delete gameState.players[num];
+            logger.info("Player disconnected — grace period started: userId=" + presence.userId);
+            // Notify the remaining connected player
+            dispatcher.broadcastMessage(OpCodeDisconnected, JSON.stringify({ remainingSeconds: GraceSeconds }));
+        } else {
+            // Normal leave (lobby, results, or game already ending)
+            var name_1 = JSON.stringify(gameState.players[num].displayName);
+            if (!gameState.BeforeEndGame)
+                dispatcher.broadcastMessage(9, name_1);
+            delete gameState.players[num];
+        }
     }
     return { state: gameState };
 };
@@ -642,7 +695,7 @@ function addBotAndStartBattle(gameState, dispatcher, logger) {
         userId: "bot_" + generateId(), sessionId: "bot_" + generateId(),
         username: botName, node: "server", status: "",
     };
-    gameState.players[1] = { presence: botPresence, displayName: botName, ScorePlayer: 0, isBot: true };
+    gameState.players[1] = { presence: botPresence, displayName: botName, avatarId: "avatar_0", ScorePlayer: 0, isBot: true };
     gameState.playersWins[1] = 0;
     gameState.hasBot = true;
     gameState.botDifficulty = diff;
@@ -656,6 +709,37 @@ function generateId() {
 }
 // ─── Battle ───────────────────────────────────────────────────────────────────
 function matchLoopBattle(gameState, nakama, dispatcher, logger) {
+    // ── Reconnection grace period countdown ──────────────────────────────────
+    if (gameState.disconnectedPlayers) {
+        for (var userId in gameState.disconnectedPlayers) {
+            var grace = gameState.disconnectedPlayers[userId];
+            grace.graceTick--;
+            // Broadcast remaining seconds once per second
+            if (grace.graceTick > 0 && grace.graceTick % TickRate === 0) {
+                var remaining = Math.ceil(grace.graceTick / TickRate);
+                dispatcher.broadcastMessage(OpCodeDisconnected, JSON.stringify({ remainingSeconds: remaining }));
+            }
+            // Grace period expired → declare the remaining player winner
+            if (grace.graceTick <= 0) {
+                delete gameState.disconnectedPlayers[userId];
+                logger.info("Grace period expired for userId=" + userId + " — declaring winner");
+                var winner = null;
+                for (var i = 0; i < gameState.players.length; i++) {
+                    if (gameState.players[i] && !gameState.players[i].isBot) {
+                        winner = gameState.players[i];
+                        break;
+                    }
+                }
+                if (winner) {
+                    gameState.BeforeEndGame = true;
+                    awardMatchResult(gameState, nakama, winner.presence.userId, logger);
+                    dispatcher.broadcastMessage(OpCodeDisconnectWin, JSON.stringify({ winnerUserId: winner.presence.userId }));
+                }
+                gameState.endMatch = true;
+                return;
+            }
+        }
+    }
     if (gameState.countdown > 0) {
         gameState.countdown--;
         if (gameState.countdown === 0) {

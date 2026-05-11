@@ -98,6 +98,7 @@ public class WelcomePopup : MonoBehaviour
     private void OnSkip()
     {
         PlayerPrefs.SetInt(TutorialDoneKey, 1);
+        PlayerPrefs.SetInt(TutorialModeKey, 0);  // make sure gameplay never enters tutorial
         PlayerPrefs.Save();
         HideAndDo(() => { });
     }

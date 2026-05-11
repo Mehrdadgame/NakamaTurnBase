@@ -34,10 +34,10 @@ MonoBehaviour:
     m_guid: 2cda990e2423bbf4892e6590ba056729
   - m_enabled: 1
     m_path: Assets/-Scenes/5-FourByThree.unity
-    m_guid: 166dc96fe3530664081aaa27e22d5922
+    m_guid: e931f141c5558da4b8c58986eba8fb5b
   - m_enabled: 1
     m_path: Assets/-Scenes/6-FourByFour.unity
-    m_guid: 488314da47c7097419e4426c6a01fd48
+    m_guid: 11de12921e81c4d41801946f46f0b46f
   m_HasScriptingDefines: 0
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
@@ -54,7 +54,7 @@ MonoBehaviour:
     - line: '|   useOnDemandResources: 0'
     - line: '|   accelerometerFrequency: 60'
     - line: '|   companyName: Mehrdad'
-    - line: '|   productName: TasZan'
+    - line: '|   productName: "\u062A\u0627\u0633 \u0632\u0646"'
     - line: '|   defaultCursor: {instanceID: 0}'
     - line: '|   cursorHotspot: {x: 0, y: 0}'
     - line: '|   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b:
@@ -300,20 +300,20 @@ MonoBehaviour:
     - line: '|   clonedFromGUID: 10ad67313f4034357812315f3c407484'
     - line: '|   templatePackageId: com.unity.template.2d@4.0.2'
     - line: '|   templateDefaultScene: Assets/Scenes/SampleScene.unity'
-    - line: '|   useCustomMainManifest: 0'
+    - line: '|   useCustomMainManifest: 1'
     - line: '|   useCustomLauncherManifest: 0'
-    - line: '|   useCustomMainGradleTemplate: 0'
+    - line: '|   useCustomMainGradleTemplate: 1'
     - line: '|   useCustomLauncherGradleManifest: 0'
     - line: '|   useCustomBaseGradleTemplate: 0'
-    - line: '|   useCustomGradlePropertiesTemplate: 0'
-    - line: '|   useCustomGradleSettingsTemplate: 0'
+    - line: '|   useCustomGradlePropertiesTemplate: 1'
+    - line: '|   useCustomGradleSettingsTemplate: 1'
     - line: '|   useCustomProguardFile: 0'
     - line: '|   AndroidTargetArchitectures: 2'
     - line: '|   AndroidAllowedArchitectures: -1'
     - line: '|   AndroidSplashScreenScale: 0'
     - line: '|   androidSplashScreen: {instanceID: 0}'
-    - line: '|   AndroidKeystoreName: ''{inproject}: user.keystore'''
-    - line: '|   AndroidKeyaliasName: me'
+    - line: '|   AndroidKeystoreName: ''{inproject}: Mehrdad.keystore'''
+    - line: '|   AndroidKeyaliasName: mehrdad'
     - line: '|   AndroidEnableArmv9SecurityFeatures: 0'
     - line: '|   AndroidEnableArm64MTE: 0'
     - line: '|   AndroidBuildApkPerCpuArchitecture: 1'
@@ -325,7 +325,7 @@ MonoBehaviour:
     - line: '|   AndroidEnableTango: 0'
     - line: '|   androidEnableBanner: 1'
     - line: '|   androidUseLowAccuracyLocation: 0'
-    - line: '|   androidUseCustomKeystore: 0'
+    - line: '|   androidUseCustomKeystore: 1'
     - line: '|   m_AndroidBanners:'
     - line: '|   - width: 320'
     - line: '|     height: 180'
@@ -341,7 +341,7 @@ MonoBehaviour:
     - line: '|   - m_BuildTarget: '
     - line: '|     m_Icons:'
     - line: '|     - serializedVersion: 2'
-    - line: '|       m_Icon: {fileID: 2800000, guid: 238fdfb021e240c4b9e32f9f9b3af3d5,
+    - line: '|       m_Icon: {fileID: 2800000, guid: 1003112e822f1e1449c9234d004fff3f,
         type: 3}'
     - line: '|       m_Width: 128'
     - line: '|       m_Height: 128'

@@ -87,6 +87,11 @@ namespace Nakama.Helpers
                 onAvatarChanged?.Invoke(CurrentAvatarId);
                 onOwnedAvatarsChanged?.Invoke(OwnedAvatarIds);
                 if (nameChanged) onDisplayNameChanged?.Invoke(DisplayName);
+
+                // GetProfileRpc may have granted the first-login bonus (3500 coins).
+                // Refresh wallet AFTER the RPC completes so the UI shows the correct balance.
+                if (WalletManager.Instance != null)
+                    await WalletManager.Instance.RefreshAsync();
             }
             catch (Exception e)
             {
