@@ -9,6 +9,8 @@ var SelectAvatarRpc = "SelectAvatarRpc";
 var GetAppVersionRpc = "GetAppVersionRpc";
 var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
 var AddCoinsRpc = "AddCoinsRpc";
+var ClaimChestRpc = "ClaimChestRpc";
+var GetChestStatusRpc = "GetChestStatusRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
@@ -25,6 +27,8 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(GetAppVersionRpc, getAppVersionRpc);
     initializer.registerRpc(VerifyCoinPurchaseRpc, verifyCoinPurchaseRpc);
     initializer.registerRpc(AddCoinsRpc, addCoinsRpc);
+    initializer.registerRpc(ClaimChestRpc, claimChestRpc);
+    initializer.registerRpc(GetChestStatusRpc, getChestStatusRpc);
     // Seed default app version config if it doesn't exist yet
     var existing = nk.storageRead([{ collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId }]);
     if (existing.length === 0) {
@@ -439,6 +443,63 @@ var addCoinsRpc = function (context, logger, nakama, payload) {
     }]);
     logger.info("[AddCoins] Granted " + coins + " coins to " + userId + " | recorded key=" + purchaseKey);
     return JSON.stringify({ success: true, coinsAwarded: coins });
+};
+// ─── Chest Reward System ──────────────────────────────────────────────────────
+var CHEST_COOLDOWN_SEC = 3 * 60 * 60; // 3 hours
+// Reward table — weights sum to 100
+var CHEST_REWARDS = [
+    { coins: 50,   weight: 38 },
+    { coins: 100,  weight: 25 },
+    { coins: 200,  weight: 17 },
+    { coins: 300,  weight: 10 },
+    { coins: 500,  weight: 6  },
+    { coins: 750,  weight: 3  },
+    { coins: 1000, weight: 1  },
+];
+function rollChest() {
+    var roll = Math.random() * 100;
+    var cumulative = 0;
+    for (var i = 0; i < CHEST_REWARDS.length; i++) {
+        cumulative += CHEST_REWARDS[i].weight;
+        if (roll < cumulative) return CHEST_REWARDS[i].coins;
+    }
+    return 50;
+}
+var getChestStatusRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId) throw new Error("Not authenticated");
+    var now = Date.now();
+    var records = nakama.storageRead([{ collection: "chest", key: "last_claim", userId: userId }]);
+    var lastClaimAt = records.length > 0 ? (records[0].value.lastClaimAt || 0) : 0;
+    var elapsed = now - lastClaimAt;
+    var cooldownMs = CHEST_COOLDOWN_SEC * 1000;
+    var remainingSec = elapsed >= cooldownMs ? 0 : Math.ceil((cooldownMs - elapsed) / 1000);
+    return JSON.stringify({ remainingSeconds: remainingSec, ready: remainingSec <= 0 });
+};
+var claimChestRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId) throw new Error("Not authenticated");
+    var now = Date.now();
+    var cooldownMs = CHEST_COOLDOWN_SEC * 1000;
+    var records = nakama.storageRead([{ collection: "chest", key: "last_claim", userId: userId }]);
+    var lastClaimAt = records.length > 0 ? (records[0].value.lastClaimAt || 0) : 0;
+    var elapsed = now - lastClaimAt;
+    if (elapsed < cooldownMs) {
+        var remainingSec = Math.ceil((cooldownMs - elapsed) / 1000);
+        return JSON.stringify({ success: false, error: "not_ready", remainingSeconds: remainingSec });
+    }
+    var coins = rollChest();
+    nakama.walletUpdate(userId, { coins: coins }, { source: "chest" }, true);
+    nakama.storageWrite([{
+        collection: "chest",
+        key: "last_claim",
+        userId: userId,
+        value: { lastClaimAt: now, lastReward: coins },
+        permissionRead: 1,
+        permissionWrite: 0,
+    }]);
+    logger.info("[Chest] userId=" + userId + " won=" + coins + " coins");
+    return JSON.stringify({ success: true, coinsAwarded: coins, remainingSeconds: CHEST_COOLDOWN_SEC });
 };
 // ─── Force Update ─────────────────────────────────────────────────────────────
 // Returns { requiredVersion, updateUrl } stored under the system config collection.

@@ -3,7 +3,7 @@
     "m_SelectedProcess": {
         "deviceId": "R5CX33C49KF",
         "name": "com.goodvillains.DiceWar",
-        "processId": 9789,
+        "processId": 15262,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -18,6 +18,24 @@
             "deviceId": "R5CX33C49KF",
             "name": "com.goodvillains.DiceWar",
             "processId": 9789,
+            "exited": true
+        },
+        {
+            "deviceId": "R5CX33C49KF",
+            "name": "com.google.android.packageinstaller",
+            "processId": 8936,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CX33C49KF",
+            "name": "com.farsitel.bazaar",
+            "processId": 13602,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CX33C49KF",
+            "name": "com.goodvillains.DiceWar",
+            "processId": 15262,
             "exited": false
         }
     ],
