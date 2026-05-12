@@ -421,8 +421,23 @@ var addCoinsRpc = function (context, logger, nakama, payload) {
         logger.warn("[AddCoins] Invalid coins value: " + input.coins);
         return JSON.stringify({ success: false, error: "Invalid coins amount" });
     }
-    nakama.walletUpdate(userId, { coins: coins }, { source: "iap_direct" }, true);
-    logger.info("[AddCoins] Granted " + coins + " coins to " + userId);
+    // Update wallet
+    nakama.walletUpdate(userId, { coins: coins }, { source: "iap_bazaar" }, true);
+    // Record purchase in Storage → visible in Nakama console under Storage tab
+    var purchaseKey = "bazaar_" + Date.now();
+    nakama.storageWrite([{
+        collection: "iap_purchases",
+        key: purchaseKey,
+        userId: userId,
+        value: {
+            coins: coins,
+            store: "cafebazaar",
+            purchasedAt: new Date().toISOString(),
+        },
+        permissionRead: 1,
+        permissionWrite: 0,
+    }]);
+    logger.info("[AddCoins] Granted " + coins + " coins to " + userId + " | recorded key=" + purchaseKey);
     return JSON.stringify({ success: true, coinsAwarded: coins });
 };
 // ─── Force Update ─────────────────────────────────────────────────────────────
