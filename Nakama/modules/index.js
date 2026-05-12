@@ -8,6 +8,7 @@ var UpdateProfileRpc = "UpdateProfileRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
 var GetAppVersionRpc = "GetAppVersionRpc";
 var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
+var AddCoinsRpc = "AddCoinsRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
@@ -23,6 +24,7 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(SelectAvatarRpc, selectAvatarRpc);
     initializer.registerRpc(GetAppVersionRpc, getAppVersionRpc);
     initializer.registerRpc(VerifyCoinPurchaseRpc, verifyCoinPurchaseRpc);
+    initializer.registerRpc(AddCoinsRpc, addCoinsRpc);
     // Seed default app version config if it doesn't exist yet
     var existing = nk.storageRead([{ collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId }]);
     if (existing.length === 0) {
@@ -390,42 +392,37 @@ var COIN_PACKS = {
 };
 var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
+    logger.info("[GrantCoins-v2] RAW payload=" + payload + " userId=" + userId);
     if (!userId)
         throw new Error("Not authenticated");
     var input = JSON.parse(payload || "{}");
-    if (!input.productId || !input.purchaseToken)
-        return JSON.stringify({ success: false, error: "Missing purchase data" });
-        logger.info(input.productId + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    var productId = (input.productId || "").trim();
+    logger.info("[GrantCoins-v2] parsed productId='" + productId + "'");
 
-    var coins = COIN_PACKS[input.productId];
-    if (!coins)
-        return JSON.stringify({ success: false, error: "Unknown product: " + input.productId });
-    // Use orderId as storage key; fall back to purchaseToken if missing
-    var storageKey = (input.orderId && input.orderId.length > 0) ? input.orderId : input.purchaseToken;
-    // Idempotency — reject duplicate tokens
-    var existing = nakama.storageRead([{ collection: "payment", key: storageKey, userId: userId }]);
-    if (existing.length > 0)
-        return JSON.stringify({ success: false, error: "Already processed" });
-    // Log payment record
-    nakama.storageWrite([{
-            collection: "payment",
-            key: storageKey,
-            userId: userId,
-            value: {
-                productId: input.productId,
-                purchaseToken: input.purchaseToken,
-                orderId: input.orderId,
-                dataSignature: input.dataSignature,
-                originalJson: input.originalJson,
-                coinsAwarded: coins,
-                timestamp: Date.now(),
-            },
-            permissionRead: 1,
-            permissionWrite: 0,
-        }]);
-    // Award coins
-    nakama.walletUpdate(userId, { coins: coins }, { source: "iap", productId: input.productId, orderId: input.orderId }, true);
-    logger.info("IAP purchase: userId=" + userId + " product=" + input.productId + " coins=" + coins);
+    var coins = COIN_PACKS[productId];
+    if (!coins) {
+        logger.warn("[GrantCoins] Unknown productId='" + productId + "' available=" + JSON.stringify(Object.keys(COIN_PACKS)));
+        return JSON.stringify({ success: false, error: "Unknown product: " + productId });
+    }
+    // Award coins directly — Bazaar SDK already verified the purchase on device
+    nakama.walletUpdate(userId, { coins: coins }, { source: "iap", productId: productId }, true);
+    logger.info("[GrantCoins] awarded coins=" + coins + " to userId=" + userId);
+    return JSON.stringify({ success: true, coinsAwarded: coins });
+};
+// ─── Add Coins (direct grant after confirmed IAP) ─────────────────────────────
+var addCoinsRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    logger.info("[AddCoins] userId=" + userId + " payload=" + payload);
+    if (!userId) throw new Error("Not authenticated");
+    var input = {};
+    try { input = JSON.parse(payload || "{}"); } catch(e) { throw new Error("Bad JSON: " + e.message); }
+    var coins = parseInt(input.coins, 10);
+    if (!coins || coins <= 0) {
+        logger.warn("[AddCoins] Invalid coins value: " + input.coins);
+        return JSON.stringify({ success: false, error: "Invalid coins amount" });
+    }
+    nakama.walletUpdate(userId, { coins: coins }, { source: "iap_direct" }, true);
+    logger.info("[AddCoins] Granted " + coins + " coins to " + userId);
     return JSON.stringify({ success: true, coinsAwarded: coins });
 };
 // ─── Force Update ─────────────────────────────────────────────────────────────

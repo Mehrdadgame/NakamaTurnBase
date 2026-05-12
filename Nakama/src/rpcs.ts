@@ -393,7 +393,7 @@ let updateProfileRpc: nkruntime.RpcFunction = function (
 const COIN_PACKS: { [id: string]: number } = {
     "SmallCoin_TasZan": 3500,    // کوچک
     "Standard_TasZan": 8000,    // استاندارد
-    "Larg_TasZan": 13000,   // بزرگ
+    "Large_TasZan": 13000,   // بزرگ
     "VIP_TasZan": 18000,   // ویژه
     "King_TasZan": 28000,   // شاهانه
     "Legend_TasZan": 40000,   // اضافه‌ای

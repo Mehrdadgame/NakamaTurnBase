@@ -22,27 +22,12 @@ namespace Nakama.Helpers
     }
 
     [Serializable]
-    internal class CoinPurchasePayload
-    {
-        public string productId;
-        public string purchaseToken;
-        public string orderId;
-        public string dataSignature;
-        public string originalJson;
-    }
-
-    [Serializable]
-    internal class CoinPurchaseResult
-    {
-        public bool success;
-        public int coinsAwarded;
-        public string error;
-    }
+    internal class CoinPurchaseResult { public bool success; public int coinsAwarded; public string error; }
 
     public class CoinShopManager : MonoBehaviour
     {
         private const string RsaPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwC0vw7ZN00/aJsQ/grNtpgM2UrOesv0nNRtVjYXHS4hSI9xBlacWrAtGjJ46LyfIooBxD3REprgv5d8xZPi7s0TTUW/VtbW5w0pgiEXSip0TGE5S2c41pdxPsqUe3tnSnsxdHoeq7Lnoa21JNLkqLuPShNCSRVjdlF56VxMTL2OKV+vLh3sscj0gkNzBzP21eyeI7OGXsa7Fe6crJePmOUGWWxg6eWe0DF6Nkf3XfkCAwEAAQ==";
-        private const string VerifyRpcId = "VerifyCoinPurchaseRpc";
+        private const string AddCoinsRpcId = "AddCoinsRpc";
 
         [Header("Products (assign in Inspector)")]
         [SerializeField] private CoinPackProduct[] products;
@@ -142,20 +127,19 @@ namespace Nakama.Helpers
 
                 var info = result.data;
 
-                SetStatus("در حال تایید...", Color.white);
-
+                // Consume first so Bazaar allows purchasing again
                 var consumeResult = await _payment.Consume(info.purchaseToken);
-                bool serverOk = await VerifyWithServer(info, product.coinsAmount);
-                if (!serverOk) return;
-
-                // Consume so user can purchase this product again (consumable / type 7)
                 if (consumeResult.status != Status.Success)
                     Debug.LogWarning("[CoinShop] Consume failed (non-critical): " + consumeResult.message);
 
+                // Immediately show coins in UI
+                if (WalletManager.Instance != null)
+                    WalletManager.Instance.SetCoins(WalletManager.Instance.Coins + product.coinsAmount);
+
                 SetStatus("+" + FormatCoins(product.coinsAmount) + " کوین دریافت شد!", new Color(0.25f, 1f, 0.25f));
 
-                if (WalletManager.Instance != null)
-                    await WalletManager.Instance.RefreshAsync();
+                // Sync coins to server wallet in background (fire-and-forget)
+                _ = SyncCoinsToServer(product.coinsAmount);
             }
             catch (Exception e)
             {
@@ -170,44 +154,34 @@ namespace Nakama.Helpers
             }
         }
 
-        private async System.Threading.Tasks.Task<bool> VerifyWithServer(PurchaseInfo info, int expectedCoins)
+        private async System.Threading.Tasks.Task SyncCoinsToServer(int coins)
         {
             try
             {
-                var payload = JsonUtility.ToJson(new CoinPurchasePayload
-                {
-                    productId = info.productId,
-                    purchaseToken = info.purchaseToken,
-                    orderId = info.orderId,
-                    dataSignature = info.dataSignature,
-                    originalJson = info.originalJson,
-                });
-
-                var rpc = await NakamaManager.Instance.SendRPC(VerifyRpcId, payload);
+                var payload = "{\"coins\":" + coins + "}";
+                Debug.Log("[CoinShop] Syncing to server: " + payload);
+                var rpc = await NakamaManager.Instance.SendRPC(AddCoinsRpcId, payload);
                 if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
                 {
-                    SetStatus("خطا: پاسخی از سرور دریافت نشد.", Color.red);
-                    return false;
+                    Debug.LogWarning("[CoinShop] Server sync: no response");
+                    return;
                 }
-
                 var res = rpc.Payload.Deserialize<CoinPurchaseResult>();
-                if (res == null || !res.success)
+                if (res != null && res.success)
                 {
-                    string err = res?.error ?? "unknown";
-                    // "Already processed" means duplicate — treat as success (coins were granted before)
-                    if (err == "Already processed")
-                        return true;
-                    SetStatus("خطا: " + err, Color.red);
-                    return false;
+                    Debug.Log("[CoinShop] Server confirmed coins: " + res.coinsAwarded);
+                    // Refresh from server to get authoritative balance
+                    if (WalletManager.Instance != null)
+                        await WalletManager.Instance.RefreshAsync();
                 }
-
-                return true;
+                else
+                {
+                    Debug.LogWarning("[CoinShop] Server sync failed: " + (res?.error ?? "unknown"));
+                }
             }
             catch (Exception e)
             {
-                Debug.LogWarning("[CoinShop] Server verify error: " + e.Message);
-                SetStatus("خطای سرور: " + e.Message, Color.red);
-                return false;
+                Debug.LogWarning("[CoinShop] SyncCoins error: " + e.Message);
             }
         }
 
