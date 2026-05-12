@@ -26,6 +26,8 @@ public class ReconnectPopup : MonoBehaviour
     [SerializeField] private RTLTextMeshPro messageText;
 
     private Coroutine _hideCoroutine;
+    private Coroutine _countdownCoroutine;
+    private bool      _winTriggered;
 
     // ── Unity ─────────────────────────────────────────────────────────────────
 
@@ -54,28 +56,26 @@ public class ReconnectPopup : MonoBehaviour
 
     private void OnOpponentDisconnected(MultiplayerMessage message)
     {
+        _winTriggered = false;
         var data = message.GetData<DisconnectData>();
         ShowPopup(data?.remainingSeconds ?? 20);
 
-        // Pause the turn timer while waiting
         if (TimerTurn.instance != null)
             TimerTurn.instance.TimerPause = true;
     }
 
     private void OnOpponentReconnected(MultiplayerMessage message)
     {
+        _winTriggered = false;
         HidePopup();
 
-        // Resume turn timer
         if (TimerTurn.instance != null)
             TimerTurn.instance.TimerPause = false;
     }
 
     private void OnDisconnectWin(MultiplayerMessage message)
     {
-        HidePopup(instant: true);
-        // Show win result — reuse existing end-game result panel
-        ShowDisconnectWinResult();
+        TriggerWin();
     }
 
     // ── UI ────────────────────────────────────────────────────────────────────
@@ -87,7 +87,9 @@ public class ReconnectPopup : MonoBehaviour
         if (messageText != null)
             messageText.text = "اتصال حریف قطع شد!\nدر حال انتظار برای برگشت...";
 
-        UpdateCountdown(seconds);
+        // شروع countdown کلاینت‌ساید
+        if (_countdownCoroutine != null) StopCoroutine(_countdownCoroutine);
+        _countdownCoroutine = StartCoroutine(CountdownCoroutine(seconds));
 
         if (_hideCoroutine != null) StopCoroutine(_hideCoroutine);
 
@@ -99,15 +101,31 @@ public class ReconnectPopup : MonoBehaviour
         }
     }
 
-    /// <summary>Called each time the server broadcasts a new remainingSeconds.</summary>
-    public void UpdateCountdown(int seconds)
+    private IEnumerator CountdownCoroutine(int seconds)
     {
+        while (seconds > 0)
+        {
+            if (countdownText != null)
+                countdownText.text = PersianTextUtils.ToPersianDigits(seconds.ToString());
+            yield return new WaitForSeconds(1f);
+            seconds--;
+        }
         if (countdownText != null)
-            countdownText.text = seconds.ToString();
+            countdownText.text = PersianTextUtils.ToPersianDigits("0");
+
+        // سرور ممکنه match رو قبل از رسیدن پیام ببنده — client خودش win رو trigger می‌کنه
+        yield return new WaitForSeconds(0.5f);
+        TriggerWin();
     }
 
     public void HidePopup(bool instant = false)
     {
+        if (_countdownCoroutine != null)
+        {
+            StopCoroutine(_countdownCoroutine);
+            _countdownCoroutine = null;
+        }
+
         if (popupPanel == null) return;
 
         if (instant)
@@ -122,10 +140,36 @@ public class ReconnectPopup : MonoBehaviour
             popupPanel.SetActive(false);
     }
 
+    private void TriggerWin()
+    {
+        if (_winTriggered) return;
+        _winTriggered = true;
+
+        HidePopup(instant: true);
+        ShowDisconnectWinResult();
+
+        // کوین‌ها رو از سرور بگیر — سرور قبلاً awardMatchResult رو صدا زده
+        StartCoroutine(RefreshWalletDelayed());
+    }
+
+    private IEnumerator RefreshWalletDelayed()
+    {
+        yield return new WaitForSeconds(1f);
+        if (WalletManager.Instance != null)
+        {
+            var task = WalletManager.Instance.RefreshAsync();
+            yield return new WaitUntil(() => task.IsCompleted);
+        }
+    }
+
     private void ShowDisconnectWinResult()
     {
-        // Delegate to ActionEndGame — same result panel used for normal end-game
-        if (ActionEndGame.instance == null) return;
+        if (ActionEndGame.instance == null)
+        {
+            Debug.LogWarning("[ReconnectPopup] ActionEndGame.instance is null!");
+            return;
+        }
+
         ActionEndGame.instance.ResultPanel.SetActive(true);
         ActionEndGame.instance.ResultText.text = "شما بردی";
 
@@ -136,8 +180,22 @@ public class ReconnectPopup : MonoBehaviour
 
         if (TimerTurn.instance != null)
         {
-            TimerTurn.instance.TimerPause = true;
+            TimerTurn.instance.TimerPause   = true;
             TimerTurn.instance.TimerRunning = false;
+        }
+
+        // آیکون‌های end game
+        if (ActionEndGame.instance.IconMe != null)
+        {
+            ActionEndGame.instance.IconMe.transform.parent = FindObjectOfType<Canvas>().transform;
+            ActionEndGame.instance.IconMe.enabled = true;
+            ActionEndGame.instance.IconMe.Play("EndGamePlayer1Icon");
+        }
+        if (ActionEndGame.instance.IconOpp != null)
+        {
+            ActionEndGame.instance.IconOpp.transform.parent = FindObjectOfType<Canvas>().transform;
+            ActionEndGame.instance.IconOpp.enabled = true;
+            ActionEndGame.instance.IconOpp.Play("EndGamePlater2Icon");
         }
     }
 

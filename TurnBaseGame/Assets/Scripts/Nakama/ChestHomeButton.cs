@@ -27,19 +27,28 @@ namespace Nakama.Helpers
 
         // ── Unity ─────────────────────────────────────────────────────────────
 
-        private void OnEnable()
+        private void Awake()
         {
+            // subscription اینجاست تا حتی وقتی inactive‌ایم هم event دریافت کنیم
             ChestManager.OnPanelOpened  += Hide;
             ChestManager.OnPanelClosed  += Show;
             ChestManager.OnChestClaimed += OnChestClaimed;
+        }
+
+        private void Start()
+        {
             StartCoroutine(InitAfterLogin());
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             ChestManager.OnPanelOpened  -= Hide;
             ChestManager.OnPanelClosed  -= Show;
             ChestManager.OnChestClaimed -= OnChestClaimed;
+        }
+
+        private void OnDisable()
+        {
             if (_countdownCoroutine != null)
             {
                 StopCoroutine(_countdownCoroutine);
@@ -50,11 +59,10 @@ namespace Nakama.Helpers
         /// پنل چست باز شد → دکمه هوم مخفی بشه
         private void Hide() => gameObject.SetActive(false);
 
-        /// پنل چست بسته شد → دکمه هوم برگرده
+        /// پنل چست بسته شد → دکمه هوم برگرده و وضعیت رو از سرور می‌گیره
         private void Show()
         {
             gameObject.SetActive(true);
-            // وضعیت رو دوباره از سرور بگیر تا تایمر آپدیت بشه
             StartCoroutine(InitAfterLogin());
         }
 

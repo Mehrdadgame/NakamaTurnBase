@@ -35,7 +35,7 @@ namespace Nakama.Helpers
         [SerializeField] private GameObject      pod1Root,   pod2Root,   pod3Root;
         [SerializeField] private Image           pod1Avatar, pod2Avatar, pod3Avatar;
         [SerializeField] private RTLTextMeshPro  pod1Name,   pod2Name,   pod3Name;
-        [SerializeField] private TextMeshProUGUI pod1Score,  pod2Score,  pod3Score;
+        [SerializeField] private RTLTextMeshPro  pod1Score,  pod2Score,  pod3Score;
 
         // ── Context list ──────────────────────────────────────────────────────────
         [Header("Context List  (4 above + self + 4 below)")]
@@ -44,8 +44,8 @@ namespace Nakama.Helpers
 
         // ── Own info bar ──────────────────────────────────────────────────────────
         [Header("Own Info")]
-        [SerializeField] private RTLTextMeshPro  myRankText;
-        [SerializeField] private TextMeshProUGUI myScoreText;
+        [SerializeField] private RTLTextMeshPro myRankText;
+        [SerializeField] private RTLTextMeshPro myScoreText;
 
         // ── Avatar sprites ────────────────────────────────────────────────────────
         [Header("Avatar Library")]
@@ -155,7 +155,7 @@ namespace Nakama.Helpers
 
         private void SetPodiumSlot(
             GameObject root, Image avatarImg,
-            RTLTextMeshPro nameText, TextMeshProUGUI scoreText,
+            RTLTextMeshPro nameText, RTLTextMeshPro scoreText,
             List<LeaderboardRecord> records, int index)
         {
             if (root == null) return;
@@ -165,8 +165,9 @@ namespace Nakama.Helpers
 
             var rec = records[index];
             if (avatarImg != null) avatarImg.sprite = GetSprite(rec.avatarId);
-            if (nameText  != null) nameText.text    = rec.username ?? "???";
-            if (scoreText != null) scoreText.text = rec.score + " دایسو";
+            if (nameText  != null) nameText.text  = rec.username ?? "???";
+            if (scoreText != null) scoreText.text = PersianTextUtils.FormatNumber(rec.score) + " دایسو";
+            Debug.Log($"[Podium] index={index} username={rec.username} score={rec.score}");
         }
 
         // ── Context list ──────────────────────────────────────────────────────────
@@ -192,7 +193,7 @@ namespace Nakama.Helpers
                     if (row.avatarImage  != null) row.avatarImage.sprite = GetSprite(rec.avatarId);
                     if (row.rankText     != null) row.rankText.text      = "#" + rec.rank;
                     if (row.nameText     != null) row.nameText.text      = rec.username ?? "???";
-                    if (row.scoreText != null) row.scoreText.text = rec.score + " دایسو";
+                    if (row.scoreText != null) row.scoreText.text = PersianTextUtils.FormatNumber(rec.score) + " دایسو";
 
                     bool isMe = !string.IsNullOrEmpty(myId) && rec.ownerId == myId;
                     if (row.rowBackground != null)
@@ -206,7 +207,7 @@ namespace Nakama.Helpers
                     var rtlTexts = go.GetComponentsInChildren<RTLTextMeshPro>(true);
                     if (rtlTexts.Length >= 1) rtlTexts[0].text = "#" + rec.rank;
                     if (rtlTexts.Length >= 2) rtlTexts[1].text = rec.username ?? "???";
-                    if (rtlTexts.Length >= 3) rtlTexts[2].text = rec.score + "دایسو";
+                    if (rtlTexts.Length >= 3) rtlTexts[2].text = PersianTextUtils.FormatNumber(rec.score) + " دایسو";
 
                     if (rtlTexts.Length == 0)
                     {
@@ -275,11 +276,11 @@ namespace Nakama.Helpers
             if (own == null)
             {
                 if (myRankText  != null) myRankText.text  = "شما: -";
-                if (myScoreText != null) myScoreText.text = "0 دایسو";
+                if (myScoreText != null) myScoreText.text = "۰ دایسو";
                 return;
             }
-            if (myRankText  != null) myRankText.text  = "#" + own.rank;
-            if (myScoreText != null) myScoreText.text = own.score + " دایسو";
+            if (myRankText  != null) myRankText.text  = "#" + PersianTextUtils.ToPersianDigits(own.rank.ToString());
+            if (myScoreText != null) myScoreText.text = PersianTextUtils.FormatNumber(own.score) + " دایسو";
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────────
