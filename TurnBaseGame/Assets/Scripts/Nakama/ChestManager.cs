@@ -31,8 +31,15 @@ namespace Nakama.Helpers
         [SerializeField] private RTLTextMeshPro rewardText;
         [SerializeField] private Button claimButton;
 
-        private const string ClaimChestRpcId = "ClaimChestRpc";
+        private const string ClaimChestRpcId    = "ClaimChestRpc";
         private const string GetChestStatusRpcId = "GetChestStatusRpc";
+
+        /// <summary>پنل چست باز شد — ChestHomeButton باید مخفی بشه.</summary>
+        public static event Action OnPanelOpened;
+        /// <summary>پنل چست بسته شد — ChestHomeButton باید دوباره نشون داده بشه.</summary>
+        public static event Action OnPanelClosed;
+        /// <summary>جایزه گرفته شد — remainingSeconds تایمر بعدی رو میده.</summary>
+        public static event Action<int> OnChestClaimed;
 
         private int _remainingSeconds;
         private bool _ready;
@@ -42,6 +49,9 @@ namespace Nakama.Helpers
         // ── Unity ─────────────────────────────────────────────────────────────
 
         private void Awake() => Instance = this;
+
+        private void OnEnable()  => OnPanelOpened?.Invoke();
+        private void OnDisable() => OnPanelClosed?.Invoke();
 
         private void Start()
         {
@@ -111,8 +121,9 @@ namespace Nakama.Helpers
 
                 if (rewardPopup != null) rewardPopup.SetActive(true);
 
-                // Start next cooldown
+                // Start next cooldown + notify home button
                 ApplyTimer(result.remainingSeconds);
+                OnChestClaimed?.Invoke(result.remainingSeconds);
             }
             catch (Exception e)
             {

@@ -36,14 +36,14 @@ namespace Nakama.Helpers
         private void OnConnected()
         {
             if (dicconnectText != null)
-                dicconnectText.text = "Loading...";
+                dicconnectText.text = "در حال بارگذاری...";
             countTry = 0;
         }
 
         private void OnLoginSuccess()
         {
             if (dicconnectText != null)
-                dicconnectText.text = "Connected!";
+                dicconnectText.text = "متصل شد!";
             StartCoroutine(GoToHome());
         }
 
@@ -59,7 +59,7 @@ namespace Nakama.Helpers
             NakamaManager.Instance.LoginWithUdid();
             countTry++;
             if (countTry > 2 && dicconnectText != null)
-                dicconnectText.text = "please check internet...";
+                dicconnectText.text = "اینترنت خود را بررسی کنید...";
         }
 
         private void LoginFailed()

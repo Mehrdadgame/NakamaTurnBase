@@ -98,7 +98,7 @@ public class UiManager : MonoBehaviour
     private void Instance_LeftPlayer(string obj)
     {
         PanelLeftPalyer.SetActive(true);
-        NamePalyerLeft.text = obj + " is Left of match";
+        NamePalyerLeft.text = obj + " از بازی خارج شد";
     }
 
     private void Instance_TimerStop()

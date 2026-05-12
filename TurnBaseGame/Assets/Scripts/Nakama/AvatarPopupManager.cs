@@ -117,9 +117,9 @@ namespace Nakama.Helpers
             if (confirmLabel != null)
             {
                 if (serverPrice == 0 || owned)
-                    confirmLabel.text = "Select";
+                    confirmLabel.text = "انتخاب";
                 else
-                    confirmLabel.text = "Buy & Select  " + serverPrice + " Coin";
+                    confirmLabel.text = "خرید و انتخاب  " + PersianTextUtils.FormatNumber(serverPrice) + " کوین";
             }
 
             if (confirmButton != null)
@@ -134,7 +134,7 @@ namespace Nakama.Helpers
             if (_pendingAvatar == null || _busy) return;
             _busy = true;
 
-            SetStatus("Processing...", Color.white);
+            SetStatus("در حال پردازش...", Color.white);
             if (confirmButton != null) confirmButton.interactable = false;
 
             try
@@ -143,11 +143,11 @@ namespace Nakama.Helpers
                 var rpc = await NakamaManager.Instance.SendRPC(SelectAvatarRpcId, payload);
 
                 if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
-                { SetStatus("No response from server.", Color.red); return; }
+                { SetStatus("پاسخی از سرور دریافت نشد.", Color.red); return; }
 
                 var result = rpc.Payload.Deserialize<SelectAvatarResult>();
                 if (result == null || !result.success)
-                { SetStatus(result?.error ?? "Failed.", Color.red); return; }
+                { SetStatus(!string.IsNullOrEmpty(result?.error) ? result.error : "عملیات ناموفق بود.", Color.red); return; }
 
                 // Update cached avatar + owned list → fires events → UiManagerHome + ProfileManager refresh
                 if (ProfileService.Instance != null)
@@ -162,7 +162,7 @@ namespace Nakama.Helpers
                 if (_pendingAvatar.price > 0 && WalletManager.Instance != null)
                     await WalletManager.Instance.RefreshAsync();
 
-                SetStatus("Avatar updated!", new Color(0.25f, 1f, 0.25f));
+                SetStatus("آواتار بروزرسانی شد!", new Color(0.25f, 1f, 0.25f));
                 BuildGrid();
 
                 DOTween.Sequence()
@@ -172,7 +172,7 @@ namespace Nakama.Helpers
             catch (Exception e)
             {
                 Debug.LogWarning("[AvatarPopup] " + e.Message);
-                SetStatus("Error: " + e.Message, Color.red);
+                SetStatus("خطا: " + e.Message, Color.red);
             }
             finally
             {

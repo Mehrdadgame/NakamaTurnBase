@@ -1,4 +1,5 @@
 using System;
+using Nakama.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,18 +24,18 @@ public class CardShopItem : MonoBehaviour
         if (iconImage != null && cardData.icon != null) iconImage.sprite = cardData.icon;
         if (nameText  != null) nameText.text = cardData.cardName;
         if (descText  != null) descText.text = cardData.description;
-        if (costText  != null) costText.text = cardData.cost + " coins";
+        if (costText  != null) costText.text = PersianTextUtils.FormatNumber(cardData.cost) + " کوین";
 
         selectButton.onClick.RemoveAllListeners();
 
         if (alreadySelected)
         {
-            if (buttonLabel != null) buttonLabel.text = "Selected";
+            if (buttonLabel != null) buttonLabel.text = "انتخاب شده";
             selectButton.interactable = false;
         }
         else
         {
-            if (buttonLabel != null) buttonLabel.text = "Select  " + cardData.cost + "c";
+            if (buttonLabel != null) buttonLabel.text = "انتخاب  " + PersianTextUtils.FormatNumber(cardData.cost);
             selectButton.interactable = true;
             selectButton.onClick.AddListener(() => onSelect?.Invoke(card.id));
         }

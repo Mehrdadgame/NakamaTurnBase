@@ -163,7 +163,7 @@ namespace Nakama.Helpers
             // ── Popup "-N Coin" pops in, floats up, fades out ─────────────────
             if (costPopupText != null && fee > 0)
             {
-                costPopupText.text  = "-" + fee + " Coin";
+                costPopupText.text  = "‏-" + PersianTextUtils.FormatNumber(fee) + " تاسی";
                 costPopupText.color = new Color(1f, 0.35f, 0.35f, 1f);
                 costPopupText.gameObject.SetActive(true);
 

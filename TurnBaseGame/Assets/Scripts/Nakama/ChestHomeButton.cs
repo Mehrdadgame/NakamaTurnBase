@@ -29,18 +29,37 @@ namespace Nakama.Helpers
 
         private void OnEnable()
         {
-            // هر بار که صفحه هوم فعال می‌شه وضعیت رو از سرور می‌گیریم
+            ChestManager.OnPanelOpened  += Hide;
+            ChestManager.OnPanelClosed  += Show;
+            ChestManager.OnChestClaimed += OnChestClaimed;
             StartCoroutine(InitAfterLogin());
         }
 
         private void OnDisable()
         {
+            ChestManager.OnPanelOpened  -= Hide;
+            ChestManager.OnPanelClosed  -= Show;
+            ChestManager.OnChestClaimed -= OnChestClaimed;
             if (_countdownCoroutine != null)
             {
                 StopCoroutine(_countdownCoroutine);
                 _countdownCoroutine = null;
             }
         }
+
+        /// پنل چست باز شد → دکمه هوم مخفی بشه
+        private void Hide() => gameObject.SetActive(false);
+
+        /// پنل چست بسته شد → دکمه هوم برگرده
+        private void Show()
+        {
+            gameObject.SetActive(true);
+            // وضعیت رو دوباره از سرور بگیر تا تایمر آپدیت بشه
+            StartCoroutine(InitAfterLogin());
+        }
+
+        /// جایزه گرفته شد — badge خاموش، تایمر روشن
+        private void OnChestClaimed(int remainingSeconds) => ApplyTimer(remainingSeconds);
 
         // ── Init ──────────────────────────────────────────────────────────────
 
