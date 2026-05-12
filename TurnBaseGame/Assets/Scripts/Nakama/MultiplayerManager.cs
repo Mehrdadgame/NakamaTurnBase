@@ -46,6 +46,7 @@ namespace Nakama.Helpers
         public IUserPresence Self { get => match == null ? null : match.Self; }
         public IUserPresence Opp;
         public bool IsOnMatch { get => match != null; }
+        public string CurrentMatchId { get => match?.Id; }
         public int ValueHXDInGameTurn;
         public NakamaUserManager players;
 

@@ -29,6 +29,19 @@ namespace Nakama.Helpers
         private void Start()
         {
             StartCoroutine(WaitAndLoad());
+            // بعد از هر re-login هم wallet رو refresh کن
+            NakamaManager.Instance.onLoginSuccess += OnLoginSuccess;
+        }
+
+        private void OnDestroy()
+        {
+            if (NakamaManager.Instance != null)
+                NakamaManager.Instance.onLoginSuccess -= OnLoginSuccess;
+        }
+
+        private async void OnLoginSuccess()
+        {
+            await RefreshAsync();
         }
 
         // Polls every frame until NakamaUserManager has finished loading the account,

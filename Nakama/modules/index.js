@@ -690,17 +690,25 @@ var matchLeave = function (context, logger, nakama, dispatcher, tick, state, pre
         if (num === PlayerNotFound)
             continue;
         var player = gameState.players[num];
-        // ── Grace period: only during active Battle, for human players ──────
+        // ── Battle: declare winner immediately ───────────────────────────────
         if (gameState.scene === 4 /* Battle */ && !player.isBot && !gameState.BeforeEndGame) {
-            gameState.disconnectedPlayers[presence.userId] = {
-                playerNum: num,
-                graceTick: GraceTicks,
-                player: player,
-            };
             delete gameState.players[num];
-            logger.info("Player disconnected — grace period started: userId=" + presence.userId);
-            // Notify the remaining connected player
-            dispatcher.broadcastMessage(OpCodeDisconnected, JSON.stringify({ remainingSeconds: GraceSeconds }));
+            logger.info("Player left during battle — declaring winner immediately: userId=" + presence.userId);
+            // Find the remaining connected player
+            var winner = null;
+            for (var wi = 0; wi < gameState.players.length; wi++) {
+                if (gameState.players[wi] && !gameState.players[wi].isBot) {
+                    winner = gameState.players[wi];
+                    break;
+                }
+            }
+            if (winner) {
+                gameState.BeforeEndGame = true;
+                awardMatchResult(gameState, nakama, winner.presence.userId, logger);
+                dispatcher.broadcastMessage(OpCodeDisconnectWin, JSON.stringify({ winnerUserId: winner.presence.userId }));
+                logger.info("DisconnectWin sent to winnerId=" + winner.presence.userId);
+            }
+            gameState.endMatch = true;
         } else {
             // Normal leave (lobby, results, or game already ending)
             var name_1 = JSON.stringify(gameState.players[num].displayName);

@@ -26467,6 +26467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1384180150}
   - component: {fileID: 1384180149}
+  - component: {fileID: 1384180151}
   m_Layer: 0
   m_Name: ReconnectPopup
   m_TagString: Untagged
@@ -26486,10 +26487,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550a9858103d3604aad7f24a62d5d7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReconnectPopup
-  popupPanel: {fileID: 1182950215}
-  canvasGroup: {fileID: 1182950217}
-  countdownText: {fileID: 1795080171}
-  messageText: {fileID: 979310902}
 --- !u!4 &1384180150
 Transform:
   m_ObjectHideFlags: 0
@@ -26505,6 +26502,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1384180151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384180148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f23732ed5807607469ae4b92d4464a36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelfReconnectHandler
+  popupPanel: {fileID: 1182950215}
+  canvasGroup: {fileID: 1182950217}
+  countdownText: {fileID: 1795080171}
+  messageText: {fileID: 979310902}
+  graceSeconds: 20
+  retryInterval: 2
+  homeSceneName: 0-Initializer
 --- !u!1 &1387352982
 GameObject:
   m_ObjectHideFlags: 0

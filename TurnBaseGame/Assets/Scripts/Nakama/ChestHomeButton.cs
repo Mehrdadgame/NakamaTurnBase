@@ -29,9 +29,6 @@ namespace Nakama.Helpers
 
         private void Awake()
         {
-            // subscription اینجاست تا حتی وقتی inactive‌ایم هم event دریافت کنیم
-            ChestManager.OnPanelOpened  += Hide;
-            ChestManager.OnPanelClosed  += Show;
             ChestManager.OnChestClaimed += OnChestClaimed;
         }
 
@@ -42,28 +39,7 @@ namespace Nakama.Helpers
 
         private void OnDestroy()
         {
-            ChestManager.OnPanelOpened  -= Hide;
-            ChestManager.OnPanelClosed  -= Show;
             ChestManager.OnChestClaimed -= OnChestClaimed;
-        }
-
-        private void OnDisable()
-        {
-            if (_countdownCoroutine != null)
-            {
-                StopCoroutine(_countdownCoroutine);
-                _countdownCoroutine = null;
-            }
-        }
-
-        /// پنل چست باز شد → دکمه هوم مخفی بشه
-        private void Hide() => gameObject.SetActive(false);
-
-        /// پنل چست بسته شد → دکمه هوم برگرده و وضعیت رو از سرور می‌گیره
-        private void Show()
-        {
-            gameObject.SetActive(true);
-            StartCoroutine(InitAfterLogin());
         }
 
         /// جایزه گرفته شد — badge خاموش، تایمر روشن
