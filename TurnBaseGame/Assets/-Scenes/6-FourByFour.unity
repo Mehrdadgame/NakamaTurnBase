@@ -6068,7 +6068,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2138857428}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.1687119
+  m_Size: 0.16805507
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7772,11 +7772,29 @@ MonoBehaviour:
   PageMatchMaking: {fileID: 1046910045}
   AnimGoToUpMe: {fileID: 322308866}
   AnimGoToUpOpp: {fileID: 1825661159}
-  AnimIconOpp: {fileID: 1269454842}
   IconMe: {fileID: 33389139}
   IconOpp: {fileID: 2117713588}
   AvatarImageMe: {fileID: 1700130785}
   AvatarImageOpp: {fileID: 1269454840}
+  rouletteSprites:
+  - {fileID: -9055702102570219345, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: 8828797441795249179, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: -8798158395546740257, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: 3453042368794729245, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: 1780616162400206611, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: 573084974540555586, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: -8152646124506975933, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: -4405890740266516001, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: 4944444550799687434, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: -5408801096692774245, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: -3482308797758329060, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: -6442512965199213087, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: 3460823311604348677, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: 5684815227193833881, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  - {fileID: -1383911744755153625, guid: d2d0d5504d6bbf043bc49e12b9c8ae94, type: 3}
+  spriteSwapInterval: 0.08
+  pulseScale: 1.12
+  pulseDuration: 0.4
 --- !u!114 &519420036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18124,7 +18142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 228.00008}
+  m_AnchoredPosition: {x: 0, y: 228.00006}
   m_SizeDelta: {x: 239.99998, y: 239.99998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1030398074
@@ -26487,6 +26505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550a9858103d3604aad7f24a62d5d7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReconnectPopup
+  popupPanel: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  countdownText: {fileID: 0}
+  messageText: {fileID: 0}
 --- !u!4 &1384180150
 Transform:
   m_ObjectHideFlags: 0

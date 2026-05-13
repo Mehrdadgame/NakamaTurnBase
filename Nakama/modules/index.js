@@ -533,7 +533,10 @@ function CreateLeaderboards(context, logger, nakama) {
 }
 // ─── Reconnection Grace Period ────────────────────────────────────────────────
 var GraceSeconds   = 20;
-var GraceTicks     = GraceSeconds * TickRate;   // 320 ticks @ 16 TPS
+// مهم: TickRate در پایین فایل تعریف شده. اگه اینجا GraceSeconds * TickRate بنویسیم،
+// TickRate هنوز undefined هست (var hoisting) و GraceTicks = NaN میشه.
+// عدد رو direct بذار (یا inline حساب کن در هر بار استفاده).
+var GraceTicks     = 20 * 16;   // 320 ticks @ 16 TPS
 var OpCodeDisconnected  = 11;   // → client: show countdown popup, pause turn timer
 var OpCodeReconnected   = 12;   // → client: hide popup, resume turn timer
 var OpCodeDisconnectWin = 13;   // → client: show "you win" (opponent timed out)
@@ -655,6 +658,7 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
             var profileObjects = nakama.storageRead([{ collection: "Profile", key: "profile_data", userId: presence.userId }]);
             if (profileObjects.length > 0 && profileObjects[0].value && profileObjects[0].value.avatarId)
                 avatarId = profileObjects[0].value.avatarId;
+            logger.info("matchJoin avatarId resolved: userId=" + presence.userId + " avatarId=" + avatarId + " profileFound=" + (profileObjects.length > 0));
         } catch (e) {
             logger.warn("Could not read avatarId for " + presence.userId + ": " + e);
         }
@@ -690,25 +694,23 @@ var matchLeave = function (context, logger, nakama, dispatcher, tick, state, pre
         if (num === PlayerNotFound)
             continue;
         var player = gameState.players[num];
-        // ── Battle: declare winner immediately ───────────────────────────────
+        // ── Battle: start grace period (20s) instead of immediate win ────────
         if (gameState.scene === 4 /* Battle */ && !player.isBot && !gameState.BeforeEndGame) {
+            // Save player snapshot so they can reconnect within grace
+            if (!gameState.disconnectedPlayers) gameState.disconnectedPlayers = {};
+            gameState.disconnectedPlayers[presence.userId] = {
+                playerNum: num,
+                graceTick: GraceTicks,
+                player: player,
+            };
+            // Remove from active players so turn logic doesn't include them
             delete gameState.players[num];
-            logger.info("Player left during battle — declaring winner immediately: userId=" + presence.userId);
-            // Find the remaining connected player
-            var winner = null;
-            for (var wi = 0; wi < gameState.players.length; wi++) {
-                if (gameState.players[wi] && !gameState.players[wi].isBot) {
-                    winner = gameState.players[wi];
-                    break;
-                }
-            }
-            if (winner) {
-                gameState.BeforeEndGame = true;
-                awardMatchResult(gameState, nakama, winner.presence.userId, logger);
-                dispatcher.broadcastMessage(OpCodeDisconnectWin, JSON.stringify({ winnerUserId: winner.presence.userId }));
-                logger.info("DisconnectWin sent to winnerId=" + winner.presence.userId);
-            }
-            gameState.endMatch = true;
+            logger.info("Player disconnected — grace period started: userId=" + presence.userId + " seconds=" + GraceSeconds);
+            // Notify the remaining player immediately with full countdown
+            dispatcher.broadcastMessage(OpCodeDisconnected, JSON.stringify({
+                userId: presence.userId,
+                remainingSeconds: GraceSeconds,
+            }));
         } else {
             // Normal leave (lobby, results, or game already ending)
             var name_1 = JSON.stringify(gameState.players[num].displayName);
@@ -770,19 +772,34 @@ function startBattle(gameState, dispatcher) {
     dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
 }
 function addBotAndStartBattle(gameState, dispatcher, logger) {
+    // پیدا کردن slot بازیکن واقعی (ممکنه slot 0 خالی باشه اگه disconnect شده)
+    var realSlot = -1;
+    for (var i = 0; i < gameState.players.length; i++) {
+        if (gameState.players[i] && !gameState.players[i].isBot) {
+            realSlot = i;
+            break;
+        }
+    }
+    if (realSlot === -1) {
+        logger.warn("addBotAndStartBattle: هیچ بازیکن واقعی وجود نداره — پایان مچ");
+        gameState.endMatch = true;
+        return;
+    }
+
+    var botSlot = realSlot === 0 ? 1 : 0;
     var botName = BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)];
     var diff = BOT_DIFFICULTIES[Math.floor(Math.random() * BOT_DIFFICULTIES.length)];
     var botPresence = {
         userId: "bot_" + generateId(), sessionId: "bot_" + generateId(),
         username: botName, node: "server", status: "",
     };
-    gameState.players[1] = { presence: botPresence, displayName: botName, avatarId: "avatar_0", ScorePlayer: 0, isBot: true };
-    gameState.playersWins[1] = 0;
+    gameState.players[botSlot] = { presence: botPresence, displayName: botName, avatarId: "avatar_0", ScorePlayer: 0, isBot: true };
+    gameState.playersWins[botSlot] = 0;
     gameState.hasBot = true;
     gameState.botDifficulty = diff;
-    logger.info("Bot added: name=" + botName + " difficulty=" + diff);
+    logger.info("Bot added: name=" + botName + " difficulty=" + diff + " botSlot=" + botSlot + " realSlot=" + realSlot);
     dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players));
-    dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
+    dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[realSlot].presence.userId));
     startBattle(gameState, dispatcher);
 }
 function generateId() {
@@ -792,16 +809,25 @@ function generateId() {
 function matchLoopBattle(gameState, nakama, dispatcher, logger) {
     // ── Reconnection grace period countdown ──────────────────────────────────
     if (gameState.disconnectedPlayers) {
-        for (var userId in gameState.disconnectedPlayers) {
+        var userIds = Object.keys(gameState.disconnectedPlayers);
+        for (var gi = 0; gi < userIds.length; gi++) {
+            var userId = userIds[gi];
             var grace = gameState.disconnectedPlayers[userId];
-            grace.graceTick--;
+            if (!grace) continue;
+            // reassign به جای mutate تا مطمئن بشیم persist میشه
+            var newTick = grace.graceTick - 1;
+            gameState.disconnectedPlayers[userId] = {
+                playerNum: grace.playerNum,
+                graceTick: newTick,
+                player: grace.player,
+            };
             // Broadcast remaining seconds once per second
-            if (grace.graceTick > 0 && grace.graceTick % TickRate === 0) {
-                var remaining = Math.ceil(grace.graceTick / TickRate);
+            if (newTick > 0 && newTick % TickRate === 0) {
+                var remaining = Math.ceil(newTick / TickRate);
                 dispatcher.broadcastMessage(OpCodeDisconnected, JSON.stringify({ remainingSeconds: remaining }));
             }
             // Grace period expired → declare the remaining player winner
-            if (grace.graceTick <= 0) {
+            if (newTick <= 0) {
                 delete gameState.disconnectedPlayers[userId];
                 logger.info("Grace period expired for userId=" + userId + " — declaring winner");
                 var winner = null;
@@ -813,8 +839,12 @@ function matchLoopBattle(gameState, nakama, dispatcher, logger) {
                 }
                 if (winner) {
                     gameState.BeforeEndGame = true;
+                    logger.info("Awarding match result to winner: " + winner.presence.userId + " mode=" + gameState.ModeText);
                     awardMatchResult(gameState, nakama, winner.presence.userId, logger);
                     dispatcher.broadcastMessage(OpCodeDisconnectWin, JSON.stringify({ winnerUserId: winner.presence.userId }));
+                    logger.info("DisconnectWin broadcast complete for winnerId=" + winner.presence.userId);
+                } else {
+                    logger.warn("Grace expired but NO winner found in gameState.players (length=" + gameState.players.length + ")");
                 }
                 gameState.endMatch = true;
                 return;
@@ -1006,13 +1036,18 @@ function awardMatchResult(gameState, nakama, winnerId, logger) {
         }
         // Lose: entry fee already deducted on join, nothing extra
     }
+    logger.info("awardMatchResult: winnerId=" + winnerId + " updates.length=" + updates.length +
+                " players.length=" + gameState.players.length);
     if (updates.length > 0) {
         try {
             nakama.walletsUpdate(updates, false);
+            logger.info("walletsUpdate succeeded: " + JSON.stringify(updates));
         }
         catch (e) {
             logger.warn("walletsUpdate failed: " + e);
         }
+    } else {
+        logger.warn("awardMatchResult: no updates to apply (winner not in gameState.players?)");
     }
 }
 // ─── Leaderboard Reset Hook ───────────────────────────────────────────────────

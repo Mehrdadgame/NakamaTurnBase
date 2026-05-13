@@ -78,6 +78,31 @@ public class UiManager : MonoBehaviour
             GameManager.Instance.diceRoller.Rotation(true);
         }
 
+        SetInitialCellParticles();
+    }
+
+    /// در شروع بازی: particle زمین خودم روشن، particle زمین حریف خاموش
+    /// تا کاربر بفهمه کدوم زمین خودشه
+    private void SetInitialCellParticles()
+    {
+        if (tileDataMe != null)
+        {
+            foreach (var cell in tileDataMe)
+            {
+                if (cell == null) continue;
+                var ps = cell.GetComponentInChildren<ParticleSystem>();
+                if (ps != null) ps.Play();
+            }
+        }
+        if (tileDataOpps != null)
+        {
+            foreach (var cell in tileDataOpps)
+            {
+                if (cell == null) continue;
+                var ps = cell.GetComponentInChildren<ParticleSystem>();
+                if (ps != null) ps.Stop();
+            }
+        }
     }
     void OnEnable()
     {

@@ -24,6 +24,9 @@ namespace NinjaBattle.Game
         public DiceRoller diceRoller;
         public ModeGame modeGame;
 
+        [Header("Avatar Library (assign in Inspector — مثل صفحه‌ی هوم)")]
+        [SerializeField] private AvatarLibrary avatarLibrary;
+
         #endregion
 
         #region BEHAVIORS
@@ -74,8 +77,8 @@ namespace NinjaBattle.Game
 
         private async void ReceivedChangeScene(MultiplayerMessage message)
         {
-            // 1. Stop matchmaking animation first
-            AniamtionManager.instance.AnimIconOpp.enabled = false;
+            // 1. Stop matchmaking DOTween animation first
+            AniamtionManager.instance.StopMatchmakingAnimation();
             AniamtionManager.instance.PageMatchMaking.gameObject.SetActive(false);
 
             // 2. Set correct avatar sprites BEFORE fly-up animation plays
@@ -100,39 +103,63 @@ namespace NinjaBattle.Game
             var anim = AniamtionManager.instance;
             if (anim == null) return;
 
-            var players = PlayersManager.Instance?.Players;
-            var profile = Nakama.Helpers.ProfileService.Instance;
-            if (players == null || profile == null) return;
+            var lib = avatarLibrary != null ? avatarLibrary : Nakama.Helpers.ProfileService.Instance?.AvatarLibrary;
+            if (lib == null)
+            {
+                Debug.LogWarning("[ApplyAvatar] AvatarLibrary نیست — در Inspector GameManager.avatarLibrary رو assign کن");
+                return;
+            }
 
-            string mySessionId = MultiplayerManager.Instance?.Self?.SessionId;
+            // 🟢 اواتار خودم — از داده لوکال (ProfileService) یا از سرور (PlayersManager) بک‌آپ
+            var ps = Nakama.Helpers.ProfileService.Instance;
+            string myUserId = MultiplayerManager.Instance?.Self?.UserId;
+            string myAvatarId = "avatar_0";
+
+            if (ps != null && ps.IsLoaded && !string.IsNullOrEmpty(ps.CurrentAvatarId))
+            {
+                myAvatarId = ps.CurrentAvatarId;
+                Debug.Log("[ApplyAvatar] me (from ProfileService) avatarId=" + myAvatarId);
+            }
+            else
+            {
+                // ProfileService آماده نیست — از داده سرور (PlayersManager) استفاده کن
+                var myPlayer = PlayersManager.Instance?.Players?.Find(p => p != null && p.Presence?.UserId == myUserId);
+                if (myPlayer != null && !string.IsNullOrEmpty(myPlayer.AvatarId))
+                    myAvatarId = myPlayer.AvatarId;
+                Debug.Log("[ApplyAvatar] me (from PlayersManager fallback) avatarId=" + myAvatarId +
+                          " ps=" + (ps != null ? "exists,IsLoaded=" + ps.IsLoaded : "null"));
+            }
+
+            Sprite mySprite = lib.GetSprite(myAvatarId);
+            if (anim.AvatarImageMe != null && mySprite != null)
+                anim.AvatarImageMe.sprite = mySprite;
+
+            // 🔴 اواتار حریف — از سرور (PlayersManager)
+            var players = PlayersManager.Instance?.Players;
+            if (players == null) return;
 
             foreach (var player in players)
             {
                 if (player == null) continue;
-                string avatarId = string.IsNullOrEmpty(player.AvatarId) ? "avatar_0" : player.AvatarId;
-                Sprite sprite = profile.GetSprite(avatarId);
-                if (sprite == null) continue;
+                bool isMe = !string.IsNullOrEmpty(myUserId) && player.Presence?.UserId == myUserId;
+                if (isMe) continue;  // خودمو از لوکال ست کردم
 
-                bool isMe = player.Presence?.SessionId == mySessionId;
-                Image img = isMe
-                    ? (anim.AvatarImageMe ?? anim.AnimGoToUpMe.GetComponent<Image>())
-                    : (anim.AvatarImageOpp ?? anim.AnimGoToUpOpp.GetComponent<Image>());
-
-                if (img != null)
-                {
-                    anim.AnimGoToUpMe.GetComponent<Animator>().enabled = false;
-                    anim.AnimGoToUpOpp.GetComponent<Animator>().enabled = false;
-                    img.sprite = sprite;
-
-                }
-
+                string oppAvatarId = string.IsNullOrEmpty(player.AvatarId) ? "avatar_0" : player.AvatarId;
+                Sprite oppSprite = lib.GetSprite(oppAvatarId);
+                if (anim.AvatarImageOpp != null && oppSprite != null)
+                    anim.AvatarImageOpp.sprite = oppSprite;
+                Debug.Log("[ApplyAvatar] opp (server) avatarId=" + oppAvatarId);
             }
         }
 
         private async void JoinedMatch()
         {
-            ResetPlayerWins();
+            // اگه داره rejoin میکنیم (بعد از reconnect)، نباید Lobby بریم —
+            // در همین صحنه‌ی Battle باید بمونیم
+            if (MultiplayerManager.Instance != null && MultiplayerManager.Instance.IsRejoining)
+                return;
 
+            ResetPlayerWins();
             GoToLobby();
         }
 

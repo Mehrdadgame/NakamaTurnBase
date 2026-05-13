@@ -604,7 +604,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -46.999992, y: 0}
+  m_AnchoredPosition: {x: -47, y: 0}
   m_SizeDelta: {x: 284.16, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2091226538
@@ -717,6 +717,10 @@ PrefabInstance:
       propertyPath: enableLog
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 568402271924740340, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
+      propertyPath: avatarLibrary
+      value: 
+      objectReference: {fileID: 11400000, guid: 133fa5acae6a555498cf88d6eb7f23ef, type: 2}
     - target: {fileID: 1313448497895265073, guid: e0ee0c55fdfa24e1b8eef4f0b0e135b5, type: 3}
       propertyPath: Mute
       value: 1

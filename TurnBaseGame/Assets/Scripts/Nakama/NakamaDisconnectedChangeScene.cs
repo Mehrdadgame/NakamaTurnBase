@@ -13,18 +13,22 @@ namespace Nakama.Helpers
 
         #region BEHAVIORS
 
-        private void Start()
+        private void OnEnable()
         {
-            NakamaManager.Instance.onDisconnected += Disconnected;
+            if (NakamaManager.Instance != null)
+                NakamaManager.Instance.onDisconnected += Disconnected;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            NakamaManager.Instance.onDisconnected -= Disconnected;
+            if (NakamaManager.Instance != null)
+                NakamaManager.Instance.onDisconnected -= Disconnected;
         }
 
         private void Disconnected()
         {
+            // در صحنه بازی توسط SelfReconnectHandler خاموش میشه — اضافه‌ی محکم‌کار
+            if (!enabled) return;
             SceneManager.LoadScene(sceneName);
         }
 

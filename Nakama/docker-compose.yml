@@ -20,7 +20,7 @@ services:
       - "-ecx"
       - >
         /nakama/nakama migrate up --database.address root@cockroachdb:26257 &&
-        exec /nakama/nakama --name ninjabattle --database.address root@cockroachdb:26257 --logger.level DEBUG --session.token_expiry_sec 7200
+        exec /nakama/nakama --name ninjabattle --database.address root@cockroachdb:26257 --logger.level DEBUG --session.token_expiry_sec 7200 --socket.ping_period_ms 3000 --socket.pong_wait_ms 5000
     restart: "always"
     links:
       - "cockroachdb:db"

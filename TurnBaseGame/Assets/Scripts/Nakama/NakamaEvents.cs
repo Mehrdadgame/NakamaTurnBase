@@ -48,6 +48,9 @@ namespace Nakama.Helpers
 
         private void OnDisconnected()
         {
+            // در صحنه‌ی بازی، SelfReconnectHandler خودش disconnect رو handle میکنه
+            // پس از forward کردن به UnityEvent (که LoadScene Home داره) جلوگیری کن
+            if (SelfReconnectHandler.Instance != null) return;
             onDisconnected?.Invoke();
         }
 

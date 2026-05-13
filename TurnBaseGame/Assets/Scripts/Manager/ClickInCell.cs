@@ -20,7 +20,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
 
-        if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie == -1 || isLock)
+        if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie == -1 || isLock || GameManager.Instance.diceRoller.isRolling)
             return;
         SetDataInCell();
     }

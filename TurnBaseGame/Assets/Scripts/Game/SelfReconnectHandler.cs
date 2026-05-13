@@ -32,19 +32,19 @@ public class SelfReconnectHandler : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private int   graceSeconds  = 20;
     [SerializeField] private float retryInterval = 2f;
-    [SerializeField] private string homeSceneName = "Home";
+    [SerializeField] private string homeSceneName;
 
     private NakamaDisconnectedChangeScene _sceneChanger;
     private Coroutine _graceCoroutine;
     private bool      _isHandling;
+    private bool _wasInBattle;
+    private string _savedMatchId;  // cached so we can rejoin after reconnect
 
     // ── Unity ─────────────────────────────────────────────────────────────────
 
     private void Awake()
     {
         Instance = this;
-        // NakamaDisconnectedChangeScene رو پیدا کن و غیرفعال کن
-        // تا در بازی بلافاصله صفحه رو عوض نکنه
         _sceneChanger = FindObjectOfType<NakamaDisconnectedChangeScene>();
         if (_sceneChanger != null) _sceneChanger.enabled = false;
     }
@@ -53,6 +53,28 @@ public class SelfReconnectHandler : MonoBehaviour
     {
         if (popupPanel != null) popupPanel.SetActive(false);
         NakamaManager.Instance.onDisconnected += OnSelfDisconnected;
+
+        if (MultiplayerManager.Instance != null)
+        {
+            _wasInBattle = MultiplayerManager.Instance.IsOnMatch;
+            _savedMatchId = MultiplayerManager.Instance.CurrentMatchId;
+            MultiplayerManager.Instance.onMatchJoin += OnMatchJoined;
+            MultiplayerManager.Instance.onMatchLeave += OnMatchLeft;
+        }
+    }
+
+    private void OnMatchJoined()
+    {
+        _wasInBattle = true;
+        if (MultiplayerManager.Instance != null)
+            _savedMatchId = MultiplayerManager.Instance.CurrentMatchId;
+    }
+
+    private void OnMatchLeft()
+    {
+        // Only clear when WE intentionally leave — not on disconnect
+        // (disconnect sets match=null before our handler runs, so we ignore it here)
+        if (!_isHandling) _wasInBattle = false;
     }
 
     private void OnDestroy()
@@ -60,7 +82,9 @@ public class SelfReconnectHandler : MonoBehaviour
         if (NakamaManager.Instance != null)
             NakamaManager.Instance.onDisconnected -= OnSelfDisconnected;
 
-        // وقتی صحنه بازی بسته میشه، sceneChanger رو دوباره فعال کن
+        if (MultiplayerManager.Instance != null)
+            MultiplayerManager.Instance.onMatchLeave -= OnMatchLeft;
+
         if (_sceneChanger != null) _sceneChanger.enabled = true;
     }
 
@@ -70,13 +94,7 @@ public class SelfReconnectHandler : MonoBehaviour
     {
         if (_isHandling) return;
 
-        // فقط وقتی توی مچ بودیم handle کن
-        if (MultiplayerManager.Instance == null || !MultiplayerManager.Instance.IsOnMatch)
-        {
-            GoHome();
-            return;
-        }
-
+        // اگه این کامپوننت در صحنه‌ی بازی هست، یعنی توی مسابقه‌ایم — همیشه پاپ‌آپ نشون بده
         _isHandling = true;
 
         if (TimerTurn.instance != null)
@@ -102,14 +120,13 @@ public class SelfReconnectHandler : MonoBehaviour
             remaining--;
             retryTimer += 1f;
 
-            // هر retryInterval ثانیه یه بار تلاش برای re-login
             if (retryTimer >= retryInterval)
             {
                 retryTimer = 0f;
                 if (NakamaManager.Instance.IsLoggedIn)
                 {
-                    // نت برگشت
-                    OnReconnected();
+                    // نت برگشت → سعی کن به match قبلی برگردی
+                    yield return StartCoroutine(TryRejoinAndContinue());
                     yield break;
                 }
                 else
@@ -119,28 +136,53 @@ public class SelfReconnectHandler : MonoBehaviour
             }
         }
 
-        // ۲۰ ثانیه تموم شد
+        // ۲۰ ثانیه تموم شد → سرور برنده رو اعلام کرده
         SetCountdown(0);
         yield return new WaitForSeconds(0.3f);
         OnTimeout();
     }
 
-    private void OnReconnected()
+    private IEnumerator TryRejoinAndContinue()
     {
-        _isHandling = false;
-        HidePopup();
-        StartCoroutine(RefreshAndGoHome());
+        if (string.IsNullOrEmpty(_savedMatchId) || MultiplayerManager.Instance == null)
+        {
+            OnTimeout();
+            yield break;
+        }
+
+        var task = MultiplayerManager.Instance.RejoinMatchAsync(_savedMatchId);
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        if (task.Result)
+        {
+            // موفقیت — ادامه بازی
+            _isHandling = false;
+            HidePopup();
+            if (TimerTurn.instance != null)
+                TimerTurn.instance.TimerPause = false;
+        }
+        else
+        {
+            // rejoin شکست خورد (احتمالاً grace تموم شده)
+            OnTimeout();
+        }
     }
 
     private void OnTimeout()
     {
         _isHandling = false;
-        HidePopup();
-        StartCoroutine(RefreshAndGoHome());
+        if (messageText != null)
+            messageText.text = "زمان تموم شد!\nباختی...";
+        SetCountdown(0);
+        StartCoroutine(ShowLossAndGoHome());
     }
 
-    private IEnumerator RefreshAndGoHome()
+    private IEnumerator ShowLossAndGoHome()
     {
+        // ۲ ثانیه پیام "باختی" رو نشون بده
+        yield return new WaitForSeconds(2f);
+        HidePopup();
+
         if (WalletManager.Instance != null)
         {
             var task = WalletManager.Instance.RefreshAsync();
@@ -151,6 +193,7 @@ public class SelfReconnectHandler : MonoBehaviour
 
     private void GoHome()
     {
+        _wasInBattle = false;
         SceneManager.LoadScene(homeSceneName);
     }
 

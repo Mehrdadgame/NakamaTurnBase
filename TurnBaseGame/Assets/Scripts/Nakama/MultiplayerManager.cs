@@ -47,6 +47,7 @@ namespace Nakama.Helpers
         public IUserPresence Opp;
         public bool IsOnMatch { get => match != null; }
         public string CurrentMatchId { get => match?.Id; }
+        public bool IsRejoining { get; private set; }  // true while RejoinMatchAsync is running
         public int ValueHXDInGameTurn;
         public NakamaUserManager players;
 
@@ -132,7 +133,37 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onDisconnected -= Disconnected;
             NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
             match = null;
+            // اگه SelfReconnectHandler داره disconnect رو handle میکنه، onMatchLeave رو fire نکن
+            // (وگرنه GameManager.LeavedMatch صدا میشه و میره خانه)
+            if (SelfReconnectHandler.Instance != null) return;
             onMatchLeave?.Invoke();
+        }
+
+        /// Rejoin an existing match by ID (used after reconnect).
+        /// Returns true on success.
+        public async Task<bool> RejoinMatchAsync(string matchId)
+        {
+            try
+            {
+                IsRejoining = true;
+                NakamaManager.Instance.Socket.ReceivedMatchState -= Receive;
+                NakamaManager.Instance.Socket.ReceivedMatchState += Receive;
+                NakamaManager.Instance.onDisconnected -= Disconnected;
+                NakamaManager.Instance.onDisconnected += Disconnected;
+                match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId);
+                // onMatchJoin رو fire میکنیم تا PlayersManager به سوکت جدید
+                // (ReceivedMatchPresence) دوباره subscribe بشه.
+                // GameManager با چک IsRejoining از GoToLobby جلوگیری میکنه.
+                onMatchJoin?.Invoke();
+                IsRejoining = false;
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                IsRejoining = false;
+                Debug.LogWarning("[MultiplayerManager] Rejoin failed: " + e.Message);
+                return false;
+            }
         }
 
         public async void LeaveMatchAsync()
