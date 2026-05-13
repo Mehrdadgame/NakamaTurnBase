@@ -1227,7 +1227,7 @@ function generateBotMove(gameState, logger) {
                     if (playerGrid[r][cell.col] === tile)
                         mineHits++;
             }
-            var moveScore = simulateTotalScore(tempBot, gameState.VerticalMode) + mineHits * 6;
+            var moveScore = simulateTotalScore(tempBot, gameState.VerticalMode) + mineHits * 6 + Math.random() * 3;
             if (moveScore > bestScore) {
                 bestScore = moveScore;
                 bestMove = { line: cell.line, col: cell.col, tile: tile };
@@ -1487,8 +1487,8 @@ var KeyAppVersion = "app_version";
 // System user ID — used to store global config readable by all authenticated users
 var SystemUserId = "00000000-0000-0000-0000-000000000000";
 // ─── Bot ──────────────────────────────────────────────────────────────────────
-var BotThinkMinTicks = TickRate * 1;
-var BotThinkMaxTicks = TickRate * 3;
+var BotThinkMinTicks = TickRate * 3;
+var BotThinkMaxTicks = TickRate * 6;
 var BOT_NAMES = [
     "Ali_K99", "Daniel_P", "Sara_GG", "xX_Cobra_Xx", "Reza_77",
     "ProGamer88", "IronWolf7", "NightStar", "Champion_K", "Shadow_X9",

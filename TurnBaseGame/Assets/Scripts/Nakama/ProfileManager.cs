@@ -69,6 +69,7 @@ namespace Nakama.Helpers
         [SerializeField] private TextMeshProUGUI coinBonusPopup;
         [SerializeField] private RectTransform coinBonusRect;
         [SerializeField] private RTLTextMeshPro displayName; // for refreshing coin display after bonus
+        [SerializeField] private RTLTextMeshPro infoPrizeSaveEmail;
 
         #endregion
 
@@ -203,6 +204,8 @@ namespace Nakama.Helpers
             }
             if (phoneLockIcon != null) phoneLockIcon.SetActive(data.phoneLocked);
             RefreshDisplayNameLabel(data.displayName);
+            if (infoPrizeSaveEmail != null)
+                infoPrizeSaveEmail.gameObject.SetActive(!data.phoneLocked);
         }
 
         private void RefreshDisplayNameLabel(string rawDisplayName)
