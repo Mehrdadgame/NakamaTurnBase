@@ -12,6 +12,7 @@ namespace Nakama.Helpers
     {
         public string requiredVersion;
         public string updateUrl;
+        public bool   required;
     }
 
     /// <summary>
@@ -50,10 +51,10 @@ namespace Nakama.Helpers
                 var result = await NakamaManager.Instance.SendRPC(GetAppVersionRpc, "{}");
                 var data   = result.Payload.Deserialize<AppVersionResponse>();
 
-                if (data == null || string.IsNullOrEmpty(data.requiredVersion))
+                if (data == null || !data.required || string.IsNullOrEmpty(data.requiredVersion))
                     return;
 
-                if (data.requiredVersion == Application.version)
+                if (IsVersionUpToDate(Application.version, data.requiredVersion))
                     return;
 
                 ShowPopup(data.updateUrl);
@@ -62,6 +63,30 @@ namespace Nakama.Helpers
             {
                 Debug.LogWarning("ForceUpdateManager: version check failed — " + e.Message);
             }
+        }
+
+        // Returns true if deviceVersion >= requiredVersion (no update needed).
+        private static bool IsVersionUpToDate(string deviceVersion, string requiredVersion)
+        {
+            var d = ParseVersion(deviceVersion);
+            var r = ParseVersion(requiredVersion);
+            for (int i = 0; i < Mathf.Max(d.Length, r.Length); i++)
+            {
+                var dv = i < d.Length ? d[i] : 0;
+                var rv = i < r.Length ? r[i] : 0;
+                if (dv > rv) return true;
+                if (dv < rv) return false;
+            }
+            return true; // equal
+        }
+
+        private static int[] ParseVersion(string v)
+        {
+            var parts = (v ?? "0").Split('.');
+            var result = new int[parts.Length];
+            for (int i = 0; i < parts.Length; i++)
+                int.TryParse(parts[i], out result[i]);
+            return result;
         }
 
         private void ShowPopup(string updateUrl)

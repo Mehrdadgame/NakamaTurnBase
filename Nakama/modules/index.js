@@ -36,7 +36,7 @@ function InitModule(ctx, logger, nk, initializer) {
                 collection: CollectionConfig,
                 key: KeyAppVersion,
                 userId: SystemUserId,
-                value: { requiredVersion: "", updateUrl: "" },
+                value: { requiredVersion: "", updateUrl: "", required: false },
                 permissionRead: 2,
                 permissionWrite: 0,
             }]);

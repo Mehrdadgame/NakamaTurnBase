@@ -65,8 +65,13 @@ namespace Nakama.Helpers
         [SerializeField] private Button saveButton;
         [SerializeField] private RTLTextMeshPro statusText;
 
+        [Header("Email Login Setup (optional)")]
+        [SerializeField] private TMP_InputField passwordInput;
+        [SerializeField] private Button linkEmailButton;
+        [SerializeField] private RTLTextMeshPro linkEmailStatus;
+
         [Header("Coin Bonus Popup (optional)")]
-        [SerializeField] private TextMeshProUGUI coinBonusPopup;
+        [SerializeField] private RTLTextMeshPro coinBonusPopup;
         [SerializeField] private RectTransform coinBonusRect;
         [SerializeField] private RTLTextMeshPro displayName; // for refreshing coin display after bonus
         [SerializeField] private RTLTextMeshPro infoPrizeSaveEmail;
@@ -77,9 +82,9 @@ namespace Nakama.Helpers
 
         private void Awake()
         {
-            // Wire button here — never rely solely on Inspector onClick for async flows
             if (saveButton != null) saveButton.onClick.AddListener(OnSaveClicked);
             if (avatarButton != null) avatarButton.onClick.AddListener(OnAvatarButtonClicked);
+            if (linkEmailButton != null) linkEmailButton.onClick.AddListener(OnLinkEmailClicked);
         }
 
         private void OnEnable()
@@ -331,6 +336,56 @@ namespace Nakama.Helpers
             {
                 SetSaveInteractable(true);
             }
+        }
+
+        #endregion
+
+        #region LINK EMAIL
+
+        private async void OnLinkEmailClicked()
+        {
+            var email = emailInput != null ? emailInput.text.Trim() : "";
+            var password = passwordInput != null ? passwordInput.text : "";
+
+            if (string.IsNullOrEmpty(email) || !email.Contains("@"))
+            {
+                SetLinkStatus("ایمیل معتبر وارد کنید.", Color.red);
+                return;
+            }
+            if (password.Length < 6)
+            {
+                SetLinkStatus("رمز عبور باید حداقل ۶ کاراکتر باشد.", Color.red);
+                return;
+            }
+
+            if (linkEmailButton != null) linkEmailButton.interactable = false;
+            SetLinkStatus("در حال تنظیم...", Color.white);
+
+            try
+            {
+                await NakamaManager.Instance.LinkEmailAsync(email, password);
+                SetLinkStatus("ورود با ایمیل فعال شد!", new Color(0.25f, 1f, 0.25f));
+                if (passwordInput != null) passwordInput.text = "";
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Contains("already") || e.Message.Contains("4"))
+                    SetLinkStatus("این ایمیل قبلاً ثبت شده است.", Color.yellow);
+                else
+                    SetLinkStatus("خطا: لطفاً دوباره امتحان کنید.", Color.red);
+                Debug.LogWarning("[ProfileManager] LinkEmail error: " + e.Message);
+            }
+            finally
+            {
+                if (linkEmailButton != null) linkEmailButton.interactable = true;
+            }
+        }
+
+        private void SetLinkStatus(string msg, Color color)
+        {
+            if (linkEmailStatus == null) return;
+            linkEmailStatus.text = msg;
+            linkEmailStatus.color = color;
         }
 
         #endregion

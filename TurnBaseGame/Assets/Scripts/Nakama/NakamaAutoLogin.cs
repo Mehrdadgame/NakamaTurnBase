@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Nakama.Helpers
 {
@@ -14,6 +15,10 @@ namespace Nakama.Helpers
         private int countTry;
         [SerializeField] TextMeshProUGUI dicconnectText;
 
+        [Header("Email Login (optional)")]
+        [SerializeField] private Button           emailLoginButton;
+        [SerializeField] private EmailLoginPanel  emailLoginPanel;
+
         #endregion
 
         #region BEHAVIORS
@@ -23,6 +28,10 @@ namespace Nakama.Helpers
             NakamaManager.Instance.onLoginFail    += LoginFailed;
             NakamaManager.Instance.onConnected    += OnConnected;
             NakamaManager.Instance.onLoginSuccess += OnLoginSuccess;
+
+            if (emailLoginButton != null)
+                emailLoginButton.onClick.AddListener(ShowEmailLogin);
+
             TryLogin();
         }
 
@@ -49,7 +58,6 @@ namespace Nakama.Helpers
 
         private IEnumerator GoToHome()
         {
-            // کمی صبر می‌کنیم تا NakamaUserManager اطلاعات کاربر رو load کنه
             yield return new WaitForSeconds(sceneChangeDelay);
             SceneManager.LoadScene((int)NinjaBattle.General.Scenes.Home);
         }
@@ -64,7 +72,16 @@ namespace Nakama.Helpers
 
         private void LoginFailed()
         {
+            // اگه EmailLoginPanel داره منتظر جواب هست، retry نزن
+            if (EmailLoginPanel.Instance != null && EmailLoginPanel.Instance.IsWaitingForLogin)
+                return;
             Invoke(nameof(TryLogin), retryTime);
+        }
+
+        public void ShowEmailLogin()
+        {
+            if (emailLoginPanel != null)
+                emailLoginPanel.Show();
         }
 
         #endregion
