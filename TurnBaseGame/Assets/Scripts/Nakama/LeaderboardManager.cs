@@ -141,9 +141,9 @@ namespace Nakama.Helpers
             SetPodiumSlot(pod1Root, pod1Avatar, pod1Name, pod1Score, records, 0);
             SetPodiumSlot(pod3Root, pod3Avatar, pod3Name, pod3Score, records, 2);
 
-            AnimatePodiumSlot(pod2Root, 0.05f);
-            AnimatePodiumSlot(pod1Root, 0f);
-            AnimatePodiumSlot(pod3Root, 0.1f);
+            //  AnimatePodiumSlot(pod2Root, 0.05f);
+            // AnimatePodiumSlot(pod1Root, 0f);
+            //  AnimatePodiumSlot(pod3Root, 0.1f);
         }
 
         private void AnimatePodiumSlot(GameObject root, float delay)

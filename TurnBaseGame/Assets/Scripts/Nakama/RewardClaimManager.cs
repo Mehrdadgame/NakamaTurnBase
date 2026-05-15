@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
-
+using RTLTMPro;
 namespace Nakama.Helpers
 {
     [Serializable]
@@ -36,9 +36,9 @@ namespace Nakama.Helpers
         private const string CheckPendingRewardsRpc = "CheckPendingRewardsRpc";
 
         [SerializeField] private GameObject      popupPanel;
-        [SerializeField] private TextMeshProUGUI typeText;     // "Weekly Leaderboard" / "Monthly..."
-        [SerializeField] private TextMeshProUGUI rankText;
-        [SerializeField] private TextMeshProUGUI rewardText;
+        [SerializeField] private RTLTextMeshPro typeText;     // "Weekly Leaderboard" / "Monthly..."
+        [SerializeField] private RTLTextMeshPro rankText;
+        [SerializeField] private RTLTextMeshPro rewardText;
         [SerializeField] private Button          closeButton;
 
         private PendingRewardData[] pendingQueue = null;
