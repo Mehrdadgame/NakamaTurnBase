@@ -222,7 +222,8 @@ var getLeaderboardRpc = function (context, logger, nakama, payload) {
         rank: ownRecord.rank,
         avatarId: ((_a = profileMap[ownRecord.ownerId]) === null || _a === void 0 ? void 0 : _a.avatarId) || "avatar_0",
     } : null;
-    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn });
+    var rewards = data.type === "monthly" ? MONTHLY_REWARDS : WEEKLY_REWARDS;
+    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn, rewards: rewards });
 };
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 var selectAvatarRpc = function (context, logger, nakama, payload) {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using RTLTMPro;
@@ -24,6 +25,7 @@ namespace Nakama.Helpers
     {
         public List<LeaderboardRecord> records;
         public LeaderboardRecord       ownRecord;
+        public long[]                  rewards;   // جدول جوایز از سرور — index 0 = رتبه ۱
     }
 
     public class LeaderboardManager : MonoBehaviour
@@ -32,10 +34,11 @@ namespace Nakama.Helpers
 
         // ── Top-3 Podium ──────────────────────────────────────────────────────────
         [Header("Top 3 Podium")]
-        [SerializeField] private GameObject      pod1Root,   pod2Root,   pod3Root;
-        [SerializeField] private Image           pod1Avatar, pod2Avatar, pod3Avatar;
-        [SerializeField] private RTLTextMeshPro  pod1Name,   pod2Name,   pod3Name;
-        [SerializeField] private RTLTextMeshPro  pod1Score,  pod2Score,  pod3Score;
+        [SerializeField] private GameObject pod1Root, pod2Root, pod3Root;
+        [SerializeField] private Image pod1Avatar, pod2Avatar, pod3Avatar;
+        [SerializeField] private RTLTextMeshPro pod1Name, pod2Name, pod3Name;
+        //  [SerializeField] private RTLTextMeshPro pod1Score, pod2Score, pod3Score;
+        [SerializeField] private RTLTextMeshPro pod1Reward, pod2Reward, pod3Reward; // جایزه رتبه ۱/۲/۳
 
         // ── Context list ──────────────────────────────────────────────────────────
         [Header("Context List  (4 above + self + 4 below)")]
@@ -58,7 +61,15 @@ namespace Nakama.Helpers
         [SerializeField] private Color tabActiveColor = new Color(1f, 0.85f, 0.2f, 1f);
         [SerializeField] private Color tabInactiveColor = new Color(0.55f, 0.55f, 0.55f, 1f);
 
+        // ── Reset timer ───────────────────────────────────────────────────────────
+        [Header("Reset Timer ")]
+        [SerializeField] private RTLTextMeshPro resetTimerText;  // تایمر ریست — هفتگی یا ماهانه بسته به تب فعال
+
+        // جدول جوایز از سرور دریافت میشه — اینجا نگه داشته میشه تا بین BuildPodium و BuildContextList مشترک باشه
+        private long[] _currentRewards = System.Array.Empty<long>();
+
         private string _currentType = "weekly";
+        private Coroutine _timerCo;
 
         // ─────────────────────────────────────────────────────────────────────────
 
@@ -71,7 +82,16 @@ namespace Nakama.Helpers
             SetTabColorImmediate(weeklyButton, true);
             SetTabColorImmediate(monthlyButton, false);
 
+            // شروع تایمر reset
+            if (_timerCo != null) StopCoroutine(_timerCo);
+            _timerCo = StartCoroutine(UpdateResetTimers());
+
             LoadLeaderboard("weekly");
+        }
+
+        private void OnDisable()
+        {
+            if (_timerCo != null) { StopCoroutine(_timerCo); _timerCo = null; }
         }
 
         private void SetTabColorImmediate(Button btn, bool active)
@@ -94,6 +114,7 @@ namespace Nakama.Helpers
         {
             _currentType = type;
             UpdateTabVisual(type);
+            UpdateResetTimerText(); // فوری تایمر رو با تب جدید آپدیت کن
 
             try
             {
@@ -103,6 +124,11 @@ namespace Nakama.Helpers
                 );
                 var data = result.Payload.Deserialize<LeaderboardResponse>();
                 if (data == null) return;
+
+                // جدول جوایز رو از سرور ذخیره کن
+                _currentRewards = (data.rewards != null && data.rewards.Length > 0)
+                    ? data.rewards
+                    : System.Array.Empty<long>();
 
                 BuildPodium(data.records);
                 BuildContextList(data.records, data.ownRecord);
@@ -137,13 +163,9 @@ namespace Nakama.Helpers
         private void BuildPodium(List<LeaderboardRecord> records)
         {
             // Layout: 2nd left, 1st centre, 3rd right  (matches screenshot)
-            SetPodiumSlot(pod2Root, pod2Avatar, pod2Name, pod2Score, records, 1);
-            SetPodiumSlot(pod1Root, pod1Avatar, pod1Name, pod1Score, records, 0);
-            SetPodiumSlot(pod3Root, pod3Avatar, pod3Name, pod3Score, records, 2);
-
-            //  AnimatePodiumSlot(pod2Root, 0.05f);
-            // AnimatePodiumSlot(pod1Root, 0f);
-            //  AnimatePodiumSlot(pod3Root, 0.1f);
+            SetPodiumSlot(pod2Root, pod2Avatar, pod2Name, pod2Reward, records, 1, _currentRewards);
+            SetPodiumSlot(pod1Root, pod1Avatar, pod1Name, pod1Reward, records, 0, _currentRewards);
+            SetPodiumSlot(pod3Root, pod3Avatar, pod3Name, pod3Reward, records, 2, _currentRewards);
         }
 
         private void AnimatePodiumSlot(GameObject root, float delay)
@@ -155,8 +177,8 @@ namespace Nakama.Helpers
 
         private void SetPodiumSlot(
             GameObject root, Image avatarImg,
-            RTLTextMeshPro nameText, RTLTextMeshPro scoreText,
-            List<LeaderboardRecord> records, int index)
+            RTLTextMeshPro nameText, RTLTextMeshPro rewardText,
+            List<LeaderboardRecord> records, int index, long[] rewards)
         {
             if (root == null) return;
             bool hasPlayer = records != null && records.Count > index;
@@ -165,9 +187,11 @@ namespace Nakama.Helpers
 
             var rec = records[index];
             if (avatarImg != null) avatarImg.sprite = GetSprite(rec.avatarId);
-            if (nameText  != null) nameText.text  = rec.username ?? "???";
-            if (scoreText != null) scoreText.text = PersianTextUtils.FormatNumber(rec.score) + " دایسو";
-            Debug.Log($"[Podium] index={index} username={rec.username} score={rec.score}");
+            if (nameText != null) nameText.text = rec.username ?? "???";
+            //  if (scoreText != null) scoreText.text = PersianTextUtils.FormatNumber(rec.score) + " دایسو";
+            // جایزه رتبه — index همون رتبه است (0=رتبه۱, 1=رتبه۲, 2=رتبه۳)
+            if (rewardText != null)
+                rewardText.text = "تاسی :" + PersianTextUtils.FormatNumber(rewards[index]);
         }
 
         // ── Context list ──────────────────────────────────────────────────────────
@@ -194,6 +218,21 @@ namespace Nakama.Helpers
                     if (row.rankText     != null) row.rankText.text      = "#" + rec.rank;
                     if (row.nameText     != null) row.nameText.text      = rec.username ?? "???";
                     if (row.scoreText != null) row.scoreText.text = PersianTextUtils.FormatNumber(rec.score) + " دایسو";
+
+                    // نمایش جایزه برای رتبه‌های ۱ تا ۱۰ (از سرور)
+                    if (row.rewardText != null)
+                    {
+                        int rankIndex = (int)rec.rank - 1; // rank شروع از 1
+                        if (rankIndex >= 0 && rankIndex < _currentRewards.Length)
+                        {
+                            row.rewardText.gameObject.SetActive(true);
+                            row.rewardText.text = "تاسی: " + PersianTextUtils.FormatNumber(_currentRewards[rankIndex]);
+                        }
+                        else
+                        {
+                            row.rewardText.gameObject.SetActive(false);
+                        }
+                    }
 
                     bool isMe = !string.IsNullOrEmpty(myId) && rec.ownerId == myId;
                     if (row.rowBackground != null)
@@ -281,6 +320,60 @@ namespace Nakama.Helpers
             }
             if (myRankText  != null) myRankText.text  = "#" + PersianTextUtils.ToPersianDigits(own.rank.ToString());
             if (myScoreText != null) myScoreText.text = PersianTextUtils.FormatNumber(own.score) + " دایسو";
+        }
+
+        // ── Reset Timers ──────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// هر ثانیه تایمر ریست هفتگی و ماهانه رو آپدیت می‌کنه.
+        /// هفتگی: دوشنبه ۰۰:۰۰ UTC  |  ماهانه: اول ماه ۰۰:۰۰ UTC
+        /// </summary>
+        private IEnumerator UpdateResetTimers()
+        {
+            var wait = new WaitForSeconds(1f);
+            while (true)
+            {
+                UpdateResetTimerText();
+                yield return wait;
+            }
+        }
+
+        /// تایمر تکست رو بر اساس تب فعال آپدیت می‌کنه — هم از coroutine هم موقع تعویض تب
+        private void UpdateResetTimerText()
+        {
+            if (resetTimerText == null) return;
+            var now = DateTime.UtcNow;
+            if (_currentType == "monthly")
+                resetTimerText.text = "ریست ماهانه: " + FormatTimeLeft(GetNextMonthlyReset(now));
+            else
+                resetTimerText.text = "ریست هفتگی: " + FormatTimeLeft(GetNextWeeklyReset(now));
+        }
+
+        /// دوشنبه بعدی ساعت ۰۰:۰۰ UTC
+        private static DateTime GetNextWeeklyReset(DateTime utcNow)
+        {
+            // DayOfWeek.Monday = 1
+            int daysUntilMonday = ((int)DayOfWeek.Monday - (int)utcNow.DayOfWeek + 7) % 7;
+            if (daysUntilMonday == 0 && utcNow.TimeOfDay == TimeSpan.Zero)
+                daysUntilMonday = 7; // همین لحظه ریست شده — هفته بعد
+            else if (daysUntilMonday == 0)
+                daysUntilMonday = 7;
+            return utcNow.Date.AddDays(daysUntilMonday);
+        }
+
+        /// اول ماه بعدی ساعت ۰۰:۰۰ UTC
+        private static DateTime GetNextMonthlyReset(DateTime utcNow)
+        {
+            return new DateTime(utcNow.Year, utcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc).AddMonths(1);
+        }
+
+        private static string FormatTimeLeft(DateTime target)
+        {
+            var ts = target - DateTime.UtcNow;
+            if (ts.TotalSeconds <= 0) return "به زودی";
+            if (ts.TotalDays >= 1)
+                return $"{(int)ts.TotalDays}روز {ts.Hours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
+            return $"{ts.Hours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────────
