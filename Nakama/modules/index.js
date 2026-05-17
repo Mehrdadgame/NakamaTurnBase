@@ -7,6 +7,7 @@ var GetProfileRpc = "GetProfileRpc";
 var UpdateProfileRpc = "UpdateProfileRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
 var GetAppVersionRpc = "GetAppVersionRpc";
+var SendContactMessageRpc = "SendContactMessageRpc";
 var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
 var AddCoinsRpc = "AddCoinsRpc";
 var ClaimChestRpc = "ClaimChestRpc";
@@ -29,6 +30,7 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(AddCoinsRpc, addCoinsRpc);
     initializer.registerRpc(ClaimChestRpc, claimChestRpc);
     initializer.registerRpc(GetChestStatusRpc, getChestStatusRpc);
+    initializer.registerRpc(SendContactMessageRpc, sendContactMessageRpc);
     // Seed default app version config if it doesn't exist yet
     var existing = nk.storageRead([{ collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId }]);
     if (existing.length === 0) {
@@ -1476,6 +1478,48 @@ var LEAGUES = {
         drawRefund: 125,
         rankPoints: 250,
     },
+};
+// ─── Contact Us ───────────────────────────────────────────────────────────────
+var CollectionContactMessages = "ContactMessages";
+// پیام کاربر رو در استورج SystemUser ذخیره می‌کنه
+var sendContactMessageRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId)
+        throw new Error("Not authenticated");
+    var data = JSON.parse(payload || "{}");
+    var subject = (data.subject || "").toString().trim().substring(0, 100);
+    var message = (data.message || "").toString().trim().substring(0, 2000);
+    if (message.length === 0)
+        throw new Error("Message cannot be empty");
+    // username رو از پروفایل بگیر
+    var username = context.username || userId;
+    var sentAt = Math.floor(Date.now() / 1000);
+    // کلید یکتا برای هر پیام: timestamp_userId
+    var key = sentAt + "_" + userId.replace(/-/g, "").substring(0, 8);
+    var entry = {
+        fromUserId: userId,
+        fromUsername: username,
+        subject: subject,
+        message: message,
+        sentAt: sentAt,
+        platform: data.platform || "mobile",
+    };
+    try {
+        nakama.storageWrite([{
+                collection: CollectionContactMessages,
+                key: key,
+                userId: SystemUserId,
+                value: entry,
+                permissionRead: 0,  // فقط سرور/ادمین می‌تونه بخونه
+                permissionWrite: 0,
+            }]);
+        logger.info("[ContactUs] message saved key=" + key + " from=" + username + "(" + userId + ")");
+        return JSON.stringify({ success: true });
+    }
+    catch (e) {
+        logger.warn("[ContactUs] storageWrite failed: " + e);
+        throw new Error("Failed to save message");
+    }
 };
 // ─── Leaderboards ─────────────────────────────────────────────────────────────
 var LeaderboardWeekly = "weekly_leaderboard";

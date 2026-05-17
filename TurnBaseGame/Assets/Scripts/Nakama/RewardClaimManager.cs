@@ -80,10 +80,11 @@ namespace Nakama.Helpers
                 var data   = result.Payload.Deserialize<PendingRewardsResponse>();
                 if (data == null) return;
 
-                // Build queue of unclaimed rewards to show one at a time
+                // سرور فقط وقتی non-null برمیگردونه که جایزه unclaimed بوده
+                // (قبل از برگشت claimed=true میشه، پس چک claimed اینجا اشتباهه)
                 var queue = new System.Collections.Generic.List<PendingRewardData>();
-                if (data.weekly  != null && !data.weekly.claimed)  queue.Add(data.weekly);
-                if (data.monthly != null && !data.monthly.claimed) queue.Add(data.monthly);
+                if (data.weekly  != null) queue.Add(data.weekly);
+                if (data.monthly != null) queue.Add(data.monthly);
 
                 if (queue.Count == 0) return;
 
