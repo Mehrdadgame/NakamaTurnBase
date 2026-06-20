@@ -1,12 +1,12 @@
 using System;
-using System.Collections;
-using Bazaar.Data;
-using Bazaar.Poolakey;
-using Bazaar.Poolakey.Data;
+using System.Threading.Tasks;
 using RTLTMPro;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_ANDROID
+using System.Collections.Generic;
+using MyketPlugin;
+#endif
 
 namespace Nakama.Helpers
 {
@@ -14,8 +14,8 @@ namespace Nakama.Helpers
     public class CoinPackProduct
     {
         public string productId;
-        public int coinsAmount;
-        public string priceLabel;   // e.g. "۱۰,۰۰۰ تومان" — set in Inspector
+        public int coinsAmount;      // display only — the server (COIN_PACKS) is authoritative
+        public string priceLabel;    // fallback shown until the store reports the real price
         public Button buyButton;
         public RTLTextMeshPro coinsLabel;
         public RTLTextMeshPro priceText;
@@ -26,8 +26,11 @@ namespace Nakama.Helpers
 
     public class CoinShopManager : MonoBehaviour
     {
-        private const string RsaPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwC0vw7ZN00/aJsQ/grNtpgM2UrOesv0nNRtVjYXHS4hSI9xBlacWrAtGjJ46LyfIooBxD3REprgv5d8xZPi7s0TTUW/VtbW5w0pgiEXSip0TGE5S2c41pdxPsqUe3tnSnsxdHoeq7Lnoa21JNLkqLuPShNCSRVjdlF56VxMTL2OKV+vLh3sscj0gkNzBzP21eyeI7OGXsa7Fe6crJePmOUGWWxg6eWe0DF6Nkf3XfkCAwEAAQ==";
-        private const string AddCoinsRpcId = "AddCoinsRpc";
+        private const string VerifyCoinPurchaseRpcId = "VerifyCoinPurchaseRpc";
+
+        [Header("Myket")]
+        [Tooltip("کلید عمومی RSA از پنل توسعه‌دهنده مایکت (بخش پرداخت درون‌برنامه‌ای). باید پر شود.")]
+        [SerializeField] private string myketRsaPublicKey = "";
 
         [Header("Products (assign in Inspector)")]
         [SerializeField] private CoinPackProduct[] products;
@@ -36,7 +39,6 @@ namespace Nakama.Helpers
         [SerializeField] private RTLTextMeshPro statusText;
         [SerializeField] private GameObject loadingOverlay;
 
-        private Payment _payment;
         private bool _connected;
         private bool _busy;
 
@@ -44,9 +46,6 @@ namespace Nakama.Helpers
 
         private void Awake()
         {
-            var securityCheck = SecurityCheck.Enable(RsaPublicKey);
-            _payment = new Payment(new PaymentConfiguration(securityCheck));
-
             for (int i = 0; i < products.Length; i++)
             {
                 int idx = i;
@@ -61,131 +60,245 @@ namespace Nakama.Helpers
             }
         }
 
-        private IEnumerator Start()
+        private void OnEnable()
         {
+            SetStatus("", Color.white);
+#if UNITY_ANDROID
+            IABEventManager.billingSupportedEvent        += OnBillingSupported;
+            IABEventManager.billingNotSupportedEvent     += OnBillingNotSupported;
+            IABEventManager.purchaseSucceededEvent       += OnPurchaseSucceeded;
+            IABEventManager.purchaseFailedEvent          += OnPurchaseFailed;
+            IABEventManager.consumePurchaseSucceededEvent += OnConsumeSucceeded;
+            IABEventManager.consumePurchaseFailedEvent    += OnConsumeFailed;
+            IABEventManager.queryInventorySucceededEvent  += OnQueryInventorySucceeded;
+            IABEventManager.queryInventoryFailedEvent     += OnQueryInventoryFailed;
+#endif
+        }
+
+        private void OnDisable()
+        {
+#if UNITY_ANDROID
+            IABEventManager.billingSupportedEvent        -= OnBillingSupported;
+            IABEventManager.billingNotSupportedEvent     -= OnBillingNotSupported;
+            IABEventManager.purchaseSucceededEvent       -= OnPurchaseSucceeded;
+            IABEventManager.purchaseFailedEvent          -= OnPurchaseFailed;
+            IABEventManager.consumePurchaseSucceededEvent -= OnConsumeSucceeded;
+            IABEventManager.consumePurchaseFailedEvent    -= OnConsumeFailed;
+            IABEventManager.queryInventorySucceededEvent  -= OnQueryInventorySucceeded;
+            IABEventManager.queryInventoryFailedEvent     -= OnQueryInventoryFailed;
+#endif
+        }
+
+        private void Start()
+        {
+            SetButtonsInteractable(false);
+#if UNITY_ANDROID
+            if (string.IsNullOrEmpty(myketRsaPublicKey))
+                Debug.LogError("[CoinShop] کلید عمومی RSA مایکت تنظیم نشده — آن را از پنل مایکت در اینسپکتور وارد کنید.");
+
             SetStatus("در حال اتصال...", Color.white);
-            yield return _payment.Connect(OnConnectResult);
+            MyketIAB.init(myketRsaPublicKey);
+#else
+            SetStatus("خرید فقط روی اندروید در دسترس است.", Color.yellow);
+#endif
         }
 
         private void OnDestroy()
         {
-            _payment?.Disconnect();
+#if UNITY_ANDROID
+            MyketIAB.unbindService();
+#endif
         }
 
-        private void OnEnable()
-        {
-            SetStatus("", Color.white);
-
-        }
+#if UNITY_ANDROID
 
         // ── Connect ───────────────────────────────────────────────────────────────
 
-        private void OnConnectResult(Result<bool> result)
+        private void OnBillingSupported()
         {
-            if (result.status == Status.Success)
-            {
-                _connected = true;
-                SetStatus("", Color.white);
-                SetButtonsInteractable(true);
-            }
-            else
-            {
-                SetStatus("اتصال به بازار ناموفق بود.", Color.red);
-                Debug.LogWarning("[CoinShop] Connect failed: " + result.message);
-            }
+            _connected = true;
+            SetStatus("", Color.white);
+            SetButtonsInteractable(true);
+
+            // Refresh store prices and reconcile any purchase left un-consumed by an
+            // interrupted flow (server verification is idempotent, so re-processing is safe).
+            MyketIAB.queryInventory(GetProductIds());
+        }
+
+        private void OnBillingNotSupported(string error)
+        {
+            _connected = false;
+            SetStatus("اتصال به مایکت ناموفق بود.", Color.red);
+            Debug.LogWarning("[CoinShop] Billing not supported: " + error);
         }
 
         // ── Buy ───────────────────────────────────────────────────────────────────
 
-        private async void OnBuyClicked(int index)
+        private void OnBuyClicked(int index)
         {
             if (!_connected)
             {
-                SetStatus("اتصال به بازار برقرار نیست.", Color.red);
+                SetStatus("اتصال به مایکت برقرار نیست.", Color.red);
                 return;
             }
             if (_busy) return;
 
-            var product = products[index];
             _busy = true;
             SetButtonsInteractable(false);
             SetStatus("در حال خرید...", Color.white);
             SetLoading(true);
 
-            try
-            {
-                var result = await _payment.Purchase(product.productId, SKUDetails.Type.inApp);
+            MyketIAB.purchaseProduct(products[index].productId);
+        }
 
-                if (result.status != Status.Success)
+        private void OnPurchaseSucceeded(MyketPurchase purchase)
+        {
+            SetStatus("در حال تایید خرید...", Color.white);
+            _ = VerifyAndConsume(purchase, isRecovery: false);
+        }
+
+        private void OnPurchaseFailed(string error)
+        {
+            bool canceled = !string.IsNullOrEmpty(error) &&
+                            error.ToLowerInvariant().Contains("cancel");
+            SetStatus(canceled ? "خرید لغو شد." : "خرید ناموفق بود.",
+                      canceled ? Color.yellow : Color.red);
+            Debug.LogWarning("[CoinShop] Purchase failed: " + error);
+            EndBusy();
+        }
+
+        private void OnConsumeSucceeded(MyketPurchase purchase)
+        {
+            Debug.Log("[CoinShop] Consumed: " + purchase.ProductId);
+        }
+
+        private void OnConsumeFailed(string error)
+        {
+            Debug.LogWarning("[CoinShop] Consume failed (non-critical): " + error);
+        }
+
+        // ── Inventory: live prices + recovery of stuck consumables ──────────────────
+
+        private void OnQueryInventorySucceeded(List<MyketPurchase> purchases, List<MyketSkuInfo> skus)
+        {
+            if (skus != null)
+            {
+                foreach (var sku in skus)
                 {
-                    if (result.status == Status.Canceled)
-                        SetStatus("خرید لغو شد.", Color.yellow);
-                    else
-                        SetStatus("خرید ناموفق: " + result.message, Color.red);
-                    return;
+                    int idx = IndexOfProduct(sku.ProductId);
+                    if (idx >= 0 && products[idx].priceText != null && !string.IsNullOrEmpty(sku.Price))
+                        products[idx].priceText.text = PersianTextUtils.FixRTLPriceLabel(sku.Price);
                 }
-
-                var info = result.data;
-
-                // Consume first so Bazaar allows purchasing again
-                var consumeResult = await _payment.Consume(info.purchaseToken);
-                if (consumeResult.status != Status.Success)
-                    Debug.LogWarning("[CoinShop] Consume failed (non-critical): " + consumeResult.message);
-
-                // Immediately show coins in UI
-                if (WalletManager.Instance != null)
-                    WalletManager.Instance.SetCoins(WalletManager.Instance.Coins + product.coinsAmount);
-
-                SetStatus("+" + FormatCoins(product.coinsAmount) + " کوین دریافت شد!", new Color(0.25f, 1f, 0.25f));
-
-                // Sync coins to server wallet in background (fire-and-forget)
-                _ = SyncCoinsToServer(product.coinsAmount);
             }
-            catch (Exception e)
+
+            if (purchases != null)
             {
-                Debug.LogWarning("[CoinShop] Purchase error: " + e.Message);
-                SetStatus("خطا: " + e.Message, Color.red);
-            }
-            finally
-            {
-                _busy = false;
-                SetButtonsInteractable(true);
-                SetLoading(false);
+                foreach (var p in purchases)
+                {
+                    if (p.PurchaseState == MyketPurchase.MyketPurchaseState.Purchased &&
+                        IndexOfProduct(p.ProductId) >= 0)
+                        _ = VerifyAndConsume(p, isRecovery: true);
+                }
             }
         }
 
-        private async System.Threading.Tasks.Task SyncCoinsToServer(int coins)
+        private void OnQueryInventoryFailed(string error)
+        {
+            Debug.LogWarning("[CoinShop] Query inventory failed: " + error);
+        }
+
+        // ── Server verify → consume ─────────────────────────────────────────────────
+
+        private async Task VerifyAndConsume(MyketPurchase purchase, bool isRecovery)
         {
             try
             {
-                var payload = "{\"coins\":" + coins + "}";
-                Debug.Log("[CoinShop] Syncing to server: " + payload);
-                var rpc = await NakamaManager.Instance.SendRPC(AddCoinsRpcId, payload);
-                if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
+                var payload = JsonUtility.ToJson(new VerifyPayload
                 {
-                    Debug.LogWarning("[CoinShop] Server sync: no response");
-                    return;
-                }
-                var res = rpc.Payload.Deserialize<CoinPurchaseResult>();
+                    productId     = purchase.ProductId,
+                    purchaseToken = purchase.PurchaseToken,
+                    orderId       = purchase.OrderId,
+                    dataSignature = purchase.Signature,
+                    originalJson  = purchase.OriginalJson,
+                });
+
+                var rpc = await NakamaManager.Instance.SendRPC(VerifyCoinPurchaseRpcId, payload);
+                var res = (rpc != null && !string.IsNullOrEmpty(rpc.Payload))
+                    ? rpc.Payload.Deserialize<CoinPurchaseResult>()
+                    : null;
+
                 if (res != null && res.success)
                 {
-                    Debug.Log("[CoinShop] Server confirmed coins: " + res.coinsAwarded);
-                    // Refresh from server to get authoritative balance
+                    MyketIAB.consumeProduct(purchase.ProductId);
+
                     if (WalletManager.Instance != null)
                         await WalletManager.Instance.RefreshAsync();
+
+                    if (!isRecovery)
+                        SetStatus("+" + FormatCoins(res.coinsAwarded) + " کوین دریافت شد!",
+                                  new Color(0.25f, 1f, 0.25f));
                 }
                 else
                 {
-                    Debug.LogWarning("[CoinShop] Server sync failed: " + (res?.error ?? "unknown"));
+                    string err = res?.error ?? "unknown";
+
+                    // Coins were already granted on a previous attempt but the item was never
+                    // consumed — consume it now so it can be purchased again.
+                    if (err.Contains("Already processed"))
+                        MyketIAB.consumeProduct(purchase.ProductId);
+
+                    if (!isRecovery)
+                        SetStatus("تایید خرید ناموفق بود.", Color.red);
+                    Debug.LogWarning("[CoinShop] Server verify failed: " + err);
                 }
             }
             catch (Exception e)
             {
-                Debug.LogWarning("[CoinShop] SyncCoins error: " + e.Message);
+                Debug.LogWarning("[CoinShop] VerifyAndConsume error: " + e.Message);
+                if (!isRecovery) SetStatus("خطا در ارتباط با سرور.", Color.red);
+            }
+            finally
+            {
+                if (!isRecovery) EndBusy();
             }
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────────────
+        [Serializable]
+        private class VerifyPayload
+        {
+            public string productId;
+            public string purchaseToken;
+            public string orderId;
+            public string dataSignature;
+            public string originalJson;
+        }
+
+        private string[] GetProductIds()
+        {
+            var ids = new string[products.Length];
+            for (int i = 0; i < products.Length; i++)
+                ids[i] = products[i].productId;
+            return ids;
+        }
+
+        private int IndexOfProduct(string productId)
+        {
+            for (int i = 0; i < products.Length; i++)
+                if (products[i].productId == productId)
+                    return i;
+            return -1;
+        }
+
+#endif
+
+        // ── Helpers ─────────────────────────────────────────────────────────────────
+
+        private void EndBusy()
+        {
+            _busy = false;
+            SetButtonsInteractable(true);
+            SetLoading(false);
+        }
 
         private void SetStatus(string msg, Color color)
         {

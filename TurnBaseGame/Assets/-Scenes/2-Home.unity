@@ -3410,7 +3410,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 742.81464, y: -1385.36}
+  m_AnchoredPosition: {x: 723.29865, y: -1385.36}
   m_SizeDelta: {x: 322, y: 251}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &153602755
@@ -3653,7 +3653,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 274.50464, y: 32.5}
+  m_AnchoredPosition: {x: 254.98865, y: 32.5}
   m_SizeDelta: {x: 322, y: 251}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &170802630
@@ -8749,7 +8749,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 742.81464, y: -912.74}
+  m_AnchoredPosition: {x: 723.29865, y: -912.74}
   m_SizeDelta: {x: 322, y: 251}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &402793333
@@ -9394,7 +9394,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 742.81464, y: 32.5}
+  m_AnchoredPosition: {x: 723.29865, y: 32.5}
   m_SizeDelta: {x: 322, y: 251}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &454800583
@@ -21197,7 +21197,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 274.50464, y: -912.74}
+  m_AnchoredPosition: {x: 254.98865, y: -912.74}
   m_SizeDelta: {x: 322, y: 251}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1267239569
@@ -22148,7 +22148,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1086013158, guid: 3a0f35dedb98a9542a8bd41217653c10, type: 3}
+  m_Sprite: {fileID: -3109882613093551669, guid: 9497f79bdfdd51d46aeda983f97ff74b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -23965,7 +23965,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 742.81464, y: -440.12}
+  m_AnchoredPosition: {x: 723.29865, y: -440.12}
   m_SizeDelta: {x: 322, y: 251}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1441505507
@@ -24536,7 +24536,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 274.50464, y: -1385.36}
+  m_AnchoredPosition: {x: 254.98865, y: -1385.36}
   m_SizeDelta: {x: 322, y: 251}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1498423517
@@ -26132,6 +26132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9eb42c61ed091e45b83edb880f2262e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Nakama.Helpers.CoinShopManager
+  myketRsaPublicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCLFp1yHEp5MVnmnQAxoixbnO4yPQQriokGy4e0GHPTVps4HFUzbXZSt8Z+YrEx0JyFW9wSPAinA0133ecQWlllByp7+3ZMSVX36CNJ3mR05J+3yWOjqjF0gJCkCU5aPX49SOGExZ/UgGOlkNbBNcgzHYjvGLGouA8lCIAAw106UwIDAQAB
   products:
   - productId: SmallCoin_TasZan
     coinsAmount: 3500
@@ -32169,7 +32170,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 274.50464, y: -440.12}
+  m_AnchoredPosition: {x: 254.98865, y: -440.12}
   m_SizeDelta: {x: 322, y: 251}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1833152808
@@ -34417,7 +34418,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -800.24, y: -110.2}
+  m_AnchoredPosition: {x: -800.24, y: -110.19995}
   m_SizeDelta: {x: 343.58, y: 118.98}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1954879937
@@ -35203,7 +35204,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 900.37, y: -110.20001}
+  m_AnchoredPosition: {x: 900.37, y: -110.19995}
   m_SizeDelta: {x: 143.31, y: 152.37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1992625541

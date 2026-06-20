@@ -283,6 +283,15 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unitymcp.bridge": {
+      "version": "https://github.com/Mehrdadgame/MCP-Unity-Mehrdad.git?path=/unity-package",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      },
+      "hash": "75d5e6d39bb2ed141b722d663cac244a4aec60b3"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

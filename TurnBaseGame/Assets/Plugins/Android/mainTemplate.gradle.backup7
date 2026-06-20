@@ -7,7 +7,6 @@ dependencies {
 **DEPS**}
 
 android {
-    ndkVersion "**NDKVERSION**"
     namespace 'com.SaeedJannati.PoolakiSdkAdjustments'
     ndkPath "**NDKPATH**"
 
