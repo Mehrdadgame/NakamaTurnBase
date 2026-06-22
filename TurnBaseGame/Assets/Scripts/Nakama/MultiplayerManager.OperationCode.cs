@@ -18,6 +18,7 @@ namespace Nakama.Helpers
             OpponentDisconnected = 11,  // payload: { remainingSeconds: int }
             OpponentReconnected  = 12,  // payload: { userId: string }
             DisconnectWin        = 13,  // payload: { winnerUserId: string }
+            SendChat             = 14,  // payload: ChatData { ID, Text, Kind } — relayed to opponent only
         }
     }
 }

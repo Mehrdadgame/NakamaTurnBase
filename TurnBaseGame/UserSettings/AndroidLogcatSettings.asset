@@ -28,12 +28,6 @@
         },
         {
             "deviceId": "R5CX33C49KF",
-            "name": "com.farsitel.bazaar",
-            "processId": 13602,
-            "exited": false
-        },
-        {
-            "deviceId": "R5CX33C49KF",
             "name": "com.goodvillains.DiceWar",
             "processId": 15262,
             "exited": false

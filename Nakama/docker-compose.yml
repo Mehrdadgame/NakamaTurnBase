@@ -1,47 +1,76 @@
 services:
   cockroachdb:
-    image: cockroachdb/cockroach:latest-v23.2
-    command: start-single-node --insecure --store=attrs=ssd,path=/var/lib/cockroach/
-    restart: "always"
+    image: docker.rastar.ir/cockroachdb/cockroach:latest-v23.2
+    command: >
+      start-single-node
+      --insecure
+      --store=attrs=ssd,path=/var/lib/cockroach/
+    restart: unless-stopped
     volumes:
-            - data:/var/lib/cockroach
-    expose:
-      - "8080"
-      - "26257"
-    ports:
-      - "26257:26257"
-      - "8080:8080"
-    environment:
-      - COCKROACH_DATABASE=nakama
+      - cockroach-tz-data:/var/lib/cockroach
+    networks:
+      - taaszan-internal
+    healthcheck:
+      test: ["CMD", "/cockroach/cockroach", "node", "status", "--insecure", "--host=localhost:26257"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   nakama:
-    image: registry.heroiclabs.com/heroiclabs/nakama:3.13.1
+    image: docker.rastar.ir/heroiclabs/nakama:3.39.0
     entrypoint:
       - "/bin/sh"
       - "-ecx"
       - >
-        /nakama/nakama migrate up --database.address root@cockroachdb:26257 &&
-        exec /nakama/nakama --name ninjabattle --database.address root@cockroachdb:26257 --logger.level DEBUG --session.token_expiry_sec 7200 --socket.ping_period_ms 3000 --socket.pong_wait_ms 5000
-    restart: "always"
-    links:
-      - "cockroachdb:db"
+        /nakama/nakama migrate up --database.address root@cockroachdb:26257/taaszan &&
+        exec /nakama/nakama
+        --name taaszan
+        --database.address root@cockroachdb:26257/taaszan
+        --logger.level INFO
+        --session.token_expiry_sec 7200
+        --socket.address 0.0.0.0
+        --socket.port 7350
+        --console.address 0.0.0.0
+        --console.port 7361
+        --console.username admin
+        --console.password taaszan2025
+        --runtime.path /nakama/modules
+    restart: unless-stopped
     depends_on:
-      - cockroachdb
+      cockroachdb:
+        condition: service_healthy
     volumes:
-      - ./:/nakama/data
+      - ./modules:/nakama/modules
+    networks:
+      - taaszan-internal
+      - dokploy-network
     expose:
-      - "7349"
       - "7350"
-      - "7351"
-      - "9100"
-    ports:
-      - "7349:7349"
-      - "7350:7350"
-      - "7351:7351"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7350/"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "7361"
+      - "7349"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=dokploy-network"
+
+      # API Router + Service
+      - "traefik.http.routers.nakama-api.rule=Host(`taaszan.rastar.ir`)"
+      - "traefik.http.routers.nakama-api.entrypoints=websecure"
+      - "traefik.http.routers.nakama-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.nakama-api.service=nakama-api-svc"
+      - "traefik.http.services.nakama-api-svc.loadbalancer.server.port=7350"
+
+      # Console Router + Service
+      - "traefik.http.routers.nakama-console.rule=Host(`taaszan-admin.rastar.ir`)"
+      - "traefik.http.routers.nakama-console.entrypoints=websecure"
+      - "traefik.http.routers.nakama-console.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.nakama-console.service=nakama-console-svc"
+      - "traefik.http.services.nakama-console-svc.loadbalancer.server.port=7361"
+
+networks:
+  taaszan-internal:
+    driver: bridge
+  dokploy-network:
+    external: true
+
 volumes:
-  data:
-      driver: local
+  cockroach-tz-data:

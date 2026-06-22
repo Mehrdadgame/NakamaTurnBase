@@ -388,7 +388,7 @@ let updateProfileRpc: nkruntime.RpcFunction = function (
     } as UpdateProfileResult);
 };
 
-// ─── Coin Shop (Cafebazaar IAP) ───────────────────────────────────────────────
+// ─── Coin Shop (Myket IAP) ────────────────────────────────────────────────────
 
 const COIN_PACKS: { [id: string]: number } = {
     "SmallCoin_TasZan": 3500,    // کوچک

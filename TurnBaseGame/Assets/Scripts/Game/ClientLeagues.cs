@@ -12,9 +12,9 @@ public static class ClientLeagues
 
     public static readonly Dictionary<ModeGame, Info> All = new Dictionary<ModeGame, Info>
     {
-        { ModeGame.ThreeByThree,          new Info { entryFee = 50,  winnerReward = 80,  drawRefund = 25  } },
-        { ModeGame.FourByThree,           new Info { entryFee = 150, winnerReward = 250, drawRefund = 75  } },
-        { ModeGame.VerticalAndHorizontal, new Info { entryFee = 250, winnerReward = 420, drawRefund = 125 } },
+        { ModeGame.ThreeByThree,          new Info { entryFee = 750, winnerReward = 1260, drawRefund = 375 } },
+        { ModeGame.FourByThree,           new Info { entryFee = 500, winnerReward = 840,  drawRefund = 250 } },
+        { ModeGame.VerticalAndHorizontal, new Info { entryFee = 250, winnerReward = 420,  drawRefund = 125 } },
     };
 
     public static Info Get(ModeGame mode)

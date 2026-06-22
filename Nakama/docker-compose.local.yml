@@ -1,0 +1,57 @@
+# Local TEST stack — separate from the production docker-compose.yml (Dokploy/Traefik).
+# Uses locally cached images, maps ports to the host, and a FRESH local DB volume.
+# Run:  docker compose -f docker-compose.local.yml up -d --pull never
+services:
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v23.2
+    command: >
+      start-single-node
+      --insecure
+      --store=attrs=ssd,path=/var/lib/cockroach/
+    restart: unless-stopped
+    environment:
+      - COCKROACH_DATABASE=taaszan
+    volumes:
+      - cockroach-tz-data-local:/var/lib/cockroach
+    ports:
+      - "26257:26257"   # SQL
+      - "8081:8080"     # Cockroach Admin UI (8081 on host to avoid conflicts)
+    healthcheck:
+      test: ["CMD", "/cockroach/cockroach", "node", "status", "--insecure", "--host=localhost:26257"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nakama:
+    image: registry.heroiclabs.com/heroiclabs/nakama:3.39.0
+    entrypoint:
+      - "/bin/sh"
+      - "-ecx"
+      - >
+        /nakama/nakama migrate up --database.address root@cockroachdb:26257/taaszan &&
+        exec /nakama/nakama
+        --name taaszan
+        --database.address root@cockroachdb:26257/taaszan
+        --logger.level INFO
+        --session.token_expiry_sec 7200
+        --socket.address 0.0.0.0
+        --socket.port 7350
+        --console.address 0.0.0.0
+        --console.port 7361
+        --console.username admin
+        --console.password taaszan2025
+        --runtime.path /nakama/modules
+    restart: unless-stopped
+    depends_on:
+      cockroachdb:
+        condition: service_healthy
+    volumes:
+      - ./modules:/nakama/modules
+    ports:
+      - "7350:7350"   # client API (gRPC/HTTP)
+      - "7349:7349"   # client API (gRPC)
+      - "7361:7361"   # Nakama Console (admin / admin:taaszan2025)
+      - "7351:7361"   # also expose the console on the default 7351 (host) → container 7361
+
+volumes:
+  cockroach-tz-data-local:
