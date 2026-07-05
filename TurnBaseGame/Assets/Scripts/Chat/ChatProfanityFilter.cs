@@ -4,7 +4,7 @@ namespace Nakama.Helpers
 {
     /// <summary>
     /// Lightweight client-side profanity filter for free-text chat.
-    /// Persian markets (Myket) require player-to-player text to be filtered.
+    /// Persian app stores require player-to-player text to be filtered.
     /// This is a best-effort mask; the server also clamps length. Extend <see cref="Blocked"/>
     /// as needed — matching is case-insensitive and normalizes Arabic kaf/yeh to Persian.
     /// </summary>

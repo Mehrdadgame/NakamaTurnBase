@@ -4,8 +4,24 @@ apply from: '../shared/keepUnitySymbols.gradle'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+// Android Resolver Dependencies Start
+    implementation 'com.github.cafebazaar.Poolakey:poolakey:2.0.0' // Assets/Bazaar/Poolakey/Scripts/Editor/CafeBazaarPlugin_Dependencies.xml:7
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10' // Assets/Bazaar/Poolakey/Scripts/Editor/CafeBazaarPlugin_Dependencies.xml:8
+// Android Resolver Dependencies End
 **DEPS**}
 
+// Android Resolver Exclusions Start
+android {
+  packaging {
+      exclude ('/lib/armeabi/*' + '*')
+      exclude ('/lib/armeabi-v7a/*' + '*')
+      exclude ('/lib/mips/*' + '*')
+      exclude ('/lib/mips64/*' + '*')
+      exclude ('/lib/x86/*' + '*')
+      exclude ('/lib/x86_64/*' + '*')
+  }
+}
+// Android Resolver Exclusions End
 android {
     ndkVersion "**NDKVERSION**"
     namespace 'com.goodvillains.dicewar'

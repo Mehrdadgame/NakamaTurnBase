@@ -26132,7 +26132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9eb42c61ed091e45b83edb880f2262e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Nakama.Helpers.CoinShopManager
-  myketRsaPublicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCLFp1yHEp5MVnmnQAxoixbnO4yPQQriokGy4e0GHPTVps4HFUzbXZSt8Z+YrEx0JyFW9wSPAinA0133ecQWlllByp7+3ZMSVX36CNJ3mR05J+3yWOjqjF0gJCkCU5aPX49SOGExZ/UgGOlkNbBNcgzHYjvGLGouA8lCIAAw106UwIDAQAB
+  cafeBazaarRsaPublicKey: MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwC0vw7ZN00/aJsQ/grNtpgM2UrOesv0nNRtVjYXHS4hSI9xBlacWrAtGjJ46LyfIooBxD3REprgv5d8xZPi7s0TTUW/VtbW5w0pgiEXSip0TGE5S2c41pdxPsqUe3tnSnsxdHoeq7Lnoa21JNLkqLuPShNCSRVjdlF56VxMTL2OKV+vLh3sscj0gkNzBzP21eyeI7OGXsa7Fe6crJePmOUGWWxg6eWe0DF6Nkf3XfkCAwEAAQ==
   products:
   - productId: SmallCoin_TasZan
     coinsAmount: 3500
