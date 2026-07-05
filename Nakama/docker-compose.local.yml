@@ -42,6 +42,12 @@ services:
         --console.password taaszan2025
         --runtime.path /nakama/modules
     restart: unless-stopped
+    environment:
+      - APP_PACKAGE_NAME=${APP_PACKAGE_NAME:-com.PGS.DiceWar}
+      - MYKET_PACKAGE_NAME=${MYKET_PACKAGE_NAME:-com.PGS.DiceWar}
+      - MYKET_ACCESS_TOKEN=${MYKET_ACCESS_TOKEN:-}
+      - CAFEBAZAAR_PACKAGE_NAME=${CAFEBAZAAR_PACKAGE_NAME:-com.PGS.DiceWar}
+      - CAFEBAZAAR_PISHKHAN_API_SECRET=${CAFEBAZAAR_PISHKHAN_API_SECRET:-}
     depends_on:
       cockroachdb:
         condition: service_healthy

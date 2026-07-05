@@ -7,14 +7,7 @@ var GetProfileRpc = "GetProfileRpc";
 var UpdateProfileRpc = "UpdateProfileRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
 var GetAppVersionRpc = "GetAppVersionRpc";
-var SendContactMessageRpc = "SendContactMessageRpc";
 var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
-var AddCoinsRpc = "AddCoinsRpc";
-var ClaimChestRpc = "ClaimChestRpc";
-var GetChestStatusRpc = "GetChestStatusRpc";
-var GetChatConfigRpc = "GetChatConfigRpc";
-var AdminStatsRpc = "AdminStatsRpc";
-var SetConfigRpc = "SetConfigRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
@@ -30,15 +23,6 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(SelectAvatarRpc, selectAvatarRpc);
     initializer.registerRpc(GetAppVersionRpc, getAppVersionRpc);
     initializer.registerRpc(VerifyCoinPurchaseRpc, verifyCoinPurchaseRpc);
-    // AddCoinsRpc intentionally NOT registered — it granted arbitrary client-supplied coin
-    // amounts with zero verification (critical exploit). Kept disabled below.
-    initializer.registerRpc(ClaimChestRpc, claimChestRpc);
-    initializer.registerRpc(GetChestStatusRpc, getChestStatusRpc);
-    initializer.registerRpc(SendContactMessageRpc, sendContactMessageRpc);
-    initializer.registerRpc(GetChatConfigRpc, getChatConfigRpc);
-    initializer.registerRpc(AdminStatsRpc, adminStatsRpc);
-    initializer.registerRpc(SetConfigRpc, setConfigRpc);
-    initializer.registerRpc("TestChatRpc", TestChatRpc);
     // Seed default app version config if it doesn't exist yet
     var existing = nk.storageRead([{ collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId }]);
     if (existing.length === 0) {
@@ -46,24 +30,11 @@ function InitModule(ctx, logger, nk, initializer) {
                 collection: CollectionConfig,
                 key: KeyAppVersion,
                 userId: SystemUserId,
-                value: { requiredVersion: "", updateUrl: "", required: false },
+                value: { requiredVersion: "", updateUrl: "" },
                 permissionRead: 2,
                 permissionWrite: 0,
             }]);
         logger.info("App version config seeded with defaults.");
-    }
-    // Seed default chat config (chat enabled) if it doesn't exist yet
-    var existingChat = nk.storageRead([{ collection: CollectionConfig, key: KeyChatEnabled, userId: SystemUserId }]);
-    if (existingChat.length === 0) {
-        nk.storageWrite([{
-                collection: CollectionConfig,
-                key: KeyChatEnabled,
-                userId: SystemUserId,
-                value: { enabled: true },
-                permissionRead: 2,
-                permissionWrite: 0,
-            }]);
-        logger.info("Chat config seeded with defaults (enabled).");
     }
     // Leaderboard reset → distribute rewards
     initializer.registerLeaderboardReset(onLeaderboardReset);
@@ -245,8 +216,7 @@ var getLeaderboardRpc = function (context, logger, nakama, payload) {
         rank: ownRecord.rank,
         avatarId: ((_a = profileMap[ownRecord.ownerId]) === null || _a === void 0 ? void 0 : _a.avatarId) || "avatar_0",
     } : null;
-    var rewards = data.type === "monthly" ? MONTHLY_REWARDS : WEEKLY_REWARDS;
-    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn, rewards: rewards });
+    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn });
 };
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 var selectAvatarRpc = function (context, logger, nakama, payload) {
@@ -407,7 +377,7 @@ var updateProfileRpc = function (context, logger, nakama, payload) {
         error: "",
     });
 };
-// ─── Coin Shop (Myket IAP) ────────────────────────────────────────────────────
+// ─── Coin Shop (IAP) ──────────────────────────────────────────────────────────
 var COIN_PACKS = {
     "SmallCoin_TasZan": 3500,
     "Standard_TasZan": 8000,
@@ -418,163 +388,259 @@ var COIN_PACKS = {
     "Diamond_TasZan": 55000,
     "Empire_TasZan": 100000, // امپراتور
 };
-// ── Myket server-side verification config ─────────────────────────────────────
-// Set in Nakama console → Storage → collection "config", user 00000000-0000-0000-0000-000000000000:
-//   key "myket_iap_token"  value {"token":"<API token from Myket developer panel>"}  → enables verification
-//   key "iap_strict"       value {"enabled":true}  → KILL SWITCH: block ALL grants until verification works
-var KeyMyketToken   = "myket_iap_token";
-var KeyIapStrict    = "iap_strict";
-var MyketPackageName = "com.goodvillains.DiceWar";
-
-function getMyketApiToken(nakama) {
-    try {
-        var recs = nakama.storageRead([{ collection: CollectionConfig, key: KeyMyketToken, userId: SystemUserId }]);
-        if (recs.length === 0 || !recs[0].value) return "";
-        return recs[0].value.token || "";
-    } catch (e) { return ""; }
+var PaymentCollection = "payment";
+var MarketplaceHttpTimeoutMs = 5000;
+var MyketValidationBaseUrl = "https://developer.myket.ir/api/applications";
+var CafeBazaarValidationBaseUrl = "https://pardakht.cafebazaar.ir/devapi/v2/api/validate";
+function normalizePaymentStore(rawStore) {
+    var value = (rawStore || "myket").toLowerCase().replace(/[-_\s]/g, "");
+    if (value === "myket")
+        return "myket";
+    if (value === "bazaar" || value === "cafebazaar")
+        return "cafebazaar";
+    return null;
 }
-function isIapStrict(nakama) {
-    try {
-        var recs = nakama.storageRead([{ collection: CollectionConfig, key: KeyIapStrict, userId: SystemUserId }]);
-        return recs.length > 0 && recs[0].value && recs[0].value.enabled === true;
-    } catch (e) { return false; }
-}
-// Returns true ONLY if Myket confirms the token is a genuine, purchased transaction.
-// Endpoint + X-Access-Token header + purchaseState=0 check verified against Myket official docs:
-// GET developer.myket.ir/api/applications/{pkg}/purchases/products/{sku}/tokens/{token}
-function verifyWithMyket(nakama, logger, productId, token, apiToken) {
-    var url = "https://developer.myket.ir/api/applications/" + MyketPackageName +
-        "/purchases/products/" + encodeURIComponent(productId) + "/tokens/" + encodeURIComponent(token);
-    try {
-        var res = nakama.httpRequest(url, "get",
-            { "X-Access-Token": apiToken, "Accept": "application/json" }, null, 5000);
-        if (!res || res.code !== 200) {
-            logger.warn("[IAP] Myket verify HTTP " + (res ? res.code : "n/a") + " body=" + (res ? res.body : ""));
-            return false;
-        }
-        var data = JSON.parse(res.body || "{}");
-        // Myket mirrors the Google Play Developer API: purchaseState 0 = purchased.
-        return !!data && (data.purchaseState === 0 || data.purchaseState === "0");
-    } catch (e) {
-        logger.warn("[IAP] Myket verify error: " + e);
-        return false;
+function envFirst(context, keys) {
+    for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
+        var key = keys_1[_i];
+        var value = context.env[key];
+        if (value && value.length > 0)
+            return value;
     }
+    return "";
 }
-
+function parseJsonObject(json) {
+    if (!json || json.length === 0)
+        return null;
+    try {
+        var parsed = JSON.parse(json);
+        if (parsed && typeof parsed === "object")
+            return parsed;
+    }
+    catch (e) { }
+    return null;
+}
+function stringField(value) {
+    if (value === null || value === undefined)
+        return "";
+    return String(value);
+}
+function numberField(value, fallback) {
+    if (value === null || value === undefined || value === "")
+        return fallback;
+    var parsed = Number(value);
+    return isNaN(parsed) ? fallback : parsed;
+}
+function getInputDeveloperPayload(input) {
+    if (input.developerPayload && input.developerPayload.length > 0)
+        return input.developerPayload;
+    var purchaseJson = parseJsonObject(input.originalJson);
+    if (!purchaseJson)
+        return "";
+    return stringField(purchaseJson["developerPayload"] || purchaseJson["payload"]);
+}
+function getInputPackageName(input) {
+    if (input.packageName && input.packageName.length > 0)
+        return input.packageName;
+    var purchaseJson = parseJsonObject(input.originalJson);
+    return purchaseJson ? stringField(purchaseJson["packageName"]) : "";
+}
+function getMarketplacePackageName(context, store, input) {
+    var envPackage = store === "cafebazaar"
+        ? envFirst(context, ["CAFEBAZAAR_PACKAGE_NAME", "BAZAAR_PACKAGE_NAME", "APP_PACKAGE_NAME"])
+        : envFirst(context, ["MYKET_PACKAGE_NAME", "APP_PACKAGE_NAME"]);
+    var inputPackage = getInputPackageName(input);
+    var packageName = envPackage || inputPackage;
+    if (!packageName)
+        return { packageName: "", error: "Missing package name config" };
+    if (envPackage && inputPackage && envPackage !== inputPackage)
+        return { packageName: packageName, error: "Package name mismatch" };
+    return { packageName: packageName, error: "" };
+}
+function httpGetJson(nakama, url, headers) {
+    var response = nakama.httpRequest(url, "get", headers, undefined, MarketplaceHttpTimeoutMs);
+    var raw = {};
+    if (response.body && response.body.length > 0) {
+        try {
+            raw = JSON.parse(response.body);
+        }
+        catch (e) {
+            return { code: response.code, raw: response.body, error: "Invalid marketplace JSON response" };
+        }
+    }
+    if (response.code < 200 || response.code >= 300)
+        return { code: response.code, raw: raw, error: marketplaceError(raw, response.code) };
+    return { code: response.code, raw: raw, error: "" };
+}
+function marketplaceError(raw, code) {
+    if (raw && typeof raw === "object") {
+        var error = stringField(raw["error"]);
+        var description = stringField(raw["error_description"] || raw["error_desciption"]);
+        if (error || description)
+            return ("Marketplace validation failed (" + code + "): " + error + " " + description).trim();
+    }
+    return "Marketplace validation failed: HTTP " + code;
+}
+function validateCafeBazaarPurchase(context, nakama, input) {
+    var token = envFirst(context, ["CAFEBAZAAR_PISHKHAN_API_SECRET", "BAZAAR_PISHKHAN_API_SECRET", "CAFEBAZAAR_API_SECRET"]);
+    var packageResult = getMarketplacePackageName(context, "cafebazaar", input);
+    if (!token)
+        return invalidValidation("cafebazaar", packageResult.packageName, "Missing CAFEBAZAAR_PISHKHAN_API_SECRET", 0, {});
+    if (packageResult.error)
+        return invalidValidation("cafebazaar", packageResult.packageName, packageResult.error, 0, {});
+    var url = CafeBazaarValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/inapp/" + encodeURIComponent(input.productId || "") + "/purchases/" + encodeURIComponent(input.purchaseToken || "") + "/";
+    var response = httpGetJson(nakama, url, {
+        "Accept": "application/json",
+        "CAFEBAZAAR-PISHKHAN-API-SECRET": token,
+    });
+    if (response.error)
+        return invalidValidation("cafebazaar", packageResult.packageName, response.error, response.code, response.raw);
+    var purchaseState = numberField(response.raw["purchaseState"], -1);
+    var consumptionState = numberField(response.raw["consumptionState"], -1);
+    if (purchaseState !== 0)
+        return invalidValidation("cafebazaar", packageResult.packageName, "Purchase is not successful", response.code, response.raw);
+    return {
+        valid: true,
+        store: "cafebazaar",
+        packageName: packageResult.packageName,
+        responseCode: response.code,
+        raw: response.raw,
+        developerPayload: stringField(response.raw["developerPayload"]),
+        purchaseTime: numberField(response.raw["purchaseTime"], 0),
+        purchaseState: purchaseState,
+        consumptionState: consumptionState,
+        error: "",
+    };
+}
+function validateMyketPurchase(context, nakama, input) {
+    var token = envFirst(context, ["MYKET_ACCESS_TOKEN", "MYKET_API_TOKEN"]);
+    var packageResult = getMarketplacePackageName(context, "myket", input);
+    if (!token)
+        return invalidValidation("myket", packageResult.packageName, "Missing MYKET_ACCESS_TOKEN", 0, {});
+    if (packageResult.error)
+        return invalidValidation("myket", packageResult.packageName, packageResult.error, 0, {});
+    var url = MyketValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/purchases/products/" + encodeURIComponent(input.productId || "") + "/tokens/" + encodeURIComponent(input.purchaseToken || "");
+    var response = httpGetJson(nakama, url, {
+        "Accept": "application/json",
+        "X-Access-Token": token,
+    });
+    if (response.error)
+        return invalidValidation("myket", packageResult.packageName, response.error, response.code, response.raw);
+    var purchaseState = numberField(response.raw["purchaseState"], -1);
+    var consumptionState = numberField(response.raw["consumptionState"], -1);
+    if (purchaseState !== 0)
+        return invalidValidation("myket", packageResult.packageName, "Purchase is not successful", response.code, response.raw);
+    return {
+        valid: true,
+        store: "myket",
+        packageName: packageResult.packageName,
+        responseCode: response.code,
+        raw: response.raw,
+        developerPayload: stringField(response.raw["developerPayload"]),
+        purchaseTime: numberField(response.raw["purchaseTime"], 0),
+        purchaseState: purchaseState,
+        consumptionState: consumptionState,
+        error: "",
+    };
+}
+function invalidValidation(store, packageName, error, responseCode, raw) {
+    return {
+        valid: false,
+        store: store,
+        packageName: packageName,
+        responseCode: responseCode,
+        raw: raw,
+        developerPayload: "",
+        purchaseTime: 0,
+        purchaseState: -1,
+        consumptionState: -1,
+        error: error,
+    };
+}
+function validateDeveloperPayload(userId, input, marketplacePayload) {
+    var inputPayload = getInputDeveloperPayload(input);
+    if (inputPayload && marketplacePayload && inputPayload !== marketplacePayload)
+        return "Developer payload mismatch";
+    var payload = parseJsonObject(inputPayload || marketplacePayload);
+    if (!payload)
+        return "";
+    var payloadUserId = stringField(payload["userId"]);
+    var payloadProductId = stringField(payload["productId"]);
+    if (payloadUserId && payloadUserId !== userId)
+        return "Developer payload user mismatch";
+    if (payloadProductId && payloadProductId !== input.productId)
+        return "Developer payload product mismatch";
+    return "";
+}
+function paymentStorageKey(nakama, store, input) {
+    var source = input.orderId && input.orderId.length > 0 ? input.orderId : (input.purchaseToken || "");
+    return store + "_" + nakama.sha256Hash(source);
+}
 var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
-    if (!userId) throw new Error("Not authenticated");
-
-    var input = {};
-    try { input = JSON.parse(payload || "{}"); } catch (e) { return JSON.stringify({ success: false, error: "Bad payload" }); }
-    var productId = (input.productId || "").trim();
-    var token     = (input.purchaseToken || "").trim();
-    var orderId   = (input.orderId || "").trim();
-
-    var coins = COIN_PACKS[productId];
-    if (!coins) return JSON.stringify({ success: false, error: "Unknown product: " + productId });
-
-    // A genuine Myket purchase ALWAYS carries a token. Reject token-less calls — this alone
-    // blocks the trivial "just send {productId}" exploit.
-    if (!token) {
-        logger.warn("[IAP] REJECT no-token user=" + userId + " product=" + productId);
-        return JSON.stringify({ success: false, error: "Missing purchase token" });
-    }
-
-    // Idempotency — one grant per purchase. Blocks replaying the same token/order for more coins.
-    var dedupKey = "iap_" + (orderId || token);
-    if (nakama.storageRead([{ collection: "payment", key: dedupKey, userId: userId }]).length > 0) {
-        logger.warn("[IAP] REJECT duplicate user=" + userId + " key=" + dedupKey);
+    if (!userId)
+        throw new Error("Not authenticated");
+    var input = JSON.parse(payload || "{}");
+    var store = normalizePaymentStore(input.store);
+    if (!store)
+        return JSON.stringify({ success: false, error: "Unknown store: " + input.store });
+    if (!input.productId || !input.purchaseToken)
+        return JSON.stringify({ success: false, error: "Missing purchase data" });
+    var coins = COIN_PACKS[input.productId];
+    if (!coins)
+        return JSON.stringify({ success: false, error: "Unknown product: " + input.productId });
+    var storageKey = paymentStorageKey(nakama, store, input);
+    // Idempotency — reject duplicate tokens
+    var existingReads = [
+        { collection: PaymentCollection, key: storageKey, userId: SystemUserId },
+    ];
+    var legacyKey = (input.orderId && input.orderId.length > 0) ? input.orderId : "";
+    if (legacyKey && legacyKey.length <= 128)
+        existingReads.push({ collection: PaymentCollection, key: legacyKey, userId: userId });
+    var existing = nakama.storageRead(existingReads);
+    if (existing.length > 0)
         return JSON.stringify({ success: false, error: "Already processed" });
+    var validation = store === "cafebazaar"
+        ? validateCafeBazaarPurchase(context, nakama, input)
+        : validateMyketPurchase(context, nakama, input);
+    if (!validation.valid) {
+        logger.warn("IAP validation failed: userId=" + userId + " store=" + store + " product=" + input.productId + " error=" + validation.error);
+        return JSON.stringify({ success: false, error: validation.error || "Invalid purchase" });
     }
-
-    // Authoritative verification with Myket when configured; otherwise honour the kill switch.
-    var apiToken = getMyketApiToken(nakama);
-    if (apiToken) {
-        if (!verifyWithMyket(nakama, logger, productId, token, apiToken)) {
-            logger.warn("[IAP] REJECT unverified user=" + userId + " product=" + productId + " token=" + token);
-            return JSON.stringify({ success: false, error: "Purchase verification failed" });
-        }
-    } else if (isIapStrict(nakama)) {
-        logger.error("[IAP] STRICT and no Myket token configured — rejecting. Set config/" + KeyMyketToken + ".");
-        return JSON.stringify({ success: false, error: "Server verification unavailable" });
-    } else {
-        logger.warn("[IAP] GRANTING WITHOUT server verification — set config/" + KeyMyketToken +
-            " to fully close fraud. user=" + userId + " product=" + productId);
+    var payloadError = validateDeveloperPayload(userId, input, validation.developerPayload);
+    if (payloadError) {
+        logger.warn("IAP payload validation failed: userId=" + userId + " store=" + store + " product=" + input.productId + " error=" + payloadError);
+        return JSON.stringify({ success: false, error: payloadError });
     }
-
+    // Log payment record
     nakama.storageWrite([{
-        collection: "payment", key: dedupKey, userId: userId,
-        value: { productId: productId, orderId: orderId, token: token, coins: coins, ts: Date.now(), verified: !!apiToken },
-        permissionRead: 1, permissionWrite: 0,
-    }]);
-    nakama.walletUpdate(userId, { coins: coins }, { source: "iap", productId: productId, orderId: orderId }, true);
-    logger.info("[IAP] GRANTED coins=" + coins + " user=" + userId + " product=" + productId + " verified=" + (!!apiToken));
+            collection: PaymentCollection,
+            key: storageKey,
+            userId: SystemUserId,
+            value: {
+                store: store,
+                userId: userId,
+                packageName: validation.packageName,
+                productId: input.productId,
+                purchaseToken: input.purchaseToken,
+                orderId: input.orderId,
+                purchaseState: validation.purchaseState,
+                purchaseTime: validation.purchaseTime,
+                consumptionState: validation.consumptionState,
+                developerPayload: validation.developerPayload || getInputDeveloperPayload(input),
+                dataSignature: input.dataSignature,
+                originalJson: input.originalJson,
+                validation: validation.raw,
+                coinsAwarded: coins,
+                timestamp: Date.now(),
+            },
+            permissionRead: 0,
+            permissionWrite: 0,
+        }]);
+    // Award coins
+    nakama.walletUpdate(userId, { coins: coins }, { source: "iap", store: store, productId: input.productId, orderId: input.orderId }, true);
+    logger.info("IAP purchase: userId=" + userId + " store=" + store + " product=" + input.productId + " coins=" + coins);
     return JSON.stringify({ success: true, coinsAwarded: coins });
-};
-// ─── Add Coins (direct grant after confirmed IAP) ─────────────────────────────
-// DISABLED (critical security): this granted arbitrary client-supplied coin amounts with no
-// verification. Unregistered in InitModule and hard-rejected here in case anything still calls it.
-var addCoinsRpc = function (context, logger, nakama, payload) {
-    logger.warn("[AddCoins] BLOCKED — insecure RPC permanently disabled. userId=" + (context && context.userId));
-    return JSON.stringify({ success: false, error: "Disabled" });
-};
-// ─── Chest Reward System ──────────────────────────────────────────────────────
-var CHEST_COOLDOWN_SEC = 3 * 60 * 60; // 3 hours
-// Reward table — weights sum to 100
-var CHEST_REWARDS = [
-    { coins: 50,   weight: 38 },
-    { coins: 100,  weight: 25 },
-    { coins: 200,  weight: 17 },
-    { coins: 300,  weight: 10 },
-    { coins: 500,  weight: 6  },
-    { coins: 750,  weight: 3  },
-    { coins: 1000, weight: 1  },
-];
-function rollChest() {
-    var roll = Math.random() * 100;
-    var cumulative = 0;
-    for (var i = 0; i < CHEST_REWARDS.length; i++) {
-        cumulative += CHEST_REWARDS[i].weight;
-        if (roll < cumulative) return CHEST_REWARDS[i].coins;
-    }
-    return 50;
-}
-var getChestStatusRpc = function (context, logger, nakama, payload) {
-    var userId = context.userId;
-    if (!userId) throw new Error("Not authenticated");
-    var now = Date.now();
-    var records = nakama.storageRead([{ collection: "chest", key: "last_claim", userId: userId }]);
-    var lastClaimAt = records.length > 0 ? (records[0].value.lastClaimAt || 0) : 0;
-    var elapsed = now - lastClaimAt;
-    var cooldownMs = CHEST_COOLDOWN_SEC * 1000;
-    var remainingSec = elapsed >= cooldownMs ? 0 : Math.ceil((cooldownMs - elapsed) / 1000);
-    return JSON.stringify({ remainingSeconds: remainingSec, ready: remainingSec <= 0 });
-};
-var claimChestRpc = function (context, logger, nakama, payload) {
-    var userId = context.userId;
-    if (!userId) throw new Error("Not authenticated");
-    var now = Date.now();
-    var cooldownMs = CHEST_COOLDOWN_SEC * 1000;
-    var records = nakama.storageRead([{ collection: "chest", key: "last_claim", userId: userId }]);
-    var lastClaimAt = records.length > 0 ? (records[0].value.lastClaimAt || 0) : 0;
-    var elapsed = now - lastClaimAt;
-    if (elapsed < cooldownMs) {
-        var remainingSec = Math.ceil((cooldownMs - elapsed) / 1000);
-        return JSON.stringify({ success: false, error: "not_ready", remainingSeconds: remainingSec });
-    }
-    var coins = rollChest();
-    nakama.walletUpdate(userId, { coins: coins }, { source: "chest" }, true);
-    nakama.storageWrite([{
-        collection: "chest",
-        key: "last_claim",
-        userId: userId,
-        value: { lastClaimAt: now, lastReward: coins },
-        permissionRead: 1,
-        permissionWrite: 0,
-    }]);
-    logger.info("[Chest] userId=" + userId + " won=" + coins + " coins");
-    return JSON.stringify({ success: true, coinsAwarded: coins, remainingSeconds: CHEST_COOLDOWN_SEC });
 };
 // ─── Force Update ─────────────────────────────────────────────────────────────
 // Returns { requiredVersion, updateUrl } stored under the system config collection.
@@ -588,192 +654,6 @@ var getAppVersionRpc = function (context, logger, nakama, payload) {
         return JSON.stringify({ requiredVersion: "", updateUrl: "" });
     }
     return JSON.stringify(stored[0].value);
-};
-// ─── Chat config (global admin kill switch) ───────────────────────────────────
-// Returns { enabled } stored under the system config collection.
-// Admin toggles via Nakama console → Storage → collection "config", key "chat_enabled",
-// user 00000000-0000-0000-0000-000000000000, value {"enabled": false} to disable chat globally.
-var getChatConfigRpc = function (context, logger, nakama, payload) {
-    var stored = nakama.storageRead([
-        { collection: CollectionConfig, key: KeyChatEnabled, userId: SystemUserId },
-    ]);
-    if (stored.length === 0) {
-        // Default: chat enabled
-        return JSON.stringify({ enabled: true });
-    }
-    return JSON.stringify(stored[0].value);
-};
-// Server-side authoritative check used by the chat relay.
-function isChatEnabled(nakama) {
-    try {
-        var stored = nakama.storageRead([
-            { collection: CollectionConfig, key: KeyChatEnabled, userId: SystemUserId },
-        ]);
-        if (stored.length === 0)
-            return true; // default-on if unseeded
-        return stored[0].value.enabled !== false;
-    }
-    catch (e) {
-        return true;
-    }
-}
-// ─── Admin analytics ──────────────────────────────────────────────────────────
-// Call from Nakama Console → API Explorer → Run RPC "AdminStatsRpc" (leave user blank),
-// or via HTTP with the server http_key. Optional payload: {"days":7,"secret":"..."}.
-// Reads the DB directly (sqlQuery) to summarise user behaviour, economy, IAP and fraud signals.
-var adminStatsRpc = function (context, logger, nakama, payload) {
-    var input = {};
-    try { input = JSON.parse(payload || "{}"); } catch (e) {}
-
-    // Admin-only: console/server calls have no userId. A player session is rejected unless it
-    // carries the configured admin secret (config → key "admin_secret" value {"secret":"..."}).
-    var allowed = !context.userId;
-    if (!allowed) {
-        try {
-            var sec = nakama.storageRead([{ collection: CollectionConfig, key: "admin_secret", userId: SystemUserId }]);
-            if (sec.length && sec[0].value && input.secret && input.secret === sec[0].value.secret) allowed = true;
-        } catch (e) {}
-    }
-    if (!allowed) return JSON.stringify({ error: "Admin only" });
-
-    var days = parseInt(input.days, 10);
-    if (!days || days <= 0 || days > 365) days = 7;
-    var WIN = "INTERVAL '" + days + " days'"; // days is a validated int — safe to inline
-    var SYS = "'00000000-0000-0000-0000-000000000000'";
-
-    function q(sql) {
-        try { return { ok: true, rows: nakama.sqlQuery(sql, []) }; }
-        catch (e) { return { ok: false, error: String(e) }; }
-    }
-    function num(res, col) {
-        if (!res.ok || !res.rows || res.rows.length === 0) return 0;
-        var n = parseInt(res.rows[0][col], 10);
-        return isNaN(n) ? 0 : n;
-    }
-
-    var report = { generatedAt: new Date().toISOString(), windowDays: days };
-
-    report.users = {
-        total:          num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS), "n"),
-        newToday:       num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND create_time > now() - INTERVAL '1 day'"), "n"),
-        newInWindow:    num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND create_time > now() - " + WIN), "n"),
-        activeInWindow: num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND update_time > now() - " + WIN), "n"),
-        activeToday:    num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND update_time > now() - INTERVAL '1 day'"), "n"),
-    };
-
-    var econ = q("SELECT coalesce(metadata->>'source','(none)') AS source, count(*)::int AS n, " +
-        "coalesce(sum((changeset->>'coins')::int),0)::int AS coins FROM wallet_ledger GROUP BY 1 ORDER BY 3 DESC");
-    report.economy = {
-        coinsInWallets: num(q("SELECT coalesce(sum((wallet->>'coins')::int),0)::int AS n FROM users"), "n"),
-        bySource: econ.ok ? econ.rows : [],
-        error: econ.ok ? undefined : econ.error,
-    };
-
-    var iapTot = q("SELECT count(*)::int AS n, coalesce(sum((changeset->>'coins')::int),0)::int AS coins, " +
-        "count(DISTINCT user_id)::int AS buyers FROM wallet_ledger WHERE metadata->>'source'='iap'");
-    var byProduct = q("SELECT coalesce(metadata->>'productId','?') AS product, count(*)::int AS n, " +
-        "coalesce(sum((changeset->>'coins')::int),0)::int AS coins FROM wallet_ledger WHERE metadata->>'source'='iap' GROUP BY 1 ORDER BY 2 DESC");
-    report.iap = {
-        totalGrants:      num(iapTot, "n"),
-        totalCoinsSold:   num(iapTot, "coins"),
-        uniqueBuyers:     num(iapTot, "buyers"),
-        unverifiedGrants: num(q("SELECT count(*)::int AS n FROM storage WHERE collection='payment' AND value->>'verified'='false'"), "n"),
-        byProduct: byProduct.ok ? byProduct.rows : [],
-    };
-
-    var topBuyers = q("SELECT user_id, count(*)::int AS grants, coalesce(sum((changeset->>'coins')::int),0)::int AS coins " +
-        "FROM wallet_ledger WHERE metadata->>'source'='iap' GROUP BY user_id ORDER BY 2 DESC LIMIT 15");
-    var fast = q("SELECT l.user_id, count(*)::int AS grants FROM wallet_ledger l JOIN users u ON u.id = l.user_id " +
-        "WHERE l.metadata->>'source'='iap' AND l.create_time < u.create_time + INTERVAL '5 minutes' " +
-        "GROUP BY l.user_id HAVING count(*) >= 2 ORDER BY 2 DESC LIMIT 15");
-    report.fraudSignals = {
-        note: "Purchase records exist only AFTER the IAP security fix was deployed.",
-        topBuyers: topBuyers.ok ? topBuyers.rows : [],
-        manyPurchasesWithin5minOfSignup: fast.ok ? fast.rows : [],
-    };
-
-    report.engagement = {
-        profiles:          num(q("SELECT count(*)::int AS n FROM storage WHERE collection='Profile'"), "n"),
-        entryFeeCharges:   num(q("SELECT count(*)::int AS n FROM wallet_ledger WHERE metadata->>'source'='entry_fee'"), "n"),
-        chestClaimers:     num(q("SELECT count(DISTINCT user_id)::int AS n FROM wallet_ledger WHERE metadata->>'source'='chest'"), "n"),
-        cardOwners:        num(q("SELECT count(*)::int AS n FROM storage WHERE collection='Cards'"), "n"),
-    };
-
-    // Per-mode play volume — answers "most played game mode". The mode is recorded on each
-    // entry-fee ledger entry as metadata.league (one row per real-player match join).
-    // NOTE: code mode "ThreeByThree" is actually the 4x4 "FourByFour" scene — labels disambiguate.
-    var MODE_LABELS = {
-        "ThreeByThree":          "FourByFour 4x4 (Showdown)",
-        "FourByThree":           "FourByThree 4x3 (Dicepunk)",
-        "VerticalAndHorizontal": "VerticalAndHorizontal 3x3 (Dice Master)",
-    };
-    function labelMode(m) { return MODE_LABELS[m] || m; }
-    var modeAll = q("SELECT coalesce(metadata->>'league','(unknown)') AS mode, count(*)::int AS matches, " +
-        "count(DISTINCT user_id)::int AS players FROM wallet_ledger WHERE metadata->>'source'='entry_fee' GROUP BY 1 ORDER BY 2 DESC");
-    var modeWin = q("SELECT coalesce(metadata->>'league','(unknown)') AS mode, count(*)::int AS matches " +
-        "FROM wallet_ledger WHERE metadata->>'source'='entry_fee' AND create_time > now() - " + WIN + " GROUP BY 1 ORDER BY 2 DESC");
-    if (modeAll.ok) for (var mi = 0; mi < modeAll.rows.length; mi++) modeAll.rows[mi].label = labelMode(modeAll.rows[mi].mode);
-    if (modeWin.ok) for (var mj = 0; mj < modeWin.rows.length; mj++) modeWin.rows[mj].label = labelMode(modeWin.rows[mj].mode);
-    report.gameModes = {
-        note: "Match volume per mode from entry-fee charges. Code mode 'ThreeByThree' = the 4x4 FourByFour scene.",
-        mostPlayedAllTime:  (modeAll.ok && modeAll.rows.length) ? labelMode(modeAll.rows[0].mode) : null,
-        mostPlayedInWindow: (modeWin.ok && modeWin.rows.length) ? labelMode(modeWin.rows[0].mode) : null,
-        breakdownAllTime:   modeAll.ok ? modeAll.rows : [],
-        breakdownInWindow:  modeWin.ok ? modeWin.rows : [],
-        error: modeAll.ok ? undefined : modeAll.error,
-    };
-
-    logger.info("[AdminStats] generated windowDays=" + days);
-    return JSON.stringify(report);
-};
-
-// ─── Admin: set a global config value ─────────────────────────────────────────
-// Stores under collection "config" / SystemUserId. Use for: myket_iap_token,
-// iap_strict, chat_enabled, admin_secret, app_version.
-// Call from Nakama Console → API Explorer → Run RPC "SetConfigRpc" (leave user blank).
-//   {"key":"myket_iap_token","value":{"token":"<X-Access-Token>"}}
-//   {"key":"iap_strict","value":{"enabled":true}}
-var setConfigRpc = function (context, logger, nakama, payload) {
-    var input = {};
-    try { input = JSON.parse(payload || "{}"); } catch (e) { return JSON.stringify({ error: "Bad payload" }); }
-
-    var allowed = !context.userId; // console/server calls have no userId
-    if (!allowed) {
-        try {
-            var sec = nakama.storageRead([{ collection: CollectionConfig, key: "admin_secret", userId: SystemUserId }]);
-            if (sec.length && sec[0].value && input.secret && input.secret === sec[0].value.secret) allowed = true;
-        } catch (e) {}
-    }
-    if (!allowed) return JSON.stringify({ error: "Admin only" });
-
-    var key = (input.key || "").trim();
-    if (!key) return JSON.stringify({ error: "Missing 'key'" });
-    if (input.value === undefined || input.value === null) return JSON.stringify({ error: "Missing 'value'" });
-
-    nakama.storageWrite([{
-        collection: CollectionConfig, key: key, userId: SystemUserId,
-        value: input.value, permissionRead: 2, permissionWrite: 0,
-    }]);
-    logger.info("[SetConfig] admin set config key=" + key);
-    return JSON.stringify({ success: true, key: key, value: input.value });
-};
-// Diagnostic: send a message into a Room channel server-side to prove channel messaging works.
-// Call from API Explorer (user blank): RPC "TestChatRpc". Then check the "message" DB table.
-var TestChatRpc = function (context, logger, nakama, payload) {
-    try {
-        var input = {};
-        try { input = JSON.parse(payload || "{}"); } catch (e) {}
-        var room = (input.room || "testroom");
-        var senderId = input.senderId || context.userId;
-        var channelId = nakama.channelIdBuild(senderId, room, 1 /* Room */);
-        var ack = nakama.channelMessageSend(channelId, { text: "server-side test", kind: "free" },
-            senderId, "tester", true);
-        logger.info("[TestChat] sent to channelId=" + channelId);
-        return JSON.stringify({ ok: true, room: room, channelId: channelId, ack: ack });
-    } catch (e) {
-        logger.warn("[TestChat] failed: " + e);
-        return JSON.stringify({ ok: false, error: String(e) });
-    }
 };
 function CreateLeaderboards(context, logger, nakama) {
     var configs = [
@@ -792,15 +672,6 @@ function CreateLeaderboards(context, logger, nakama) {
         }
     }
 }
-// ─── Reconnection Grace Period ────────────────────────────────────────────────
-var GraceSeconds   = 20;
-// مهم: TickRate در پایین فایل تعریف شده. اگه اینجا GraceSeconds * TickRate بنویسیم،
-// TickRate هنوز undefined هست (var hoisting) و GraceTicks = NaN میشه.
-// عدد رو direct بذار (یا inline حساب کن در هر بار استفاده).
-var GraceTicks     = 20 * 16;   // 320 ticks @ 16 TPS
-var OpCodeDisconnected  = 11;   // → client: show countdown popup, pause turn timer
-var OpCodeReconnected   = 12;   // → client: hide popup, resume turn timer
-var OpCodeDisconnectWin = 13;   // → client: show "you win" (opponent timed out)
 // ─── Match Lifecycle ──────────────────────────────────────────────────────────
 var matchInit = function (context, logger, nakama, params) {
     var value = "";
@@ -822,7 +693,6 @@ var matchInit = function (context, logger, nakama, params) {
         hasBot: false, botDifficulty: 0, botNeedsToMove: false, botThinkTick: 0,
         isTutorial: params.tutorial === "true",
         tutorialBotMoveIndex: 0,
-        disconnectedPlayers: {},   // userId → { playerNum, graceTick, player }
     };
     return { state: gameState, tickRate: TickRate, label: JSON.stringify(label) };
 };
@@ -846,12 +716,8 @@ function buildGrids(mode) {
 // ─── Join ─────────────────────────────────────────────────────────────────────
 var matchJoinAttempt = function (context, logger, nakama, dispatcher, tick, state, presence, metadata) {
     var gameState = state;
-    if (gameState.scene !== 3 /* Lobby */) {
-        // Allow reconnection if this userId has an active grace period
-        var isReconnecting = gameState.disconnectedPlayers && gameState.disconnectedPlayers[presence.userId];
-        if (!isReconnecting)
-            return { state: gameState, accept: false };
-    }
+    if (gameState.scene !== 3 /* Lobby */)
+        return { state: gameState, accept: false };
     // Tutorial mode: skip entry fee check entirely
     if (!gameState.isTutorial) {
         var league = LEAGUES[gameState.ModeText];
@@ -874,25 +740,8 @@ var matchJoinAttempt = function (context, logger, nakama, dispatcher, tick, stat
 };
 var matchJoin = function (context, logger, nakama, dispatcher, tick, state, presences) {
     var gameState = state;
-    // ── Reconnection path (Battle scene) ─────────────────────────────────────
-    if (gameState.scene !== 3 /* Lobby */) {
-        for (var _r = 0; _r < presences.length; _r++) {
-            var presence = presences[_r];
-            var grace = gameState.disconnectedPlayers && gameState.disconnectedPlayers[presence.userId];
-            if (!grace) continue;
-            // Restore player with the new session
-            var slot = grace.playerNum;
-            gameState.players[slot] = grace.player;
-            gameState.players[slot].presence = presence;   // new sessionId
-            delete gameState.disconnectedPlayers[presence.userId];
-            logger.info("Player reconnected: userId=" + presence.userId + " slot=" + slot);
-            // Tell the remaining player: opponent is back
-            dispatcher.broadcastMessage(OpCodeReconnected, JSON.stringify({ userId: presence.userId }));
-            // Re-send Players list so reconnected client knows game state
-            dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players));
-        }
+    if (gameState.scene !== 3 /* Lobby */)
         return { state: gameState };
-    }
     var existingPresences = [];
     gameState.players.forEach(function (p) { if (p && !p.isBot)
         existingPresences.push(p.presence); });
@@ -914,18 +763,9 @@ var matchJoin = function (context, logger, nakama, dispatcher, tick, state, pres
                 }
             }
         }
-        var avatarId = "avatar_0";
-        try {
-            var profileObjects = nakama.storageRead([{ collection: "Profile", key: "profile_data", userId: presence.userId }]);
-            if (profileObjects.length > 0 && profileObjects[0].value && profileObjects[0].value.avatarId)
-                avatarId = profileObjects[0].value.avatarId;
-            logger.info("matchJoin avatarId resolved: userId=" + presence.userId + " avatarId=" + avatarId + " profileFound=" + (profileObjects.length > 0));
-        } catch (e) {
-            logger.warn("Could not read avatarId for " + presence.userId + ": " + e);
-        }
         var player = {
             presence: presence,
-            displayName: resolvedName, avatarId: avatarId, ScorePlayer: 0,
+            displayName: resolvedName, avatarId: "avatar_0", ScorePlayer: 0,
         };
         var slot = getNextPlayerNumber(gameState.players);
         gameState.players[slot] = player;
@@ -954,46 +794,10 @@ var matchLeave = function (context, logger, nakama, dispatcher, tick, state, pre
         var num = getPlayerNumber(gameState.players, presence.sessionId);
         if (num === PlayerNotFound)
             continue;
-        var player = gameState.players[num];
-        // ── Battle: start grace period (20s) instead of immediate win ────────
-        if (gameState.scene === 4 /* Battle */ && !player.isBot && !gameState.BeforeEndGame) {
-            // Save player snapshot so they can reconnect within grace
-            if (!gameState.disconnectedPlayers) gameState.disconnectedPlayers = {};
-            gameState.disconnectedPlayers[presence.userId] = {
-                playerNum: num,
-                graceTick: GraceTicks,
-                player: player,
-            };
-            // Remove from active players so turn logic doesn't include them
-            delete gameState.players[num];
-            logger.info("Player disconnected — grace period started: userId=" + presence.userId + " seconds=" + GraceSeconds);
-            // Notify the remaining player immediately with full countdown
-            dispatcher.broadcastMessage(OpCodeDisconnected, JSON.stringify({
-                userId: presence.userId,
-                remainingSeconds: GraceSeconds,
-            }));
-        } else {
-            // Normal leave (lobby, results, or game already ending)
-            // Refund the entry fee if the player cancels during the LOBBY (the battle never started).
-            // The fee is charged in matchJoin, so without this a matchmaking-cancel silently loses coins.
-            if (gameState.scene === 3 /* Lobby */ && !player.isBot && !gameState.isTutorial) {
-                var refundLeague = LEAGUES[gameState.ModeText];
-                if (refundLeague) {
-                    try {
-                        nakama.walletUpdate(presence.userId, { coins: refundLeague.entryFee },
-                            { source: "entry_fee_refund", league: gameState.ModeText }, true);
-                        logger.info("Entry fee refunded on lobby cancel: userId=" + presence.userId + " coins=" + refundLeague.entryFee);
-                    }
-                    catch (e) {
-                        logger.warn("Entry fee refund failed for " + presence.userId + ": " + e);
-                    }
-                }
-            }
-            var name_1 = JSON.stringify(gameState.players[num].displayName);
-            if (!gameState.BeforeEndGame)
-                dispatcher.broadcastMessage(9, name_1);
-            delete gameState.players[num];
-        }
+        var name_1 = JSON.stringify(gameState.players[num].displayName);
+        if (!gameState.BeforeEndGame)
+            dispatcher.broadcastMessage(9, name_1);
+        delete gameState.players[num];
     }
     return { state: gameState };
 };
@@ -1048,34 +852,19 @@ function startBattle(gameState, dispatcher) {
     dispatcher.matchLabelUpdate(JSON.stringify({ open: false }));
 }
 function addBotAndStartBattle(gameState, dispatcher, logger) {
-    // پیدا کردن slot بازیکن واقعی (ممکنه slot 0 خالی باشه اگه disconnect شده)
-    var realSlot = -1;
-    for (var i = 0; i < gameState.players.length; i++) {
-        if (gameState.players[i] && !gameState.players[i].isBot) {
-            realSlot = i;
-            break;
-        }
-    }
-    if (realSlot === -1) {
-        logger.warn("addBotAndStartBattle: هیچ بازیکن واقعی وجود نداره — پایان مچ");
-        gameState.endMatch = true;
-        return;
-    }
-
-    var botSlot = realSlot === 0 ? 1 : 0;
     var botName = BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)];
     var diff = BOT_DIFFICULTIES[Math.floor(Math.random() * BOT_DIFFICULTIES.length)];
     var botPresence = {
         userId: "bot_" + generateId(), sessionId: "bot_" + generateId(),
         username: botName, node: "server", status: "",
     };
-    gameState.players[botSlot] = { presence: botPresence, displayName: botName, avatarId: "avatar_0", ScorePlayer: 0, isBot: true };
-    gameState.playersWins[botSlot] = 0;
+    gameState.players[1] = { presence: botPresence, displayName: botName, avatarId: "avatar_0", ScorePlayer: 0, isBot: true };
+    gameState.playersWins[1] = 0;
     gameState.hasBot = true;
     gameState.botDifficulty = diff;
-    logger.info("Bot added: name=" + botName + " difficulty=" + diff + " botSlot=" + botSlot + " realSlot=" + realSlot);
+    logger.info("Bot added: name=" + botName + " difficulty=" + diff);
     dispatcher.broadcastMessage(0 /* Players */, JSON.stringify(gameState.players));
-    dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[realSlot].presence.userId));
+    dispatcher.broadcastMessage(6 /* TurnMe */, JSON.stringify(gameState.players[0].presence.userId));
     startBattle(gameState, dispatcher);
 }
 function generateId() {
@@ -1083,50 +872,6 @@ function generateId() {
 }
 // ─── Battle ───────────────────────────────────────────────────────────────────
 function matchLoopBattle(gameState, nakama, dispatcher, logger) {
-    // ── Reconnection grace period countdown ──────────────────────────────────
-    if (gameState.disconnectedPlayers) {
-        var userIds = Object.keys(gameState.disconnectedPlayers);
-        for (var gi = 0; gi < userIds.length; gi++) {
-            var userId = userIds[gi];
-            var grace = gameState.disconnectedPlayers[userId];
-            if (!grace) continue;
-            // reassign به جای mutate تا مطمئن بشیم persist میشه
-            var newTick = grace.graceTick - 1;
-            gameState.disconnectedPlayers[userId] = {
-                playerNum: grace.playerNum,
-                graceTick: newTick,
-                player: grace.player,
-            };
-            // Broadcast remaining seconds once per second
-            if (newTick > 0 && newTick % TickRate === 0) {
-                var remaining = Math.ceil(newTick / TickRate);
-                dispatcher.broadcastMessage(OpCodeDisconnected, JSON.stringify({ remainingSeconds: remaining }));
-            }
-            // Grace period expired → declare the remaining player winner
-            if (newTick <= 0) {
-                delete gameState.disconnectedPlayers[userId];
-                logger.info("Grace period expired for userId=" + userId + " — declaring winner");
-                var winner = null;
-                for (var i = 0; i < gameState.players.length; i++) {
-                    if (gameState.players[i] && !gameState.players[i].isBot) {
-                        winner = gameState.players[i];
-                        break;
-                    }
-                }
-                if (winner) {
-                    gameState.BeforeEndGame = true;
-                    logger.info("Awarding match result to winner: " + winner.presence.userId + " mode=" + gameState.ModeText);
-                    awardMatchResult(gameState, nakama, winner.presence.userId, logger);
-                    dispatcher.broadcastMessage(OpCodeDisconnectWin, JSON.stringify({ winnerUserId: winner.presence.userId }));
-                    logger.info("DisconnectWin broadcast complete for winnerId=" + winner.presence.userId);
-                } else {
-                    logger.warn("Grace expired but NO winner found in gameState.players (length=" + gameState.players.length + ")");
-                }
-                gameState.endMatch = true;
-                return;
-            }
-        }
-    }
     if (gameState.countdown > 0) {
         gameState.countdown--;
         if (gameState.countdown === 0) {
@@ -1312,18 +1057,13 @@ function awardMatchResult(gameState, nakama, winnerId, logger) {
         }
         // Lose: entry fee already deducted on join, nothing extra
     }
-    logger.info("awardMatchResult: winnerId=" + winnerId + " updates.length=" + updates.length +
-                " players.length=" + gameState.players.length);
     if (updates.length > 0) {
         try {
             nakama.walletsUpdate(updates, false);
-            logger.info("walletsUpdate succeeded: " + JSON.stringify(updates));
         }
         catch (e) {
             logger.warn("walletsUpdate failed: " + e);
         }
-    } else {
-        logger.warn("awardMatchResult: no updates to apply (winner not in gameState.players?)");
     }
 }
 // ─── Leaderboard Reset Hook ───────────────────────────────────────────────────
@@ -1383,24 +1123,6 @@ var onLeaderboardReset = function (ctx, logger, nk, leaderboard, reset) {
 function StickersManager(message, gameState, dispatcher, nakama, logger) {
     var data = JSON.parse(nakama.binaryToString(message.data));
     dispatcher.broadcastMessage(10 /* Sticker */, JSON.stringify(data));
-}
-// Relays a text chat message to everyone in the match (mirrors StickersManager, which works);
-// the receiving client ignores its own message by comparing data.ID to its own userId.
-// Gated by the global chat kill switch.
-function ChatManagerRelay(message, gameState, dispatcher, nakama, logger) {
-    if (!isChatEnabled(nakama)) {
-        logger.info("[Chat] dropped — chat disabled");
-        return;
-    }
-    var data = JSON.parse(nakama.binaryToString(message.data));
-    if (data && typeof data.Text === "string" && data.Text.length > 0) {
-        if (data.Text.length > 200)
-            data.Text = data.Text.substring(0, 200);
-        // Stamp the authentic sender id so a client cannot spoof another player's id.
-        data.ID = message.sender.userId;
-        dispatcher.broadcastMessage(14 /* Chat */, JSON.stringify(data));
-        logger.info("[Chat] relayed from=" + message.sender.userId + " text=" + data.Text);
-    }
 }
 function Rematch(message, gameState, dispatcher, nakama, logger) {
     var dataPlayer = JSON.parse(nakama.binaryToString(message.data));
@@ -1556,7 +1278,7 @@ function generateBotMove(gameState, logger) {
                     if (playerGrid[r][cell.col] === tile)
                         mineHits++;
             }
-            var moveScore = simulateTotalScore(tempBot, gameState.VerticalMode) + mineHits * 6 + Math.random() * 3;
+            var moveScore = simulateTotalScore(tempBot, gameState.VerticalMode) + mineHits * 6;
             if (moveScore > bestScore) {
                 bestScore = moveScore;
                 bestMove = { line: cell.line, col: cell.col, tile: tile };
@@ -1750,16 +1472,16 @@ var KeyTrophies = "Trophies";
 var LEAGUES = {
     "ThreeByThree": {
         displayName: "SHOWDOWN DICE",
-        entryFee: 750,
-        winnerReward: 1260,
-        drawRefund: 375,
+        entryFee: 50,
+        winnerReward: 80,
+        drawRefund: 25,
         rankPoints: 50,
     },
     "FourByThree": {
         displayName: "DICEPUNK LEAGUE",
-        entryFee: 500,
-        winnerReward: 840,
-        drawRefund: 250,
+        entryFee: 150,
+        winnerReward: 250,
+        drawRefund: 75,
         rankPoints: 120,
     },
     "VerticalAndHorizontal": {
@@ -1769,48 +1491,6 @@ var LEAGUES = {
         drawRefund: 125,
         rankPoints: 250,
     },
-};
-// ─── Contact Us ───────────────────────────────────────────────────────────────
-var CollectionContactMessages = "ContactMessages";
-// پیام کاربر رو در استورج SystemUser ذخیره می‌کنه
-var sendContactMessageRpc = function (context, logger, nakama, payload) {
-    var userId = context.userId;
-    if (!userId)
-        throw new Error("Not authenticated");
-    var data = JSON.parse(payload || "{}");
-    var subject = (data.subject || "").toString().trim().substring(0, 100);
-    var message = (data.message || "").toString().trim().substring(0, 2000);
-    if (message.length === 0)
-        throw new Error("Message cannot be empty");
-    // username رو از پروفایل بگیر
-    var username = context.username || userId;
-    var sentAt = Math.floor(Date.now() / 1000);
-    // کلید یکتا برای هر پیام: timestamp_userId
-    var key = sentAt + "_" + userId.replace(/-/g, "").substring(0, 8);
-    var entry = {
-        fromUserId: userId,
-        fromUsername: username,
-        subject: subject,
-        message: message,
-        sentAt: sentAt,
-        platform: data.platform || "mobile",
-    };
-    try {
-        nakama.storageWrite([{
-                collection: CollectionContactMessages,
-                key: key,
-                userId: SystemUserId,
-                value: entry,
-                permissionRead: 0,  // فقط سرور/ادمین می‌تونه بخونه
-                permissionWrite: 0,
-            }]);
-        logger.info("[ContactUs] message saved key=" + key + " from=" + username + "(" + userId + ")");
-        return JSON.stringify({ success: true });
-    }
-    catch (e) {
-        logger.warn("[ContactUs] storageWrite failed: " + e);
-        throw new Error("Failed to save message");
-    }
 };
 // ─── Leaderboards ─────────────────────────────────────────────────────────────
 var LeaderboardWeekly = "weekly_leaderboard";
@@ -1855,12 +1535,11 @@ var KeyPendingRewardMonthly = "pending_monthly";
 // ─── App Version (Force Update) ───────────────────────────────────────────────
 var CollectionConfig = "config";
 var KeyAppVersion = "app_version";
-var KeyChatEnabled = "chat_enabled";
 // System user ID — used to store global config readable by all authenticated users
 var SystemUserId = "00000000-0000-0000-0000-000000000000";
 // ─── Bot ──────────────────────────────────────────────────────────────────────
-var BotThinkMinTicks = TickRate * 3;
-var BotThinkMaxTicks = TickRate * 6;
+var BotThinkMinTicks = TickRate * 1;
+var BotThinkMaxTicks = TickRate * 3;
 var BOT_NAMES = [
     "Ali_K99", "Daniel_P", "Sara_GG", "xX_Cobra_Xx", "Reza_77",
     "ProGamer88", "IronWolf7", "NightStar", "Champion_K", "Shadow_X9",
@@ -1873,5 +1552,4 @@ var MessagesLogic = {
     7: ChooseTurnPlayer,
     8: Rematch,
     10: StickersManager,
-    14: ChatManagerRelay,
 };

@@ -388,7 +388,7 @@ let updateProfileRpc: nkruntime.RpcFunction = function (
     } as UpdateProfileResult);
 };
 
-// ─── Coin Shop (Myket IAP) ────────────────────────────────────────────────────
+// ─── Coin Shop (IAP) ──────────────────────────────────────────────────────────
 
 const COIN_PACKS: { [id: string]: number } = {
     "SmallCoin_TasZan": 3500,    // کوچک
@@ -401,19 +401,274 @@ const COIN_PACKS: { [id: string]: number } = {
     "Empire_TasZan": 100000,  // امپراتور
 };
 
+type PaymentStore = "myket" | "cafebazaar";
+
+interface CoinPurchaseInput {
+    store?: string;
+    productId?: string;
+    purchaseToken?: string;
+    orderId?: string;
+    packageName?: string;
+    purchaseState?: number;
+    purchaseTime?: number;
+    developerPayload?: string;
+    dataSignature?: string;
+    originalJson?: string;
+}
+
+interface MarketplaceValidationResult {
+    valid: boolean;
+    store: PaymentStore;
+    packageName: string;
+    responseCode: number;
+    raw: any;
+    developerPayload: string;
+    purchaseTime: number;
+    purchaseState: number;
+    consumptionState: number;
+    error: string;
+}
+
+const PaymentCollection = "payment";
+const MarketplaceHttpTimeoutMs = 5000;
+const MyketValidationBaseUrl = "https://developer.myket.ir/api/applications";
+const CafeBazaarValidationBaseUrl = "https://pardakht.cafebazaar.ir/devapi/v2/api/validate";
+
+function normalizePaymentStore(rawStore?: string): PaymentStore | null {
+    const value = (rawStore || "myket").toLowerCase().replace(/[-_\s]/g, "");
+    if (value === "myket") return "myket";
+    if (value === "bazaar" || value === "cafebazaar") return "cafebazaar";
+    return null;
+}
+
+function envFirst(context: nkruntime.Context, keys: string[]): string {
+    for (const key of keys) {
+        const value = context.env[key];
+        if (value && value.length > 0) return value;
+    }
+    return "";
+}
+
+function parseJsonObject(json?: string): { [key: string]: any } | null {
+    if (!json || json.length === 0) return null;
+    try {
+        const parsed = JSON.parse(json);
+        if (parsed && typeof parsed === "object") return parsed as { [key: string]: any };
+    } catch (e) {}
+    return null;
+}
+
+function stringField(value: any): string {
+    if (value === null || value === undefined) return "";
+    return String(value);
+}
+
+function numberField(value: any, fallback: number): number {
+    if (value === null || value === undefined || value === "") return fallback;
+    const parsed = Number(value);
+    return isNaN(parsed) ? fallback : parsed;
+}
+
+function getInputDeveloperPayload(input: CoinPurchaseInput): string {
+    if (input.developerPayload && input.developerPayload.length > 0)
+        return input.developerPayload;
+
+    const purchaseJson = parseJsonObject(input.originalJson);
+    if (!purchaseJson) return "";
+    return stringField(purchaseJson["developerPayload"] || purchaseJson["payload"]);
+}
+
+function getInputPackageName(input: CoinPurchaseInput): string {
+    if (input.packageName && input.packageName.length > 0)
+        return input.packageName;
+
+    const purchaseJson = parseJsonObject(input.originalJson);
+    return purchaseJson ? stringField(purchaseJson["packageName"]) : "";
+}
+
+function getMarketplacePackageName(
+    context: nkruntime.Context,
+    store: PaymentStore,
+    input: CoinPurchaseInput
+): { packageName: string; error: string } {
+    const envPackage = store === "cafebazaar"
+        ? envFirst(context, ["CAFEBAZAAR_PACKAGE_NAME", "BAZAAR_PACKAGE_NAME", "APP_PACKAGE_NAME"])
+        : envFirst(context, ["MYKET_PACKAGE_NAME", "APP_PACKAGE_NAME"]);
+    const inputPackage = getInputPackageName(input);
+    const packageName = envPackage || inputPackage;
+
+    if (!packageName)
+        return { packageName: "", error: "Missing package name config" };
+
+    if (envPackage && inputPackage && envPackage !== inputPackage)
+        return { packageName, error: "Package name mismatch" };
+
+    return { packageName, error: "" };
+}
+
+function httpGetJson(
+    nakama: nkruntime.Nakama,
+    url: string,
+    headers: { [header: string]: string }
+): { code: number; raw: any; error: string } {
+    const response = nakama.httpRequest(url, "get", headers, undefined, MarketplaceHttpTimeoutMs);
+    let raw: any = {};
+    if (response.body && response.body.length > 0) {
+        try {
+            raw = JSON.parse(response.body);
+        } catch (e) {
+            return { code: response.code, raw: response.body, error: "Invalid marketplace JSON response" };
+        }
+    }
+
+    if (response.code < 200 || response.code >= 300)
+        return { code: response.code, raw, error: marketplaceError(raw, response.code) };
+
+    return { code: response.code, raw, error: "" };
+}
+
+function marketplaceError(raw: any, code: number): string {
+    if (raw && typeof raw === "object") {
+        const error = stringField(raw["error"]);
+        const description = stringField(raw["error_description"] || raw["error_desciption"]);
+        if (error || description)
+            return `Marketplace validation failed (${code}): ${error} ${description}`.trim();
+    }
+    return "Marketplace validation failed: HTTP " + code;
+}
+
+function validateCafeBazaarPurchase(
+    context: nkruntime.Context,
+    nakama: nkruntime.Nakama,
+    input: CoinPurchaseInput
+): MarketplaceValidationResult {
+    const token = envFirst(context, ["CAFEBAZAAR_PISHKHAN_API_SECRET", "BAZAAR_PISHKHAN_API_SECRET", "CAFEBAZAAR_API_SECRET"]);
+    const packageResult = getMarketplacePackageName(context, "cafebazaar", input);
+    if (!token)
+        return invalidValidation("cafebazaar", packageResult.packageName, "Missing CAFEBAZAAR_PISHKHAN_API_SECRET", 0, {});
+    if (packageResult.error)
+        return invalidValidation("cafebazaar", packageResult.packageName, packageResult.error, 0, {});
+
+    const url = `${CafeBazaarValidationBaseUrl}/${encodeURIComponent(packageResult.packageName)}/inapp/${encodeURIComponent(input.productId || "")}/purchases/${encodeURIComponent(input.purchaseToken || "")}/`;
+    const response = httpGetJson(nakama, url, {
+        "Accept": "application/json",
+        "CAFEBAZAAR-PISHKHAN-API-SECRET": token,
+    });
+    if (response.error)
+        return invalidValidation("cafebazaar", packageResult.packageName, response.error, response.code, response.raw);
+
+    const purchaseState = numberField(response.raw["purchaseState"], -1);
+    const consumptionState = numberField(response.raw["consumptionState"], -1);
+    if (purchaseState !== 0)
+        return invalidValidation("cafebazaar", packageResult.packageName, "Purchase is not successful", response.code, response.raw);
+
+    return {
+        valid: true,
+        store: "cafebazaar",
+        packageName: packageResult.packageName,
+        responseCode: response.code,
+        raw: response.raw,
+        developerPayload: stringField(response.raw["developerPayload"]),
+        purchaseTime: numberField(response.raw["purchaseTime"], 0),
+        purchaseState,
+        consumptionState,
+        error: "",
+    };
+}
+
+function validateMyketPurchase(
+    context: nkruntime.Context,
+    nakama: nkruntime.Nakama,
+    input: CoinPurchaseInput
+): MarketplaceValidationResult {
+    const token = envFirst(context, ["MYKET_ACCESS_TOKEN", "MYKET_API_TOKEN"]);
+    const packageResult = getMarketplacePackageName(context, "myket", input);
+    if (!token)
+        return invalidValidation("myket", packageResult.packageName, "Missing MYKET_ACCESS_TOKEN", 0, {});
+    if (packageResult.error)
+        return invalidValidation("myket", packageResult.packageName, packageResult.error, 0, {});
+
+    const url = `${MyketValidationBaseUrl}/${encodeURIComponent(packageResult.packageName)}/purchases/products/${encodeURIComponent(input.productId || "")}/tokens/${encodeURIComponent(input.purchaseToken || "")}`;
+    const response = httpGetJson(nakama, url, {
+        "Accept": "application/json",
+        "X-Access-Token": token,
+    });
+    if (response.error)
+        return invalidValidation("myket", packageResult.packageName, response.error, response.code, response.raw);
+
+    const purchaseState = numberField(response.raw["purchaseState"], -1);
+    const consumptionState = numberField(response.raw["consumptionState"], -1);
+    if (purchaseState !== 0)
+        return invalidValidation("myket", packageResult.packageName, "Purchase is not successful", response.code, response.raw);
+
+    return {
+        valid: true,
+        store: "myket",
+        packageName: packageResult.packageName,
+        responseCode: response.code,
+        raw: response.raw,
+        developerPayload: stringField(response.raw["developerPayload"]),
+        purchaseTime: numberField(response.raw["purchaseTime"], 0),
+        purchaseState,
+        consumptionState,
+        error: "",
+    };
+}
+
+function invalidValidation(
+    store: PaymentStore,
+    packageName: string,
+    error: string,
+    responseCode: number,
+    raw: any
+): MarketplaceValidationResult {
+    return {
+        valid: false,
+        store,
+        packageName,
+        responseCode,
+        raw,
+        developerPayload: "",
+        purchaseTime: 0,
+        purchaseState: -1,
+        consumptionState: -1,
+        error,
+    };
+}
+
+function validateDeveloperPayload(userId: string, input: CoinPurchaseInput, marketplacePayload: string): string {
+    const inputPayload = getInputDeveloperPayload(input);
+    if (inputPayload && marketplacePayload && inputPayload !== marketplacePayload)
+        return "Developer payload mismatch";
+
+    const payload = parseJsonObject(inputPayload || marketplacePayload);
+    if (!payload) return "";
+
+    const payloadUserId = stringField(payload["userId"]);
+    const payloadProductId = stringField(payload["productId"]);
+    if (payloadUserId && payloadUserId !== userId)
+        return "Developer payload user mismatch";
+    if (payloadProductId && payloadProductId !== input.productId)
+        return "Developer payload product mismatch";
+
+    return "";
+}
+
+function paymentStorageKey(nakama: nkruntime.Nakama, store: PaymentStore, input: CoinPurchaseInput): string {
+    const source = input.orderId && input.orderId.length > 0 ? input.orderId : (input.purchaseToken || "");
+    return store + "_" + nakama.sha256Hash(source);
+}
+
 let verifyCoinPurchaseRpc: nkruntime.RpcFunction = function (
     context, logger, nakama, payload
 ): string {
     const userId = context.userId;
     if (!userId) throw new Error("Not authenticated");
 
-    const input = JSON.parse(payload || "{}") as {
-        productId: string;
-        purchaseToken: string;
-        orderId: string;
-        dataSignature: string;
-        originalJson: string;
-    };
+    const input = JSON.parse(payload || "{}") as CoinPurchaseInput;
+    const store = normalizePaymentStore(input.store);
+    if (!store)
+        return JSON.stringify({ success: false, error: "Unknown store: " + input.store });
 
     if (!input.productId || !input.purchaseToken)
         return JSON.stringify({ success: false, error: "Missing purchase data" });
@@ -422,29 +677,58 @@ let verifyCoinPurchaseRpc: nkruntime.RpcFunction = function (
     if (!coins)
         return JSON.stringify({ success: false, error: "Unknown product: " + input.productId });
 
-    // Use orderId as storage key; fall back to purchaseToken if missing
-    const storageKey = (input.orderId && input.orderId.length > 0) ? input.orderId : input.purchaseToken;
+    const storageKey = paymentStorageKey(nakama, store, input);
 
     // Idempotency — reject duplicate tokens
-    const existing = nakama.storageRead([{ collection: "payment", key: storageKey, userId }]);
+    const existingReads: nkruntime.StorageReadRequest[] = [
+        { collection: PaymentCollection, key: storageKey, userId: SystemUserId },
+    ];
+    const legacyKey = (input.orderId && input.orderId.length > 0) ? input.orderId : "";
+    if (legacyKey && legacyKey.length <= 128)
+        existingReads.push({ collection: PaymentCollection, key: legacyKey, userId });
+
+    const existing = nakama.storageRead(existingReads);
     if (existing.length > 0)
         return JSON.stringify({ success: false, error: "Already processed" });
 
+    const validation = store === "cafebazaar"
+        ? validateCafeBazaarPurchase(context, nakama, input)
+        : validateMyketPurchase(context, nakama, input);
+
+    if (!validation.valid) {
+        logger.warn(`IAP validation failed: userId=${userId} store=${store} product=${input.productId} error=${validation.error}`);
+        return JSON.stringify({ success: false, error: validation.error || "Invalid purchase" });
+    }
+
+    const payloadError = validateDeveloperPayload(userId, input, validation.developerPayload);
+    if (payloadError) {
+        logger.warn(`IAP payload validation failed: userId=${userId} store=${store} product=${input.productId} error=${payloadError}`);
+        return JSON.stringify({ success: false, error: payloadError });
+    }
+
     // Log payment record
     nakama.storageWrite([{
-        collection: "payment",
+        collection: PaymentCollection,
         key: storageKey,
-        userId,
+        userId: SystemUserId,
         value: {
+            store,
+            userId,
+            packageName:    validation.packageName,
             productId:     input.productId,
             purchaseToken: input.purchaseToken,
             orderId:       input.orderId,
+            purchaseState:  validation.purchaseState,
+            purchaseTime:   validation.purchaseTime,
+            consumptionState: validation.consumptionState,
+            developerPayload: validation.developerPayload || getInputDeveloperPayload(input),
             dataSignature: input.dataSignature,
             originalJson:  input.originalJson,
+            validation:     validation.raw,
             coinsAwarded:  coins,
             timestamp:     Date.now(),
         },
-        permissionRead:  1,
+        permissionRead:  0,
         permissionWrite: 0,
     }]);
 
@@ -452,11 +736,11 @@ let verifyCoinPurchaseRpc: nkruntime.RpcFunction = function (
     nakama.walletUpdate(
         userId,
         { coins },
-        { source: "iap", productId: input.productId, orderId: input.orderId },
+        { source: "iap", store, productId: input.productId, orderId: input.orderId },
         true
     );
 
-    logger.info(`IAP purchase: userId=${userId} product=${input.productId} coins=${coins}`);
+    logger.info(`IAP purchase: userId=${userId} store=${store} product=${input.productId} coins=${coins}`);
     return JSON.stringify({ success: true, coinsAwarded: coins });
 };
 

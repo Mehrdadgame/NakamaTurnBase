@@ -105,7 +105,7 @@ let matchJoin: nkruntime.MatchJoinFunction = function (
         }
 
         const player: Player = {
-            presence, displayName: resolvedName, ScorePlayer: 0,
+            presence, displayName: resolvedName, avatarId: "avatar_0", ScorePlayer: 0,
         };
         const slot = getNextPlayerNumber(gameState.players);
         gameState.players[slot]     = player;
@@ -221,7 +221,7 @@ function addBotAndStartBattle(
         username: botName, node: "server", status: "",
     } as nkruntime.Presence;
 
-    gameState.players[1]     = { presence: botPresence, displayName: botName, ScorePlayer: 0, isBot: true };
+    gameState.players[1]     = { presence: botPresence, displayName: botName, avatarId: "avatar_0", ScorePlayer: 0, isBot: true };
     gameState.playersWins[1] = 0;
     gameState.hasBot          = true;
     gameState.botDifficulty   = diff;
