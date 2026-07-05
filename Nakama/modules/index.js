@@ -7,7 +7,13 @@ var GetProfileRpc = "GetProfileRpc";
 var UpdateProfileRpc = "UpdateProfileRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
 var GetAppVersionRpc = "GetAppVersionRpc";
+var SendContactMessageRpc = "SendContactMessageRpc";
 var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
+var ClaimChestRpc = "ClaimChestRpc";
+var GetChestStatusRpc = "GetChestStatusRpc";
+var GetChatConfigRpc = "GetChatConfigRpc";
+var AdminStatsRpc = "AdminStatsRpc";
+var SetConfigRpc = "SetConfigRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
@@ -23,6 +29,12 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(SelectAvatarRpc, selectAvatarRpc);
     initializer.registerRpc(GetAppVersionRpc, getAppVersionRpc);
     initializer.registerRpc(VerifyCoinPurchaseRpc, verifyCoinPurchaseRpc);
+    initializer.registerRpc(ClaimChestRpc, claimChestRpc);
+    initializer.registerRpc(GetChestStatusRpc, getChestStatusRpc);
+    initializer.registerRpc(SendContactMessageRpc, sendContactMessageRpc);
+    initializer.registerRpc(GetChatConfigRpc, getChatConfigRpc);
+    initializer.registerRpc(AdminStatsRpc, adminStatsRpc);
+    initializer.registerRpc(SetConfigRpc, setConfigRpc);
     // Seed default app version config if it doesn't exist yet
     var existing = nk.storageRead([{ collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId }]);
     if (existing.length === 0) {
@@ -642,6 +654,64 @@ var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
     logger.info("IAP purchase: userId=" + userId + " store=" + store + " product=" + input.productId + " coins=" + coins);
     return JSON.stringify({ success: true, coinsAwarded: coins });
 };
+// ─── Chest Reward System ──────────────────────────────────────────────────────
+var CHEST_COOLDOWN_SEC = 3 * 60 * 60; // 3 hours
+// Reward table — weights sum to 100
+var CHEST_REWARDS = [
+    { coins: 50,   weight: 38 },
+    { coins: 100,  weight: 25 },
+    { coins: 200,  weight: 17 },
+    { coins: 300,  weight: 10 },
+    { coins: 500,  weight: 6  },
+    { coins: 750,  weight: 3  },
+    { coins: 1000, weight: 1  },
+];
+function rollChest() {
+    var roll = Math.random() * 100;
+    var cumulative = 0;
+    for (var i = 0; i < CHEST_REWARDS.length; i++) {
+        cumulative += CHEST_REWARDS[i].weight;
+        if (roll < cumulative) return CHEST_REWARDS[i].coins;
+    }
+    return 50;
+}
+var getChestStatusRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId) throw new Error("Not authenticated");
+    var now = Date.now();
+    var records = nakama.storageRead([{ collection: "chest", key: "last_claim", userId: userId }]);
+    var lastClaimAt = records.length > 0 ? (records[0].value.lastClaimAt || 0) : 0;
+    var elapsed = now - lastClaimAt;
+    var cooldownMs = CHEST_COOLDOWN_SEC * 1000;
+    var remainingSec = elapsed >= cooldownMs ? 0 : Math.ceil((cooldownMs - elapsed) / 1000);
+    return JSON.stringify({ remainingSeconds: remainingSec, ready: remainingSec <= 0 });
+};
+var claimChestRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId) throw new Error("Not authenticated");
+    var now = Date.now();
+    var cooldownMs = CHEST_COOLDOWN_SEC * 1000;
+    var records = nakama.storageRead([{ collection: "chest", key: "last_claim", userId: userId }]);
+    var lastClaimAt = records.length > 0 ? (records[0].value.lastClaimAt || 0) : 0;
+    var elapsed = now - lastClaimAt;
+    if (elapsed < cooldownMs) {
+        var remainingSec = Math.ceil((cooldownMs - elapsed) / 1000);
+        return JSON.stringify({ success: false, error: "not_ready", remainingSeconds: remainingSec });
+    }
+    var coins = rollChest();
+    nakama.walletUpdate(userId, { coins: coins }, { source: "chest" }, true);
+    nakama.storageWrite([{
+        collection: "chest",
+        key: "last_claim",
+        userId: userId,
+        value: { lastClaimAt: now, lastReward: coins },
+        permissionRead: 1,
+        permissionWrite: 0,
+    }]);
+    logger.info("[Chest] userId=" + userId + " won=" + coins + " coins");
+    return JSON.stringify({ success: true, coinsAwarded: coins, remainingSeconds: CHEST_COOLDOWN_SEC });
+};
+
 // ─── Force Update ─────────────────────────────────────────────────────────────
 // Returns { requiredVersion, updateUrl } stored under the system config collection.
 // Admin updates the value via Nakama console → Storage → collection "config", key "app_version".
@@ -655,6 +725,175 @@ var getAppVersionRpc = function (context, logger, nakama, payload) {
     }
     return JSON.stringify(stored[0].value);
 };
+// ─── Chat config (global admin kill switch) ───────────────────────────────────
+// Returns { enabled } stored under the system config collection.
+// Admin toggles via Nakama console → Storage → collection "config", key "chat_enabled",
+// user 00000000-0000-0000-0000-000000000000, value {"enabled": false} to disable chat globally.
+var getChatConfigRpc = function (context, logger, nakama, payload) {
+    var stored = nakama.storageRead([
+        { collection: CollectionConfig, key: KeyChatEnabled, userId: SystemUserId },
+    ]);
+    if (stored.length === 0) {
+        // Default: chat enabled
+        return JSON.stringify({ enabled: true });
+    }
+    return JSON.stringify(stored[0].value);
+};
+// Server-side authoritative check used by the chat relay.
+function isChatEnabled(nakama) {
+    try {
+        var stored = nakama.storageRead([
+            { collection: CollectionConfig, key: KeyChatEnabled, userId: SystemUserId },
+        ]);
+        if (stored.length === 0)
+            return true; // default-on if unseeded
+        return stored[0].value.enabled !== false;
+    }
+    catch (e) {
+        return true;
+    }
+}
+// ─── Admin analytics ──────────────────────────────────────────────────────────
+// Call from Nakama Console → API Explorer → Run RPC "AdminStatsRpc" (leave user blank),
+// or via HTTP with the server http_key. Optional payload: {"days":7,"secret":"..."}.
+// Reads the DB directly (sqlQuery) to summarise user behaviour, economy, IAP and fraud signals.
+var adminStatsRpc = function (context, logger, nakama, payload) {
+    var input = {};
+    try { input = JSON.parse(payload || "{}"); } catch (e) {}
+
+    // Admin-only: console/server calls have no userId. A player session is rejected unless it
+    // carries the configured admin secret (config → key "admin_secret" value {"secret":"..."}).
+    var allowed = !context.userId;
+    if (!allowed) {
+        try {
+            var sec = nakama.storageRead([{ collection: CollectionConfig, key: "admin_secret", userId: SystemUserId }]);
+            if (sec.length && sec[0].value && input.secret && input.secret === sec[0].value.secret) allowed = true;
+        } catch (e) {}
+    }
+    if (!allowed) return JSON.stringify({ error: "Admin only" });
+
+    var days = parseInt(input.days, 10);
+    if (!days || days <= 0 || days > 365) days = 7;
+    var WIN = "INTERVAL '" + days + " days'"; // days is a validated int — safe to inline
+    var SYS = "'00000000-0000-0000-0000-000000000000'";
+
+    function q(sql) {
+        try { return { ok: true, rows: nakama.sqlQuery(sql, []) }; }
+        catch (e) { return { ok: false, error: String(e) }; }
+    }
+    function num(res, col) {
+        if (!res.ok || !res.rows || res.rows.length === 0) return 0;
+        var n = parseInt(res.rows[0][col], 10);
+        return isNaN(n) ? 0 : n;
+    }
+
+    var report = { generatedAt: new Date().toISOString(), windowDays: days };
+
+    report.users = {
+        total:          num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS), "n"),
+        newToday:       num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND create_time > now() - INTERVAL '1 day'"), "n"),
+        newInWindow:    num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND create_time > now() - " + WIN), "n"),
+        activeInWindow: num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND update_time > now() - " + WIN), "n"),
+        activeToday:    num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND update_time > now() - INTERVAL '1 day'"), "n"),
+    };
+
+    var econ = q("SELECT coalesce(metadata->>'source','(none)') AS source, count(*)::int AS n, " +
+        "coalesce(sum((changeset->>'coins')::int),0)::int AS coins FROM wallet_ledger GROUP BY 1 ORDER BY 3 DESC");
+    report.economy = {
+        coinsInWallets: num(q("SELECT coalesce(sum((wallet->>'coins')::int),0)::int AS n FROM users"), "n"),
+        bySource: econ.ok ? econ.rows : [],
+        error: econ.ok ? undefined : econ.error,
+    };
+
+    var iapTot = q("SELECT count(*)::int AS n, coalesce(sum((changeset->>'coins')::int),0)::int AS coins, " +
+        "count(DISTINCT user_id)::int AS buyers FROM wallet_ledger WHERE metadata->>'source'='iap'");
+    var byProduct = q("SELECT coalesce(metadata->>'productId','?') AS product, count(*)::int AS n, " +
+        "coalesce(sum((changeset->>'coins')::int),0)::int AS coins FROM wallet_ledger WHERE metadata->>'source'='iap' GROUP BY 1 ORDER BY 2 DESC");
+    report.iap = {
+        totalGrants:      num(iapTot, "n"),
+        totalCoinsSold:   num(iapTot, "coins"),
+        uniqueBuyers:     num(iapTot, "buyers"),
+        unverifiedGrants: num(q("SELECT count(*)::int AS n FROM storage WHERE collection='payment' AND value->>'verified'='false'"), "n"),
+        byProduct: byProduct.ok ? byProduct.rows : [],
+    };
+
+    var topBuyers = q("SELECT user_id, count(*)::int AS grants, coalesce(sum((changeset->>'coins')::int),0)::int AS coins " +
+        "FROM wallet_ledger WHERE metadata->>'source'='iap' GROUP BY user_id ORDER BY 2 DESC LIMIT 15");
+    var fast = q("SELECT l.user_id, count(*)::int AS grants FROM wallet_ledger l JOIN users u ON u.id = l.user_id " +
+        "WHERE l.metadata->>'source'='iap' AND l.create_time < u.create_time + INTERVAL '5 minutes' " +
+        "GROUP BY l.user_id HAVING count(*) >= 2 ORDER BY 2 DESC LIMIT 15");
+    report.fraudSignals = {
+        note: "Purchase records exist only AFTER the IAP security fix was deployed.",
+        topBuyers: topBuyers.ok ? topBuyers.rows : [],
+        manyPurchasesWithin5minOfSignup: fast.ok ? fast.rows : [],
+    };
+
+    report.engagement = {
+        profiles:          num(q("SELECT count(*)::int AS n FROM storage WHERE collection='Profile'"), "n"),
+        entryFeeCharges:   num(q("SELECT count(*)::int AS n FROM wallet_ledger WHERE metadata->>'source'='entry_fee'"), "n"),
+        chestClaimers:     num(q("SELECT count(DISTINCT user_id)::int AS n FROM wallet_ledger WHERE metadata->>'source'='chest'"), "n"),
+        cardOwners:        num(q("SELECT count(*)::int AS n FROM storage WHERE collection='Cards'"), "n"),
+    };
+
+    // Per-mode play volume — answers "most played game mode". The mode is recorded on each
+    // entry-fee ledger entry as metadata.league (one row per real-player match join).
+    // NOTE: code mode "ThreeByThree" is actually the 4x4 "FourByFour" scene — labels disambiguate.
+    var MODE_LABELS = {
+        "ThreeByThree":          "FourByFour 4x4 (Showdown)",
+        "FourByThree":           "FourByThree 4x3 (Dicepunk)",
+        "VerticalAndHorizontal": "VerticalAndHorizontal 3x3 (Dice Master)",
+    };
+    function labelMode(m) { return MODE_LABELS[m] || m; }
+    var modeAll = q("SELECT coalesce(metadata->>'league','(unknown)') AS mode, count(*)::int AS matches, " +
+        "count(DISTINCT user_id)::int AS players FROM wallet_ledger WHERE metadata->>'source'='entry_fee' GROUP BY 1 ORDER BY 2 DESC");
+    var modeWin = q("SELECT coalesce(metadata->>'league','(unknown)') AS mode, count(*)::int AS matches " +
+        "FROM wallet_ledger WHERE metadata->>'source'='entry_fee' AND create_time > now() - " + WIN + " GROUP BY 1 ORDER BY 2 DESC");
+    if (modeAll.ok) for (var mi = 0; mi < modeAll.rows.length; mi++) modeAll.rows[mi].label = labelMode(modeAll.rows[mi].mode);
+    if (modeWin.ok) for (var mj = 0; mj < modeWin.rows.length; mj++) modeWin.rows[mj].label = labelMode(modeWin.rows[mj].mode);
+    report.gameModes = {
+        note: "Match volume per mode from entry-fee charges. Code mode 'ThreeByThree' = the 4x4 FourByFour scene.",
+        mostPlayedAllTime:  (modeAll.ok && modeAll.rows.length) ? labelMode(modeAll.rows[0].mode) : null,
+        mostPlayedInWindow: (modeWin.ok && modeWin.rows.length) ? labelMode(modeWin.rows[0].mode) : null,
+        breakdownAllTime:   modeAll.ok ? modeAll.rows : [],
+        breakdownInWindow:  modeWin.ok ? modeWin.rows : [],
+        error: modeAll.ok ? undefined : modeAll.error,
+    };
+
+    logger.info("[AdminStats] generated windowDays=" + days);
+    return JSON.stringify(report);
+};
+
+// ─── Admin: set a global config value ─────────────────────────────────────────
+// Stores under collection "config" / SystemUserId. Use for: myket_iap_token,
+// iap_strict, chat_enabled, admin_secret, app_version.
+// Call from Nakama Console → API Explorer → Run RPC "SetConfigRpc" (leave user blank).
+//   {"key":"myket_iap_token","value":{"token":"<X-Access-Token>"}}
+//   {"key":"iap_strict","value":{"enabled":true}}
+var setConfigRpc = function (context, logger, nakama, payload) {
+    var input = {};
+    try { input = JSON.parse(payload || "{}"); } catch (e) { return JSON.stringify({ error: "Bad payload" }); }
+
+    var allowed = !context.userId; // console/server calls have no userId
+    if (!allowed) {
+        try {
+            var sec = nakama.storageRead([{ collection: CollectionConfig, key: "admin_secret", userId: SystemUserId }]);
+            if (sec.length && sec[0].value && input.secret && input.secret === sec[0].value.secret) allowed = true;
+        } catch (e) {}
+    }
+    if (!allowed) return JSON.stringify({ error: "Admin only" });
+
+    var key = (input.key || "").trim();
+    if (!key) return JSON.stringify({ error: "Missing 'key'" });
+    if (input.value === undefined || input.value === null) return JSON.stringify({ error: "Missing 'value'" });
+
+    nakama.storageWrite([{
+        collection: CollectionConfig, key: key, userId: SystemUserId,
+        value: input.value, permissionRead: 2, permissionWrite: 0,
+    }]);
+    logger.info("[SetConfig] admin set config key=" + key);
+    return JSON.stringify({ success: true, key: key, value: input.value });
+};
+
 function CreateLeaderboards(context, logger, nakama) {
     var configs = [
         { id: LeaderboardWeekly, reset: "0 0 * * 1" },
@@ -1492,6 +1731,49 @@ var LEAGUES = {
         rankPoints: 250,
     },
 };
+// ─── Contact Us ───────────────────────────────────────────────────────────────
+var CollectionContactMessages = "ContactMessages";
+// پیام کاربر رو در استورج SystemUser ذخیره می‌کنه
+var sendContactMessageRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId)
+        throw new Error("Not authenticated");
+    var data = JSON.parse(payload || "{}");
+    var subject = (data.subject || "").toString().trim().substring(0, 100);
+    var message = (data.message || "").toString().trim().substring(0, 2000);
+    if (message.length === 0)
+        throw new Error("Message cannot be empty");
+    // username رو از پروفایل بگیر
+    var username = context.username || userId;
+    var sentAt = Math.floor(Date.now() / 1000);
+    // کلید یکتا برای هر پیام: timestamp_userId
+    var key = sentAt + "_" + userId.replace(/-/g, "").substring(0, 8);
+    var entry = {
+        fromUserId: userId,
+        fromUsername: username,
+        subject: subject,
+        message: message,
+        sentAt: sentAt,
+        platform: data.platform || "mobile",
+    };
+    try {
+        nakama.storageWrite([{
+                collection: CollectionContactMessages,
+                key: key,
+                userId: SystemUserId,
+                value: entry,
+                permissionRead: 0,  // فقط سرور/ادمین می‌تونه بخونه
+                permissionWrite: 0,
+            }]);
+        logger.info("[ContactUs] message saved key=" + key + " from=" + username + "(" + userId + ")");
+        return JSON.stringify({ success: true });
+    }
+    catch (e) {
+        logger.warn("[ContactUs] storageWrite failed: " + e);
+        throw new Error("Failed to save message");
+    }
+};
+
 // ─── Leaderboards ─────────────────────────────────────────────────────────────
 var LeaderboardWeekly = "weekly_leaderboard";
 var LeaderboardMonthly = "monthly_leaderboard";
@@ -1535,6 +1817,7 @@ var KeyPendingRewardMonthly = "pending_monthly";
 // ─── App Version (Force Update) ───────────────────────────────────────────────
 var CollectionConfig = "config";
 var KeyAppVersion = "app_version";
+var KeyChatEnabled = "chat_enabled";
 // System user ID — used to store global config readable by all authenticated users
 var SystemUserId = "00000000-0000-0000-0000-000000000000";
 // ─── Bot ──────────────────────────────────────────────────────────────────────
