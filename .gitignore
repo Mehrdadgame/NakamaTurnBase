@@ -22,6 +22,10 @@
 # Visual Studio cache directory
 .vs/
 
+# Local secrets
+.env
+.env.local
+
 # Gradle cache directory
 .gradle/
 

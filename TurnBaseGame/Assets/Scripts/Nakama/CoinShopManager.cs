@@ -328,6 +328,7 @@ namespace Nakama.Helpers
         {
             return JsonUtility.ToJson(new PurchasePayload
             {
+                store = StoreName,
                 userId = NakamaManager.Instance?.Session?.UserId ?? "",
                 productId = productId,
                 nonce = Guid.NewGuid().ToString("N"),
@@ -344,6 +345,7 @@ namespace Nakama.Helpers
         [Serializable]
         private class PurchasePayload
         {
+            public string store;
             public string userId;
             public string productId;
             public string nonce;
