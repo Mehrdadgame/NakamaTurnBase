@@ -8,12 +8,12 @@ var UpdateProfileRpc = "UpdateProfileRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
 var GetAppVersionRpc = "GetAppVersionRpc";
 var SendContactMessageRpc = "SendContactMessageRpc";
-var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
 var ClaimChestRpc = "ClaimChestRpc";
 var GetChestStatusRpc = "GetChestStatusRpc";
 var GetChatConfigRpc = "GetChatConfigRpc";
 var AdminStatsRpc = "AdminStatsRpc";
 var SetConfigRpc = "SetConfigRpc";
+var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
 function InitModule(ctx, logger, nk, initializer) {
@@ -169,7 +169,9 @@ var checkPendingRewardsRpc = function (context, logger, nakama, payload) {
 var getLeaderboardRpc = function (context, logger, nakama, payload) {
     var _a;
     var data = JSON.parse(payload || "{}");
-    var lbId = data.type === "monthly" ? LeaderboardMonthly : LeaderboardWeekly;
+    var isMonthly = data.type === "monthly";
+    var lbId = isMonthly ? LeaderboardMonthly : LeaderboardWeekly;
+    var rewards = isMonthly ? MONTHLY_REWARDS : WEEKLY_REWARDS;
     var limit = data.limit || 100;
     var userId = context.userId;
     var records = [];
@@ -228,7 +230,7 @@ var getLeaderboardRpc = function (context, logger, nakama, payload) {
         rank: ownRecord.rank,
         avatarId: ((_a = profileMap[ownRecord.ownerId]) === null || _a === void 0 ? void 0 : _a.avatarId) || "avatar_0",
     } : null;
-    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn });
+    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn, rewards: rewards });
 };
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 var selectAvatarRpc = function (context, logger, nakama, payload) {
@@ -401,6 +403,9 @@ var COIN_PACKS = {
     "Empire_TasZan": 100000, // امپراتور
 };
 var PaymentCollection = "payment";
+var KeyMyketToken = "myket_iap_token";
+var KeyCafeBazaarToken = "cafebazaar_iap_token";
+var KeyBazaarToken = "bazaar_iap_token";
 var MarketplaceHttpTimeoutMs = 5000;
 var MyketValidationBaseUrl = "https://developer.myket.ir/api/applications";
 var CafeBazaarValidationBaseUrl = "https://pardakht.cafebazaar.ir/devapi/v2/api/validate";
@@ -419,6 +424,22 @@ function envFirst(context, keys) {
         if (value && value.length > 0)
             return value;
     }
+    return "";
+}
+function configFirst(nakama, keys) {
+    var reads = [];
+    for (var i = 0; i < keys.length; i++)
+        reads.push({ collection: CollectionConfig, key: keys[i], userId: SystemUserId });
+    try {
+        var records = nakama.storageRead(reads);
+        for (var i = 0; i < records.length; i++) {
+            var value = records[i].value || {};
+            var token = stringField(value.token || value.accessToken || value.apiToken || value.secret);
+            if (token)
+                return token;
+        }
+    }
+    catch (e) { }
     return "";
 }
 function parseJsonObject(json) {
@@ -494,10 +515,11 @@ function marketplaceError(raw, code) {
     return "Marketplace validation failed: HTTP " + code;
 }
 function validateCafeBazaarPurchase(context, nakama, input) {
-    var token = envFirst(context, ["CAFEBAZAAR_PISHKHAN_API_SECRET", "BAZAAR_PISHKHAN_API_SECRET", "CAFEBAZAAR_API_SECRET"]);
+    var token = configFirst(nakama, [KeyCafeBazaarToken, KeyBazaarToken]) ||
+        envFirst(context, ["CAFEBAZAAR_PISHKHAN_API_SECRET", "BAZAAR_PISHKHAN_API_SECRET", "CAFEBAZAAR_API_SECRET"]);
     var packageResult = getMarketplacePackageName(context, "cafebazaar", input);
     if (!token)
-        return invalidValidation("cafebazaar", packageResult.packageName, "Missing CAFEBAZAAR_PISHKHAN_API_SECRET", 0, {});
+        return invalidValidation("cafebazaar", packageResult.packageName, "Missing config/cafebazaar_iap_token or CAFEBAZAAR_PISHKHAN_API_SECRET", 0, {});
     if (packageResult.error)
         return invalidValidation("cafebazaar", packageResult.packageName, packageResult.error, 0, {});
     var url = CafeBazaarValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/inapp/" + encodeURIComponent(input.productId || "") + "/purchases/" + encodeURIComponent(input.purchaseToken || "") + "/";
@@ -525,10 +547,11 @@ function validateCafeBazaarPurchase(context, nakama, input) {
     };
 }
 function validateMyketPurchase(context, nakama, input) {
-    var token = envFirst(context, ["MYKET_ACCESS_TOKEN", "MYKET_API_TOKEN"]);
+    var token = configFirst(nakama, [KeyMyketToken]) ||
+        envFirst(context, ["MYKET_ACCESS_TOKEN", "MYKET_API_TOKEN"]);
     var packageResult = getMarketplacePackageName(context, "myket", input);
     if (!token)
-        return invalidValidation("myket", packageResult.packageName, "Missing MYKET_ACCESS_TOKEN", 0, {});
+        return invalidValidation("myket", packageResult.packageName, "Missing config/myket_iap_token or MYKET_ACCESS_TOKEN", 0, {});
     if (packageResult.error)
         return invalidValidation("myket", packageResult.packageName, packageResult.error, 0, {});
     var url = MyketValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/purchases/products/" + encodeURIComponent(input.productId || "") + "/tokens/" + encodeURIComponent(input.purchaseToken || "");
@@ -654,9 +677,12 @@ var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
     logger.info("IAP purchase: userId=" + userId + " store=" + store + " product=" + input.productId + " coins=" + coins);
     return JSON.stringify({ success: true, coinsAwarded: coins });
 };
-// ─── Chest Reward System ──────────────────────────────────────────────────────
+// ─── Force Update ─────────────────────────────────────────────────────────────
+// Returns { requiredVersion, updateUrl } stored under the system config collection.
+// Admin updates the value via Nakama console → Storage → collection "config", key "app_version".
+// ΓöÇΓöÇΓöÇ Chest Reward System ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 var CHEST_COOLDOWN_SEC = 3 * 60 * 60; // 3 hours
-// Reward table — weights sum to 100
+// Reward table ΓÇö weights sum to 100
 var CHEST_REWARDS = [
     { coins: 50,   weight: 38 },
     { coins: 100,  weight: 25 },
@@ -712,9 +738,9 @@ var claimChestRpc = function (context, logger, nakama, payload) {
     return JSON.stringify({ success: true, coinsAwarded: coins, remainingSeconds: CHEST_COOLDOWN_SEC });
 };
 
-// ─── Force Update ─────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Force Update ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 // Returns { requiredVersion, updateUrl } stored under the system config collection.
-// Admin updates the value via Nakama console → Storage → collection "config", key "app_version".
+// Admin updates the value via Nakama console ΓåÆ Storage ΓåÆ collection "config", key "app_version".
 var getAppVersionRpc = function (context, logger, nakama, payload) {
     var stored = nakama.storageRead([
         { collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId },
@@ -725,9 +751,8 @@ var getAppVersionRpc = function (context, logger, nakama, payload) {
     }
     return JSON.stringify(stored[0].value);
 };
-// ─── Chat config (global admin kill switch) ───────────────────────────────────
 // Returns { enabled } stored under the system config collection.
-// Admin toggles via Nakama console → Storage → collection "config", key "chat_enabled",
+// Admin toggles via Nakama console ΓåÆ Storage ΓåÆ collection "config", key "chat_enabled",
 // user 00000000-0000-0000-0000-000000000000, value {"enabled": false} to disable chat globally.
 var getChatConfigRpc = function (context, logger, nakama, payload) {
     var stored = nakama.storageRead([
@@ -753,8 +778,8 @@ function isChatEnabled(nakama) {
         return true;
     }
 }
-// ─── Admin analytics ──────────────────────────────────────────────────────────
-// Call from Nakama Console → API Explorer → Run RPC "AdminStatsRpc" (leave user blank),
+// ΓöÇΓöÇΓöÇ Admin analytics ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// Call from Nakama Console ΓåÆ API Explorer ΓåÆ Run RPC "AdminStatsRpc" (leave user blank),
 // or via HTTP with the server http_key. Optional payload: {"days":7,"secret":"..."}.
 // Reads the DB directly (sqlQuery) to summarise user behaviour, economy, IAP and fraud signals.
 var adminStatsRpc = function (context, logger, nakama, payload) {
@@ -762,7 +787,7 @@ var adminStatsRpc = function (context, logger, nakama, payload) {
     try { input = JSON.parse(payload || "{}"); } catch (e) {}
 
     // Admin-only: console/server calls have no userId. A player session is rejected unless it
-    // carries the configured admin secret (config → key "admin_secret" value {"secret":"..."}).
+    // carries the configured admin secret (config ΓåÆ key "admin_secret" value {"secret":"..."}).
     var allowed = !context.userId;
     if (!allowed) {
         try {
@@ -774,7 +799,7 @@ var adminStatsRpc = function (context, logger, nakama, payload) {
 
     var days = parseInt(input.days, 10);
     if (!days || days <= 0 || days > 365) days = 7;
-    var WIN = "INTERVAL '" + days + " days'"; // days is a validated int — safe to inline
+    var WIN = "INTERVAL '" + days + " days'"; // days is a validated int ΓÇö safe to inline
     var SYS = "'00000000-0000-0000-0000-000000000000'";
 
     function q(sql) {
@@ -835,9 +860,9 @@ var adminStatsRpc = function (context, logger, nakama, payload) {
         cardOwners:        num(q("SELECT count(*)::int AS n FROM storage WHERE collection='Cards'"), "n"),
     };
 
-    // Per-mode play volume — answers "most played game mode". The mode is recorded on each
+    // Per-mode play volume ΓÇö answers "most played game mode". The mode is recorded on each
     // entry-fee ledger entry as metadata.league (one row per real-player match join).
-    // NOTE: code mode "ThreeByThree" is actually the 4x4 "FourByFour" scene — labels disambiguate.
+    // NOTE: code mode "ThreeByThree" is actually the 4x4 "FourByFour" scene ΓÇö labels disambiguate.
     var MODE_LABELS = {
         "ThreeByThree":          "FourByFour 4x4 (Showdown)",
         "FourByThree":           "FourByThree 4x3 (Dicepunk)",
@@ -863,10 +888,10 @@ var adminStatsRpc = function (context, logger, nakama, payload) {
     return JSON.stringify(report);
 };
 
-// ─── Admin: set a global config value ─────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Admin: set a global config value ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 // Stores under collection "config" / SystemUserId. Use for: myket_iap_token,
 // iap_strict, chat_enabled, admin_secret, app_version.
-// Call from Nakama Console → API Explorer → Run RPC "SetConfigRpc" (leave user blank).
+// Call from Nakama Console ΓåÆ API Explorer ΓåÆ Run RPC "SetConfigRpc" (leave user blank).
 //   {"key":"myket_iap_token","value":{"token":"<X-Access-Token>"}}
 //   {"key":"iap_strict","value":{"enabled":true}}
 var setConfigRpc = function (context, logger, nakama, payload) {
@@ -1731,9 +1756,8 @@ var LEAGUES = {
         rankPoints: 250,
     },
 };
-// ─── Contact Us ───────────────────────────────────────────────────────────────
+// ─── Leaderboards ─────────────────────────────────────────────────────────────
 var CollectionContactMessages = "ContactMessages";
-// پیام کاربر رو در استورج SystemUser ذخیره می‌کنه
 var sendContactMessageRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
     if (!userId)
@@ -1743,10 +1767,8 @@ var sendContactMessageRpc = function (context, logger, nakama, payload) {
     var message = (data.message || "").toString().trim().substring(0, 2000);
     if (message.length === 0)
         throw new Error("Message cannot be empty");
-    // username رو از پروفایل بگیر
     var username = context.username || userId;
     var sentAt = Math.floor(Date.now() / 1000);
-    // کلید یکتا برای هر پیام: timestamp_userId
     var key = sentAt + "_" + userId.replace(/-/g, "").substring(0, 8);
     var entry = {
         fromUserId: userId,
@@ -1762,7 +1784,7 @@ var sendContactMessageRpc = function (context, logger, nakama, payload) {
                 key: key,
                 userId: SystemUserId,
                 value: entry,
-                permissionRead: 0,  // فقط سرور/ادمین می‌تونه بخونه
+                permissionRead: 0,
                 permissionWrite: 0,
             }]);
         logger.info("[ContactUs] message saved key=" + key + " from=" + username + "(" + userId + ")");
@@ -1773,8 +1795,6 @@ var sendContactMessageRpc = function (context, logger, nakama, payload) {
         throw new Error("Failed to save message");
     }
 };
-
-// ─── Leaderboards ─────────────────────────────────────────────────────────────
 var LeaderboardWeekly = "weekly_leaderboard";
 var LeaderboardMonthly = "monthly_leaderboard";
 // Top-10 reward tables (index 0 = rank 1)
