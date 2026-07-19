@@ -9,15 +9,15 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Tutorial scripted sequence:
-///   Step 0 — Board intro
+///   Step 0 — Board intro and turn structure
 ///   Step 1 — Roll dice (forced value: 3)
 ///   Step 2 — Place your 3 in any cell
-///   Step 3 — Scoring explanation  (bot move buffered)
-///   Step 4 — Opponent turn notice  (bot move buffered; on dismiss → release bot)
-///            → waits for OnBotMovePlayed() before showing step 5
-///   Step 5 — "Bot played a 2! Roll again" (forced value: 2)
-///   Step 6 — "Place 2 next to your 3 for double score!"
-///   Step 7 — Win condition → CompleteTutorial
+///   Step 3 — Scoring rules
+///   Step 4 — Elimination mechanic
+///   Step 5 — Opponent turn and bot move
+///   Step 6 — Place 2 near your 3 for bonus value
+///   Step 7 — Speed and win condition
+///   Step 8 — Final summary → CompleteTutorial
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
@@ -60,8 +60,9 @@ public class TutorialManager : MonoBehaviour
     private bool _waitingCell = false;
     private bool _waitingBotMove = false;   // waiting for bot to play before showing step 5
     private int _firstCellLine = -1;       // row where player placed first cell
+    private Tweener _buttonPulseTween;
 
-    private const int TotalSteps = 8;
+    private const int TotalSteps = 9;
 
     // Bot suppression: while true PlayersManager buffers incoming bot messages
     public bool IsBotMoveSuppressed { get; private set; }
@@ -250,12 +251,12 @@ public class TutorialManager : MonoBehaviour
             // ── 0: Board intro ────────────────────────────────────────────────
             case 0:
                 msg = "به آموزش بازی تاس خوش اومدی!\n\n" +
-                      "صفحه بازی رو ببین:\n" +
-                      "- بالا: خانه‌های حریف\n" +
-                      "- پایین: خانه‌های تو\n" +
-                      "- وسط: دکمه تاس";
+                      "این بازی روی دو صفحه مقابل هم اجرا می‌شود:\n" +
+                      "صفحه بالایی برای حریف و صفحه پایینی برای تو است.\n" +
+                      "هر نوبت: تاس می‌اندازی، عدد می‌گیری و آن را در یکی از خانه‌های خودت می‌گذاری.\n\n" +
+                      "هدف نهایی این است که زودتر از حریف خانه‌های خود را پر کنی و همزمان امتیاز بسازی.";
                 highlight = myGridRect;
-                btnLabel = "بریم";
+                btnLabel = "بزن بریم";
                 break;
 
             // ── 1: Roll dice (forced 3) ───────────────────────────────────────
@@ -268,8 +269,9 @@ public class TutorialManager : MonoBehaviour
                     TimerTurn.instance.TimerRunning = false; // controlled by IsTurn events
                 }
                 msg = "نوبت توست!\n\n" +
-                      "دکمه تاس رو فشار بده.\n\n" +
-                      "روی دکمه تاس کلیک کن";
+                      "دکمه تاس را بزن تا یک عدد تصادفی انتخاب شود.\n" +
+                      "این عدد را بعداً باید در یکی از خانه‌های خودت قرار دهی.\n\n" +
+                      "روی دکمه تاس کلیک کن.";
                 highlight = diceBtnRect;
                 btnLabel = "باشه";
                 _waitingDice = true;
@@ -281,39 +283,45 @@ public class TutorialManager : MonoBehaviour
                 // is guaranteed to be buffered (don't wait for step 3)
                 IsBotMoveSuppressed = true;
                 msg = "عدد 3 گرفتی!\n\n" +
-                      "حالا روی یکی از خانه‌های خودت کلیک کن\n" +
-                      "تا عدد 3 اونجا قرار بگیره.";
+                      "حالا این عدد را در یکی از خانه‌های خالی صفحه‌ات بگذار.\n" +
+                      "ردیف‌ها و ستون‌ها هر دو امتیاز می‌گیرند، پس جای‌گذاری صحیح مهم است.\n\n" +
+                      "روی یک خانه کلیک کن.";
                 highlight = myGridRect;
                 _waitingCell = true;
                 break;
 
-            // ── 3: Scoring explanation (bot buffered) ─────────────────────────
+            // ── 3: Scoring rules ──────────────────────────────────────────────
             case 3:
                 IsBotMoveSuppressed = true;
-                msg = "امتیازدهی ردیف:\n\n" +
-                      "- اعداد متفاوت: جمع معمولی\n" +
-                      "  مثال: [2، 4، 6] = 12\n\n" +
-                      "- دو عدد یکسان: عدد در 4\n" +
-                      "  مثال: [3، 3، 5] = 17\n\n" +
-                      "- سه عدد یکسان: عدد در 9\n" +
-                      "  مثال: [4، 4، 4] = 36";
+                msg = "امتیازدهی بازی یک بخش بزرگِ برنده شدن است!\n\n" +
+                      "برای هر ردیف و هر ستون جداگانه امتیاز محاسبه می‌شود.\n\n" +
+                      "اگر سه عدد یکسان داشته باشی: (عدد × 3) × 3\n" +
+                      "مثال: [4، 4، 4] = 36\n\n" +
+                      "اگر دو عدد یکسان داشته باشی: (عدد تکراری × 2) × 2 + عدد سوم\n" +
+                      "مثال: [3، 3، 5] = 17\n\n" +
+                      "اگر همه‌ی اعداد متفاوت باشند، فقط جمع ساده محاسبه می‌شود.\n" +
+                      "مثال: [2، 4، 6] = 12";
                 highlight = scoreAreaRect;
                 break;
 
-            // ── 4: Opponent turn (bot buffered; dismiss → release bot) ────────
+            // ── 4: Elimination mechanic ───────────────────────────────────────
             case 4:
                 IsBotMoveSuppressed = true;
-                msg = "حالا نوبت حریفه!\n\n" +
-                      "وقتی متوجه شدی رو بزنی\n" +
-                      "حریف تاسش رو میندازه.";
+                msg = "مکانیک حذف، بخش تاکتیکی بازی است!\n\n" +
+                      "اگر تو در یک ردیف دو عدد مثل 2 داشته باشی،\n" +
+                      "و حریف همان عدد را در ردیف مقابل قرار دهد،\n" +
+                      "همه‌ی اعداد مشابه تو در آن ردیف پاک خواهند شد.\n\n" +
+                      "یعنی امتیاز ردیف و فضای خانه‌های تو هم از بین می‌رود.\n\n" +
+                      "پس نه تنها باید امتیاز بسازی، باید از خودت هم محافظت کنی.";
                 highlight = null;
                 break;
 
-            // ── 5: Bot played, roll again (forced 2) ──────────────────────────
+            // ── 5: Opponent turn and bot move ────────────────────────────────
             case 5:
-                msg = "حریف یه 2 گذاشت!\n\n" +
-                      "حالا دوباره نوبت توست.\n" +
-                      "روی دکمه تاس کلیک کن.";
+                msg = "حالا نوبت حریف است.\n\n" +
+                      "او هم عدد می‌گیرد و صفحه‌ی خودش را می‌سازد.\n\n" +
+                      "ممکن است تلاش کند از حذف استفاده کند یا سریع‌تر صفحه را پر کند.\n\n" +
+                      "وقتی آماده شدی، دوباره تو باید تاس را بزنی.";
                 highlight = diceBtnRect;
                 btnLabel = "باشه";
                 _waitingDice = true;
@@ -321,21 +329,36 @@ public class TutorialManager : MonoBehaviour
 
             // ── 6: Place 2 next to the 3 (double score) ──────────────────────
             case 6:
-                msg = "عدد 2 گرفتی!\n\n" +
-                      "اگه این 2 رو در همون ردیفی بذاری که 3 داری،\n" +
-                      "امتیاز اون ردیف چند برابر میشه!\n\n" +
-                      "روی خانه‌ای کلیک کن.";
+                msg = "عدد 2 گرفته‌ای!\n\n" +
+                      "اگر این عدد را نزدیک عدد قبلی خود بگذاری،\n" +
+                      "امتیاز ردیف و ستون بیشتر می‌شود.\n\n" +
+                      "اما یادت باشد: هر عدد تکراری که می‌سازی،\n" +
+                      "می‌تواند هدف حذف حریف هم شود.\n\n" +
+                      "روی یکی از خانه‌های صفحه‌ات کلیک کن.";
                 highlight = myGridRect;
                 _waitingCell = true;
                 break;
 
-            // ── 7: Win condition ──────────────────────────────────────────────
+            // ── 7: Speed and win condition ───────────────────────────────────
             case 7:
-                msg = "هدف بازی:\n\n" +
-                      "اولین کسی که همه خانه‌هاشو پر کنه برنده‌ست!\n\n" +
-                      "- پر کردن سریع مهم‌تر از امتیاز بالاست\n" +
-                      "- تعادل بین امتیاز و سرعت کلیده!\n\n" +
-                      "آماده‌ای؟";
+                msg = "قانون برنده شدن ساده است:\n\n" +
+                      "اولین کسی که تمام خانه‌های خود را پر کند، برنده می‌شود.\n\n" +
+                      "بنابراین: سرعت مهم است، اما فقط سرعت کافی نیست.\n\n" +
+                      "تو باید بین ساختن امتیاز و جلوگیری از حذف تعادل برقرار کنی.\n\n" +
+                      "پر کردن سریع صفحه معمولاً از امتیاز خیلی بالا هم مهم‌تر است.";
+                btnLabel = "فهمیدم";
+                highlight = null;
+                break;
+
+            // ── 8: Final summary ─────────────────────────────────────────────
+            case 8:
+                msg = "حالا همه‌ی نکات اصلی را یاد گرفتی!\n\n" +
+                      "1. تاس را بزن و عدد را بگیر.\n" +
+                      "2. آن عدد را در صفحه‌ی خودت قرار بده.\n" +
+                      "3. ردیف‌ها و ستون‌ها امتیاز می‌گیرند.\n" +
+                      "4. هر عدد تکراری می‌تواند هم امتیاز بزرگ بسازد و هم هدف حذف شود.\n" +
+                      "5. اولین کسی که صفحه‌اش را کامل کند برنده است.\n\n" +
+                      "آماده‌ای تا بازی را شروع کنی؟";
                 btnLabel = "شروع بازی";
                 highlight = null;
                 break;
@@ -350,6 +373,13 @@ public class TutorialManager : MonoBehaviour
         UpdateHighlight(highlight);
         PositionBubble(step);
         ShowOverlay();
+
+        if (_waitingDice)
+            UpdateButtonPulse(diceBtnRect);
+        else if (!_waitingDice && !_waitingCell)
+            UpdateButtonPulse(nextButton != null ? nextButton.transform : null);
+        else
+            KillButtonPulse();
     }
 
     /// <summary>
@@ -401,6 +431,39 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    private void UpdateButtonPulse(Transform target)
+    {
+        KillButtonPulse();
+        if (target == null || target.gameObject == null || !target.gameObject.activeInHierarchy)
+            return;
+
+        var rectTransform = target as RectTransform;
+        if (rectTransform == null)
+            return;
+
+        rectTransform.localScale = Vector3.one;
+        _buttonPulseTween = rectTransform
+            .DOScale(1.08f, 0.5f)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);
+    }
+
+    private void KillButtonPulse()
+    {
+        if (_buttonPulseTween != null)
+        {
+            _buttonPulseTween.Kill();
+            _buttonPulseTween = null;
+        }
+        if (nextButton != null)
+        {
+            var rect = nextButton.GetComponent<RectTransform>();
+            if (rect != null) rect.localScale = Vector3.one;
+        }
+        if (diceBtnRect != null)
+            diceBtnRect.localScale = Vector3.one;
+    }
+
     private void UpdateBubble(string msg, string btnLabel, int step, bool waitingInput)
     {
         if (messageText != null) messageText.text = msg;
@@ -443,6 +506,7 @@ public class TutorialManager : MonoBehaviour
     {
         highlightRect?.DOKill();
         arrowImage?.DOKill();
+        KillButtonPulse();
 
         if (overlayGroup != null)
             overlayGroup.DOFade(0f, 0.2f).OnComplete(() =>
@@ -461,6 +525,7 @@ public class TutorialManager : MonoBehaviour
         PlayerPrefs.SetInt(WelcomePopup.TutorialDoneKey, 1);
         PlayerPrefs.SetInt(WelcomePopup.TutorialModeKey, 0);
         PlayerPrefs.Save();
+        KillButtonPulse();
         HideOverlay();
 
         // Re-enable timer so normal game rules apply after tutorial

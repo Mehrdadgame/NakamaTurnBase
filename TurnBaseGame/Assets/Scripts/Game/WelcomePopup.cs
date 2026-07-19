@@ -47,10 +47,10 @@ public class WelcomePopup : MonoBehaviour
     {
         if (popupPanel == null) return;
 
-        if (titleText != null) titleText.text = "به بازی تاس زن خوش اومدی! ";
+        if (titleText != null) titleText.text = "به بازی تاس زن خوش اومدی!";
         if (descText != null) descText.text =
-            "یه بازی هیجان‌انگیز تاس که هم به سرعت نیاز داره هم استراتژی!\n\n" +
-            "می‌خوای اول آموزش ببینی؟";
+            "یه آموزش سریع داریم تا قوانین بازی، امتیازها و مکانیک حذف را کامل بفهمی.\n" +
+            "می‌خوای قبل از بازی شروع، قوانین بازی را با هم مرور کنیم؟";
         if (statusText != null) statusText.gameObject.SetActive(false);
 
         popupPanel.SetActive(true);
