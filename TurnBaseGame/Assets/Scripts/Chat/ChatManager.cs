@@ -80,6 +80,7 @@ namespace Nakama.Helpers
         private bool _joining;            // true while a JoinChatAsync attempt is in flight
         private Canvas _rootCanvas;       // for converting the soft-keyboard pixel height → canvas UI units
         private float _kbOffset;          // current upward shift of the drawer so the input clears the keyboard
+        private const float KeyboardMargin = 18f;
 
         // ── Lifecycle ────────────────────────────────────────────────────────────────
 
@@ -123,11 +124,16 @@ namespace Nakama.Helpers
         // Soft-keyboard height converted from screen pixels to this canvas's UI units (0 when hidden).
         private float GetKeyboardHeightUI()
         {
-            if (!TouchScreenKeyboard.visible) return 0f;
+            if (_rootCanvas == null) return 0f;
+            bool keyboardOpen = TouchScreenKeyboard.visible || (input != null && input.isFocused);
+            if (!keyboardOpen) return 0f;
+
             float px = TouchScreenKeyboard.area.height;
-            if (px <= 1f) px = Screen.height * 0.40f; // some Android builds report 0 — fall back to an estimate
-            float sf = (_rootCanvas != null && _rootCanvas.scaleFactor > 0f) ? _rootCanvas.scaleFactor : 1f;
-            return px / sf;
+            if (px <= 1f)
+                px = Screen.height * 0.45f; // some Android builds report 0 — estimate a mobile keyboard height
+
+            float sf = _rootCanvas.scaleFactor > 0f ? _rootCanvas.scaleFactor : 1f;
+            return px / sf + KeyboardMargin;
         }
 
         /// <summary>
@@ -871,14 +877,15 @@ namespace Nakama.Helpers
             float closedY = -drawerHeight - 40f;
             if (instant)
             {
-                drawer.anchoredPosition = new Vector2(0f, open ? 0f : closedY);
+                float openY = open ? GetKeyboardHeightUI() : closedY;
+                drawer.anchoredPosition = new Vector2(0f, openY);
                 backdrop.alpha = open ? 1f : 0f;
                 backdrop.blocksRaycasts = open;
                 return;
             }
             backdrop.blocksRaycasts = open;
             backdrop.DOFade(open ? 1f : 0f, 0.22f);
-            drawer.DOAnchorPosY(open ? 0f : closedY, 0.32f).SetEase(open ? Ease.OutCubic : Ease.InCubic);
+            drawer.DOAnchorPosY(open ? GetKeyboardHeightUI() : closedY, 0.32f).SetEase(open ? Ease.OutCubic : Ease.InCubic);
         }
 
         private void SetUnread(int n)
