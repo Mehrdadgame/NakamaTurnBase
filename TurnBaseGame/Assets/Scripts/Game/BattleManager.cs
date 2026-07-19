@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nakama.Helpers;
+using NinjaBattle.General;
 using UnityEngine;
 
 namespace NinjaBattle.Game
@@ -82,6 +83,10 @@ namespace NinjaBattle.Game
 
         private void StartGame()
         {
+            AnalyticsTracker.SendDesign("round_start", 1f, new Dictionary<string, object>
+            {
+                ["tick"] = CurrentTick
+            });
             InvokeRepeating(nameof(ProcessTick), StartDuration, TickDuration);
             onTickEnd += CheckWinner;
         }
@@ -97,9 +102,26 @@ namespace NinjaBattle.Game
                 return;
 
             if (playersAlive.Count() == 0)
+            {
                 MultiplayerManager.Instance.Send(MultiplayerManager.Code.Draw, new DrawData(tick));
+                AnalyticsTracker.SendDesign("round_end", 1f, new Dictionary<string, object>
+                {
+                    ["outcome"] = "draw",
+                    ["tick"] = tick,
+                    ["winner_player"] = -1
+                });
+            }
             else
-                MultiplayerManager.Instance.Send(MultiplayerManager.Code.PlayerWon, new PlayerWonData(tick, GetPlayerNumber(playersAlive.First().SessionId)));
+            {
+                int winnerPlayer = GetPlayerNumber(playersAlive.First().SessionId);
+                MultiplayerManager.Instance.Send(MultiplayerManager.Code.PlayerWon, new PlayerWonData(tick, winnerPlayer));
+                AnalyticsTracker.SendDesign("round_end", 1f, new Dictionary<string, object>
+                {
+                    ["outcome"] = "win",
+                    ["tick"] = tick,
+                    ["winner_player"] = winnerPlayer
+                });
+            }
 
             RoundEnded[tick] = true;
         }

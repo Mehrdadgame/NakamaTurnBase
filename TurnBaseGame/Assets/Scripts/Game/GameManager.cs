@@ -1,5 +1,6 @@
 using Nakama.Helpers;
 using NinjaBattle.General;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -157,7 +158,20 @@ namespace NinjaBattle.Game
             // اگه داره rejoin میکنیم (بعد از reconnect)، نباید Lobby بریم —
             // در همین صحنه‌ی Battle باید بمونیم
             if (MultiplayerManager.Instance != null && MultiplayerManager.Instance.IsRejoining)
+            {
+                AnalyticsTracker.SendDesign("match_start", 1f, new Dictionary<string, object>
+                {
+                    ["rejoin"] = true,
+                    ["mode"] = modeGame.ToString()
+                });
                 return;
+            }
+
+            AnalyticsTracker.SendDesign("match_start", 1f, new Dictionary<string, object>
+            {
+                ["rejoin"] = false,
+                ["mode"] = modeGame.ToString()
+            });
 
             ResetPlayerWins();
             GoToLobby();
@@ -165,6 +179,7 @@ namespace NinjaBattle.Game
 
         private void LeavedMatch()
         {
+            AnalyticsTracker.SendDesign("match_leave");
             GoToHome();
         }
 
@@ -175,20 +190,41 @@ namespace NinjaBattle.Game
 
         private void GoToHome()
         {
+            AnalyticsTracker.SendDesign("scene_transition", 1f, new Dictionary<string, object>
+            {
+                ["from"] = SceneManager.GetActiveScene().name,
+                ["to"] = Scenes.Home.ToString()
+            });
             SceneManager.LoadScene((int)Scenes.Home);
         }
 
         private void GoToLobby()
         {
+            string targetScene = modeGame.ToString();
             switch (modeGame)
             {
                 case ModeGame.ThreeByThree:
+                    AnalyticsTracker.SendDesign("scene_transition", 1f, new Dictionary<string, object>
+                    {
+                        ["from"] = SceneManager.GetActiveScene().name,
+                        ["to"] = Scenes.ThreeByThree.ToString()
+                    });
                     SceneManager.LoadScene((int)Scenes.ThreeByThree);
                     break;
                 case ModeGame.FourByThree:
+                    AnalyticsTracker.SendDesign("scene_transition", 1f, new Dictionary<string, object>
+                    {
+                        ["from"] = SceneManager.GetActiveScene().name,
+                        ["to"] = Scenes.FourByThree.ToString()
+                    });
                     SceneManager.LoadScene((int)Scenes.FourByThree);
                     break;
                 case ModeGame.VerticalAndHorizontal:
+                    AnalyticsTracker.SendDesign("scene_transition", 1f, new Dictionary<string, object>
+                    {
+                        ["from"] = SceneManager.GetActiveScene().name,
+                        ["to"] = Scenes.VerticalAndHorizontal.ToString()
+                    });
                     SceneManager.LoadScene((int)Scenes.VerticalAndHorizontal);
                     break;
                 default:

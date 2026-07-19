@@ -1,6 +1,18 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.google.external-dependency-manager",
+        "com.openupm"
+      ]
+    }
+  ],
   "dependencies": {
     "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
+    "com.gameanalytics.sdk": "file:E:/GameAnalytics/GA-SDK-UNITY-8.0.1",
+    "com.google.external-dependency-manager": "1.2.188",
     "com.unity.2d.animation": "14.0.3",
     "com.unity.2d.psdimporter": "13.0.2",
     "com.unity.2d.spriteshape": "14.0.1",

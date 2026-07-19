@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Nakama.Helpers;
 using NinjaBattle.Game;
+using NinjaBattle.General;
 using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,6 +54,7 @@ public class WelcomePopup : MonoBehaviour
         if (statusText != null) statusText.gameObject.SetActive(false);
 
         popupPanel.SetActive(true);
+        AnalyticsTracker.SendDesign("welcome_popup_view");
 
         if (canvasGroup != null)
         {
@@ -89,6 +91,11 @@ public class WelcomePopup : MonoBehaviour
         PlayerPrefs.SetString(ForcedModeKey, "ThreeByThree");
         PlayerPrefs.Save();
 
+        AnalyticsTracker.SendDesign("tutorial_start", 1f, new System.Collections.Generic.Dictionary<string, object>
+        {
+            ["mode"] = "tutorial"
+        });
+
         // تنظیم mode و شروع matchmaking با بات
         GameManager.Instance.modeGame = ModeGame.VerticalAndHorizontal;
         MultiplayerManager.Instance.JoinTutorialMatchAsync();
@@ -97,6 +104,7 @@ public class WelcomePopup : MonoBehaviour
 
     private void OnSkip()
     {
+        AnalyticsTracker.SendDesign("tutorial_skip");
         PlayerPrefs.SetInt(TutorialDoneKey, 1);
         PlayerPrefs.SetInt(TutorialModeKey, 0);  // make sure gameplay never enters tutorial
         PlayerPrefs.Save();

@@ -2,6 +2,7 @@ using System.Collections;
 using DG.Tweening;
 using Nakama.Helpers;
 using NinjaBattle.Game;
+using NinjaBattle.General;
 using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -82,6 +83,7 @@ public class TutorialManager : MonoBehaviour
             return;
 
         _active = true;
+        AnalyticsTracker.SendDesign("tutorial_started");
         if (nextButton != null) nextButton.onClick.AddListener(OnNext);
         if (skipButton != null) skipButton.onClick.AddListener(OnSkip);
 
@@ -339,6 +341,11 @@ public class TutorialManager : MonoBehaviour
                 break;
         }
 
+        AnalyticsTracker.SendDesign("tutorial_step", 1f, new System.Collections.Generic.Dictionary<string, object>
+        {
+            ["step"] = step + 1
+        });
+
         UpdateBubble(msg, btnLabel, step, _waitingDice || _waitingCell);
         UpdateHighlight(highlight);
         PositionBubble(step);
@@ -450,6 +457,7 @@ public class TutorialManager : MonoBehaviour
     {
         _active = false;
         IsBotMoveSuppressed = false;
+        AnalyticsTracker.SendDesign("tutorial_complete");
         PlayerPrefs.SetInt(WelcomePopup.TutorialDoneKey, 1);
         PlayerPrefs.SetInt(WelcomePopup.TutorialModeKey, 0);
         PlayerPrefs.Save();

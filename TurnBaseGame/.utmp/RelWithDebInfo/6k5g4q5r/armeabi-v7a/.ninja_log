@@ -1,5 +1,5 @@
 # ninja log v5
-1	154	8049624974258951	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	1bff56efbebae48e
-154	309	8049624975650690	E:/UnityProject/NakamaTurnBase/TurnBaseGame/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6k5g4q5r/obj/armeabi-v7a/libswappywrapper.so	6aac8a5201fc3758
 1	157	8053105761986056	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	1bff56efbebae48e
 157	368	8053105763961768	E:/UnityProject/NakamaTurnBase/TurnBaseGame/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6k5g4q5r/obj/armeabi-v7a/libswappywrapper.so	6aac8a5201fc3758
+3	275	8061595159312069	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	1bff56efbebae48e
+275	659	8061595162966296	E:/UnityProject/NakamaTurnBase/TurnBaseGame/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6k5g4q5r/obj/armeabi-v7a/libswappywrapper.so	6aac8a5201fc3758
