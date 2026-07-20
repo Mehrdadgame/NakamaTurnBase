@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using NinjaBattle.Game;
 using UnityEngine;
 
 namespace Nakama.Helpers
@@ -10,20 +12,25 @@ namespace Nakama.Helpers
         public static ProfileService Instance { get; private set; }
 
         private const string GetProfileRpcId = "GetProfileRpc";
+        private const string SaveProgressionRpcId = "SaveProgressionRpc";
 
         // ── Cached state ──────────────────────────────────────────────────────────
         public string       CurrentAvatarId { get; private set; } = "avatar_0";
         public string       DisplayName     { get; private set; } = "";
         public bool         IsLoaded        { get; private set; } = false;
         public List<string> OwnedAvatarIds  { get; private set; } = new List<string> { "avatar_0", "avatar_1" };
-
-        // Server-authoritative prices — used for display instead of AvatarLibrary.price
-        private Dictionary<string, int> _serverPrices = new Dictionary<string, int>();
+        public ProfileProgressionData PlayerProgression { get; private set; } = new ProfileProgressionData();
+        public List<ProfileMissionDefinition> MissionDefinitions { get; private set; } = new List<ProfileMissionDefinition>();
 
         // ── Events ────────────────────────────────────────────────────────────────
         public event Action<string>       onAvatarChanged;
         public event Action<List<string>> onOwnedAvatarsChanged;
         public event Action<string>       onDisplayNameChanged;
+        public event Action<ProfileProgressionData> onProgressionLoaded;
+        public event Action<List<ProfileMissionDefinition>> onMissionDefinitionsLoaded;
+
+        // Server-authoritative prices — used for display instead of AvatarLibrary.price
+        private Dictionary<string, int> _serverPrices = new Dictionary<string, int>();
 
         // ── Inspector ─────────────────────────────────────────────────────────────
         [Header("Avatar Library (assign in Inspector)")]
@@ -83,11 +90,15 @@ namespace Nakama.Helpers
                 }
 
                 IsLoaded = true;
+                PlayerProgression = data.progression ?? new ProfileProgressionData();
+                MissionDefinitions = data.missionDefinitions ?? new List<ProfileMissionDefinition>();
 
                 // Always fire — subscribers may have missed earlier events
                 onAvatarChanged?.Invoke(CurrentAvatarId);
                 onOwnedAvatarsChanged?.Invoke(OwnedAvatarIds);
                 if (nameChanged) onDisplayNameChanged?.Invoke(DisplayName);
+                onProgressionLoaded?.Invoke(PlayerProgression);
+                onMissionDefinitionsLoaded?.Invoke(MissionDefinitions);
 
                 // GetProfileRpc may have granted the first-login bonus (3500 coins).
                 // Refresh wallet AFTER the RPC completes so the UI shows the correct balance.
@@ -159,6 +170,33 @@ namespace Nakama.Helpers
             onAvatarChanged?.Invoke(newAvatarId);
         }
 
+        public async Task SaveProgressionAsync(PlayerProgressionManager.ProgressionSavePayload payload)
+        {
+            if (payload == null)
+                return;
+
+            try
+            {
+                string json = JsonUtility.ToJson(payload);
+                var rpc = await NakamaManager.Instance.SendRPC(SaveProgressionRpcId, json);
+                if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
+                    return;
+
+                // Update local progression cache after server save.
+                PlayerProgression = new ProfileProgressionData
+                {
+                    currentXp = payload.currentXp,
+                    currentLevel = payload.currentLevel,
+                    missions = payload.missions
+                };
+                onProgressionLoaded?.Invoke(PlayerProgression);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("ProfileService.SaveProgressionAsync failed: " + e.Message);
+            }
+        }
+
         public Sprite GetCurrentSprite() => avatarLibrary != null ? avatarLibrary.GetSprite(CurrentAvatarId) : null;
         public Sprite GetSprite(string avatarId) => avatarLibrary != null ? avatarLibrary.GetSprite(avatarId) : null;
     }
@@ -179,5 +217,35 @@ namespace Nakama.Helpers
         public string              avatarId;
         public List<string>        ownedAvatars;
         public List<AvatarPriceEntry> avatarPrices;
+        public ProfileProgressionData progression;
+        public List<ProfileMissionDefinition> missionDefinitions;
+    }
+
+    [Serializable]
+    public class ProfileMissionProgress
+    {
+        public string missionId;
+        public int currentProgress;
+        public bool isCompleted;
+    }
+
+    [Serializable]
+    public class ProfileMissionDefinition
+    {
+        public string missionId;
+        public string title;
+        public string description;
+        public string goalType;
+        public int target;
+        public int rewardXp;
+        public bool isRepeatable;
+    }
+
+    [Serializable]
+    public class ProfileProgressionData
+    {
+        public int currentXp;
+        public int currentLevel;
+        public List<ProfileMissionProgress> missions = new List<ProfileMissionProgress>();
     }
 }

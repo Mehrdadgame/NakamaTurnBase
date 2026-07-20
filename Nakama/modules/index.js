@@ -5,6 +5,7 @@ var CheckPendingRewardsRpc = "CheckPendingRewardsRpc";
 var GetLeaderboardRpc = "GetLeaderboardRpc";
 var GetProfileRpc = "GetProfileRpc";
 var UpdateProfileRpc = "UpdateProfileRpc";
+var SaveProgressionRpc = "SaveProgressionRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
 var GetAppVersionRpc = "GetAppVersionRpc";
 var SendContactMessageRpc = "SendContactMessageRpc";
@@ -16,6 +17,8 @@ var SetConfigRpc = "SetConfigRpc";
 var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
+var CollectionMissionDefinitions = "MissionDefinitions";
+var KeyMissionDefinitions = "mission_definitions";
 function InitModule(ctx, logger, nk, initializer) {
     // Create leaderboards (idempotent — skips if already exist)
     CreateLeaderboards(ctx, logger, nk);
@@ -25,6 +28,7 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(CheckPendingRewardsRpc, checkPendingRewardsRpc);
     initializer.registerRpc(GetLeaderboardRpc, getLeaderboardRpc);
     initializer.registerRpc(GetProfileRpc, getProfileRpc);
+    initializer.registerRpc(SaveProgressionRpc, saveProgressionRpc);
     initializer.registerRpc(UpdateProfileRpc, updateProfileRpc);
     initializer.registerRpc(SelectAvatarRpc, selectAvatarRpc);
     initializer.registerRpc(GetAppVersionRpc, getAppVersionRpc);
@@ -88,6 +92,65 @@ function createDefaultProfile() {
         ownedAvatars: [],
         welcomeBonusClaimed: false,
     };
+}
+function createDefaultMissionDefinitions() {
+    return [
+        {
+            missionId: "play_first_match",
+            title: "اولین مبارزه",
+            description: "یک مسابقه انجام بده.",
+            goalType: "PlayMatches",
+            target: 1,
+            rewardXp: 50,
+            isRepeatable: false,
+        },
+        {
+            missionId: "win_first_match",
+            title: "اولین پیروزی",
+            description: "یک مسابقه را ببرید.",
+            goalType: "WinMatches",
+            target: 1,
+            rewardXp: 100,
+            isRepeatable: false,
+        },
+        {
+            missionId: "place_20_tiles",
+            title: "یک بازیکن پرتلاش",
+            description: "۲۰ خانه روی صفحه قرار بده.",
+            goalType: "PlaceTiles",
+            target: 20,
+            rewardXp: 80,
+            isRepeatable: true,
+        },
+        {
+            missionId: "clear_12_tiles",
+            title: "پاکسازی تاس",
+            description: "۱۲ خانه از صفحه بردار.",
+            goalType: "ClearTiles",
+            target: 12,
+            rewardXp: 70,
+            isRepeatable: true,
+        },
+    ];
+}
+function loadOrSeedMissionDefinitions(nakama, logger) {
+    var stored = nakama.storageRead([
+        { collection: CollectionMissionDefinitions, key: KeyMissionDefinitions, userId: SystemUserId },
+    ]);
+    if (stored.length > 0 && stored[0].value) {
+        return stored[0].value;
+    }
+    var definitions = createDefaultMissionDefinitions();
+    nakama.storageWrite([{
+            collection: CollectionMissionDefinitions,
+            key: KeyMissionDefinitions,
+            userId: SystemUserId,
+            value: definitions,
+            permissionRead: 2,
+            permissionWrite: 0,
+        }]);
+    logger.info("Seeded default mission definitions.");
+    return definitions;
 }
 function grantFirstLoginBonusIfNeeded(userId, profileObj, profile, logger, nakama) {
     if (profile.welcomeBonusClaimed)
@@ -320,7 +383,37 @@ var getProfileRpc = function (context, logger, nakama, payload) {
         avatarId: profile.avatarId || "avatar_0",
         ownedAvatars: effectiveOwned,
         avatarPrices: avatarPriceList,
+        missionDefinitions: loadOrSeedMissionDefinitions(nakama, logger),
+        progression: profile.progression || { currentXp: 0, currentLevel: 1, missions: [] },
     });
+};
+var saveProgressionRpc = function (context, logger, nakama, payload) {
+    var userId = context.userId;
+    if (!userId)
+        throw new Error("Not authenticated");
+    var input = JSON.parse(payload || "{}");
+    var stored = nakama.storageRead([
+        { collection: CollectionProfile, key: KeyProfileData, userId: userId },
+    ]);
+    var profile = createDefaultProfile();
+    if (stored.length > 0)
+        profile = stored[0].value;
+    profile.progression = {
+        currentXp: numberField(input.currentXp, 0),
+        currentLevel: numberField(input.currentLevel, 1),
+        missions: Array.isArray(input.missions)
+            ? input.missions.map(function (m) { return ({ missionId: stringField(m.missionId), currentProgress: numberField(m.currentProgress, 0), isCompleted: Boolean(m.isCompleted) }); })
+            : [],
+    };
+    nakama.storageWrite([{
+            collection: CollectionProfile,
+            key: KeyProfileData,
+            userId: userId,
+            value: profile,
+            permissionRead: 1,
+            permissionWrite: 0,
+        }]);
+    return JSON.stringify({ success: true, progression: profile.progression });
 };
 var updateProfileRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;

@@ -45,6 +45,7 @@ namespace NinjaBattle.Game
         public event Action<int, int, DataPlayer> onSetScoreMe;
         public event Action<int, int, DataPlayer> onSetScoreOpp;
         public event Action<RematchData> onRematch;
+        public event Action<MatchResult> onMatchEnded;
         public event Action<string> LeftPlayer;
         #endregion
 
@@ -199,6 +200,13 @@ namespace NinjaBattle.Game
                 if (data.EndGame == true)
                 {
                     TimerTurn.instance.TimerPause = true;
+                    bool isDraw = ScoreMe == ScoreOpp;
+                    bool isLocalWinner = false;
+                    int localScore = data.ScoreOtherPlayer > 0 ? data.ScoreOtherPlayer : ScoreOpp;
+                    int opponentScore = data.Score;
+                    if (localScore != opponentScore)
+                        isLocalWinner = localScore > opponentScore;
+
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("شما بردی", ScoreOpp, ScoreMe);
@@ -215,8 +223,13 @@ namespace NinjaBattle.Game
                         UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی";
                     }
                     multiplayerManager.isTurn = false;
-                    if (data.EndGame != true)
-                        IsTurn?.Invoke(false);
+                    onMatchEnded?.Invoke(new MatchResult
+                    {
+                        LocalScore = localScore,
+                        OpponentScore = opponentScore,
+                        IsDraw = isDraw,
+                        IsLocalWinner = isDraw ? false : isLocalWinner
+                    });
                 }
             }
             else
@@ -241,6 +254,13 @@ namespace NinjaBattle.Game
                 if (data.EndGame == true)
                 {
                     TimerTurn.instance.TimerPause = true;
+                    bool isDraw = ScoreMe == ScoreOpp;
+                    bool isLocalWinner = false;
+                    int localScore = ScoreOpp;
+                    int opponentScore = data.ScoreOtherPlayer > 0 ? data.ScoreOtherPlayer : ScoreMe;
+                    if (localScore != opponentScore)
+                        isLocalWinner = localScore > opponentScore;
+
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("شما بردی", ScoreOpp, ScoreMe);
@@ -257,6 +277,13 @@ namespace NinjaBattle.Game
                         UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی";
                     }
                     multiplayerManager.isTurn = false;
+                    onMatchEnded?.Invoke(new MatchResult
+                    {
+                        LocalScore = localScore,
+                        OpponentScore = opponentScore,
+                        IsDraw = isDraw,
+                        IsLocalWinner = isDraw ? false : isLocalWinner
+                    });
                 }
                 if (data.EndGame != true)
                     IsTurn?.Invoke(false);
