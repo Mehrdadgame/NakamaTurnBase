@@ -23,4 +23,10 @@ public class ActionEndGame : MonoBehaviour
         instance = this;
         NameOpp.text = PlayerPrefs.GetString("Opp", "Opponent");
     }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+            instance = null;
+    }
 }

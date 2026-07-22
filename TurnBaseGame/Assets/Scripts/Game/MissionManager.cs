@@ -85,6 +85,8 @@ namespace NinjaBattle.Game
 
         private readonly List<MissionState> _missions = new List<MissionState>();
 
+        [SerializeField] private NinjaBattle.UI.MissionCompletionToast missionCompletionToastPrefab;
+
         public IReadOnlyList<MissionState> Missions => _missions.AsReadOnly();
 
         private void Awake()
@@ -101,6 +103,7 @@ namespace NinjaBattle.Game
 
         private void Start()
         {
+            NinjaBattle.UI.MissionCompletionToast.Ensure(missionCompletionToastPrefab);
             InitializeMissions();
             StartCoroutine(WaitForProfileService());
             StartCoroutine(WaitForPlayersManager());
@@ -176,7 +179,10 @@ namespace NinjaBattle.Game
         private void OnMissionDefinitionsLoaded(List<ProfileMissionDefinition> defs)
         {
             if (defs == null || defs.Count == 0)
+            {
+                Debug.LogWarning("MissionManager: no mission definitions received from ProfileService.");
                 return;
+            }
 
             _definitions.Clear();
             foreach (var d in defs)
@@ -200,6 +206,7 @@ namespace NinjaBattle.Game
             }
 
             InitializeMissions();
+            Debug.Log("MissionManager: loaded " + _definitions.Count + " mission definitions.");
 
             // Re-apply saved progression if available
             if (ProfileService.Instance != null && ProfileService.Instance.PlayerProgression != null)

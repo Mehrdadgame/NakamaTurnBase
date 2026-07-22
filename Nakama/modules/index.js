@@ -137,15 +137,22 @@ function loadOrSeedMissionDefinitions(nakama, logger) {
     var stored = nakama.storageRead([
         { collection: CollectionMissionDefinitions, key: KeyMissionDefinitions, userId: SystemUserId },
     ]);
-    if (stored.length > 0 && stored[0].value) {
-        return stored[0].value;
+    if (stored.length > 0) {
+        var storedValue = stored[0].value;
+        var definitions = Array.isArray(storedValue)
+            ? storedValue
+            : (storedValue && Array.isArray(storedValue.missions) ? storedValue.missions : null);
+        if (definitions && definitions.length > 0)
+            return definitions;
     }
+    if (stored.length > 0 && stored[0].value)
+        logger.warn("Mission definitions storage record is not a non-empty array; reseeding defaults.");
     var definitions = createDefaultMissionDefinitions();
     nakama.storageWrite([{
             collection: CollectionMissionDefinitions,
             key: KeyMissionDefinitions,
             userId: SystemUserId,
-            value: definitions,
+            value: { missions: definitions },
             permissionRead: 2,
             permissionWrite: 0,
         }]);
@@ -398,12 +405,35 @@ var saveProgressionRpc = function (context, logger, nakama, payload) {
     var profile = createDefaultProfile();
     if (stored.length > 0)
         profile = stored[0].value;
+    var definitions = loadOrSeedMissionDefinitions(nakama, logger);
+    var definitionsById = {};
+    for (var i = 0; i < definitions.length; i++) {
+        if (definitions[i] && definitions[i].missionId)
+            definitionsById[definitions[i].missionId] = definitions[i];
+    }
+    var missions = [];
+    var seenMissionIds = {};
+    if (Array.isArray(input.missions)) {
+        for (var j = 0; j < input.missions.length; j++) {
+            var incoming = input.missions[j] || {};
+            var missionId = stringField(incoming.missionId);
+            var definition = definitionsById[missionId];
+            if (!definition || seenMissionIds[missionId])
+                continue;
+            seenMissionIds[missionId] = true;
+            var target = Math.max(1, Math.floor(numberField(definition.target, 1)));
+            var progress = Math.max(0, Math.min(target, Math.floor(numberField(incoming.currentProgress, 0))));
+            missions.push({
+                missionId: missionId,
+                currentProgress: progress,
+                isCompleted: Boolean(incoming.isCompleted) && (progress >= target || definition.isRepeatable),
+            });
+        }
+    }
     profile.progression = {
-        currentXp: numberField(input.currentXp, 0),
-        currentLevel: numberField(input.currentLevel, 1),
-        missions: Array.isArray(input.missions)
-            ? input.missions.map(function (m) { return ({ missionId: stringField(m.missionId), currentProgress: numberField(m.currentProgress, 0), isCompleted: Boolean(m.isCompleted) }); })
-            : [],
+        currentXp: Math.max(0, Math.min(100000000, Math.floor(numberField(input.currentXp, 0)))),
+        currentLevel: Math.max(1, Math.min(1000, Math.floor(numberField(input.currentLevel, 1)))),
+        missions: missions,
     };
     nakama.storageWrite([{
             collection: CollectionProfile,

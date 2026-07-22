@@ -67,7 +67,11 @@ namespace Nakama.Helpers
             try
             {
                 var rpc = await NakamaManager.Instance.SendRPC(GetProfileRpcId, "{}");
-                if (rpc == null || string.IsNullOrEmpty(rpc.Payload)) return;
+                if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
+                {
+                    Debug.LogWarning("[ProfileService] GetProfileRpc returned an empty payload.");
+                    return;
+                }
 
                 var data = rpc.Payload.Deserialize<ProfileServiceData>();
                 if (data == null) return;
@@ -92,6 +96,9 @@ namespace Nakama.Helpers
                 IsLoaded = true;
                 PlayerProgression = data.progression ?? new ProfileProgressionData();
                 MissionDefinitions = data.missionDefinitions ?? new List<ProfileMissionDefinition>();
+                Debug.Log("[ProfileService] Loaded " + MissionDefinitions.Count + " mission definitions from Nakama.");
+                if (MissionDefinitions.Count == 0)
+                    Debug.LogWarning("[ProfileService] Nakama returned no mission definitions. Check MissionDefinitions storage and deployed runtime module.");
 
                 // Always fire — subscribers may have missed earlier events
                 onAvatarChanged?.Invoke(CurrentAvatarId);

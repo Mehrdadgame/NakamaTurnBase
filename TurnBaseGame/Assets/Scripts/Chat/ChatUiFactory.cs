@@ -123,6 +123,7 @@ namespace Nakama.Helpers
             t.color = color;
             t.alignment = align;
             t.richText = false;
+            t.PreserveNumbers = true;
             t.text = text;
             return t;
         }

@@ -30,6 +30,9 @@ namespace NinjaBattle.UI
 
         private void Awake()
         {
+            foreach (RTLTextMeshPro text in GetComponentsInChildren<RTLTextMeshPro>(true))
+                text.PreserveNumbers = true;
+
             if (openButton != null)
                 openButton.onClick.AddListener(OpenPanel);
             if (closeButton != null)
@@ -161,14 +164,14 @@ namespace NinjaBattle.UI
             float ratio = isMaxLevel ? 1f : Mathf.Clamp01((float)xpInsideLevel / xpSpan);
 
             if (levelText != null)
-                levelText.text = $"سطح {ToPersianDigits(currentLevel)}";
+                levelText.text = $"سطح {(currentLevel)}";
             if (titleText != null)
                 titleText.text = string.IsNullOrWhiteSpace(currentTitle) ? "بازیکن" : currentTitle;
             if (xpText != null)
             {
                 xpText.text = isMaxLevel
                     ? "بالاترین سطح"
-                    : $"{ToPersianDigits(xpInsideLevel)} از {ToPersianDigits(xpSpan)} امتیاز";
+                    : $"{(xpInsideLevel)} از {(xpSpan)} امتیاز";
             }
             if (xpFill != null)
                 xpFill.fillAmount = ratio;
@@ -203,17 +206,10 @@ namespace NinjaBattle.UI
             {
                 missionSummaryText.text = totalCount == 0
                     ? "در حال دریافت مأموریت‌ها..."
-                    : $"{ToPersianDigits(completedCount)} از {ToPersianDigits(totalCount)} انجام شده";
+                    : $"{(completedCount)} از {(totalCount)} انجام شده";
             }
         }
 
-        private static string ToPersianDigits(int value)
-        {
-            string text = value.ToString();
-            char[] persianDigits = { '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' };
-            for (int index = 0; index < persianDigits.Length; index++)
-                text = text.Replace((char)('0' + index), persianDigits[index]);
-            return text;
-        }
+
     }
 }

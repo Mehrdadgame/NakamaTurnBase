@@ -18,8 +18,20 @@ namespace NinjaBattle.UI
         public string MissionId { get; private set; }
         public bool IsCompleted { get; private set; }
 
+        private void Awake()
+        {
+            foreach (RTLTextMeshPro text in GetComponentsInChildren<RTLTextMeshPro>(true))
+                text.PreserveNumbers = true;
+
+            ConfigureProgressFill();
+        }
+
         public void Bind(MissionState mission)
         {
+            if (mission == null)
+                return;
+
+            ConfigureProgressFill();
             MissionId = mission.MissionId;
             IsCompleted = mission.IsCompleted;
 
@@ -31,10 +43,10 @@ namespace NinjaBattle.UI
             {
                 progressText.text = mission.IsCompleted && !mission.IsRepeatable
                     ? "تکمیل شد"
-                    : $"{ToPersianDigits(mission.CurrentProgress)} / {ToPersianDigits(mission.Target)}";
+                    : $"{mission.CurrentProgress} / {mission.Target}";
             }
             if (rewardText != null)
-                rewardText.text = $"{ToPersianDigits(mission.RewardXp)} XP";
+                rewardText.text = $"{mission.RewardXp} XP";
             if (completedText != null)
                 completedText.gameObject.SetActive(mission.IsCompleted);
             if (progressFill != null)
@@ -47,13 +59,21 @@ namespace NinjaBattle.UI
             }
         }
 
-        private static string ToPersianDigits(int value)
+        private void ConfigureProgressFill()
         {
-            string text = value.ToString();
-            char[] persianDigits = { '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' };
-            for (int index = 0; index < persianDigits.Length; index++)
-                text = text.Replace((char)('0' + index), persianDigits[index]);
-            return text;
+            if (progressFill == null)
+                return;
+
+            progressFill.type = Image.Type.Filled;
+            progressFill.fillMethod = Image.FillMethod.Horizontal;
+            progressFill.fillOrigin = 0;
+            progressFill.fillClockwise = true;
+            progressFill.raycastTarget = false;
+            progressFill.enabled = true;
+            progressFill.gameObject.SetActive(true);
+            progressFill.transform.SetAsLastSibling();
         }
+
+      
     }
 }
