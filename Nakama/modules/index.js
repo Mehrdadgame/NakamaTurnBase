@@ -100,38 +100,178 @@ function createDefaultMissionDefinitions() {
             title: "اولین مبارزه",
             description: "یک مسابقه انجام بده.",
             goalType: "PlayMatches",
+            trigger: "match_finished",
+            conditions: [],
+            incrementBy: 1,
             target: 1,
             rewardXp: 50,
             isRepeatable: false,
+            enabled: true,
         },
         {
             missionId: "win_first_match",
             title: "اولین پیروزی",
             description: "یک مسابقه را ببرید.",
             goalType: "WinMatches",
+            trigger: "match_finished",
+            conditions: [
+                { field: "won", operator: "eq", value: "true" },
+            ],
+            incrementBy: 1,
             target: 1,
             rewardXp: 100,
             isRepeatable: false,
+            enabled: true,
         },
         {
             missionId: "place_20_tiles",
             title: "یک بازیکن پرتلاش",
             description: "۲۰ خانه روی صفحه قرار بده.",
             goalType: "PlaceTiles",
+            trigger: "tile_placed",
+            conditions: [],
+            incrementBy: 1,
             target: 20,
             rewardXp: 80,
             isRepeatable: true,
+            enabled: true,
         },
         {
             missionId: "clear_12_tiles",
             title: "پاکسازی تاس",
             description: "۱۲ خانه از صفحه بردار.",
             goalType: "ClearTiles",
+            trigger: "tiles_cleared",
+            conditions: [],
+            incrementBy: "clearedTiles",
             target: 12,
             rewardXp: 70,
             isRepeatable: true,
+            enabled: true,
+        },
+        {
+            missionId: "win_by_50",
+            title: "پیروزی قاطع",
+            description: "با حداقل ۵۰ امتیاز اختلاف برنده شو.",
+            goalType: "WinByMargin",
+            trigger: "match_finished",
+            conditions: [
+                { field: "won", operator: "eq", value: "true" },
+                { field: "scoreMargin", operator: "gte", value: "50" },
+            ],
+            incrementBy: 1,
+            target: 1,
+            rewardXp: 150,
+            isRepeatable: true,
+            enabled: true,
+        },
+        {
+            missionId: "three_sixes_in_row",
+            title: "سه شش طلایی",
+            description: "سه تاس ۶ را در یک ردیف قرار بده.",
+            goalType: "SameValueInRow",
+            trigger: "tile_placed",
+            conditions: [
+                { field: "tileValue", operator: "eq", value: "6" },
+                { field: "sameValueInRow", operator: "gte", value: "3" },
+            ],
+            incrementBy: 1,
+            target: 1,
+            rewardXp: 180,
+            isRepeatable: true,
+            enabled: true,
+        },
+        {
+            missionId: "place_10_sixes",
+            title: "عاشق شش",
+            description: "۱۰ تاس با عدد ۶ قرار بده.",
+            goalType: "PlaceDiceValue",
+            trigger: "tile_placed",
+            conditions: [
+                { field: "tileValue", operator: "eq", value: "6" },
+            ],
+            incrementBy: 1,
+            target: 10,
+            rewardXp: 120,
+            isRepeatable: true,
+            enabled: true,
+        },
+        {
+            missionId: "clear_3_in_one_move",
+            title: "ضربه سنگین",
+            description: "در یک حرکت حداقل ۳ تاس حریف را حذف کن.",
+            goalType: "ClearTilesInMove",
+            trigger: "tiles_cleared",
+            conditions: [
+                { field: "clearedTiles", operator: "gte", value: "3" },
+            ],
+            incrementBy: 1,
+            target: 1,
+            rewardXp: 140,
+            isRepeatable: true,
+            enabled: true,
+        },
+        {
+            missionId: "score_100",
+            title: "صدتایی",
+            description: "مسابقه را با حداقل ۱۰۰ امتیاز تمام کن.",
+            goalType: "ReachMatchScore",
+            trigger: "match_finished",
+            conditions: [
+                { field: "localScore", operator: "gte", value: "100" },
+            ],
+            incrementBy: 1,
+            target: 1,
+            rewardXp: 130,
+            isRepeatable: true,
+            enabled: true,
+        },
+        {
+            missionId: "win_3_matches",
+            title: "فرمانروای میدان",
+            description: "۳ مسابقه را برنده شو.",
+            goalType: "WinMatches",
+            trigger: "match_finished",
+            conditions: [
+                { field: "won", operator: "eq", value: "true" },
+            ],
+            incrementBy: 1,
+            target: 3,
+            rewardXp: 200,
+            isRepeatable: true,
+            enabled: true,
         },
     ];
+}
+function upgradeLegacyMissionDefinitions(existingDefinitions) {
+    var defaults = createDefaultMissionDefinitions();
+    var defaultsById = {};
+    for (var defaultIndex = 0; defaultIndex < defaults.length; defaultIndex++)
+        defaultsById[defaults[defaultIndex].missionId] = defaults[defaultIndex];
+    var upgraded = [];
+    var seen = {};
+    for (var existingIndex = 0; existingIndex < existingDefinitions.length; existingIndex++) {
+        var existing = existingDefinitions[existingIndex];
+        if (!existing || !existing.missionId || seen[existing.missionId])
+            continue;
+        var merged = {};
+        var fallback = defaultsById[existing.missionId];
+        if (fallback) {
+            var fallbackKeys = Object.keys(fallback);
+            for (var fallbackIndex = 0; fallbackIndex < fallbackKeys.length; fallbackIndex++)
+                merged[fallbackKeys[fallbackIndex]] = fallback[fallbackKeys[fallbackIndex]];
+        }
+        var existingKeys = Object.keys(existing);
+        for (var keyIndex = 0; keyIndex < existingKeys.length; keyIndex++)
+            merged[existingKeys[keyIndex]] = existing[existingKeys[keyIndex]];
+        upgraded.push(merged);
+        seen[existing.missionId] = true;
+    }
+    for (var appendIndex = 0; appendIndex < defaults.length; appendIndex++) {
+        if (!seen[defaults[appendIndex].missionId])
+            upgraded.push(defaults[appendIndex]);
+    }
+    return upgraded;
 }
 function loadOrSeedMissionDefinitions(nakama, logger) {
     var stored = nakama.storageRead([
@@ -142,8 +282,28 @@ function loadOrSeedMissionDefinitions(nakama, logger) {
         var definitions = Array.isArray(storedValue)
             ? storedValue
             : (storedValue && Array.isArray(storedValue.missions) ? storedValue.missions : null);
-        if (definitions && definitions.length > 0)
+        if (definitions && definitions.length > 0 && storedValue.schemaVersion === 2)
             return definitions;
+        if (definitions && definitions.length > 0) {
+            var upgraded = upgradeLegacyMissionDefinitions(definitions);
+            var upgradeRequest = {
+                collection: CollectionMissionDefinitions,
+                key: KeyMissionDefinitions,
+                userId: SystemUserId,
+                value: { schemaVersion: 2, missions: upgraded },
+                permissionRead: 2,
+                permissionWrite: 0,
+                version: stored[0].version,
+            };
+            try {
+                nakama.storageWrite([upgradeRequest]);
+                logger.info("Upgraded mission definitions storage to schema version 2.");
+            }
+            catch (e) {
+                logger.warn("Mission definitions migration write failed: " + e);
+            }
+            return upgraded;
+        }
     }
     if (stored.length > 0 && stored[0].value)
         logger.warn("Mission definitions storage record is not a non-empty array; reseeding defaults.");
@@ -152,12 +312,211 @@ function loadOrSeedMissionDefinitions(nakama, logger) {
             collection: CollectionMissionDefinitions,
             key: KeyMissionDefinitions,
             userId: SystemUserId,
-            value: { missions: definitions },
+            value: { schemaVersion: 2, missions: definitions },
             permissionRead: 2,
             permissionWrite: 0,
         }]);
     logger.info("Seeded default mission definitions.");
     return definitions;
+}
+function getMissionTrigger(definition) {
+    if (definition && typeof definition.trigger === "string" && definition.trigger.length > 0)
+        return definition.trigger;
+    switch (definition && definition.goalType) {
+        case "PlayMatches": return "match_finished";
+        case "WinMatches": return "match_finished";
+        case "PlaceTiles": return "tile_placed";
+        case "ClearTiles": return "tiles_cleared";
+        default: return "";
+    }
+}
+function getMissionConditions(definition) {
+    if (definition && Array.isArray(definition.conditions))
+        return definition.conditions;
+    if (definition && !definition.trigger && definition.goalType === "WinMatches")
+        return [{ field: "won", operator: "eq", value: "true" }];
+    return [];
+}
+function normalizeMissionExpectedValue(rawValue, actualValue) {
+    if (typeof actualValue === "boolean")
+        return String(rawValue).toLowerCase() === "true";
+    if (typeof actualValue === "number") {
+        var parsed = Number(rawValue);
+        return isNaN(parsed) ? null : parsed;
+    }
+    return rawValue === null || rawValue === undefined ? "" : String(rawValue);
+}
+function missionConditionMatches(facts, condition) {
+    if (!condition || typeof condition.field !== "string" ||
+        !Object.prototype.hasOwnProperty.call(facts, condition.field))
+        return false;
+    var actual = facts[condition.field];
+    var expected = normalizeMissionExpectedValue(condition.value, actual);
+    if (expected === null)
+        return false;
+    var operator = String(condition.operator || "eq").toLowerCase();
+    switch (operator) {
+        case "eq": return actual === expected;
+        case "neq": return actual !== expected;
+        case "gt": return typeof actual === "number" && actual > expected;
+        case "gte": return typeof actual === "number" && actual >= expected;
+        case "lt": return typeof actual === "number" && actual < expected;
+        case "lte": return typeof actual === "number" && actual <= expected;
+        default: return false;
+    }
+}
+function missionRuleMatches(definition, missionEvent) {
+    if (!definition || definition.enabled === false ||
+        getMissionTrigger(definition) !== missionEvent.trigger)
+        return false;
+    var conditions = getMissionConditions(definition);
+    for (var i = 0; i < conditions.length; i++) {
+        if (!missionConditionMatches(missionEvent.facts, conditions[i]))
+            return false;
+    }
+    return true;
+}
+function resolveMissionIncrement(definition, facts) {
+    var incrementBy = definition.incrementBy;
+    if (incrementBy === null || incrementBy === undefined || incrementBy === "")
+        incrementBy = definition.goalType === "ClearTiles" ? "clearedTiles" : 1;
+    if (typeof incrementBy === "number")
+        return Math.max(0, Math.floor(incrementBy));
+    if (Object.prototype.hasOwnProperty.call(facts, incrementBy))
+        return Math.max(0, Math.floor(numberField(facts[incrementBy], 0)));
+    return Math.max(0, Math.floor(numberField(incrementBy, 0)));
+}
+function getProgressionLevel(currentXp) {
+    var level = 1;
+    for (var candidate = 2; candidate <= 12; candidate++) {
+        var threshold = 100 * candidate + 50 * (candidate - 1) * (candidate - 1);
+        if (currentXp < threshold)
+            break;
+        level = candidate;
+    }
+    return level;
+}
+function applyMissionEvents(nakama, logger, userId, missionEvents) {
+    if (!userId || !Array.isArray(missionEvents) || missionEvents.length === 0)
+        return null;
+    var definitions = loadOrSeedMissionDefinitions(nakama, logger);
+    for (var attempt = 0; attempt < 3; attempt++) {
+        var stored = nakama.storageRead([
+            { collection: CollectionProfile, key: KeyProfileData, userId: userId },
+        ]);
+        var profileObj = stored.length > 0 ? stored[0] : null;
+        var profile = profileObj ? profileObj.value : createDefaultProfile();
+        var progression = profile.progression || { currentXp: 0, currentLevel: 1, missions: [] };
+        if (!Array.isArray(progression.missions))
+            progression.missions = [];
+        var progressById = {};
+        for (var progressIndex = 0; progressIndex < progression.missions.length; progressIndex++) {
+            var savedProgress = progression.missions[progressIndex];
+            if (savedProgress && savedProgress.missionId)
+                progressById[savedProgress.missionId] = savedProgress;
+        }
+        var changed = false;
+        var xpEarned = 0;
+        var missionUpdates = [];
+        for (var eventIndex = 0; eventIndex < missionEvents.length; eventIndex++) {
+            xpEarned += Math.max(0, Math.floor(numberField(missionEvents[eventIndex].baseXp, 0)));
+        }
+        if (xpEarned > 0)
+            changed = true;
+        var seenMissionIds = {};
+        for (var definitionIndex = 0; definitionIndex < definitions.length; definitionIndex++) {
+            var definition = definitions[definitionIndex];
+            var missionId = definition && stringField(definition.missionId);
+            if (!missionId || seenMissionIds[missionId] || definition.enabled === false)
+                continue;
+            seenMissionIds[missionId] = true;
+            var target = Math.max(1, Math.floor(numberField(definition.target, 1)));
+            var repeatable = Boolean(definition.isRepeatable);
+            var state = progressById[missionId];
+            if (!state) {
+                state = {
+                    missionId: missionId,
+                    currentProgress: 0,
+                    isCompleted: false,
+                    completionCount: 0,
+                };
+            }
+            if (state.isCompleted && !repeatable)
+                continue;
+            var addedProgress = 0;
+            for (var matchingEventIndex = 0; matchingEventIndex < missionEvents.length; matchingEventIndex++) {
+                var missionEvent = missionEvents[matchingEventIndex];
+                if (missionRuleMatches(definition, missionEvent))
+                    addedProgress += resolveMissionIncrement(definition, missionEvent.facts);
+            }
+            if (addedProgress <= 0)
+                continue;
+            // Legacy clients could submit arbitrary progress, so only retain a valid
+            // incomplete remainder when switching to server-authoritative tracking.
+            var previousProgress = Math.max(0, Math.min(target - 1,
+                Math.floor(numberField(state.currentProgress, 0))));
+            var totalProgress = previousProgress + addedProgress;
+            var completions = 0;
+            if (repeatable) {
+                completions = Math.floor(totalProgress / target);
+                state.currentProgress = totalProgress % target;
+                state.isCompleted = false;
+            }
+            else if (totalProgress >= target) {
+                completions = 1;
+                state.currentProgress = target;
+                state.isCompleted = true;
+            }
+            else {
+                state.currentProgress = totalProgress;
+                state.isCompleted = false;
+            }
+            state.completionCount = Math.max(0, Math.floor(numberField(state.completionCount, 0))) + completions;
+            if (!progressById[missionId]) {
+                progression.missions.push(state);
+                progressById[missionId] = state;
+            }
+            if (completions > 0) {
+                var rewardXp = Math.max(0, Math.floor(numberField(definition.rewardXp, 0)));
+                xpEarned += rewardXp * completions;
+                logger.info("Mission completed: userId=" + userId + " missionId=" + missionId + " count=" + completions);
+            }
+            missionUpdates.push({
+                missionId: missionId,
+                currentProgress: state.currentProgress,
+                isCompleted: state.isCompleted,
+                completionCount: state.completionCount,
+                completionsAwarded: completions,
+            });
+            changed = true;
+        }
+        if (!changed)
+            return { progression: progression, missionUpdates: [], xpEarned: 0 };
+        progression.currentXp = Math.max(0, Math.min(100000000,
+            Math.floor(numberField(progression.currentXp, 0)) + xpEarned));
+        progression.currentLevel = getProgressionLevel(progression.currentXp);
+        profile.progression = progression;
+        var writeRequest = {
+            collection: CollectionProfile,
+            key: KeyProfileData,
+            userId: userId,
+            value: profile,
+            permissionRead: 1,
+            permissionWrite: 0,
+        };
+        writeRequest.version = profileObj && profileObj.version ? profileObj.version : "*";
+        try {
+            nakama.storageWrite([writeRequest]);
+            return { progression: progression, missionUpdates: missionUpdates, xpEarned: xpEarned };
+        }
+        catch (e) {
+            if (attempt === 2)
+                logger.error("Mission progression write failed for userId=" + userId + ": " + e);
+            else
+                logger.warn("Mission progression write conflict; retrying for userId=" + userId);
+        }
+    }
+    return null;
 }
 function grantFirstLoginBonusIfNeeded(userId, profileObj, profile, logger, nakama) {
     if (profile.welcomeBonusClaimed)
@@ -398,52 +757,14 @@ var saveProgressionRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
     if (!userId)
         throw new Error("Not authenticated");
-    var input = JSON.parse(payload || "{}");
     var stored = nakama.storageRead([
         { collection: CollectionProfile, key: KeyProfileData, userId: userId },
     ]);
-    var profile = createDefaultProfile();
-    if (stored.length > 0)
-        profile = stored[0].value;
-    var definitions = loadOrSeedMissionDefinitions(nakama, logger);
-    var definitionsById = {};
-    for (var i = 0; i < definitions.length; i++) {
-        if (definitions[i] && definitions[i].missionId)
-            definitionsById[definitions[i].missionId] = definitions[i];
-    }
-    var missions = [];
-    var seenMissionIds = {};
-    if (Array.isArray(input.missions)) {
-        for (var j = 0; j < input.missions.length; j++) {
-            var incoming = input.missions[j] || {};
-            var missionId = stringField(incoming.missionId);
-            var definition = definitionsById[missionId];
-            if (!definition || seenMissionIds[missionId])
-                continue;
-            seenMissionIds[missionId] = true;
-            var target = Math.max(1, Math.floor(numberField(definition.target, 1)));
-            var progress = Math.max(0, Math.min(target, Math.floor(numberField(incoming.currentProgress, 0))));
-            missions.push({
-                missionId: missionId,
-                currentProgress: progress,
-                isCompleted: Boolean(incoming.isCompleted) && (progress >= target || definition.isRepeatable),
-            });
-        }
-    }
-    profile.progression = {
-        currentXp: Math.max(0, Math.min(100000000, Math.floor(numberField(input.currentXp, 0)))),
-        currentLevel: Math.max(1, Math.min(1000, Math.floor(numberField(input.currentLevel, 1)))),
-        missions: missions,
-    };
-    nakama.storageWrite([{
-            collection: CollectionProfile,
-            key: KeyProfileData,
-            userId: userId,
-            value: profile,
-            permissionRead: 1,
-            permissionWrite: 0,
-        }]);
-    return JSON.stringify({ success: true, progression: profile.progression });
+    var profile = stored.length > 0 ? stored[0].value : createDefaultProfile();
+    var progression = profile.progression || { currentXp: 0, currentLevel: 1, missions: [] };
+    // Progress and XP are server-authoritative. Legacy clients may still call this RPC,
+    // but their payload must never overwrite mission rewards calculated by the match.
+    return JSON.stringify({ success: true, progression: progression, serverAuthoritative: true });
 };
 var updateProfileRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
@@ -1346,6 +1667,7 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
     gameState.players[moverIndex].ScorePlayer = dataPlayer.Score;
     var opponentIndex = 1 - moverIndex;
     var mineCount = 0;
+    var totalClearedTiles = 0;
     // ── Vertical mines (VerticalAndHorizontal mode only) ────────────────────────
     if (gameState.VerticalMode) {
         var hits = CalculatorArray2DWithVertical(targetGrid, line, row, tile, logger);
@@ -1356,6 +1678,7 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
         }
         if (mineCount > 0) {
             applyMineResult(dataPlayer, mineCount, tile, targetGrid, gameState, opponentIndex, logger);
+            totalClearedTiles += mineCount;
         }
         mineCount = 0;
     }
@@ -1368,6 +1691,7 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
             mineCount++;
         }
         if (mineCount > 0) {
+            totalClearedTiles += mineCount;
             if (dataPlayer.MinesScore) {
                 // Vertical mines already fired — accumulate horizontal damage on top
                 dataPlayer.ValueMines += (tile + 1) * mineCount * mineCount;
@@ -1379,6 +1703,7 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
             }
         }
     }
+    dataPlayer.ClearedTiles = totalClearedTiles;
     dataPlayer.Array2DTilesPlayer = moverGrid;
     dataPlayer.Array2DTilesOtherPlayer = targetGrid;
     var moverFull = ActionWinPlayer(moverGrid);
@@ -1396,6 +1721,93 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
         dataPlayer.EndGame = true;
         gameState.BeforeEndGame = true;
         awardMatchResult(gameState, nakama, dataPlayer.PlayerWin, logger);
+    }
+    recordTurnMissionProgress(gameState, moverIndex, moverGrid, tile, line, row, totalClearedTiles, dataPlayer, nakama, logger);
+}
+function countTileValueInRow(grid, line, tile) {
+    if (!Array.isArray(grid) || !Array.isArray(grid[line]))
+        return 0;
+    var count = 0;
+    for (var column = 0; column < grid[line].length; column++) {
+        if (grid[line][column] === tile)
+            count++;
+    }
+    return count;
+}
+function countTileValueInColumn(grid, column, tile) {
+    if (!Array.isArray(grid))
+        return 0;
+    var count = 0;
+    for (var line = 0; line < grid.length; line++) {
+        if (Array.isArray(grid[line]) && grid[line][column] === tile)
+            count++;
+    }
+    return count;
+}
+function createMatchFinishedMissionEvent(gameState, playerIndex, winnerId) {
+    var player = gameState.players[playerIndex];
+    var opponent = gameState.players[1 - playerIndex];
+    var localScore = player ? Math.floor(numberField(player.ScorePlayer, 0)) : 0;
+    var opponentScore = opponent ? Math.floor(numberField(opponent.ScorePlayer, 0)) : 0;
+    var draw = winnerId === "";
+    var won = !draw && player && player.presence.userId === winnerId;
+    return {
+        trigger: "match_finished",
+        baseXp: draw ? 25 : (won ? 100 : 40),
+        facts: {
+            won: Boolean(won),
+            draw: Boolean(draw),
+            localScore: localScore,
+            opponentScore: opponentScore,
+            scoreMargin: localScore - opponentScore,
+            scoreDifference: Math.abs(localScore - opponentScore),
+            gameMode: gameState.ModeText,
+        },
+    };
+}
+function recordTurnMissionProgress(gameState, moverIndex, moverGrid, tile, line, row, clearedTiles, dataPlayer, nakama, logger) {
+    // Tutorial matches are intentionally excluded to prevent farming rewards.
+    if (gameState.isTutorial)
+        return;
+    var mover = gameState.players[moverIndex];
+    if (mover && !mover.isBot) {
+        var moverEvents = [{
+                trigger: "tile_placed",
+                baseXp: 0,
+                facts: {
+                    tileValue: tile + 1,
+                    scoreAfterMove: Math.floor(numberField(dataPlayer.Score, 0)),
+                    sameValueInRow: countTileValueInRow(moverGrid, line, tile),
+                    sameValueInColumn: countTileValueInColumn(moverGrid, row, tile),
+                    gameMode: gameState.ModeText,
+                },
+            }];
+        if (clearedTiles > 0) {
+            moverEvents.push({
+                trigger: "tiles_cleared",
+                baseXp: 0,
+                facts: {
+                    tileValue: tile + 1,
+                    clearedTiles: clearedTiles,
+                    gameMode: gameState.ModeText,
+                },
+            });
+        }
+        if (dataPlayer.EndGame)
+            moverEvents.push(createMatchFinishedMissionEvent(gameState, moverIndex, dataPlayer.PlayerWin));
+        applyMissionEvents(nakama, logger, mover.presence.userId, moverEvents);
+    }
+    if (!dataPlayer.EndGame)
+        return;
+    for (var playerIndex = 0; playerIndex < gameState.players.length; playerIndex++) {
+        if (playerIndex === moverIndex)
+            continue;
+        var player = gameState.players[playerIndex];
+        if (!player || player.isBot)
+            continue;
+        applyMissionEvents(nakama, logger, player.presence.userId, [
+            createMatchFinishedMissionEvent(gameState, playerIndex, dataPlayer.PlayerWin),
+        ]);
     }
 }
 function applyMineResult(dataPlayer, mineCount, tile, targetGrid, gameState, opponentIndex, logger) {
