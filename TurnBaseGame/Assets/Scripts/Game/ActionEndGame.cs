@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Nakama.Helpers;
 using RTLTMPro;
+using NinjaBattle.UI;
 
 public class ActionEndGame : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class ActionEndGame : MonoBehaviour
     public Animator IconMe;
     public Animator IconOpp;
     public Button BackToHome;
+    public GameResultPresentation ResultPresentation;
 
     private void Start()
     {
@@ -28,5 +30,11 @@ public class ActionEndGame : MonoBehaviour
     {
         if (instance == this)
             instance = null;
+    }
+
+    public void RefreshResultPresentation()
+    {
+        if (ResultPresentation != null)
+            ResultPresentation.Refresh(ResultText != null ? ResultText.text : string.Empty);
     }
 }

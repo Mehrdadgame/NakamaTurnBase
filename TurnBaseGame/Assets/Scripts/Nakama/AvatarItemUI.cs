@@ -33,7 +33,19 @@ namespace Nakama.Helpers
             _data  = data;
             _popup = popup;
 
-            if (avatarImage != null) avatarImage.sprite = data.sprite;
+            if (avatarImage != null)
+            {
+                avatarImage.sprite = data.sprite;
+                avatarImage.preserveAspect = true;
+            }
+
+            if (selectedRing != null && selectedRing.transform is RectTransform ringRect)
+            {
+                ringRect.anchorMin = Vector2.zero;
+                ringRect.anchorMax = Vector2.one;
+                ringRect.offsetMin = new Vector2(-8f, -8f);
+                ringRect.offsetMax = new Vector2(8f, 8f);
+            }
 
             // Use server price if available, fall back to library price
             int price = ProfileService.Instance != null

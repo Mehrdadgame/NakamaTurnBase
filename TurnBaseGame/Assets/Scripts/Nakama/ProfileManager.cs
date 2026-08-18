@@ -84,7 +84,8 @@ namespace Nakama.Helpers
         {
             if (saveButton != null) saveButton.onClick.AddListener(OnSaveClicked);
             if (avatarButton != null) avatarButton.onClick.AddListener(OnAvatarButtonClicked);
-            if (linkEmailButton != null) linkEmailButton.onClick.AddListener(OnLinkEmailClicked);
+            if (linkEmailButton != null && linkEmailButton != saveButton)
+                linkEmailButton.onClick.AddListener(OnLinkEmailClicked);
         }
 
         private void OnEnable()
@@ -210,7 +211,7 @@ namespace Nakama.Helpers
             if (phoneLockIcon != null) phoneLockIcon.SetActive(data.phoneLocked);
             RefreshDisplayNameLabel(data.displayName);
             if (infoPrizeSaveEmail != null)
-                infoPrizeSaveEmail.gameObject.SetActive(!data.phoneLocked);
+                infoPrizeSaveEmail.gameObject.SetActive(!data.emailLocked);
         }
 
         private void RefreshDisplayNameLabel(string rawDisplayName)

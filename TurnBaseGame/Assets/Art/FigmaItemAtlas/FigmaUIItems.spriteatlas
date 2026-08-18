@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FigmaUIItems
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 0
+      compressionQuality: 0
+      maxTextureSize: 0
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 4
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 50
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 0
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 8684482a27cf1cc40a3d638d0750942e, type: 3}
+    - {fileID: 2800000, guid: 733da1de9d6ade94aa2537e5d27a0061, type: 3}
+    - {fileID: 2800000, guid: d047dc2d7b542144d950640e08281bf4, type: 3}
+    - {fileID: 2800000, guid: 5680c437241e2d540817b3641caffb45, type: 3}
+    - {fileID: 2800000, guid: e350500c6b3aafb4c9ef74a2cee94ed6, type: 3}
+    - {fileID: 2800000, guid: 79c1d3243f734e34ba3caaf47ae25bf4, type: 3}
+    - {fileID: 2800000, guid: ce06bd0ec67bece44a08e9111c2ffb58, type: 3}
+    - {fileID: 2800000, guid: 3d0b54053b14b7347b8b8513510bcc74, type: 3}
+    - {fileID: 2800000, guid: 3876ec758aceee34fbe0d3fa82509226, type: 3}
+    - {fileID: 2800000, guid: 7bad84563d4b73a4d89c4c0518710013, type: 3}
+    - {fileID: 2800000, guid: 5e57312e19aa266428997f29b3f72c2e, type: 3}
+    - {fileID: 2800000, guid: 3bd99e2a88dcabc42b07548bd0c2344b, type: 3}
+    - {fileID: 2800000, guid: e3e78a02c80876c4b894ddefdb96268a, type: 3}
+    - {fileID: 2800000, guid: 34f896d98bab04340ab46efe17453bfc, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - e3e78a02c80876c4b894ddefdb96268a: 21300000
+    - 79c1d3243f734e34ba3caaf47ae25bf4: 21300000
+    - 3d0b54053b14b7347b8b8513510bcc74: 21300000
+    - 3876ec758aceee34fbe0d3fa82509226: 21300000
+    - 7bad84563d4b73a4d89c4c0518710013: 21300000
+    - 5680c437241e2d540817b3641caffb45: 21300000
+    - 34f896d98bab04340ab46efe17453bfc: 21300000
+    - 8684482a27cf1cc40a3d638d0750942e: 21300000
+    - 3bd99e2a88dcabc42b07548bd0c2344b: 21300000
+    - e350500c6b3aafb4c9ef74a2cee94ed6: 21300000
+    - d047dc2d7b542144d950640e08281bf4: 21300000
+    - ce06bd0ec67bece44a08e9111c2ffb58: 21300000
+    - 5e57312e19aa266428997f29b3f72c2e: 7107482534005849897
+    - 733da1de9d6ade94aa2537e5d27a0061: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: e3e78a02c80876c4b894ddefdb96268a, type: 3}
+  - {fileID: 21300000, guid: 79c1d3243f734e34ba3caaf47ae25bf4, type: 3}
+  - {fileID: 21300000, guid: 3d0b54053b14b7347b8b8513510bcc74, type: 3}
+  - {fileID: 21300000, guid: 3876ec758aceee34fbe0d3fa82509226, type: 3}
+  - {fileID: 21300000, guid: 7bad84563d4b73a4d89c4c0518710013, type: 3}
+  - {fileID: 21300000, guid: 5680c437241e2d540817b3641caffb45, type: 3}
+  - {fileID: 21300000, guid: 34f896d98bab04340ab46efe17453bfc, type: 3}
+  - {fileID: 21300000, guid: 8684482a27cf1cc40a3d638d0750942e, type: 3}
+  - {fileID: 21300000, guid: 3bd99e2a88dcabc42b07548bd0c2344b, type: 3}
+  - {fileID: 21300000, guid: e350500c6b3aafb4c9ef74a2cee94ed6, type: 3}
+  - {fileID: 21300000, guid: d047dc2d7b542144d950640e08281bf4, type: 3}
+  - {fileID: 21300000, guid: ce06bd0ec67bece44a08e9111c2ffb58, type: 3}
+  - {fileID: 7107482534005849897, guid: 5e57312e19aa266428997f29b3f72c2e, type: 3}
+  - {fileID: 21300000, guid: 733da1de9d6ade94aa2537e5d27a0061, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - figma_item_19
+  - figma_item_08
+  - figma_item_13
+  - figma_item_15
+  - figma_item_16
+  - figma_item_05
+  - figma_item_20
+  - figma_item_01
+  - figma_item_18
+  - figma_item_06
+  - figma_item_04
+  - figma_item_10
+  - figma_item_17_0
+  - figma_item_02
+  m_RenderDataMap: {}
+  m_Tag: FigmaUIItems
+  m_IsVariant: 0

@@ -46,6 +46,7 @@ namespace Nakama.Helpers
         [Header("Grid")]
         [SerializeField] private Transform gridParent;
         [SerializeField] private GameObject avatarItemPrefab;
+        [SerializeField, Min(1)] private int maxVisibleAvatars = 8;
 
         [Header("UI")]
         [SerializeField] private TextMeshProUGUI statusText;
@@ -158,8 +159,10 @@ namespace Nakama.Helpers
                     ProfileService.Instance.NotifyAvatarChanged(result.avatarId, newOwned);
                 }
 
-                // Deduct from wallet display
-                if (_pendingAvatar.price > 0 && WalletManager.Instance != null)
+                int selectedPrice = ProfileService.Instance != null
+                    ? ProfileService.Instance.GetPrice(_pendingAvatar.id)
+                    : _pendingAvatar.price;
+                if (selectedPrice > 0 && WalletManager.Instance != null)
                     await WalletManager.Instance.RefreshAsync();
 
                 SetStatus("آواتار بروزرسانی شد!", new Color(0.25f, 1f, 0.25f));
@@ -202,12 +205,17 @@ namespace Nakama.Helpers
             string currentId = ProfileService.Instance != null
                 ? ProfileService.Instance.CurrentAvatarId : "avatar_0";
 
-            foreach (var avatar in lib.avatars)
+            int visibleCount = Mathf.Min(maxVisibleAvatars, lib.avatars.Count);
+            for (int index = 0; index < visibleCount; index++)
             {
+                var avatar = lib.avatars[index];
                 var go = Instantiate(avatarItemPrefab, gridParent);
                 var item = go.GetComponent<AvatarItemUI>();
                 if (item == null) continue;
-                bool isOwned = avatar.price == 0 ||
+                int serverPrice = ProfileService.Instance != null
+                    ? ProfileService.Instance.GetPrice(avatar.id)
+                    : avatar.price;
+                bool isOwned = serverPrice == 0 ||
                                (ProfileService.Instance != null && ProfileService.Instance.IsOwned(avatar.id));
                 item.Init(avatar, this, avatar.id == currentId, isOwned);
                 _items.Add(item);

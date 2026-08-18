@@ -1,0 +1,22 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.4/staging' branch; Version is '6000.4.5f1 (cc83ebd631f8) revision 13403115'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Mehrd" at "2026-08-16T09:28:23.5433967Z"
+OS: 'Windows 11  (10.0.26200) Professional' Language: 'en' Physical Memory: 32665 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-08-16T09:28:23Z
+
+COMMAND LINE ARGUMENTS:
+E:\Unity6\6000.4.5f1\Editor\Unity.exe
+-batchmode
+-quit
+-projectPath
+E:\UnityProject\NakamaTurnBase\TurnBaseGame
+-executeMethod
+NinjaBattle.UI.Editor.FigmaItemAtlasBuilder.Build
+-logFile
+E:\UnityProject\NakamaTurnBase\TurnBaseGame\temp_atlas_build.log
+Successfully changed project path to: E:\UnityProject\NakamaTurnBase\TurnBaseGame
+E:/UnityProject/NakamaTurnBase/TurnBaseGame
+Exiting without the bug reporter. Application will terminate with return code 1

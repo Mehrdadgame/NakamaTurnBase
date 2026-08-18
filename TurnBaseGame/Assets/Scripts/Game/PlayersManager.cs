@@ -347,6 +347,7 @@ namespace NinjaBattle.Game
             ActionEndGame.instance.ScoreMe.text = score1.ToString();
             ActionEndGame.instance.ScoreOpp.text = score2.ToString();
             ActionEndGame.instance.ResultText.text = resutlText;
+            ActionEndGame.instance.RefreshResultPresentation();
             ActionEndGame.instance.IconMe.enabled = true;
             ActionEndGame.instance.IconOpp.enabled = true;
             ActionEndGame.instance.IconMe.Play("EndGamePlayer1Icon");
