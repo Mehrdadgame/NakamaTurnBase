@@ -14,6 +14,8 @@ namespace NinjaBattle.UI
         [SerializeField] private Button chestButton;
         [SerializeField] private GameObject shopPanel;
         [SerializeField] private GameObject profilePanel;
+        [SerializeField] private GameObject missonPanel;
+
         [SerializeField] private GameObject leaderboardPanel;
         [SerializeField] private RectTransform startCta;
         [SerializeField] private RectTransform modePopup;
