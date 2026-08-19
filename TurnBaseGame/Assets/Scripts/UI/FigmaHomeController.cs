@@ -45,6 +45,11 @@ namespace NinjaBattle.UI
             navigationItems = items;
         }
 
+        public void SetMissionsPanel(GameObject panel)
+        {
+            missonPanel = panel;
+        }
+
         public void ConfigureModePopup(RectTransform cta, RectTransform popup, CanvasGroup canvasGroup)
         {
             startCta = cta;
@@ -114,8 +119,23 @@ namespace NinjaBattle.UI
 
         public void SelectEvents()
         {
-            ShowHomeLayer();
             SelectNavigation(3);
+            OpenMissions();
+        }
+
+        public void OpenMissions()
+        {
+            CloseModePopup();
+            SetPanelActive(shopPanel, false);
+            SetPanelActive(leaderboardPanel, false);
+            SetPanelActive(profilePanel, false);
+            SetPanelActive(missonPanel, true);
+        }
+
+        public void CloseMissions()
+        {
+            SetPanelActive(missonPanel, false);
+            SelectNavigation(2);
         }
 
         public void SelectLeaderboard()
@@ -127,6 +147,7 @@ namespace NinjaBattle.UI
             CloseModePopup();
             SetPanelActive(shopPanel, false);
             SetPanelActive(profilePanel, false);
+            SetPanelActive(missonPanel, false);
             bool alreadyOpen = leaderboardPanel.activeSelf;
             leaderboardPanel.SetActive(true);
             if (alreadyOpen)
@@ -145,6 +166,7 @@ namespace NinjaBattle.UI
             CloseModePopup();
             SetPanelActive(leaderboardPanel, false);
             SetPanelActive(profilePanel, false);
+            SetPanelActive(missonPanel, false);
             SetPanelActive(shopPanel, true);
         }
 
@@ -167,6 +189,7 @@ namespace NinjaBattle.UI
             CloseModePopup();
             SetPanelActive(shopPanel, false);
             SetPanelActive(leaderboardPanel, false);
+            SetPanelActive(missonPanel, false);
             SetPanelActive(profilePanel, true);
         }
 
@@ -183,6 +206,8 @@ namespace NinjaBattle.UI
 
             if (modePopup != null && modePopup.gameObject.activeSelf)
                 CloseModePopup();
+            else if (missonPanel != null && missonPanel.activeSelf)
+                CloseMissions();
             else if (profilePanel != null && profilePanel.activeSelf)
                 CloseProfile();
             else if (leaderboardPanel != null && leaderboardPanel.activeSelf)
@@ -230,6 +255,7 @@ namespace NinjaBattle.UI
             SetPanelActive(shopPanel, false);
             SetPanelActive(leaderboardPanel, false);
             SetPanelActive(profilePanel, false);
+            SetPanelActive(missonPanel, false);
         }
 
         private static void SetPanelActive(GameObject panel, bool active)

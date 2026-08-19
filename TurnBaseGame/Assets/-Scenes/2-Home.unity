@@ -54380,7 +54380,7 @@ MonoBehaviour:
   chestButton: {fileID: 155941663}
   shopPanel: {fileID: 1629600707}
   profilePanel: {fileID: 237134883}
-  missonPanel: {fileID: 0}
+  missonPanel: {fileID: 1055048779}
   leaderboardPanel: {fileID: 914530839}
   startCta: {fileID: 1290092557}
   modePopup: {fileID: 1952276147}
@@ -54390,7 +54390,7 @@ MonoBehaviour:
   - {fileID: 1972484845}
   - {fileID: 1387028857}
   - {fileID: 1655334741}
-  - {fileID: 998521117}
+  - {fileID: 1143437084}
   - {fileID: 156814342}
 --- !u!224 &2135773787
 RectTransform:

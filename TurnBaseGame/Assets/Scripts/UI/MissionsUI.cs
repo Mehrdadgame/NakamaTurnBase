@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Nakama.Helpers;
 using NinjaBattle.Game;
 using RTLTMPro;
 using TMPro;
@@ -35,6 +36,8 @@ namespace NinjaBattle.UI
 
             if (openButton != null)
                 openButton.onClick.AddListener(OpenPanel);
+            if (closeButton == null && missionPanel != null)
+                closeButton = CreateCloseButton();
             if (closeButton != null)
                 closeButton.onClick.AddListener(ClosePanel);
 
@@ -74,6 +77,19 @@ namespace NinjaBattle.UI
         {
             if (missionPanel != null)
                 missionPanel.SetActive(false);
+        }
+
+        private Button CreateCloseButton()
+        {
+            Button button = ChatUiFactory.RoundButton("CloseButton", missionPanel.transform,
+                new Color(0.50f, 0.06f, 0.04f, 1f), "×", new Color(1f, 0.96f, 0.80f, 1f), 52, 76f);
+            RectTransform rect = button.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(1f, 1f);
+            rect.anchorMax = new Vector2(1f, 1f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2(-54f, -54f);
+            rect.sizeDelta = new Vector2(64f, 64f);
+            return button;
         }
 
         private void BindManagers()

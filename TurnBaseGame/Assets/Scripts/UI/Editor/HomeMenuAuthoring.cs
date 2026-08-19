@@ -70,6 +70,7 @@ namespace NinjaBattle.UI.Editor
 
             FigmaHomeController controller = root.gameObject.AddComponent<FigmaHomeController>();
             controller.Configure(quick, professional, master, leaderboard, chest, shop, profile, leaderboardView);
+            controller.SetMissionsPanel(canvas.transform.Find("MissionProgressionUI")?.gameObject);
 
             BuildBackground(root);
             BuildPromo(root, controller);
@@ -193,6 +194,21 @@ namespace NinjaBattle.UI.Editor
 
         private static void BuildFooter(RectTransform root, FigmaHomeController controller)
         {
+            // The shipped scene keeps its footer directly under the canvas; reuse it
+            // so a rebuild wires navigation to the live items instead of duplicating it.
+            RectTransform existingFooter = root.parent.Find("Footer") as RectTransform;
+            if (existingFooter != null && existingFooter.Find("EventsItem") != null)
+            {
+                controller.ConfigureNavigation(
+                    existingFooter.Find("ActiveHighlight") as RectTransform,
+                    existingFooter.Find("StoreItem") as RectTransform,
+                    existingFooter.Find("CardsItem") as RectTransform,
+                    existingFooter.Find("HomeItem") as RectTransform,
+                    existingFooter.Find("EventsItem") as RectTransform,
+                    existingFooter.Find("LeaderboardItem") as RectTransform);
+                return;
+            }
+
             RectTransform footer = CreateSpriteNode("Footer", root, LoadSprite("footer_base"), false);
             SetFigmaRect(footer, 94, 2119, 893, 193);
 
