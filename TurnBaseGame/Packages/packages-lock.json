@@ -11,12 +11,13 @@
       "hash": "92fb173507ece2c135c38733deeca82a6d49cacd"
     },
     "com.gameanalytics.sdk": {
-      "version": "file:E:/GameAnalytics/GA-SDK-UNITY-8.0.1",
+      "version": "https://github.com/GameAnalytics/GA-SDK-UNITY.git",
       "depth": 0,
-      "source": "local",
+      "source": "git",
       "dependencies": {
         "com.google.external-dependency-manager": "1.2.168"
-      }
+      },
+      "hash": "af7b0d28dc607b8cb0b2daddf60a813635d1abfe"
     },
     "com.google.external-dependency-manager": {
       "version": "file:com.google.external-dependency-manager",

@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
-    "com.gameanalytics.sdk": "file:E:/GameAnalytics/GA-SDK-UNITY-8.0.1",
+    "com.gameanalytics.sdk": "https://github.com/GameAnalytics/GA-SDK-UNITY.git",
     "com.google.external-dependency-manager": "1.2.188",
     "com.unity.2d.animation": "14.0.3",
     "com.unity.2d.psdimporter": "13.0.2",
