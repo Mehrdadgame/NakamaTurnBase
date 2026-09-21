@@ -475,7 +475,7 @@ namespace NinjaBattle.UI.Editor
             playerName.enableAutoSizing = true;
             playerName.fontSizeMin = 18;
             playerName.fontSizeMax = 28;
-            playerName.enableWordWrapping = false;
+            playerName.textWrappingMode = TextWrappingModes.NoWrap;
             playerName.overflowMode = TextOverflowModes.Ellipsis;
             ChatUiFactory.Stretch(playerName.rectTransform);
 
@@ -486,7 +486,7 @@ namespace NinjaBattle.UI.Editor
             reward.enableAutoSizing = true;
             reward.fontSizeMin = 16;
             reward.fontSizeMax = 22;
-            reward.enableWordWrapping = false;
+            reward.textWrappingMode = TextWrappingModes.NoWrap;
             reward.overflowMode = TextOverflowModes.Ellipsis;
             ChatUiFactory.Stretch(reward.rectTransform);
 
@@ -520,7 +520,7 @@ namespace NinjaBattle.UI.Editor
             rank.enableAutoSizing = true;
             rank.fontSizeMin = 22;
             rank.fontSizeMax = 38;
-            rank.enableWordWrapping = false;
+            rank.textWrappingMode = TextWrappingModes.NoWrap;
 
             Image avatar = ChatUiFactory.Panel("Avatar", row, Color.clear);
             SetTopLeft(avatar.rectTransform, 111, 15, 96, 96);
@@ -532,7 +532,7 @@ namespace NinjaBattle.UI.Editor
             playerName.enableAutoSizing = true;
             playerName.fontSizeMin = 18;
             playerName.fontSizeMax = 35;
-            playerName.enableWordWrapping = false;
+            playerName.textWrappingMode = TextWrappingModes.NoWrap;
             playerName.overflowMode = TextOverflowModes.Ellipsis;
 
             RTLTextMeshPro score = CreateLabel("Score", row, "-- دایسو", 31, TextAlignmentOptions.Center);
@@ -540,7 +540,7 @@ namespace NinjaBattle.UI.Editor
             score.enableAutoSizing = true;
             score.fontSizeMin = 16;
             score.fontSizeMax = 31;
-            score.enableWordWrapping = false;
+            score.textWrappingMode = TextWrappingModes.NoWrap;
             score.overflowMode = TextOverflowModes.Ellipsis;
 
             LeaderboardRowUI rowUi = row.gameObject.AddComponent<LeaderboardRowUI>();

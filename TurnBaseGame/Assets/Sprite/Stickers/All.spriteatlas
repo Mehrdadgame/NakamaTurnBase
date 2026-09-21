@@ -2,6 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!687078895 &4343727234628468602
 SpriteAtlas:
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -45,16 +46,7 @@ SpriteAtlas:
     - a7d37e3b37391c34fa598ea3e6ff94a9: -2062493059
     - a7d37e3b37391c34fa598ea3e6ff94a9: 2030970929
   m_MasterAtlas: {fileID: 0}
-  m_PackedSprites:
-  - {fileID: -2047160346, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
-  - {fileID: 1325044263, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
-  - {fileID: -2062493059, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
-  - {fileID: 2030970929, guid: a7d37e3b37391c34fa598ea3e6ff94a9, type: 3}
-  m_PackedSpriteNamesToIndex:
-  - Sprite-Dice-2_3
-  - Sprite-Dice-2_4
-  - Sprite-Dice-2_5
-  - Sprite-Dice-2_6
   m_RenderDataMap: {}
   m_Tag: All
   m_IsVariant: 0
+  m_Guid: 88b5a91d57fbd91488da28843238b37d

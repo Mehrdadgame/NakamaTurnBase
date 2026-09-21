@@ -1,0 +1,21 @@
+                        -HH:\unity project\NakamaTurnBase\TurnBaseGame\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=26
+-DANDROID_PLATFORM=android-26
+-DANDROID_ABI=x86_64
+-DCMAKE_ANDROID_ARCH_ABI=x86_64
+-DANDROID_NDK=H:\UnityAndroid6000.6.2f1\NDK
+-DCMAKE_ANDROID_NDK=H:\UnityAndroid6000.6.2f1\NDK
+-DCMAKE_TOOLCHAIN_FILE=H:\UnityAndroid6000.6.2f1\NDK\build\cmake\android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=H:\UnityAndroid6000.6.2f1\SDK\cmake\3.22.1\bin\ninja.exe
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=H:\unity project\NakamaTurnBase\TurnBaseGame\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\4nl4b1o6\obj\x86_64
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=H:\unity project\NakamaTurnBase\TurnBaseGame\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\4nl4b1o6\obj\x86_64
+-DCMAKE_BUILD_TYPE=RelWithDebInfo
+-DCMAKE_FIND_ROOT_PATH=H:\unity project\NakamaTurnBase\TurnBaseGame\.utmp\RelWithDebInfo\4nl4b1o6\prefab\x86_64\prefab
+-BH:\unity project\NakamaTurnBase\TurnBaseGame\.utmp\RelWithDebInfo\4nl4b1o6\x86_64
+-GNinja
+-DANDROID_STL=c++_shared
+-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON
+                        Build command args: []
+                        Version: 2

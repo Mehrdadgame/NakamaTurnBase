@@ -15,7 +15,7 @@ namespace NinjaBattle.UI
         [SerializeField] private GameObject shopPanel;
         [SerializeField] private GameObject profilePanel;
         [SerializeField] private GameObject missonPanel;
-
+        [SerializeField] private GameObject CardPanel;
         [SerializeField] private GameObject leaderboardPanel;
         [SerializeField] private RectTransform startCta;
         [SerializeField] private RectTransform modePopup;
@@ -235,10 +235,18 @@ namespace NinjaBattle.UI
 
         private void SelectNavigation(int index)
         {
-            if (activeHighlight == null || navigationItems == null || index < 0 || index >= navigationItems.Length)
+            if (navigationItems == null || index < 0 || index >= navigationItems.Length)
+                return;
+
+            SetPanelActive(CardPanel, index == 1);
+
+            if (activeHighlight == null)
                 return;
 
             RectTransform item = navigationItems[index];
+            if (item == null)
+                return;
+
             float targetX = item.anchoredPosition.x + (item.rect.width - activeHighlight.rect.width) * 0.5f;
             highlightTween?.Kill();
             highlightTween = activeHighlight.DOAnchorPosX(targetX, 0.32f)

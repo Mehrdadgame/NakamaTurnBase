@@ -1,0 +1,39 @@
+{
+  "buildFiles": [
+    "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\CMakeLists.txt",
+    "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\FramePacing\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "H:\\UnityAndroid6000.6.2f1\\SDK\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\.utmp\\RelWithDebInfo\\4nl4b1o6\\arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "H:\\UnityAndroid6000.6.2f1\\SDK\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\.utmp\\RelWithDebInfo\\4nl4b1o6\\arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "swappywrapper::@7e25bd1f32ce224db4e9": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "swappywrapper",
+      "output": "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\build\\intermediates\\cxx\\RelWithDebInfo\\4nl4b1o6\\obj\\arm64-v8a\\libswappywrapper.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "H:\\UnityAndroid6000.6.2f1\\NDK\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe",
+      "cppCompilerExecutable": "H:\\UnityAndroid6000.6.2f1\\NDK\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

@@ -1,14 +1,12 @@
 <dependencies>
   <packages>
     <package>com.github.cafebazaar.Poolakey:poolakey:2.0.0</package>
-    <package>com.google.android.gms:play-services-appset:16.0.2</package>
-    <package>com.google.android.instantapps:instantapps:1.1.0</package>
     <package>org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10</package>
   </packages>
   <files />
   <settings>
     <setting name="androidAbis" value="arm64-v8a" />
-    <setting name="bundleId" value="com.goodvillains.DiceWar" />
+    <setting name="bundleId" value="com.goodvillains.TasZan" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
     <setting name="gradlePropertiesTemplateEnabled" value="True" />

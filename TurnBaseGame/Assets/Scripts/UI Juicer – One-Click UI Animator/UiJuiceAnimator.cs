@@ -401,10 +401,10 @@ namespace JuiceUp
         {
             unchecked
             {
-                // Combine time + instance id + a counter to avoid collisions when called multiple times quickly (e.g., OnValidate).
+                // Combine time + entity id + a counter to avoid collisions when called multiple times quickly (e.g., OnValidate).
                 autoRandomSeedCounter++;
                 int t = (int)System.DateTime.UtcNow.Ticks;
-                return t ^ (GetInstanceID() * 486187739) ^ (autoRandomSeedCounter * 16777619);
+                return t ^ (GetEntityId().GetHashCode() * 486187739) ^ (autoRandomSeedCounter * 16777619);
             }
         }
 

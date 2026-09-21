@@ -3,7 +3,7 @@
 --- !u!162 &1
 EditorUserSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 4
+  serializedVersion: 5
   m_ConfigSettings:
     QuickInstaller_com.unity.purchasing_installRecorded:
       value: 2550581500
@@ -11,35 +11,38 @@ EditorUserSettings:
     QuickInstaller_com.unity.services.levelplay_installRecorded:
       value: 2550581500
       flags: 0
+    QuickInstaller_com.unity.services.vivox_installRecorded:
+      value: 2550581500
+      flags: 0
     RecentlyUsedSceneGuid-0:
-      value: 5b0601505d010b5a0b5a5c2444270f404e141d727c7e22607e2c4f32bab1366a
+      value: 070757025d070c0d5a0f5a77427a084443154e7f2970273579791e67b5b4676d
       flags: 0
     RecentlyUsedSceneGuid-1:
-      value: 5309015157540b0c5a5f5f7444715c481741487d747171657d2f4d31e1e5613b
+      value: 52070202060c5f5d085d597140750944464f492b2d297467287b4f37b7b9666a
       flags: 0
     RecentlyUsedSceneGuid-2:
-      value: 5a060051540159585f565e7744215a4217131b7f747a74617d2d1b31bab93660
+      value: 57090c5554010d5a59590f75407a0844474e1d7e787a70337b284d62e4e46060
       flags: 0
     RecentlyUsedSceneGuid-3:
-      value: 5b0551025603085f5a590826447a0a4614451e2c297b7166742f4a66bbb86361
+      value: 0204075e01065c5a590f5e2440775a141716412f7f7c27632870486ab7b2673e
       flags: 0
     RecentlyUsedSceneGuid-4:
-      value: 5a05005406510809580c0d2344220f1214424c7e2f7c2260747c1f63b2e33539
-      flags: 0
-    RecentlyUsedSceneGuid-5:
-      value: 5502515053010b0b0e0b0a76417759164e4e4c727d792769287d1965e3e5676c
-      flags: 0
-    RecentlyUsedSceneGuid-6:
-      value: 5150575e06535b0a5f0a0a7444770a154e161d282e2d75332f714e61e7b96d6b
-      flags: 0
-    RecentlyUsedSceneGuid-7:
       value: 5408525400545a5a5a0d5d751377081546164b7328787e622f284465bbe3643b
       flags: 0
+    RecentlyUsedSceneGuid-5:
+      value: 515250075c0c595e5f5a5e71122159444e4e4a2f7a7d7f602f284d66b4b76661
+      flags: 0
+    RecentlyUsedSceneGuid-6:
+      value: 0608075703045d0a0e5b597748275e44144f1b7f74717e66282b1c6be4e2613a
+      flags: 0
+    RecentlyUsedSceneGuid-7:
+      value: 52005003540750095c0b547313775b44474f487b757c7036797f1b63e0b4623e
+      flags: 0
     RecentlyUsedSceneGuid-8:
-      value: 5104055154035f0b54085a7144770b4914111d722f2d71652e791837b5b8323d
+      value: 55020407540d5f03580c5b7144775945474f4b78797d7634757d1c67b1b33739
       flags: 0
     RecentlyUsedSceneGuid-9:
-      value: 55020407540d5f03580c5b7144775945474f4b78797d7634757d1c67b1b33739
+      value: 5502515053010b0b0e0b0a76417759164e4e4c727d792769287d1965e3e5676c
       flags: 0
     RecentlyUsedScenePath-0:
       value: 22424703114646680e0b0227036c0b5d24180d24281a232338250920acf53a31f6fe
@@ -97,3 +100,4 @@ EditorUserSettings:
   m_VCScanLocalPackagesOnConnect: 1
   m_ArtifactGarbageCollection: 1
   m_CompressAssetsOnImport: 1
+  m_VCAutoRevertUnchangedFiles: 0

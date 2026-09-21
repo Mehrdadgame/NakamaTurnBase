@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using GameAnalyticsSDK;
-using GameAnalyticsSDK.Events;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,8 +15,7 @@ namespace NinjaBattle.General
                 return;
 
             _initialized = true;
-            if (!GameAnalytics.Initialized)
-                GameAnalytics.Initialize();
+
         }
 
         public static void SendDesign(string eventName, float value = 1f, IDictionary<string, object> fields = null)
@@ -32,7 +30,7 @@ namespace NinjaBattle.General
             if (!safeFields.ContainsKey("scene"))
                 safeFields["scene"] = SceneManager.GetActiveScene().name;
 
-            GA_Design.NewEvent(eventName, value, safeFields, false);
+
         }
     }
 }
