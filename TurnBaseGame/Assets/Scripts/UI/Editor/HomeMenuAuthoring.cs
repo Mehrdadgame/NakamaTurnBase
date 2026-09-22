@@ -15,7 +15,7 @@ namespace NinjaBattle.UI.Editor
     public static class HomeMenuAuthoring
     {
         private const string RootName = "HomeMenuUX";
-        private const string PartsPath = "Assets/Resources/Home/Parts/";
+        private const string PartsPath = "Assets/Figma/Home/Parts/";
         private const string AtlasItemsPath = "Assets/Art/FigmaItemAtlas/";
         private const float DesignWidth = 1080f;
         private const float DesignHeight = 2400f;

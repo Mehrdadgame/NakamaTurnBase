@@ -59,7 +59,7 @@ namespace NinjaBattle.UI.Editor
             Image panelImage = profilePanel.GetComponent<Image>();
             if (panelImage != null)
             {
-                panelImage.sprite = LoadSprite("Assets/Resources/Home/Parts/background.png");
+                panelImage.sprite = LoadSprite("Assets/Figma/Home/Parts/background.png");
                 panelImage.color = Color.white;
                 panelImage.type = Image.Type.Simple;
             }

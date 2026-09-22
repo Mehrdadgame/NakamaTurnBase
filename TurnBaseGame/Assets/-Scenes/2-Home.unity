@@ -26211,7 +26211,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4954891131721786717, guid: 0f8a4b465c152cb4393cc6a574559f0a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0f8a4b465c152cb4393cc6a574559f0a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -38139,7 +38139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9eb42c61ed091e45b83edb880f2262e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Nakama.Helpers.CoinShopManager
-  cafeBazaarRsaPublicKey: MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwC0vw7ZN00/aJsQ/grNtpgM2UrOesv0nNRtVjYXHS4hSI9xBlacWrAtGjJ46LyfIooBxD3REprgv5d8xZPi7s0TTUW/VtbW5w0pgiEXSip0TGE5S2c41pdxPsqUe3tnSnsxdHoeq7Lnoa21JNLkqLuPShNCSRVjdlF56VxMTL2OKV+vLh3sscj0gkNzBzP21eyeI7OGXsa7Fe6crJePmOUGWWxg6eWe0DF6Nkf3XfkCAwEAAQ==
+  cafeBazaarRsaPublicKey: MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwCcAatkhCkADZjBN/LH9I2U2+ut1vqpOCEYVvxO+9+jZqo5DGArhTXXDRUsRYQpcikIatb5R932xwBogcgHp+brP5GdZB4BVoVfmbwu8JuAcH/Q13Qi+Aa0TKSZor+sS5HxitSlClgUBJPVlMqg4aVbfH0M3MNMDifX1TTKYUdmey09X07+T0z8TrugPa5Q7bvwwPgtTreCiudyzqmBXDtFfykbW8Cq8bm/KlL9WeUCAwEAAQ==
   products:
   - productId: SmallCoin_TasZan
     coinsAmount: 3500
