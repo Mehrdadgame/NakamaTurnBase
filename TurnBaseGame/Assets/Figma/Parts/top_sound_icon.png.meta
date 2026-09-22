@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 8eb60a79a273bfd4faf80d045788cd5c
+guid: 209e74b033f5c8c4789eff26d373f92d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4893251859951267016
-    second: top_coin_0
+      213: 4019685000682376581
+    second: top_sound_icon_0
+  - first:
+      213: -945948467068220828
+    second: top_sound_icon_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -74,11 +77,11 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
-    textureCompression: 2
-    compressionQuality: 100
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
@@ -102,12 +105,12 @@ TextureImporter:
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 49
-    textureCompression: 2
-    compressionQuality: 100
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 1
+    overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
@@ -115,13 +118,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: top_coin_0
+      name: top_sound_icon_0
       rect:
         serializedVersion: 2
-        x: 197
-        y: 195
-        width: 861
-        height: 895
+        x: 37
+        y: 64
+        width: 54
+        height: 53
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,8 +133,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 833d513eb5da71cb0800000000000000
-      internalID: -4893251859951267016
+      spriteID: 58d83aef53ac8c730800000000000000
+      internalID: 4019685000682376581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: top_sound_icon_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 11
+        width: 96
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46ac29c81e05fd2f0800000000000000
+      internalID: -945948467068220828
       vertices: []
       indices: 
       edges: []
@@ -140,7 +165,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -150,7 +175,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      top_coin_0: -4893251859951267016
+      top_sound_icon_0: 4019685000682376581
+      top_sound_icon_1: -945948467068220828
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

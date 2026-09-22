@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using RTLTMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -131,9 +132,43 @@ namespace NinjaBattle.UI.Editor
             RestorePlayerPanel(FindDeep(canvas.transform, "Player2"), new Vector2(276.8f, 0.40009f),
                 new Vector2(356.3f, 381.9f));
 
+            SetupGameResultPresentation(canvas);
+
             EditorUtility.SetDirty(canvas.gameObject);
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             return true;
+        }
+
+        private static void SetupGameResultPresentation(Canvas canvas)
+        {
+            ActionEndGame end = Object.FindObjectsByType<ActionEndGame>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(candidate => candidate.gameObject.scene == canvas.gameObject.scene);
+            if (end == null || end.ResultPanel == null)
+                return;
+
+            Transform resultRoot = end.ResultPanel.transform;
+            Transform visual = resultRoot.Find("FigmaResultVisual");
+            if (visual == null)
+            {
+                Vertical3x3Authoring.BuildResultOverlay(canvas);
+                visual = resultRoot.Find("FigmaResultVisual");
+            }
+
+            Sprite winSprite = LoadSprite("Assets/Figma/Home/Parts/win_trophy.png");
+            Sprite loseSprite = LoadSprite("Assets/Figma/Home/Parts/lose_character.png");
+
+            if (visual != null)
+            {
+                GameResultPresentation pres = visual.GetComponent<GameResultPresentation>();
+                if (pres != null)
+                {
+                    Transform modal = visual.Find("ResultModal");
+                    RTLTextMeshPro title = modal != null ? modal.Find("ResultTitle")?.GetComponent<RTLTextMeshPro>() : null;
+                    Image trophy = modal != null ? modal.Find("Trophy")?.GetComponent<Image>() : null;
+                    Image panel = modal != null ? modal.GetComponent<Image>() : null;
+                    pres.Configure(title, trophy, panel, winSprite, loseSprite);
+                }
+            }
         }
 
         private static void RestoreBoard(RectTransform board, Vector2 anchor, Vector2 position, Vector2 size,

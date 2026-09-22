@@ -22,6 +22,8 @@ namespace NinjaBattle.UI
         [SerializeField] private CanvasGroup modePopupCanvasGroup;
         [SerializeField] private RectTransform activeHighlight;
         [SerializeField] private RectTransform[] navigationItems;
+        [SerializeField] private Image soundButtonIcon;
+        [SerializeField] private Image topBarAvatarImage;
 
         private Tween highlightTween;
         private Tween popupTween;
@@ -39,10 +41,68 @@ namespace NinjaBattle.UI
             leaderboardPanel = leaderboardView;
         }
 
+        public void ConfigureTopBarWidgets(Image soundIcon, Image avatarThumbnail)
+        {
+            soundButtonIcon = soundIcon;
+            topBarAvatarImage = avatarThumbnail;
+            ApplyAudioState();
+            RefreshAvatar();
+        }
+
         public void ConfigureNavigation(RectTransform highlight, params RectTransform[] items)
         {
             activeHighlight = highlight;
             navigationItems = items;
+        }
+
+        private void Start()
+        {
+            ApplyAudioState();
+            if (ProfileService.Instance != null)
+            {
+                ProfileService.Instance.onAvatarChanged += HandleAvatarChanged;
+                RefreshAvatar();
+            }
+        }
+
+        public void ToggleAudio()
+        {
+            bool isMuted = AudioListener.pause || AudioListener.volume <= 0.01f;
+            bool newMuted = !isMuted;
+            AudioListener.pause = newMuted;
+            AudioListener.volume = newMuted ? 0f : 1f;
+            PlayerPrefs.SetInt("GameAudioMuted", newMuted ? 1 : 0);
+            PlayerPrefs.Save();
+            ApplyAudioState();
+        }
+
+        private void ApplyAudioState()
+        {
+            bool isMuted = PlayerPrefs.GetInt("GameAudioMuted", 0) == 1;
+            AudioListener.pause = isMuted;
+            AudioListener.volume = isMuted ? 0f : 1f;
+            if (soundButtonIcon != null)
+            {
+                soundButtonIcon.color = isMuted ? new Color(1f, 1f, 1f, 0.38f) : Color.white;
+            }
+        }
+
+        private void HandleAvatarChanged(string avatarId)
+        {
+            RefreshAvatar();
+        }
+
+        public void RefreshAvatar()
+        {
+            if (topBarAvatarImage == null || ProfileService.Instance == null)
+                return;
+
+            Sprite sprite = ProfileService.Instance.GetSprite(ProfileService.Instance.CurrentAvatarId);
+            if (sprite != null)
+            {
+                topBarAvatarImage.sprite = sprite;
+                topBarAvatarImage.color = Color.white;
+            }
         }
 
         public void SetMissionsPanel(GameObject panel)
@@ -277,6 +337,9 @@ namespace NinjaBattle.UI
 
         private void OnDestroy()
         {
+            if (ProfileService.Instance != null)
+                ProfileService.Instance.onAvatarChanged -= HandleAvatarChanged;
+
             highlightTween?.Kill();
             popupTween?.Kill();
             startCta?.DOKill();

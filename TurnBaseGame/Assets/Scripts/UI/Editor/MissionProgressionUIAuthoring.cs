@@ -1,9 +1,11 @@
+using System.IO;
 using System.Linq;
 using Nakama.Helpers;
 using NinjaBattle.Game;
 using RTLTMPro;
 using TMPro;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,17 +14,16 @@ namespace NinjaBattle.UI.Editor
 {
     public static class MissionProgressionUIAuthoring
     {
-        private const string MissionIconPath = "Assets/Sprite/misson/image 12002804.png";
-        private const string JournalBackgroundPath = "Assets/Sprite/misson/BG.png";
-        private const string CardBackgroundPath = "Assets/Sprite/misson/Rectangle 31.png";
         private const string RootName = "MissionProgressionUI";
         private const string ToastPrefabPath = "Assets/Prefabs/UI/MissionCompletionToast.prefab";
+        private const float DesignWidth = 1080f;
+        private const float DesignHeight = 2400f;
 
-        private static readonly Color Gold = new Color(0.85f, 0.60f, 0.20f, 1f);
-        private static readonly Color BrightGold = new Color(1f, 0.85f, 0.38f, 1f);
-        private static readonly Color DeepWood = new Color(0.12f, 0.08f, 0.04f, 0.97f);
-        private static readonly Color CardWood = new Color(0.14f, 0.09f, 0.05f, 0.98f);
-        private static readonly Color Cream = new Color(1f, 0.96f, 0.82f, 1f);
+        private static readonly Color Gold = new Color32(236, 174, 58, 255);
+        private static readonly Color BrightGold = new Color32(255, 221, 120, 255);
+        private static readonly Color DeepWood = new Color32(46, 26, 8, 245);
+        private static readonly Color Cream = new Color32(255, 221, 162, 255);
+        private static readonly Color GreenFill = new Color32(95, 203, 76, 255);
 
         [MenuItem("Tools/NinjaBattle/UI/Build Mission Progression UI")]
         public static void Build()
@@ -42,135 +43,65 @@ namespace NinjaBattle.UI.Editor
             EnsureRuntimeManagers();
             ChatUiFactory.Font = FindPersianFont();
 
+            FigmaHomeController controller = Object.FindObjectsByType<FigmaHomeController>(
+                    FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(candidate => candidate.gameObject.scene == UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+
             RectTransform root = ChatUiFactory.Rect(RootName, canvas.transform);
             Undo.RegisterCreatedObjectUndo(root.gameObject, "Build Mission Progression UI");
             ChatUiFactory.Stretch(root);
-            root.SetAsLastSibling();
 
-            Sprite missionIcon = LoadSpriteAtPath(MissionIconPath);
+            Transform leaderboardPanel = canvas.transform.Find("Panel Leaderboard");
+            if (leaderboardPanel != null)
+                root.SetSiblingIndex(leaderboardPanel.GetSiblingIndex());
 
-            Image hud = ChatUiFactory.Panel("ProgressionHUD", root, DeepWood);
-            Outline hudOutline = hud.gameObject.AddComponent<Outline>();
-            hudOutline.effectColor = new Color(0.72f, 0.50f, 0.18f, 0.85f);
-            hudOutline.effectDistance = new Vector2(2f, 2f);
-            Anchor(hud.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-                new Vector2(0f, -600f), new Vector2(620f, 60f));
+            // 1. Full Screen Background
+            RectTransform bg = CreateSpriteNode("Background", root, LoadSprite("background") ?? LoadSprite("BG"), false);
+            SetFigmaRect(bg, 0, 0, DesignWidth, DesignHeight);
 
-            Button openButton = CreateImageButton("OpenMissionsButton", hud.transform, missionIcon, Color.white);
-            Anchor(openButton.GetComponent<RectTransform>(), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
-                new Vector2(0.5f, 0.5f), new Vector2(46f, 0f), new Vector2(52f, 52f));
+            // 2. Top Bar
+            BuildTopBar(root, controller);
 
-            Image badgeBorder = ChatUiFactory.Panel("LevelBadge", hud.transform, Gold);
-            badgeBorder.raycastTarget = false;
-            Anchor(badgeBorder.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f),
-                new Vector2(0.5f, 0.5f), new Vector2(-44f, 0f), new Vector2(82f, 56f));
+            // 3. Header Ribbon ("ایونت ها")
+            RectTransform headerRibbon = CreateSpriteNode("HeaderRibbon", root, LoadSprite("missions_header"), false);
+            SetFigmaRect(headerRibbon, 217, 243, 646, 274);
 
-            Image levelBadge = ChatUiFactory.Panel("Inner", badgeBorder.transform, new Color(0.02f, 0.26f, 0.16f, 1f));
-            levelBadge.raycastTarget = false;
-            levelBadge.rectTransform.anchorMin = Vector2.zero;
-            levelBadge.rectTransform.anchorMax = Vector2.one;
-            levelBadge.rectTransform.offsetMin = new Vector2(4f, 4f);
-            levelBadge.rectTransform.offsetMax = new Vector2(-4f, -4f);
+            // 4. Progression & Level Strip
+            Image progStrip = ChatUiFactory.Panel("ProgressionStrip", root, DeepWood);
+            SetFigmaRect(progStrip.rectTransform, 180, 520, 720, 68);
+            Outline stripOutline = progStrip.gameObject.AddComponent<Outline>();
+            stripOutline.effectColor = Gold;
+            stripOutline.effectDistance = new Vector2(0, -3);
 
-            RTLTextMeshPro levelText = CreateText("LevelText", levelBadge.transform, "سطح ۱", 17, BrightGold,
+            RTLTextMeshPro levelText = CreateText("LevelText", progStrip.transform, "سطح ۱", 28, BrightGold,
                 TextAlignmentOptions.Center);
-            ChatUiFactory.Stretch(levelText.rectTransform);
+            SetTopLeft(levelText.rectTransform, 570, 10, 140, 48);
 
-            RTLTextMeshPro titleText = CreateText("TitleText", hud.transform, "توریست", 16, Cream,
+            RTLTextMeshPro titleText = CreateText("TitleText", progStrip.transform, "توریست", 24, Cream,
                 TextAlignmentOptions.Center);
-            Anchor(titleText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-                new Vector2(0.5f, 1f), new Vector2(0f, -5f), new Vector2(300f, 18f));
+            SetTopLeft(titleText.rectTransform, 430, 12, 130, 44);
 
-            Image xpTrack = ChatUiFactory.Panel("XpTrack", hud.transform, new Color(0f, 0.06f, 0.04f, 0.95f));
-            xpTrack.raycastTarget = false;
-            Anchor(xpTrack.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f), new Vector2(0f, 14f), new Vector2(360f, 10f));
+            Image xpTrack = ChatUiFactory.Panel("XpTrack", progStrip.transform, new Color32(20, 12, 4, 255));
+            SetTopLeft(xpTrack.rectTransform, 30, 20, 380, 28);
+            xpTrack.gameObject.AddComponent<Outline>().effectColor = new Color32(95, 60, 20, 255);
 
-            Image xpFill = ChatUiFactory.Panel("XpFill", xpTrack.transform, BrightGold);
+            Image xpFill = ChatUiFactory.Panel("XpFill", xpTrack.transform, Gold);
             xpFill.type = Image.Type.Filled;
             xpFill.fillMethod = Image.FillMethod.Horizontal;
             xpFill.fillOrigin = 0;
             xpFill.fillAmount = 0.42f;
             ChatUiFactory.Stretch(xpFill.rectTransform);
 
-            RTLTextMeshPro xpText = CreateText("XpText", hud.transform, "۴۲ از ۱۰۰ امتیاز", 13, Cream,
+            RTLTextMeshPro xpText = CreateText("XpText", xpTrack.transform, "۴۲ از ۱۰۰ امتیاز", 20, Color.white,
                 TextAlignmentOptions.Center);
-            Anchor(xpText.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f), new Vector2(0f, 25f), new Vector2(300f, 16f));
+            ChatUiFactory.Stretch(xpText.rectTransform);
 
-            Image dimmer = CreateImage("MissionPanel", root, null, new Color(0f, 0.025f, 0.018f, 0.88f));
-            ChatUiFactory.Stretch(dimmer.rectTransform);
+            // 5. Scrollable Mission Cards Viewport
+            Image viewport = ChatUiFactory.Panel("MissionsViewport", root, Color.clear);
+            SetFigmaRect(viewport.rectTransform, 150, 605, 780, 1490);
+            viewport.gameObject.AddComponent<RectMask2D>();
 
-            Image panelBorder = CreateImage("JournalBackground", dimmer.transform,
-                LoadSpriteAtPath(JournalBackgroundPath), Color.white);
-            panelBorder.type = Image.Type.Simple;
-            panelBorder.preserveAspect = true;
-            Anchor(panelBorder.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(930f, 1440f));
-
-            Image panel = CreateImage("PanelTint", panelBorder.transform, null, new Color(0.004f, 0.03f, 0.022f, 0.30f));
-            panel.raycastTarget = true;
-            ChatUiFactory.Stretch(panel.rectTransform);
-
-            Image header = CreateImage("Header", panel.transform, null, Color.clear);
-            Anchor(header.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-                new Vector2(0.5f, 1f), new Vector2(0f, -70f), new Vector2(700f, 92f));
-
-            RTLTextMeshPro headerText = CreateText("HeaderText", header.transform, "ماموریت‌های روزانه", 38, BrightGold,
-                TextAlignmentOptions.Center);
-            ChatUiFactory.Stretch(headerText.rectTransform);
-
-            Button closeButton = ChatUiFactory.RoundButton("CloseButton", panel.transform,
-                new Color(0.50f, 0.06f, 0.04f, 1f), "×", Cream, 52, 76f);
-            Anchor(closeButton.GetComponent<RectTransform>(), new Vector2(1f, 1f), new Vector2(1f, 1f),
-                new Vector2(0.5f, 0.5f), new Vector2(-54f, -54f), new Vector2(64f, 64f));
-
-            RTLTextMeshPro summaryText = CreateText("MissionSummary", panel.transform, "۰ از ۴ انجام شده", 27, Cream,
-                TextAlignmentOptions.Center);
-            Anchor(summaryText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-                new Vector2(0.5f, 1f), new Vector2(0f, -165f), new Vector2(650f, 40f));
-
-            ScrollRect scrollRect = CreateMissionScroll(panel.transform, out RectTransform content);
-            MissionItemView template = CreateMissionTemplate(content);
-
-            RTLTextMeshPro footer = CreateText("Footer", panel.transform,
-                "با انجام مأموریت‌ها امتیاز بگیر و سطح خودت را بالا ببر.", 24, new Color(0.88f, 0.78f, 0.55f, 1f),
-                TextAlignmentOptions.Center);
-            Anchor(footer.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f), new Vector2(0f, 46f), new Vector2(790f, 50f));
-
-            MissionsUI controller = root.gameObject.AddComponent<MissionsUI>();
-            SerializedObject controllerObject = new SerializedObject(controller);
-            SetObject(controllerObject, "missionPanel", dimmer.gameObject);
-            SetObject(controllerObject, "openButton", openButton);
-            SetObject(controllerObject, "closeButton", closeButton);
-            SetObject(controllerObject, "missionContainer", content);
-            SetObject(controllerObject, "missionItemTemplate", template);
-            SetObject(controllerObject, "missionSummaryText", summaryText);
-            SetObject(controllerObject, "levelText", levelText);
-            SetObject(controllerObject, "titleText", titleText);
-            SetObject(controllerObject, "xpText", xpText);
-            SetObject(controllerObject, "xpFill", xpFill);
-            controllerObject.ApplyModifiedPropertiesWithoutUndo();
-
-            scrollRect.verticalNormalizedPosition = 1f;
-            template.gameObject.SetActive(false);
-            dimmer.gameObject.SetActive(false);
-
-            EditorUtility.SetDirty(root.gameObject);
-            EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
-            Selection.activeGameObject = root.gameObject;
-            Debug.Log("Mission and progression UI built successfully.");
-        }
-
-        private static ScrollRect CreateMissionScroll(Transform parent, out RectTransform content)
-        {
-            Image viewportImage = ChatUiFactory.Panel("MissionViewport", parent, new Color(0f, 0f, 0f, 0.13f));
-            Anchor(viewportImage.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-                new Vector2(0.5f, 1f), new Vector2(0f, -245f), new Vector2(830f, 940f));
-            viewportImage.gameObject.AddComponent<RectMask2D>();
-
-            content = ChatUiFactory.Rect("MissionContent", viewportImage.transform);
+            RectTransform content = ChatUiFactory.Rect("MissionsContent", viewport.transform);
             content.anchorMin = new Vector2(0f, 1f);
             content.anchorMax = new Vector2(1f, 1f);
             content.pivot = new Vector2(0.5f, 1f);
@@ -178,8 +109,8 @@ namespace NinjaBattle.UI.Editor
             content.sizeDelta = Vector2.zero;
 
             VerticalLayoutGroup layout = content.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.padding = new RectOffset(18, 18, 18, 18);
-            layout.spacing = 18f;
+            layout.padding = new RectOffset(10, 10, 15, 20);
+            layout.spacing = 28f;
             layout.childAlignment = TextAnchor.UpperCenter;
             layout.childControlWidth = true;
             layout.childControlHeight = false;
@@ -189,80 +120,169 @@ namespace NinjaBattle.UI.Editor
             ContentSizeFitter fitter = content.gameObject.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            ScrollRect scroll = viewportImage.gameObject.AddComponent<ScrollRect>();
-            scroll.viewport = viewportImage.rectTransform;
+            ScrollRect scroll = viewport.gameObject.AddComponent<ScrollRect>();
+            scroll.viewport = viewport.rectTransform;
             scroll.content = content;
             scroll.horizontal = false;
             scroll.vertical = true;
             scroll.movementType = ScrollRect.MovementType.Elastic;
-            scroll.scrollSensitivity = 32f;
-            return scroll;
+            scroll.elasticity = 0.08f;
+            scroll.scrollSensitivity = 40f;
+
+            // 6. Mission Card Template
+            MissionItemView template = CreateMissionCardTemplate(content);
+            template.gameObject.SetActive(false);
+
+            // 7. Footer Navigation (Tab 3: Events active)
+            if (controller != null)
+            {
+                HomeMenuAuthoring.BuildSharedFooter(root, controller, 3);
+            }
+
+            // 8. MissionsUI Manager Wiring
+            MissionsUI missionsUi = root.gameObject.AddComponent<MissionsUI>();
+            SerializedObject serialized = new SerializedObject(missionsUi);
+            SetObject(serialized, "missionPanel", root.gameObject);
+            SetObject(serialized, "missionContainer", content);
+            SetObject(serialized, "missionItemTemplate", template);
+            SetObject(serialized, "levelText", levelText);
+            SetObject(serialized, "titleText", titleText);
+            SetObject(serialized, "xpText", xpText);
+            SetObject(serialized, "xpFill", xpFill);
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            if (controller != null)
+                controller.SetMissionsPanel(root.gameObject);
+
+            root.gameObject.SetActive(false);
+            EditorUtility.SetDirty(root.gameObject);
+            EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+            Debug.Log("MissionProgressionUI built successfully as full tab matching Figma 336:676.");
         }
 
-        private static MissionItemView CreateMissionTemplate(Transform parent)
+        private static void BuildTopBar(RectTransform root, FigmaHomeController controller)
         {
-            Image outer = ChatUiFactory.Panel("MissionItemTemplate", parent, new Color(0.28f, 0.18f, 0.07f, 0.92f));
-            LayoutElement layout = outer.gameObject.AddComponent<LayoutElement>();
-            layout.preferredHeight = 190f;
-            layout.minHeight = 190f;
+            RectTransform topBar = ChatUiFactory.Rect("TopBar", root);
+            SetFigmaRect(topBar, 74, 117, 932, 110);
 
-            Image card = CreateImage("CardBackground", outer.transform, LoadSpriteAtPath(CardBackgroundPath), CardWood);
-            card.rectTransform.anchorMin = Vector2.zero;
-            card.rectTransform.anchorMax = Vector2.one;
-            card.rectTransform.offsetMin = new Vector2(5f, 5f);
-            card.rectTransform.offsetMax = new Vector2(-5f, -5f);
+            // Settings
+            RectTransform settings = CreateRoundedButton("SettingsItem", topBar, Cream);
+            SetTopLeft(settings, 0, 4, 103, 103);
+            AddPanelDepth(settings.gameObject);
+            RectTransform settingsIcon = CreateSpriteNode("Icon", settings, LoadSprite("top_settings_icon") ?? LoadSprite("top_settings"), false);
+            SetTopLeft(settingsIcon, 23, 23, 56, 56);
+            if (controller != null)
+                UnityEventTools.AddPersistentListener(settings.GetComponent<Button>().onClick, controller.OpenProfile);
 
-            RTLTextMeshPro title = CreateText("Title", card.transform, "بردن یک مسابقه", 31, BrightGold,
+            // Sound
+            RectTransform sound = CreateRoundedButton("SoundItem", topBar, Cream);
+            SetTopLeft(sound, 135, 4, 103, 103);
+            AddPanelDepth(sound.gameObject);
+            RectTransform soundIcon = CreateSpriteNode("Icon", sound, LoadSprite("top_sound_icon"), false);
+            SetTopLeft(soundIcon, 20, 20, 64, 64);
+            if (controller != null)
+                UnityEventTools.AddPersistentListener(sound.GetComponent<Button>().onClick, controller.ToggleAudio);
+
+            // Coin Store Item
+            RectTransform coin = CreateRoundedButton("CoinStoreItem", topBar, Cream);
+            SetTopLeft(coin, 530, 4, 260, 103);
+            AddPanelDepth(coin.gameObject);
+            RTLTextMeshPro coinText = CreateText("ValueText", coin.transform, "۱۰۰", 65, new Color32(72, 46, 8, 255), TextAlignmentOptions.Center);
+            SetTopLeft(coinText.rectTransform, 25, -6, 110, 108);
+            RectTransform coinIcon = CreateSpriteNode("Icon", coin, LoadSprite("top_coin"), false);
+            SetTopLeft(coinIcon, 142, -10, 118, 118);
+            if (controller != null)
+                UnityEventTools.AddPersistentListener(coin.GetComponent<Button>().onClick, controller.OpenShop);
+
+            // Ornate Avatar button
+            RectTransform avatarBtn = CreateTransparentButton("AvatarItem", topBar);
+            SetTopLeft(avatarBtn, 827, 9, 97, 97);
+
+            Image avatarThumb = ChatUiFactory.Panel("AvatarThumb", avatarBtn, new Color32(230, 195, 140, 255));
+            SetTopLeft(avatarThumb.rectTransform, 8, 8, 81, 81);
+            avatarThumb.preserveAspect = true;
+            avatarThumb.raycastTarget = false;
+
+            RectTransform avatarFrame = CreateSpriteNode("AvatarFrame", avatarBtn, LoadSprite("top_avatar_frame"), false);
+            SetTopLeft(avatarFrame, 0, 0, 97, 97);
+            avatarFrame.GetComponent<Image>().raycastTarget = false;
+
+            if (controller != null)
+                UnityEventTools.AddPersistentListener(avatarBtn.GetComponent<Button>().onClick, controller.OpenProfile);
+        }
+
+        private static MissionItemView CreateMissionCardTemplate(Transform parent)
+        {
+            RectTransform cardRoot = ChatUiFactory.Rect("MissionCardTemplate", parent);
+            LayoutElement layout = cardRoot.gameObject.AddComponent<LayoutElement>();
+            layout.preferredHeight = 335f;
+            layout.minHeight = 335f;
+            layout.preferredWidth = 655f;
+
+            // Card background frame (Rectangle 31)
+            Image cardBg = CreateImage("CardBg", cardRoot, LoadSprite("mission_card_bg") ?? LoadSprite("Rectangle 31"), Color.white);
+            SetTopLeft(cardBg.rectTransform, 0, 8, 655, 327);
+
+            // Title Strip Banner (Rectangle 46)
+            Image titleStrip = CreateImage("TitleStrip", cardRoot, LoadSprite("mission_title_strip"), Color.white);
+            SetTopLeft(titleStrip.rectTransform, 0, 0, 655, 99);
+
+            // Mission Title on banner
+            RTLTextMeshPro title = CreateText("MissionTitle", titleStrip.transform, "۵ تا از حریف‌هات رو شکست بده!", 32, BrightGold,
+                TextAlignmentOptions.Center);
+            title.fontStyle = FontStyles.Bold;
+            ChatUiFactory.Stretch(title.rectTransform);
+
+            // Trophy Badge (image 12002804)
+            Image trophy = CreateImage("TrophyBadge", cardRoot, LoadSprite("mission_trophy_badge") ?? LoadSprite("image 12002804"), Color.white);
+            SetTopLeft(trophy.rectTransform, 20, 107, 123, 123);
+
+            // Mission Description
+            RTLTextMeshPro desc = CreateText("Description", cardRoot, "با شکست حریفان جوایز ویژه بگیر!", 22, Cream,
                 TextAlignmentOptions.MidlineRight);
-            Anchor(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
-                new Vector2(1f, 1f), new Vector2(-35f, -30f), new Vector2(-240f, 48f));
+            SetTopLeft(desc.rectTransform, 155, 110, 480, 40);
 
-            RTLTextMeshPro description = CreateText("Description", card.transform,
-                "یک مسابقه را با پیروزی تمام کن.", 23, Cream, TextAlignmentOptions.MidlineRight);
-            Anchor(description.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
-                new Vector2(1f, 1f), new Vector2(-35f, -88f), new Vector2(-240f, 70f));
+            // Reward badge
+            RTLTextMeshPro reward = CreateText("RewardText", cardRoot, "+۵۰ XP", 24, BrightGold,
+                TextAlignmentOptions.MidlineRight);
+            SetTopLeft(reward.rectTransform, 155, 150, 180, 36);
 
-            Image rewardBadge = ChatUiFactory.Panel("RewardBadge", card.transform, new Color(0.22f, 0.16f, 0.05f, 1f));
-            Anchor(rewardBadge.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(0f, 1f), new Vector2(24f, -26f), new Vector2(180f, 62f));
+            // Progress Track (Rectangle 45)
+            Image track = ChatUiFactory.Panel("ProgressTrack", cardRoot, new Color32(24, 14, 5, 255));
+            SetTopLeft(track.rectTransform, 155, 190, 470, 34);
+            track.gameObject.AddComponent<Outline>().effectColor = new Color32(110, 75, 30, 255);
 
-            RTLTextMeshPro reward = CreateText("Reward", rewardBadge.transform, "۵۰ XP", 26, BrightGold,
+            // Progress Fill (Rectangle 47)
+            Image fill = ChatUiFactory.Panel("ProgressFill", track.transform, GreenFill);
+            fill.type = Image.Type.Filled;
+            fill.fillMethod = Image.FillMethod.Horizontal;
+            fill.fillOrigin = 0;
+            fill.fillAmount = 0.40f;
+            ChatUiFactory.Stretch(fill.rectTransform);
+
+            // Progress Text (e.g. ۲ / ۵)
+            RTLTextMeshPro progress = CreateText("ProgressText", track.transform, "۲ / ۵", 22, Color.white,
                 TextAlignmentOptions.Center);
-            ChatUiFactory.Stretch(reward.rectTransform);
+            progress.fontStyle = FontStyles.Bold;
+            ChatUiFactory.Stretch(progress.rectTransform);
 
-            RTLTextMeshPro completed = CreateText("Completed", card.transform, "✓", 45,
-                new Color(0.45f, 1f, 0.48f, 1f), TextAlignmentOptions.Center);
-            Anchor(completed.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
-                new Vector2(0.5f, 0.5f), new Vector2(115f, -4f), new Vector2(70f, 70f));
+            // Action / Status Button (Group 33 / mission_status_btn)
+            RectTransform actionBtnRect = ChatUiFactory.Rect("ActionButton", cardRoot);
+            SetTopLeft(actionBtnRect, 78, 240, 498, 67);
+            Image btnImage = actionBtnRect.gameObject.AddComponent<Image>();
+            btnImage.sprite = LoadSprite("mission_status_btn");
+            btnImage.type = Image.Type.Simple;
+            Button actionBtn = actionBtnRect.gameObject.AddComponent<Button>();
+            actionBtn.targetGraphic = btnImage;
+            actionBtn.transition = Selectable.Transition.ColorTint;
 
-            Image progressTrack = ChatUiFactory.Panel("ProgressTrack", card.transform, new Color(0f, 0.055f, 0.035f, 1f));
-            Anchor(progressTrack.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
-                new Vector2(0.5f, 0f), new Vector2(0f, 22f), new Vector2(-64f, 18f));
-
-            Image progressFill = ChatUiFactory.Panel("ProgressFill", progressTrack.transform, BrightGold);
-            progressFill.type = Image.Type.Filled;
-            progressFill.fillMethod = Image.FillMethod.Horizontal;
-            progressFill.fillOrigin = 0;
-            progressFill.fillClockwise = true;
-            progressFill.fillAmount = 0.5f;
-            progressFill.raycastTarget = false;
-            ChatUiFactory.Stretch(progressFill.rectTransform);
-
-            RTLTextMeshPro progress = CreateText("Progress", card.transform, "۱ / ۲", 22, Cream,
+            RTLTextMeshPro actionText = CreateText("ButtonText", actionBtnRect.transform, "شروع بازی", 32, Color.white,
                 TextAlignmentOptions.Center);
-            Anchor(progress.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f), new Vector2(0f, 56f), new Vector2(300f, 32f));
+            actionText.fontStyle = FontStyles.Bold;
+            ChatUiFactory.Stretch(actionText.rectTransform);
 
-            MissionItemView view = outer.gameObject.AddComponent<MissionItemView>();
-            SerializedObject viewObject = new SerializedObject(view);
-            SetObject(viewObject, "titleText", title);
-            SetObject(viewObject, "descriptionText", description);
-            SetObject(viewObject, "progressText", progress);
-            SetObject(viewObject, "rewardText", reward);
-            SetObject(viewObject, "completedText", completed);
-            SetObject(viewObject, "progressFill", progressFill);
-            SetObject(viewObject, "cardBackground", card);
-            viewObject.ApplyModifiedPropertiesWithoutUndo();
+            MissionItemView view = cardRoot.gameObject.AddComponent<MissionItemView>();
+            view.Configure(title, desc, progress, reward, null, fill, cardBg, actionBtn, actionText);
             return view;
         }
 
@@ -299,22 +319,78 @@ namespace NinjaBattle.UI.Editor
             return text != null ? text.font : TMP_Settings.defaultFontAsset;
         }
 
+        private static Sprite LoadSprite(string name)
+        {
+            string path = "Assets/Figma/Home/Parts/" + name + ".png";
+            if (!File.Exists(path))
+                path = "Assets/Figma/Parts/" + name + ".png";
+            if (!File.Exists(path))
+                path = "Assets/Sprite/misson/" + name + ".png";
+
+            if (File.Exists(path))
+            {
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+                TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                if (importer != null && (importer.textureType != TextureImporterType.Sprite || importer.maxTextureSize < 4096))
+                {
+                    importer.textureType = TextureImporterType.Sprite;
+                    importer.spriteImportMode = SpriteImportMode.Single;
+                    importer.alphaIsTransparency = true;
+                    importer.mipmapEnabled = false;
+                    importer.maxTextureSize = 4096;
+                    importer.textureCompression = TextureImporterCompression.CompressedHQ;
+                    importer.SaveAndReimport();
+                }
+                return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            }
+
+            return null;
+        }
+
+        private static RectTransform CreateSpriteNode(string name, Transform parent, Sprite sprite, bool button)
+        {
+            RectTransform rect = ChatUiFactory.Rect(name, parent);
+            Image image = rect.gameObject.AddComponent<Image>();
+            image.sprite = sprite;
+            image.preserveAspect = false;
+            image.raycastTarget = button;
+            if (button)
+            {
+                Button uiButton = rect.gameObject.AddComponent<Button>();
+                uiButton.targetGraphic = image;
+                uiButton.transition = Selectable.Transition.ColorTint;
+            }
+            return rect;
+        }
+
         private static Image CreateImage(string name, Transform parent, Sprite sprite, Color color)
         {
             RectTransform rect = ChatUiFactory.Rect(name, parent);
             Image image = rect.gameObject.AddComponent<Image>();
             image.sprite = sprite;
             image.color = color;
-            image.preserveAspect = sprite != null;
+            image.preserveAspect = false;
+            image.raycastTarget = false;
             return image;
         }
 
-        private static Button CreateImageButton(string name, Transform parent, Sprite sprite, Color color)
+        private static RectTransform CreateRoundedButton(string name, Transform parent, Color color)
         {
-            Image image = CreateImage(name, parent, sprite, color);
+            Image image = ChatUiFactory.Panel(name, parent, color);
             Button button = image.gameObject.AddComponent<Button>();
             button.targetGraphic = image;
-            return button;
+            return image.rectTransform;
+        }
+
+        private static RectTransform CreateTransparentButton(string name, Transform parent)
+        {
+            RectTransform rect = ChatUiFactory.Rect(name, parent);
+            Image image = rect.gameObject.AddComponent<Image>();
+            image.color = Color.clear;
+            Button button = rect.gameObject.AddComponent<Button>();
+            button.targetGraphic = image;
+            button.transition = Selectable.Transition.None;
+            return rect;
         }
 
         private static RTLTextMeshPro CreateText(string name, Transform parent, string text, int size,
@@ -326,30 +402,36 @@ namespace NinjaBattle.UI.Editor
             return label;
         }
 
-        private static Sprite LoadSpriteAtPath(string path)
+        private static void AddPanelDepth(GameObject target)
         {
-            Sprite direct = AssetDatabase.LoadAssetAtPath<Sprite>(path);
-            if (direct != null)
-                return direct;
-
-            return AssetDatabase.LoadAllAssetsAtPath(path)
-                .OfType<Sprite>()
-                .FirstOrDefault();
+            Shadow shadow = target.AddComponent<Shadow>();
+            shadow.effectColor = new Color32(197, 148, 93, 220);
+            shadow.effectDistance = new Vector2(0, -5);
         }
 
-        private static void Anchor(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax,
-            Vector2 pivot, Vector2 position, Vector2 size)
+        private static void SetFigmaRect(RectTransform rect, float x, float y, float width, float height)
         {
-            rect.anchorMin = anchorMin;
-            rect.anchorMax = anchorMax;
-            rect.pivot = pivot;
-            rect.anchoredPosition = position;
-            rect.sizeDelta = size;
+            rect.anchorMin = new Vector2(x / DesignWidth, 1f - (y + height) / DesignHeight);
+            rect.anchorMax = new Vector2((x + width) / DesignWidth, 1f - y / DesignHeight);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+        }
+
+        private static void SetTopLeft(RectTransform rect, float x, float y, float width, float height)
+        {
+            rect.anchorMin = new Vector2(0, 1);
+            rect.anchorMax = new Vector2(0, 1);
+            rect.pivot = new Vector2(0, 1);
+            rect.anchoredPosition = new Vector2(x, -y);
+            rect.sizeDelta = new Vector2(width, height);
         }
 
         private static void SetObject(SerializedObject serializedObject, string propertyName, Object value)
         {
-            serializedObject.FindProperty(propertyName).objectReferenceValue = value;
+            SerializedProperty prop = serializedObject.FindProperty(propertyName);
+            if (prop != null)
+                prop.objectReferenceValue = value;
         }
     }
 }

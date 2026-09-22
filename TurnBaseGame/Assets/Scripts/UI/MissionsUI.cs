@@ -86,6 +86,17 @@ namespace NinjaBattle.UI
                 _progressionManager.CurrentTitle);
         }
 
+        private void OnEnable()
+        {
+            if (_missionManager != null)
+                RefreshMissions(_missionManager.Missions);
+            if (_progressionManager != null)
+                RefreshProgression(
+                    _progressionManager.CurrentXp,
+                    _progressionManager.CurrentLevel,
+                    _progressionManager.CurrentTitle);
+        }
+
         private void OnDestroy()
         {
             if (openButton != null)

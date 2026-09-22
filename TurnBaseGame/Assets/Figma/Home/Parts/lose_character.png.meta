@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: 8eb60a79a273bfd4faf80d045788cd5c
+guid: 4cca65f47910b2a42a9c78d40e4a49b2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4893251859951267016
-    second: top_coin_0
+      213: 4999613699839015067
+    second: lose_character_0
+  - first:
+      213: -9024158504051305277
+    second: lose_character_1
+  - first:
+      213: 6391609279196438336
+    second: lose_character_2
+  - first:
+      213: -3681048663292321083
+    second: lose_character_3
+  - first:
+      213: 32478987371283102
+    second: lose_character_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +58,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -74,11 +86,11 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
-    textureCompression: 2
-    compressionQuality: 100
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
@@ -102,12 +114,12 @@ TextureImporter:
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 49
-    textureCompression: 2
-    compressionQuality: 100
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 1
+    overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
@@ -115,13 +127,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: top_coin_0
+      name: lose_character_0
       rect:
         serializedVersion: 2
-        x: 197
-        y: 195
-        width: 861
-        height: 895
+        x: 51
+        y: 54
+        width: 847
+        height: 720
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,8 +142,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 833d513eb5da71cb0800000000000000
-      internalID: -4893251859951267016
+      spriteID: b98b411cb22326540800000000000000
+      internalID: 4999613699839015067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lose_character_1
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 737
+        width: 112
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c4933117afb3c280800000000000000
+      internalID: -9024158504051305277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lose_character_2
+      rect:
+        serializedVersion: 2
+        x: 513
+        y: 703
+        width: 250
+        height: 125
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04f189576ce83b850800000000000000
+      internalID: 6391609279196438336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lose_character_3
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 46
+        width: 33
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c2e8876eb94aecc0800000000000000
+      internalID: -3681048663292321083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lose_character_4
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 44
+        width: 86
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e920ee88773637000800000000000000
+      internalID: 32478987371283102
       vertices: []
       indices: 
       edges: []
@@ -140,7 +240,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -150,7 +250,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      top_coin_0: -4893251859951267016
+      lose_character_0: 4999613699839015067
+      lose_character_1: -9024158504051305277
+      lose_character_2: 6391609279196438336
+      lose_character_3: -3681048663292321083
+      lose_character_4: 32478987371283102
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

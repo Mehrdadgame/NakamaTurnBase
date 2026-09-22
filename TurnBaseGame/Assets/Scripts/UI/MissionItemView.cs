@@ -14,6 +14,8 @@ namespace NinjaBattle.UI
         [SerializeField] private RTLTextMeshPro completedText;
         [SerializeField] private Image progressFill;
         [SerializeField] private Image cardBackground;
+        [SerializeField] private Button actionButton;
+        [SerializeField] private RTLTextMeshPro actionButtonText;
 
         private Outline _cardOutline;
 
@@ -93,12 +95,37 @@ namespace NinjaBattle.UI
                 progressFill.color = mission.IsCompleted ? CompletedFillColor : ActiveFillColor;
             }
 
+            if (actionButtonText != null)
+            {
+                actionButtonText.text = mission.IsCompleted ? "انجام شده" : "شروع بازی";
+                actionButtonText.color = mission.IsCompleted ? new Color(0.9f, 1f, 0.9f, 0.9f) : Color.white;
+            }
+
+            if (actionButton != null)
+            {
+                actionButton.interactable = !mission.IsCompleted;
+            }
+
             if (cardBackground != null)
             {
                 cardBackground.color = mission.IsCompleted ? CompletedCardColor : ActiveCardColor;
                 if (_cardOutline != null)
                     _cardOutline.effectColor = mission.IsCompleted ? CompletedBorderColor : ActiveBorderColor;
             }
+        }
+
+        public void Configure(RTLTextMeshPro title, RTLTextMeshPro desc, RTLTextMeshPro prog, RTLTextMeshPro rew,
+            RTLTextMeshPro comp, Image fill, Image bg, Button btn, RTLTextMeshPro btnText)
+        {
+            titleText = title;
+            descriptionText = desc;
+            progressText = prog;
+            rewardText = rew;
+            completedText = comp;
+            progressFill = fill;
+            cardBackground = bg;
+            actionButton = btn;
+            actionButtonText = btnText;
         }
 
         private void ConfigureProgressFill()

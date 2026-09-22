@@ -73,7 +73,7 @@ namespace NinjaBattle.UI.Editor
             controller.SetMissionsPanel(canvas.transform.Find("MissionProgressionUI")?.gameObject);
 
             BuildBackground(root);
-            BuildPromo(root, controller);
+            // Promo banner omitted per user request ("بنر بالای صفحه هوم نیاز نیست")
             BuildStartButton(root, controller);
             BuildChestRow(root, controller);
             BuildTopBar(root, controller);
@@ -83,6 +83,8 @@ namespace NinjaBattle.UI.Editor
             BuildShopScreen(shop != null ? shop.transform : null, controller);
             HomeProfileShopAuthoring.Build(canvas.transform, profile != null ? profile.transform : null,
                 shop != null ? shop.transform : null, controller);
+            MissionProgressionUIAuthoring.Build();
+            controller.SetMissionsPanel(canvas.transform.Find("MissionProgressionUI")?.gameObject);
 
             EditorUtility.SetDirty(root.gameObject);
             EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
@@ -104,13 +106,6 @@ namespace NinjaBattle.UI.Editor
         {
             RectTransform background = CreateSpriteNode("Background", root, LoadSprite("background"), false);
             SetFigmaRect(background, 0, 0, DesignWidth, DesignHeight);
-        }
-
-        private static void BuildPromo(RectTransform root, FigmaHomeController controller)
-        {
-            RectTransform promo = CreateSpriteNode("PromoBanner", root, LoadSprite("promo_banner"), true);
-            SetFigmaRect(promo, 147, 348, 786, 263);
-            UnityEventTools.AddPersistentListener(promo.GetComponent<Button>().onClick, controller.OpenShop);
         }
 
         private static void BuildStartButton(RectTransform root, FigmaHomeController controller)
@@ -165,55 +160,72 @@ namespace NinjaBattle.UI.Editor
             RectTransform topBar = ChatUiFactory.Rect("TopBar", root);
             SetFigmaRect(topBar, 74, 117, 932, 110);
 
+            // 1. Settings button (103x103) at x=0
             RectTransform settings = CreateRoundedButton("SettingsItem", topBar, Cream);
             SetTopLeft(settings, 0, 4, 103, 103);
             AddPanelDepth(settings.gameObject);
-            RectTransform settingsIcon = CreateSpriteNode("Icon", settings, LoadSprite("top_settings"), false);
-            SetTopLeft(settingsIcon, 23, 22, 56, 56);
+            RectTransform settingsIcon = CreateSpriteNode("Icon", settings, LoadSprite("top_settings_icon") ?? LoadSprite("top_settings"), false);
+            SetTopLeft(settingsIcon, 23, 23, 56, 56);
             UnityEventTools.AddPersistentListener(settings.GetComponent<Button>().onClick, controller.OpenProfile);
 
-            RectTransform gem = CreateRoundedButton("GemStoreItem", topBar, Cream);
-            SetTopLeft(gem, 422, 6, 238, 103);
-            AddPanelDepth(gem.gameObject);
-            RTLTextMeshPro gemText = CreateLabel("ValueText", gem, "۱۰۰", 65, TextAlignmentOptions.Center);
-            SetTopLeft(gemText.rectTransform, 38, -5, 82, 108);
-            CreateCroppedIcon("Icon", gem, LoadAtlasSprite("figma_item_19"), 127, 8, 107, 80, 5, -5, 96, 96);
-            UnityEventTools.AddPersistentListener(gem.GetComponent<Button>().onClick, controller.OpenShop);
+            // 2. Sound button (103x103) at x=135
+            RectTransform sound = CreateRoundedButton("SoundItem", topBar, Cream);
+            SetTopLeft(sound, 135, 4, 103, 103);
+            AddPanelDepth(sound.gameObject);
+            RectTransform soundIcon = CreateSpriteNode("Icon", sound, LoadSprite("top_sound_icon"), false);
+            SetTopLeft(soundIcon, 20, 20, 64, 64);
+            UnityEventTools.AddPersistentListener(sound.GetComponent<Button>().onClick, controller.ToggleAudio);
 
+            // NOTE: Diamond/Gem button omitted per user request ("الماس نیاز نیست")
+
+            // 3. Coin store plate (260x103) at x=530
             RectTransform coin = CreateRoundedButton("CoinStoreItem", topBar, Cream);
-            SetTopLeft(coin, 694, 7, 238, 103);
+            SetTopLeft(coin, 530, 4, 260, 103);
             AddPanelDepth(coin.gameObject);
             RTLTextMeshPro coinText = CreateLabel("ValueText", coin, "۱۰۰", 65, TextAlignmentOptions.Center);
-            SetTopLeft(coinText.rectTransform, 38, -6, 82, 108);
+            SetTopLeft(coinText.rectTransform, 25, -6, 110, 108);
             RectTransform coinIcon = CreateSpriteNode("Icon", coin, LoadSprite("top_coin"), false);
-            SetTopLeft(coinIcon, 119, -11, 118, 118);
+            SetTopLeft(coinIcon, 142, -10, 118, 118);
             UnityEventTools.AddPersistentListener(coin.GetComponent<Button>().onClick, controller.OpenShop);
-
             BindDynamicCoinText(coinText);
+
+            // 4. Ornate Avatar button (97x97) at x=827 from Figma 242:2542
+            RectTransform avatarBtn = CreateTransparentButton("AvatarItem", topBar);
+            SetTopLeft(avatarBtn, 827, 9, 97, 97);
+
+            Image avatarThumb = ChatUiFactory.Panel("AvatarThumb", avatarBtn, new Color32(230, 195, 140, 255));
+            SetTopLeft(avatarThumb.rectTransform, 8, 8, 81, 81);
+            avatarThumb.preserveAspect = true;
+            avatarThumb.raycastTarget = false;
+
+            RectTransform avatarFrame = CreateSpriteNode("AvatarFrame", avatarBtn, LoadSprite("top_avatar_frame"), false);
+            SetTopLeft(avatarFrame, 0, 0, 97, 97);
+            avatarFrame.GetComponent<Image>().raycastTarget = false;
+
+            UnityEventTools.AddPersistentListener(avatarBtn.GetComponent<Button>().onClick, controller.OpenProfile);
+
+            controller.ConfigureTopBarWidgets(soundIcon.GetComponent<Image>(), avatarThumb);
         }
 
         private static void BuildFooter(RectTransform root, FigmaHomeController controller)
         {
-            // The shipped scene keeps its footer directly under the canvas; reuse it
-            // so a rebuild wires navigation to the live items instead of duplicating it.
-            RectTransform existingFooter = root.parent.Find("Footer") as RectTransform;
-            if (existingFooter != null && existingFooter.Find("EventsItem") != null)
-            {
-                controller.ConfigureNavigation(
-                    existingFooter.Find("ActiveHighlight") as RectTransform,
-                    existingFooter.Find("StoreItem") as RectTransform,
-                    existingFooter.Find("CardsItem") as RectTransform,
-                    existingFooter.Find("HomeItem") as RectTransform,
-                    existingFooter.Find("EventsItem") as RectTransform,
-                    existingFooter.Find("LeaderboardItem") as RectTransform);
-                return;
-            }
+            BuildSharedFooter(root, controller, 2);
+        }
 
-            RectTransform footer = CreateSpriteNode("Footer", root, LoadSprite("footer_base"), false);
+        public static RectTransform BuildSharedFooter(Transform parent, FigmaHomeController controller, int activeTabIndex)
+        {
+            Transform existingFooter = parent.Find("Footer");
+            if (existingFooter != null)
+                Undo.DestroyObjectImmediate(existingFooter.gameObject);
+
+            RectTransform footer = CreateSpriteNode("Footer", parent, LoadSprite("footer_base"), false);
             SetFigmaRect(footer, 94, 2119, 893, 193);
 
+            float[] highlightX = { 0, 160, 338, 527, 690 };
+            float activeX = (activeTabIndex >= 0 && activeTabIndex < highlightX.Length) ? highlightX[activeTabIndex] : 338;
+
             RectTransform highlight = ChatUiFactory.Panel("ActiveHighlight", footer, ActiveCream).rectTransform;
-            SetTopLeft(highlight, 338, -7, 189, 200);
+            SetTopLeft(highlight, activeX, -7, 189, 200);
             highlight.SetAsFirstSibling();
             AddActiveDepth(highlight.gameObject);
 
@@ -243,7 +255,12 @@ namespace NinjaBattle.UI.Editor
             AddNavLabel(leaderboard, "لیدربرد", 25, 0, 124, 203, 55);
             UnityEventTools.AddPersistentListener(leaderboard.GetComponent<Button>().onClick, controller.SelectLeaderboard);
 
-            controller.ConfigureNavigation(highlight, store, cards, home, eventsItem, leaderboard);
+            if (activeTabIndex == 2)
+            {
+                controller.ConfigureNavigation(highlight, store, cards, home, eventsItem, leaderboard);
+            }
+
+            return footer;
         }
 
         private static void BuildModePopup(RectTransform root, FigmaHomeController controller)
@@ -399,16 +416,7 @@ namespace NinjaBattle.UI.Editor
 
             RectTransform navigation = ChatUiFactory.Rect("FigmaLeaderboardNavigation", screen);
             ChatUiFactory.Stretch(navigation);
-            Image footerHome = ChatUiFactory.Panel("FooterHomeButton", navigation, Cream);
-            SetFigmaRect(footerHome.rectTransform, 350, 2150, 380, 105);
-            footerHome.gameObject.AddComponent<Outline>().effectColor = new Color32(157, 101, 60, 255);
-            footerHome.GetComponent<Outline>().effectDistance = new Vector2(0f, -4f);
-            Button footerHomeButton = footerHome.gameObject.AddComponent<Button>();
-            footerHomeButton.transition = Selectable.Transition.None;
-            RTLTextMeshPro homeLabel = CreateLabel("Label", footerHome.transform, "خانه", 40, TextAlignmentOptions.Center);
-            homeLabel.color = Brown;
-            ChatUiFactory.Stretch(homeLabel.rectTransform);
-            UnityEventTools.AddPersistentListener(footerHomeButton.onClick, controller.CloseLeaderboard);
+            BuildSharedFooter(navigation, controller, 4);
 
             if (manager != null)
             {
@@ -644,24 +652,7 @@ namespace NinjaBattle.UI.Editor
             RectTransform navigation = ChatUiFactory.Rect("FigmaShopNavigation", shopPanel);
             ChatUiFactory.Stretch(navigation);
             navigation.SetAsLastSibling();
-
-            // ── Clean Navigation for Shop Frame ──
-            // 1. Home tab
-            RectTransform homeButton = CreateTransparentButton("HomeButton", navigation);
-            SetFigmaRect(homeButton, 432, 2119, 189, 193);
-            UnityEventTools.AddPersistentListener(homeButton.GetComponent<Button>().onClick, controller.CloseShop);
-
-            RectTransform cardsButton = CreateTransparentButton("CardsButton", navigation);
-            SetFigmaRect(cardsButton, 272, 2119, 160, 193);
-            UnityEventTools.AddPersistentListener(cardsButton.GetComponent<Button>().onClick, controller.SelectCards);
-
-            RectTransform eventsButton = CreateTransparentButton("EventsButton", navigation);
-            SetFigmaRect(eventsButton, 621, 2119, 163, 193);
-            UnityEventTools.AddPersistentListener(eventsButton.GetComponent<Button>().onClick, controller.SelectEvents);
-
-            RectTransform leaderboardButton = CreateTransparentButton("LeaderboardButton", navigation);
-            SetFigmaRect(leaderboardButton, 784, 2119, 203, 193);
-            UnityEventTools.AddPersistentListener(leaderboardButton.GetComponent<Button>().onClick, controller.OpenLeaderboardFromShop);
+            BuildSharedFooter(navigation, controller, 0);
 
             RectTransform profileButton = CreateTransparentButton("ProfileButton", navigation);
             SetFigmaRect(profileButton, 194, 117, 103, 103);
@@ -783,6 +774,12 @@ namespace NinjaBattle.UI.Editor
         private static Sprite LoadSprite(string name)
         {
             string path = PartsPath + name + ".png";
+            if (!System.IO.File.Exists(path))
+            {
+                string altPath = "Assets/Figma/Parts/" + name + ".png";
+                if (System.IO.File.Exists(altPath))
+                    path = altPath;
+            }
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer != null && (importer.textureType != TextureImporterType.Sprite || importer.maxTextureSize < 4096))

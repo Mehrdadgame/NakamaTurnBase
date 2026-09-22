@@ -207,7 +207,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
+  m_ActiveFontFeatures: 6e72656bu
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -909,6 +909,7 @@ GameObject:
   - component: {fileID: 1878261114}
   - component: {fileID: 1878261116}
   - component: {fileID: 1878261115}
+  - component: {fileID: 1878261117}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -974,6 +975,89 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878261113}
   m_CullTransparentMesh: 1
+--- !u!114 &1878261117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878261113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba4816e9229d8d74695f8812d1cab5ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JuiceUp.UiJuiceAnimator
+  autoPlayOnEnable: 1
+  stagger: 0.01
+  includeInactiveChildren: 0
+  autoRandomizeOnPlay: 1
+  strength: 1
+  durationMin: 0.35
+  durationMax: 0.8
+  preset: 15
+  deactivateGameObjectAfterPlayOut: 0
+  destroyGameObjectAfterPlayOut: 0
+  allowPreviewInEditMode: 0
+  allowAutoPlayInEditMode: 0
+  autoApplyPresetInEditMode: 0
+  verboseLogs: 0
+  elements:
+  - target: {fileID: 341406651}
+    animatePosition: 1
+    positionOffset: {x: 0, y: -80}
+    useCurvePath: 1
+    curveAmplitude: 20
+    useShakeJitter: 0
+    shakeMagnitude: 6
+    shakeRotationMagnitude: 4
+    shakeFrequency: 20
+    shakeSeed: 0
+    animateRotation: 0
+    rotationOffset: {x: 0, y: 0, z: 12}
+    animateScale: 1
+    scaleFrom: {x: 0.85, y: 0.85, z: 1}
+    animateFade: 0
+    fadeFrom: 0
+    animateColor: 0
+    graphicOverride: {fileID: 0}
+    colorFrom: {r: 1, g: 1, b: 1, a: 1}
+    duration: 0.45
+    delay: 0
+    ease:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    initialPosition: {x: 0, y: 0}
+    initialRotation: {x: 0, y: 0, z: 0, w: 1}
+    initialScale: {x: 1, y: 1, z: 1}
+    initialAlpha: 1
+    initialColor: {r: 1, g: 1, b: 1, a: 1}
+    hasInitialState: 0
+  presetCacheValid: 0
+  cachedPreset: 0
+  cachedStrength: 0
+  cachedDurationMin: 0
+  cachedDurationMax: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

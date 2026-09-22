@@ -131,7 +131,7 @@ namespace NinjaBattle.UI.Editor
             RTLTextMeshPro points = Label("Score", card.transform, score, 55, Color.white); Set(points.rectTransform, 230, 18, 72, 90);
         }
 
-        private static void BuildResultOverlay(Canvas canvas)
+        public static void BuildResultOverlay(Canvas canvas)
         {
             ActionEndGame end = Object.FindFirstObjectByType<ActionEndGame>(FindObjectsInactive.Include);
             if (end == null || end.ResultPanel == null) { Debug.LogWarning("Result panel not found; board UI still built."); return; }
@@ -150,13 +150,15 @@ namespace NinjaBattle.UI.Editor
             RTLTextMeshPro oppName = Label("OppName", modal.transform, "حریف", 42, new Color32(74, 46, 8, 255)); Set(oppName.rectTransform, 510, 385, 300, 60);
             RTLTextMeshPro meScore = Label("MeScore", modal.transform, "۰", 66, new Color32(74, 46, 8, 255)); Set(meScore.rectTransform, 130, 450, 220, 82);
             RTLTextMeshPro oppScore = Label("OppScore", modal.transform, "۰", 66, new Color32(74, 46, 8, 255)); Set(oppScore.rectTransform, 550, 450, 220, 82);
-            Image trophy = ImageNode("Trophy", modal.transform, LoadSprite("Game/Result/trophy")); Set(trophy.rectTransform, 75, 545, 750, 600);
+            Sprite winSprite = LoadFigmaSprite("win_trophy");
+            Sprite loseSprite = LoadFigmaSprite("lose_character");
+            Image trophy = ImageNode("Trophy", modal.transform, winSprite); Set(trophy.rectTransform, 75, 545, 750, 600);
             RTLTextMeshPro title = Label("ResultTitle", modal.transform, "برنده شدی!", 75, new Color32(119, 72, 11, 255)); Set(title.rectTransform, 105, 1160, 690, 120);
             RectTransform home = ButtonNode("ReturnHome", modal.transform, new Color32(239, 131, 44, 255)); Set(home, 145, 1350, 610, 170); Round(home.gameObject, 36, new Color32(137, 69, 25, 255));
             RTLTextMeshPro homeLabel = Label("Label", home, "بازگشت به خانه", 50, Color.white); Stretch(homeLabel.rectTransform);
 
             GameResultPresentation presentation = overlay.gameObject.AddComponent<GameResultPresentation>();
-            presentation.Configure(title, trophy, modal);
+            presentation.Configure(title, trophy, modal, winSprite, loseSprite);
             UnityEventTools.AddPersistentListener(home.GetComponent<Button>().onClick, presentation.ReturnHome);
             end.ResultPresentation = presentation;
             end.ResultText = title; end.ScoreMe = meScore; end.ScoreOpp = oppScore; end.NameOpp = oppName; end.BackToHome = home.GetComponent<Button>();
@@ -178,5 +180,12 @@ namespace NinjaBattle.UI.Editor
         private static void Stretch(RectTransform r) { r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one; r.offsetMin = Vector2.zero; r.offsetMax = Vector2.zero; }
         private static void Round(GameObject go, float radius, Color outline) { Outline edge = go.GetComponent<Outline>() ?? go.AddComponent<Outline>(); edge.effectColor = outline; edge.effectDistance = new Vector2(0, -5); Shadow shade = go.GetComponent<Shadow>() ?? go.AddComponent<Shadow>(); shade.effectColor = new Color(0, 0, 0, .27f); shade.effectDistance = new Vector2(0, -7); }
         private static Sprite LoadSprite(string resourcePath) => Resources.Load<Sprite>(resourcePath);
+        private static Sprite LoadFigmaSprite(string name)
+        {
+            string path = "Assets/Figma/Home/Parts/" + name + ".png";
+            if (!System.IO.File.Exists(path))
+                path = "Assets/Figma/Parts/" + name + ".png";
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
     }
 }
