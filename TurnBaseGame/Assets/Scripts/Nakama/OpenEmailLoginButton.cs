@@ -23,13 +23,18 @@ namespace Nakama.Helpers
 
         private void OnClicked()
         {
+            EmailLoginPanel target = emailLoginPanel != null
+                ? emailLoginPanel
+                : EmailLoginPanel.Instance;
 
-            if (emailLoginPanel != null)
+            if (target == null)
             {
-
-                emailLoginPanel.gameObject.SetActive(true);
-                emailLoginPanel.Show();
+                target = FindFirstObjectByType<EmailLoginPanel>(FindObjectsInactive.Include);
+                emailLoginPanel = target;
             }
+
+            if (target != null)
+                target.Show();
             else
                 Debug.LogWarning("[OpenEmailLoginButton] EmailLoginPanel not found in scene.");
         }

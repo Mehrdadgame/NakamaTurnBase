@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DG.Tweening;
+
 public class ClickInCell : MonoBehaviour, IPointerDownHandler
 {
 
@@ -39,6 +41,10 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
         MultiplayerManager.Instance.SendTurn(name, GameManager.Instance.diceRoller.currrentDie, numberLine, numberRow);
         var tile = SpriteDice.transform.parent;
         tile.gameObject.SetActive(true);
+        tile.DOKill();
+        tile.localScale = Vector3.zero;
+        tile.DOScale(Vector3.one, 0.28f).SetEase(Ease.OutBack).SetUpdate(true);
+
         SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
         ValueTile = GameManager.Instance.diceRoller.currrentDie + 1;
         SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[GameManager.Instance.diceRoller.currrentDie];

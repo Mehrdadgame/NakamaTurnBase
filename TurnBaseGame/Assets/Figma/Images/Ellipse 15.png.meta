@@ -1,22 +1,10 @@
 fileFormatVersion: 2
-guid: 961aaf6439327b04f9eddef3d5970c5c
+guid: de2b66693072ce7409494634124480ea
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5503482238884628586
-    second: Copilot_20260509_114932_0
-  - first:
-      213: -5870439726790110725
-    second: Copilot_20260509_114932_1
-  - first:
-      213: -8612688177834383492
-    second: Copilot_20260509_114932_2
-  - first:
-      213: 16297913455107080
-    second: Copilot_20260509_114932_3
-  - first:
-      213: -7680549111125548087
-    second: Copilot_20260509_114932_4
+      213: -7590070660831232634
+    second: Ellipse 15_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -89,8 +77,8 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 2
-    compressionQuality: 100
+    textureCompression: 1
+    compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
@@ -114,12 +102,12 @@ TextureImporter:
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 48
-    textureCompression: 2
-    compressionQuality: 100
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 1
+    overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
@@ -127,67 +115,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Copilot_20260509_114932_1
+      name: Ellipse 15_0
       rect:
         serializedVersion: 2
-        x: 156
-        y: 465
-        width: 6
-        height: 8
+        x: 0
+        y: 0
+        width: 193
+        height: 193
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bf19551eb22088ea0800000000000000
-      internalID: -5870439726790110725
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Copilot_20260509_114932_2
-      rect:
-        serializedVersion: 2
-        x: 587
-        y: 432
-        width: 367
-        height: 145
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c77a9f6fbb5997880800000000000000
-      internalID: -8612688177834383492
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Copilot_20260509_114932_4
-      rect:
-        serializedVersion: 2
-        x: 1066
-        y: 467
-        width: 7
-        height: 6
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9c36b67d645396590800000000000000
-      internalID: -7680549111125548087
+      spriteID: 68d3a09a2f6aaa690800000000000000
+      internalID: -7590070660831232634
       vertices: []
       indices: 
       edges: []
@@ -196,7 +140,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5c5799a9d4d45bc47a2737d7a99f1f85
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -206,11 +150,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Copilot_20260509_114932_0: 5503482238884628586
-      Copilot_20260509_114932_1: -5870439726790110725
-      Copilot_20260509_114932_2: -8612688177834383492
-      Copilot_20260509_114932_3: 16297913455107080
-      Copilot_20260509_114932_4: -7680549111125548087
+      Ellipse 15_0: -7590070660831232634
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

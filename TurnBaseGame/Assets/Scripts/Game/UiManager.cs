@@ -297,30 +297,57 @@ public class UiManager : MonoBehaviour
     {
         if (mines > 0)
         {
-            TextValueMines.GetComponent<TextMeshProUGUI>().text = "-" + mines;
+            var tmp = TextValueMines.GetComponent<TextMeshProUGUI>();
+            if (tmp != null) tmp.text = "-" + mines;
             TextValueMines.Play("Mines", 0, 0);
-
-            WowPar.Play();
-
+            TextValueMines.transform.DOKill();
+            TextValueMines.transform.localScale = Vector3.one;
+            TextValueMines.transform.DOPunchScale(Vector3.one * 0.35f, 0.3f, 5, 0.5f).SetUpdate(true);
+            if (WowPar != null) WowPar.Play();
             mines = 0;
         }
-        ScoreTextOpp.text = obj.ToString();
-
-
+        if (ScoreTextOpp != null)
+        {
+            ScoreTextOpp.text = obj.ToString();
+            ScoreTextOpp.rectTransform.DOKill();
+            ScoreTextOpp.rectTransform.localScale = Vector3.one;
+            ScoreTextOpp.rectTransform.DOPunchScale(Vector3.one * 0.28f, 0.25f, 4, 0.5f).SetUpdate(true);
+        }
     }
 
     private void Instance_onSetScoreOpp(int obj, int mines, DataPlayer data)
     {
         if (mines > 0)
         {
-            TextValueMines.GetComponent<TextMeshProUGUI>().text = "-" + mines;
+            var tmp = TextValueMines.GetComponent<TextMeshProUGUI>();
+            if (tmp != null) tmp.text = "-" + mines;
             TextValueMines.Play("Mines", 0, 0);
-            WowPar.Play();
-
+            TextValueMines.transform.DOKill();
+            TextValueMines.transform.localScale = Vector3.one;
+            TextValueMines.transform.DOPunchScale(Vector3.one * 0.35f, 0.3f, 5, 0.5f).SetUpdate(true);
+            if (WowPar != null) WowPar.Play();
             mines = 0;
         }
-        ScoreTextMe.text = obj.ToString();
+        if (ScoreTextMe != null)
+        {
+            ScoreTextMe.text = obj.ToString();
+            ScoreTextMe.rectTransform.DOKill();
+            ScoreTextMe.rectTransform.localScale = Vector3.one;
+            ScoreTextMe.rectTransform.DOPunchScale(Vector3.one * 0.28f, 0.25f, 4, 0.5f).SetUpdate(true);
+        }
+    }
 
+    private void SetRowSumText(TextMeshProUGUI label, int newScore)
+    {
+        if (label == null) return;
+        string newText = newScore.ToString();
+        if (label.text != newText)
+        {
+            label.text = newText;
+            label.rectTransform.DOKill();
+            label.rectTransform.localScale = Vector3.one;
+            label.rectTransform.DOPunchScale(Vector3.one * 0.2f, 0.2f, 4, 0.5f).SetUpdate(true);
+        }
     }
 
     int Count;
@@ -344,32 +371,50 @@ public class UiManager : MonoBehaviour
             calc.StopParticlesMe(calc.clickInCells2);
 
             // Rows (activate row-match particles)
-            arryRowSumOpp[0].text = calc.TilesOpp(calc.tileDataOpps, out Count, skipClear: true).ToString();
-            arryRowSumOpp[1].text = calc.TilesOpp(calc.tileDataOpps2, out Count, skipClear: true).ToString();
-            arryRowSumOpp[2].text = calc.TilesOpp(calc.tileDataOpps3, out Count, skipClear: true).ToString();
-            arryRowSumMe[0].text = calc.TileMe(calc.clickInCells, out Count, skipClear: true).ToString();
-            arryRowSumMe[1].text = calc.TileMe(calc.clickInCells1, out Count, skipClear: true).ToString();
-            arryRowSumMe[2].text = calc.TileMe(calc.clickInCells2, out Count, skipClear: true).ToString();
+            if (arryRowSumOpp != null && arryRowSumOpp.Length >= 3)
+            {
+                SetRowSumText(arryRowSumOpp[0], calc.TilesOpp(calc.tileDataOpps, out Count, skipClear: true));
+                SetRowSumText(arryRowSumOpp[1], calc.TilesOpp(calc.tileDataOpps2, out Count, skipClear: true));
+                SetRowSumText(arryRowSumOpp[2], calc.TilesOpp(calc.tileDataOpps3, out Count, skipClear: true));
+            }
+            if (arryRowSumMe != null && arryRowSumMe.Length >= 3)
+            {
+                SetRowSumText(arryRowSumMe[0], calc.TileMe(calc.clickInCells, out Count, skipClear: true));
+                SetRowSumText(arryRowSumMe[1], calc.TileMe(calc.clickInCells1, out Count, skipClear: true));
+                SetRowSumText(arryRowSumMe[2], calc.TileMe(calc.clickInCells2, out Count, skipClear: true));
+            }
 
             // Columns (activate column-match particles — without stopping row matches)
-            arryRowSumOppCal[0].text = calc.TilesOpp(calc.tileDataOppsCal, out Count, skipClear: true).ToString();
-            arryRowSumOppCal[1].text = calc.TilesOpp(calc.tileDataOpps2Cal, out Count, skipClear: true).ToString();
-            arryRowSumOppCal[2].text = calc.TilesOpp(calc.tileDataOpps3Cal, out Count, skipClear: true).ToString();
-            arryRowSumMeCal[0].text = calc.TileMe(calc.clickInCellsCal, out Count, skipClear: true).ToString();
-            arryRowSumMeCal[1].text = calc.TileMe(calc.clickInCells1Cal, out Count, skipClear: true).ToString();
-            arryRowSumMeCal[2].text = calc.TileMe(calc.clickInCells2Cal, out Count, skipClear: true).ToString();
+            if (arryRowSumOppCal != null && arryRowSumOppCal.Length >= 3)
+            {
+                SetRowSumText(arryRowSumOppCal[0], calc.TilesOpp(calc.tileDataOppsCal, out Count, skipClear: true));
+                SetRowSumText(arryRowSumOppCal[1], calc.TilesOpp(calc.tileDataOpps2Cal, out Count, skipClear: true));
+                SetRowSumText(arryRowSumOppCal[2], calc.TilesOpp(calc.tileDataOpps3Cal, out Count, skipClear: true));
+            }
+            if (arryRowSumMeCal != null && arryRowSumMeCal.Length >= 3)
+            {
+                SetRowSumText(arryRowSumMeCal[0], calc.TileMe(calc.clickInCellsCal, out Count, skipClear: true));
+                SetRowSumText(arryRowSumMeCal[1], calc.TileMe(calc.clickInCells1Cal, out Count, skipClear: true));
+                SetRowSumText(arryRowSumMeCal[2], calc.TileMe(calc.clickInCells2Cal, out Count, skipClear: true));
+            }
         }
         else
         {
             // Normal modes: each row owns its cells exclusively — no overlap, no issue.
-            arryRowSumOpp[0].text = calc.TilesOpp(calc.tileDataOpps, out Count).ToString();
-            arryRowSumOpp[1].text = calc.TilesOpp(calc.tileDataOpps2, out Count).ToString();
-            arryRowSumOpp[2].text = calc.TilesOpp(calc.tileDataOpps3, out Count).ToString();
-            arryRowSumMe[0].text = calc.TileMe(calc.clickInCells, out Count).ToString();
-            arryRowSumMe[1].text = calc.TileMe(calc.clickInCells1, out Count).ToString();
-            arryRowSumMe[2].text = calc.TileMe(calc.clickInCells2, out Count).ToString();
-            arryRowSumOpp[3].text = calc.TilesOpp(calc.tileDataOpps4, out Count).ToString();
-            arryRowSumMe[3].text = calc.TileMe(calc.clickInCells3, out Count).ToString();
+            if (arryRowSumOpp != null && arryRowSumOpp.Length >= 4)
+            {
+                SetRowSumText(arryRowSumOpp[0], calc.TilesOpp(calc.tileDataOpps, out Count));
+                SetRowSumText(arryRowSumOpp[1], calc.TilesOpp(calc.tileDataOpps2, out Count));
+                SetRowSumText(arryRowSumOpp[2], calc.TilesOpp(calc.tileDataOpps3, out Count));
+                SetRowSumText(arryRowSumOpp[3], calc.TilesOpp(calc.tileDataOpps4, out Count));
+            }
+            if (arryRowSumMe != null && arryRowSumMe.Length >= 4)
+            {
+                SetRowSumText(arryRowSumMe[0], calc.TileMe(calc.clickInCells, out Count));
+                SetRowSumText(arryRowSumMe[1], calc.TileMe(calc.clickInCells1, out Count));
+                SetRowSumText(arryRowSumMe[2], calc.TileMe(calc.clickInCells2, out Count));
+                SetRowSumText(arryRowSumMe[3], calc.TileMe(calc.clickInCells3, out Count));
+            }
         }
 
         CheckShowLight();
@@ -377,52 +422,81 @@ public class UiManager : MonoBehaviour
 
     private void Instance_onSetDataInRowOpp(int arg1, int arg2)
     {
-
-
         var clone = tileDataOpps.Find(e => e.line == arg1 && e.row == arg2 && e.IsLock);
         if (clone != null)
         {
-
-            clone.SpriteDice.sprite = null;
             clone.ValueTile = 0;
             clone.IsLock = false;
-            clone.SpriteDice.transform.parent.gameObject.SetActive(false);
-            clone.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = clone.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
+            var ps = clone.GetComponentInChildren<ParticleSystem>();
+            if (ps != null) ps.Stop();
+            ParticleSystem.MainModule settings = ps != null ? ps.main : default;
+            if (ps != null) settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
+
+            Transform tileParent = clone.SpriteDice != null ? clone.SpriteDice.transform.parent : null;
+            if (tileParent != null)
+            {
+                tileParent.DOKill();
+                tileParent.DOShakePosition(0.2f, 12f, 22, 90f, false, true).SetUpdate(true)
+                    .OnComplete(() =>
+                    {
+                        tileParent.DOScale(Vector3.zero, 0.18f).SetEase(Ease.InBack).SetUpdate(true)
+                            .OnComplete(() =>
+                            {
+                                if (clone.SpriteDice != null) clone.SpriteDice.sprite = null;
+                                tileParent.gameObject.SetActive(false);
+                                tileParent.localScale = Vector3.one;
+                                tileParent.localPosition = Vector3.zero;
+                            });
+                    });
+            }
+            else
+            {
+                if (clone.SpriteDice != null) clone.SpriteDice.sprite = null;
+            }
         }
         RowSum();
-
-
-
-
     }
+
     /// <summary>
-    /// Set data iv row 
+    /// Set data in row 
     /// </summary>
-    /// <param name="arg1"></param>
-    /// <param name="arg2"></param>
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
         var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2 && r.isLock);
-
         if (meCell != null)
         {
             TutorialManager.Instance?.OnEliminationOccurred(arg1, arg2);
 
-            meCell.SpriteDice.sprite = null;
             meCell.ValueTile = 0;
             meCell.isLock = false;
-            meCell.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = meCell.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
-            meCell.SpriteDice.transform.parent.gameObject.SetActive(false);
+            var ps = meCell.GetComponentInChildren<ParticleSystem>();
+            if (ps != null) ps.Stop();
+            ParticleSystem.MainModule settings = ps != null ? ps.main : default;
+            if (ps != null) settings.startColor = new ParticleSystem.MinMaxGradient(colroParticlewhite);
+
+            Transform tileParent = meCell.SpriteDice != null ? meCell.SpriteDice.transform.parent : null;
+            if (tileParent != null)
+            {
+                tileParent.DOKill();
+                tileParent.DOShakePosition(0.2f, 12f, 22, 90f, false, true).SetUpdate(true)
+                    .OnComplete(() =>
+                    {
+                        tileParent.DOScale(Vector3.zero, 0.18f).SetEase(Ease.InBack).SetUpdate(true)
+                            .OnComplete(() =>
+                            {
+                                if (meCell.SpriteDice != null) meCell.SpriteDice.sprite = null;
+                                tileParent.gameObject.SetActive(false);
+                                tileParent.localScale = Vector3.one;
+                                tileParent.localPosition = Vector3.zero;
+                            });
+                    });
+            }
+            else
+            {
+                if (meCell.SpriteDice != null) meCell.SpriteDice.sprite = null;
+            }
         }
-
         RowSum();
-
-
-
     }
     /// <summary>
     /// check data in turn player
@@ -465,7 +539,12 @@ public class UiManager : MonoBehaviour
             return;
         }
         tile.IsLock = true;
-        tile.SpriteDice.transform.parent.gameObject.SetActive(true);
+        Transform oppTileParent = tile.SpriteDice.transform.parent;
+        oppTileParent.gameObject.SetActive(true);
+        oppTileParent.DOKill();
+        oppTileParent.localScale = Vector3.zero;
+        oppTileParent.DOScale(Vector3.one, 0.28f).SetEase(Ease.OutBack).SetUpdate(true);
+
         tile.SpriteDice.GetComponent<Animator>().Play("DiceRoot", 0, 0);
         tile.ValueTile = obj.NumberTile + 1;
         tile.SpriteDice.sprite = GameManager.Instance.diceRoller.Dice[obj.NumberTile];
@@ -501,40 +580,88 @@ public class UiManager : MonoBehaviour
         if (obj)
         {
             GameManager.Instance.diceRoller.PrepareForTurn();
-            dicRollButton.interactable = true;
-            dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
+            PlayYourTurnEntrance();
             MultiplayerManager.Instance.isTurn = true;
-            TextTurnYou.Play("YouTurn", 0, 0);
-            GameManager.Instance.diceRoller.Rotation(false);
             _ = Task.Delay(1000);
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerRunning = true;
-            StartRollAttention();
-
         }
         else
         {
-            StopRollAttention();
-            TextTurnOpp.Play("OppTurn", 0, 0);
-            dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[1];
-            dicRollButton.interactable = false;
+            PlayOpponentTurnEntrance();
             MultiplayerManager.Instance.isTurn = false;
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerRunning = false;
             TutorialManager.Instance?.OnOpponentTurnStarted();
         }
-
     }
 
     private void Instance_onTurnMe()
     {
-
         GameManager.Instance.diceRoller.PrepareForTurn();
-        dicRollButton.interactable = true;
-        dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
-        TextTurnYou.Play("YouTurn", 0, 0);
-        GameManager.Instance.diceRoller.Rotation(false);
+        PlayYourTurnEntrance();
+    }
+
+    private void PlayYourTurnEntrance()
+    {
+        if (dicRollButton != null)
+        {
+            dicRollButton.interactable = true;
+            if (DiceRollsSprite != null && DiceRollsSprite.Length > 0)
+                dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
+
+            dicRollButton.transform.DOKill();
+            dicRollButton.transform.localScale = Vector3.one * 0.72f;
+            dicRollButton.transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack)
+                .SetUpdate(true)
+                .SetLink(gameObject);
+        }
+
+        if (TextTurnYou != null)
+        {
+            TextTurnYou.Play("YouTurn", 0, 0);
+            TextTurnYou.transform.DOKill();
+            TextTurnYou.transform.localScale = Vector3.one;
+            TextTurnYou.transform.DOPunchScale(new Vector3(0.35f, 0.35f, 0f), 0.42f, 6, 0.5f)
+                .SetUpdate(true)
+                .SetLink(gameObject);
+        }
+
+        if (WowPar != null)
+        {
+            WowPar.Play();
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.diceRoller != null)
+        {
+            GameManager.Instance.diceRoller.Rotation(false);
+        }
+
         StartRollAttention();
+    }
+
+    private void PlayOpponentTurnEntrance()
+    {
+        StopRollAttention();
+        if (WowPar != null && WowPar.isPlaying)
+            WowPar.Stop();
+
+        if (TextTurnOpp != null)
+        {
+            TextTurnOpp.Play("OppTurn", 0, 0);
+            TextTurnOpp.transform.DOKill();
+            TextTurnOpp.transform.localScale = Vector3.one;
+            TextTurnOpp.transform.DOPunchScale(new Vector3(0.20f, 0.20f, 0f), 0.35f, 5, 0.5f)
+                .SetUpdate(true)
+                .SetLink(gameObject);
+        }
+
+        if (dicRollButton != null)
+        {
+            if (DiceRollsSprite != null && DiceRollsSprite.Length > 1)
+                dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[1];
+            dicRollButton.interactable = false;
+        }
     }
 
     private void StartRollAttention()

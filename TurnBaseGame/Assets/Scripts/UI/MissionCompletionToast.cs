@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using DG.Tweening;
 using Nakama.Helpers;
 using NinjaBattle.Game;
 using RTLTMPro;
@@ -16,11 +18,17 @@ namespace NinjaBattle.UI
 
         private CanvasGroup _canvasGroup;
         private GameObject _toastObject;
+        private RectTransform _toastRect;
+        private Transform _badgeTransform;
         private RTLTextMeshPro _titleText;
         private RTLTextMeshPro _missionText;
         private RTLTextMeshPro _rewardText;
-        private Coroutine _displayRoutine;
+        private Coroutine _queueRoutine;
         private MissionManager _missionManager;
+        private readonly Queue<MissionState> _pendingToasts = new Queue<MissionState>();
+
+        private const float HiddenY = 90f;
+        private const float ShownY = -60f;
 
         public static void Ensure(MissionCompletionToast prefab = null)
         {
@@ -45,6 +53,7 @@ namespace NinjaBattle.UI
             _instance = this;
             if (vazirFont != null)
                 ChatUiFactory.Font = vazirFont;
+
             BuildView();
             foreach (RTLTextMeshPro text in GetComponentsInChildren<RTLTextMeshPro>(true))
                 text.PreserveNumbers = true;
@@ -67,6 +76,11 @@ namespace NinjaBattle.UI
             if (_missionManager != null)
                 _missionManager.OnMissionCompleted -= ShowMissionCompleted;
 
+            if (_toastRect != null)
+                _toastRect.DOKill();
+            if (_canvasGroup != null)
+                _canvasGroup.DOKill();
+
             if (_instance == this)
                 _instance = null;
         }
@@ -78,7 +92,7 @@ namespace NinjaBattle.UI
 
             var canvas = canvasObject.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 200;
+            canvas.sortingOrder = 300;
 
             var scaler = canvasObject.GetComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -86,43 +100,58 @@ namespace NinjaBattle.UI
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = 0.5f;
 
+            // Compact, elegant banner that never blocks player clicks
             var toastImage = ChatUiFactory.Panel("MissionCompletionToast", canvasObject.transform,
-                new Color(0.015f, 0.11f, 0.075f, 0.98f));
+                new Color(0.11f, 0.07f, 0.035f, 0.96f));
+            toastImage.raycastTarget = false;
             _toastObject = toastImage.gameObject;
-            var toastRect = toastImage.rectTransform;
-            ChatUiFactory.Anchor(toastRect, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-                new Vector2(0.5f, 1f), new Vector2(0f, -100f), new Vector2(720f, 150f));
+            _toastRect = toastImage.rectTransform;
+
+            ChatUiFactory.Anchor(_toastRect, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f), new Vector2(0f, HiddenY), new Vector2(580f, 88f));
 
             var outline = _toastObject.AddComponent<Outline>();
-            outline.effectColor = new Color(1f, 0.76f, 0.24f, 0.75f);
+            outline.effectColor = new Color(0.96f, 0.74f, 0.22f, 0.85f);
             outline.effectDistance = new Vector2(2f, -2f);
 
             _canvasGroup = _toastObject.AddComponent<CanvasGroup>();
             _canvasGroup.alpha = 0f;
+            _canvasGroup.blocksRaycasts = false;
+            _canvasGroup.interactable = false;
             _toastObject.SetActive(false);
 
-            var badge = ChatUiFactory.Panel("CompleteBadge", toastRect,
-                new Color(0.78f, 0.48f, 0.08f, 1f));
+            // Gold checkmark badge
+            var badge = ChatUiFactory.Panel("CompleteBadge", _toastRect,
+                new Color(0.85f, 0.55f, 0.12f, 1f));
+            badge.raycastTarget = false;
+            _badgeTransform = badge.transform;
             ChatUiFactory.Anchor(badge.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f),
-                new Vector2(1f, 0.5f), new Vector2(-26f, 0f), new Vector2(112f, 112f));
-            var badgeText = ChatUiFactory.Text("BadgeText", badge.transform, "✓", 52,
-                new Color(1f, 0.97f, 0.82f, 1f), TextAlignmentOptions.Center);
+                new Vector2(1f, 0.5f), new Vector2(-16f, 0f), new Vector2(62f, 62f));
+            var badgeText = ChatUiFactory.Text("BadgeText", badge.transform, "✓", 38,
+                new Color(1f, 0.98f, 0.88f, 1f), TextAlignmentOptions.Center);
+            badgeText.raycastTarget = false;
             ChatUiFactory.Stretch(badgeText.rectTransform);
 
-            _titleText = ChatUiFactory.Text("Title", toastRect, "ماموریت انجام شد", 27,
-                new Color(1f, 0.84f, 0.34f, 1f), TextAlignmentOptions.MidlineRight);
-            ChatUiFactory.Anchor(_titleText.rectTransform, new Vector2(0f, 0.58f), new Vector2(1f, 0.95f),
-                new Vector2(0.5f, 0.5f), new Vector2(-88f, 0f), new Vector2(-150f, 0f));
+            // Title: ماموریت انجام شد
+            _titleText = ChatUiFactory.Text("Title", _toastRect, "ماموریت انجام شد", 22,
+                new Color(1f, 0.85f, 0.38f, 1f), TextAlignmentOptions.MidlineRight);
+            _titleText.raycastTarget = false;
+            ChatUiFactory.Anchor(_titleText.rectTransform, new Vector2(0f, 0.52f), new Vector2(1f, 0.94f),
+                new Vector2(0.5f, 0.5f), new Vector2(-54f, 0f), new Vector2(-120f, 0f));
 
-            _missionText = ChatUiFactory.Text("Mission", toastRect, "", 21,
-                new Color(1f, 0.96f, 0.82f, 1f), TextAlignmentOptions.MidlineRight);
-            ChatUiFactory.Anchor(_missionText.rectTransform, new Vector2(0f, 0.18f), new Vector2(0.78f, 0.62f),
-                new Vector2(0.5f, 0.5f), new Vector2(-20f, 0f), Vector2.zero);
+            // Mission description/title
+            _missionText = ChatUiFactory.Text("Mission", _toastRect, "", 18,
+                new Color(1f, 0.96f, 0.86f, 1f), TextAlignmentOptions.MidlineRight);
+            _missionText.raycastTarget = false;
+            ChatUiFactory.Anchor(_missionText.rectTransform, new Vector2(0f, 0.08f), new Vector2(0.72f, 0.52f),
+                new Vector2(0.5f, 0.5f), new Vector2(-12f, 0f), Vector2.zero);
 
-            _rewardText = ChatUiFactory.Text("Reward", toastRect, "", 18,
-                new Color(0.62f, 1f, 0.72f, 1f), TextAlignmentOptions.MidlineRight);
-            ChatUiFactory.Anchor(_rewardText.rectTransform, new Vector2(0f, 0.02f), new Vector2(0.78f, 0.32f),
-                new Vector2(0.5f, 0.5f), new Vector2(-20f, 0f), Vector2.zero);
+            // Reward text
+            _rewardText = ChatUiFactory.Text("Reward", _toastRect, "", 17,
+                new Color(0.46f, 0.96f, 0.56f, 1f), TextAlignmentOptions.MidlineLeft);
+            _rewardText.raycastTarget = false;
+            ChatUiFactory.Anchor(_rewardText.rectTransform, new Vector2(0f, 0.08f), new Vector2(0.35f, 0.52f),
+                new Vector2(0f, 0.5f), new Vector2(20f, 0f), Vector2.zero);
         }
 
         private void ShowMissionCompleted(MissionState mission)
@@ -130,35 +159,50 @@ namespace NinjaBattle.UI
             if (mission == null)
                 return;
 
-            _missionText.text = mission.Title;
-            _rewardText.text = "+" + ToPersianDigits(mission.RewardXp) + " XP";
-            _toastObject.SetActive(true);
-
-            if (_displayRoutine != null)
-                StopCoroutine(_displayRoutine);
-            _displayRoutine = StartCoroutine(DisplayRoutine());
+            _pendingToasts.Enqueue(mission);
+            if (_queueRoutine == null)
+                _queueRoutine = StartCoroutine(ProcessQueueRoutine());
         }
 
-        private IEnumerator DisplayRoutine()
+        private IEnumerator ProcessQueueRoutine()
         {
-            yield return FadeTo(1f, 0.2f);
-            yield return new WaitForSecondsRealtime(2.8f);
-            yield return FadeTo(0f, 0.3f);
-            _toastObject.SetActive(false);
-            _displayRoutine = null;
-        }
-
-        private IEnumerator FadeTo(float target, float duration)
-        {
-            float start = _canvasGroup.alpha;
-            float elapsed = 0f;
-            while (elapsed < duration)
+            while (_pendingToasts.Count > 0)
             {
-                elapsed += Time.unscaledDeltaTime;
-                _canvasGroup.alpha = Mathf.Lerp(start, target, elapsed / duration);
-                yield return null;
+                MissionState mission = _pendingToasts.Dequeue();
+                _missionText.text = mission.Title;
+                _rewardText.text = "+" + ToPersianDigits(mission.RewardXp) + " XP";
+
+                _toastObject.SetActive(true);
+                _toastRect.DOKill();
+                _canvasGroup.DOKill();
+
+                // Start from hidden position above screen
+                _toastRect.anchoredPosition = new Vector2(0f, HiddenY);
+                _canvasGroup.alpha = 0f;
+
+                // Slide down into view with smooth spring
+                _toastRect.DOAnchorPosY(ShownY, 0.35f).SetEase(Ease.OutBack).SetUpdate(true);
+                _canvasGroup.DOFade(1f, 0.25f).SetUpdate(true);
+
+                if (_badgeTransform != null)
+                {
+                    _badgeTransform.DOKill();
+                    _badgeTransform.localScale = Vector3.one;
+                    _badgeTransform.DOPunchScale(new Vector3(0.28f, 0.28f, 0f), 0.35f, 6, 0.5f).SetUpdate(true);
+                }
+
+                // Display duration
+                yield return new WaitForSecondsRealtime(2.2f);
+
+                // Slide up out of view
+                _toastRect.DOAnchorPosY(HiddenY, 0.28f).SetEase(Ease.InBack).SetUpdate(true);
+                yield return _canvasGroup.DOFade(0f, 0.24f).SetUpdate(true).WaitForCompletion();
+
+                _toastObject.SetActive(false);
+                yield return new WaitForSecondsRealtime(0.15f);
             }
-            _canvasGroup.alpha = target;
+
+            _queueRoutine = null;
         }
 
         private static string ToPersianDigits(int value)

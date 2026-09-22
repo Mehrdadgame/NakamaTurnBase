@@ -44,31 +44,17 @@ namespace NinjaBattle.Game
 
         public bool TryIncrement(int amount)
         {
-            if (amount <= 0)
-                return false;
-
-            if (IsCompleted && !IsRepeatable)
+            if (amount <= 0 || IsCompleted)
                 return false;
 
             CurrentProgress += amount;
             if (CurrentProgress >= Target)
             {
-                if (IsRepeatable)
-                {
-                    CurrentProgress -= Target;
-                    if (CurrentProgress < 0)
-                        CurrentProgress = 0;
-                }
-                else
-                {
-                    CurrentProgress = Target;
-                }
-
+                CurrentProgress = Target;
                 IsCompleted = true;
                 return true;
             }
 
-            IsCompleted = false;
             return false;
         }
     }
@@ -226,6 +212,8 @@ namespace NinjaBattle.Game
 
                 mission.CurrentProgress = Mathf.Clamp(saved.currentProgress, 0, mission.Target);
                 mission.IsCompleted = saved.isCompleted || mission.CurrentProgress >= mission.Target;
+                if (mission.IsCompleted)
+                    mission.CurrentProgress = mission.Target;
             }
 
             OnMissionsLoaded?.Invoke(Missions);
@@ -270,13 +258,16 @@ namespace NinjaBattle.Game
                 if (mission.GoalType != goalType)
                     continue;
 
+                if (mission.IsCompleted)
+                    continue;
+
                 bool completed = mission.TryIncrement(amount);
                 if (completed)
                 {
                     OnMissionProgressChanged?.Invoke(mission);
                     OnMissionCompleted?.Invoke(mission);
                 }
-                else if (!mission.IsCompleted)
+                else
                 {
                     OnMissionProgressChanged?.Invoke(mission);
                 }

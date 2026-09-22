@@ -12,16 +12,17 @@ namespace NinjaBattle.UI.Editor
 {
     public static class MissionProgressionUIAuthoring
     {
-        private const string AtlasPath = "Assets/Sprite/Home/Copilot_20260508_152525 (2).png";
-        private const string JournalBackgroundPath = "Assets/Sprite/UI/mission-journal-bg-v2.png";
+        private const string MissionIconPath = "Assets/Sprite/misson/image 12002804.png";
+        private const string JournalBackgroundPath = "Assets/Sprite/misson/BG.png";
+        private const string CardBackgroundPath = "Assets/Sprite/misson/Rectangle 31.png";
         private const string RootName = "MissionProgressionUI";
         private const string ToastPrefabPath = "Assets/Prefabs/UI/MissionCompletionToast.prefab";
 
-        private static readonly Color Gold = new Color(0.78f, 0.52f, 0.16f, 1f);
-        private static readonly Color BrightGold = new Color(1f, 0.82f, 0.34f, 1f);
-        private static readonly Color DeepGreen = new Color(0.008f, 0.055f, 0.039f, 0.97f);
-        private static readonly Color CardGreen = new Color(0.015f, 0.105f, 0.075f, 0.98f);
-        private static readonly Color Cream = new Color(1f, 0.96f, 0.80f, 1f);
+        private static readonly Color Gold = new Color(0.85f, 0.60f, 0.20f, 1f);
+        private static readonly Color BrightGold = new Color(1f, 0.85f, 0.38f, 1f);
+        private static readonly Color DeepWood = new Color(0.12f, 0.08f, 0.04f, 0.97f);
+        private static readonly Color CardWood = new Color(0.14f, 0.09f, 0.05f, 0.98f);
+        private static readonly Color Cream = new Color(1f, 0.96f, 0.82f, 1f);
 
         [MenuItem("Tools/NinjaBattle/UI/Build Mission Progression UI")]
         public static void Build()
@@ -46,12 +47,11 @@ namespace NinjaBattle.UI.Editor
             ChatUiFactory.Stretch(root);
             root.SetAsLastSibling();
 
-            Sprite hudSprite = LoadAtlasSprite("Copilot_20260508_152525 (2)_20");
-            Sprite missionIcon = LoadAtlasSprite("Copilot_20260508_152525 (2)_38");
+            Sprite missionIcon = LoadSpriteAtPath(MissionIconPath);
 
-            Image hud = ChatUiFactory.Panel("ProgressionHUD", root, new Color(0.018f, 0.14f, 0.095f, 0.97f));
+            Image hud = ChatUiFactory.Panel("ProgressionHUD", root, DeepWood);
             Outline hudOutline = hud.gameObject.AddComponent<Outline>();
-            hudOutline.effectColor = new Color(0.62f, 0.40f, 0.10f, 0.78f);
+            hudOutline.effectColor = new Color(0.72f, 0.50f, 0.18f, 0.85f);
             hudOutline.effectDistance = new Vector2(2f, 2f);
             Anchor(hud.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
                 new Vector2(0f, -600f), new Vector2(620f, 60f));
@@ -102,9 +102,9 @@ namespace NinjaBattle.UI.Editor
             ChatUiFactory.Stretch(dimmer.rectTransform);
 
             Image panelBorder = CreateImage("JournalBackground", dimmer.transform,
-                AssetDatabase.LoadAssetAtPath<Sprite>(JournalBackgroundPath), Color.white);
+                LoadSpriteAtPath(JournalBackgroundPath), Color.white);
             panelBorder.type = Image.Type.Simple;
-            panelBorder.preserveAspect = false;
+            panelBorder.preserveAspect = true;
             Anchor(panelBorder.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                 new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(930f, 1440f));
 
@@ -206,7 +206,7 @@ namespace NinjaBattle.UI.Editor
             layout.preferredHeight = 190f;
             layout.minHeight = 190f;
 
-            Image card = ChatUiFactory.Panel("CardBackground", outer.transform, CardGreen);
+            Image card = CreateImage("CardBackground", outer.transform, LoadSpriteAtPath(CardBackgroundPath), CardWood);
             card.rectTransform.anchorMin = Vector2.zero;
             card.rectTransform.anchorMax = Vector2.one;
             card.rectTransform.offsetMin = new Vector2(5f, 5f);
@@ -326,11 +326,15 @@ namespace NinjaBattle.UI.Editor
             return label;
         }
 
-        private static Sprite LoadAtlasSprite(string spriteName)
+        private static Sprite LoadSpriteAtPath(string path)
         {
-            return AssetDatabase.LoadAllAssetsAtPath(AtlasPath)
+            Sprite direct = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (direct != null)
+                return direct;
+
+            return AssetDatabase.LoadAllAssetsAtPath(path)
                 .OfType<Sprite>()
-                .FirstOrDefault(sprite => sprite.name == spriteName);
+                .FirstOrDefault();
         }
 
         private static void Anchor(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax,

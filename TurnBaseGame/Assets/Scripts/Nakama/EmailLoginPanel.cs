@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using RTLTMPro;
 using TMPro;
@@ -45,17 +44,21 @@ namespace Nakama.Helpers
             if (loginButton != null) loginButton.onClick.AddListener(OnLoginClicked);
             if (backButton != null) backButton.onClick.AddListener(Hide);
 
-            NakamaManager.Instance.onLoginFail += OnLoginFailed;
-            NakamaManager.Instance.onLoginSuccess += OnLoginSuccess;
-
-            // if (panel != null) panel.SetActive(false);
+            if (NakamaManager.Instance != null)
+            {
+                NakamaManager.Instance.onLoginFail += OnLoginFailed;
+                NakamaManager.Instance.onLoginSuccess += OnLoginSuccess;
+            }
         }
 
         private void OnDestroy()
         {
-            if (NakamaManager.Instance == null) return;
-            NakamaManager.Instance.onLoginFail -= OnLoginFailed;
-            NakamaManager.Instance.onLoginSuccess -= OnLoginSuccess;
+            if (Instance == this) Instance = null;
+            if (NakamaManager.Instance != null)
+            {
+                NakamaManager.Instance.onLoginFail -= OnLoginFailed;
+                NakamaManager.Instance.onLoginSuccess -= OnLoginSuccess;
+            }
         }
 
         // ── Public ────────────────────────────────────────────────────────────
@@ -63,12 +66,15 @@ namespace Nakama.Helpers
         public void Show()
         {
             if (panel != null) panel.SetActive(true);
+            if (passwordInput != null) passwordInput.text = "";
             SetStatus("", Color.white);
             SetInteractable(true);
+            emailInput?.ActivateInputField();
         }
 
         public void Hide()
         {
+            if (passwordInput != null) passwordInput.text = "";
             if (panel != null) panel.SetActive(false);
             IsWaitingForLogin = false;
         }
@@ -88,6 +94,12 @@ namespace Nakama.Helpers
             if (password.Length < 6)
             {
                 SetStatus("رمز عبور باید حداقل ۶ کاراکتر باشد.", Color.red);
+                return;
+            }
+
+            if (NakamaManager.Instance == null)
+            {
+                SetStatus("سرویس ورود در دسترس نیست.", Color.red);
                 return;
             }
 
@@ -111,12 +123,12 @@ namespace Nakama.Helpers
             IsWaitingForLogin = false;
             SetStatus("ورود موفق!", new Color(0.25f, 1f, 0.25f));
             SetInteractable(false);
-            StartCoroutine(GoHomeAfterDelay());
+            StartCoroutine(ReloadHomeAfterDelay());
         }
 
-        private IEnumerator GoHomeAfterDelay()
+        private IEnumerator ReloadHomeAfterDelay()
         {
-            yield return new WaitForSeconds(0.8f);
+            yield return new WaitForSecondsRealtime(0.8f);
             SceneManager.LoadScene((int)NinjaBattle.General.Scenes.Home);
         }
 

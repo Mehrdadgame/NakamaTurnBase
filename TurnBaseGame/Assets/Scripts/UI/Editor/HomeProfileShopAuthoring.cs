@@ -4,19 +4,70 @@ using RTLTMPro;
 using TMPro;
 using UnityEditor;
 using UnityEditor.Events;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace NinjaBattle.UI.Editor
 {
     public static class HomeProfileShopAuthoring
     {
+        private const string HomeScenePath = "Assets/-Scenes/2-Home.unity";
         private const float DesignWidth = 1080f;
         private const float DesignHeight = 2400f;
         private static readonly Color Cream = new Color32(255, 220, 161, 255);
         private static readonly Color CreamDark = new Color32(242, 198, 126, 255);
         private static readonly Color Brown = new Color32(72, 46, 8, 255);
         private static readonly Color Orange = new Color32(238, 113, 28, 255);
+
+        [MenuItem("Tools/NinjaBattle/UI/Build Profile Login")]
+        public static void InstallProfileLoginUi()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
+
+            Scene previousActiveScene = SceneManager.GetActiveScene();
+            Scene homeScene = SceneManager.GetSceneByPath(HomeScenePath);
+            bool openedForInstall = !homeScene.IsValid() || !homeScene.isLoaded;
+
+            try
+            {
+                if (openedForInstall)
+                    homeScene = EditorSceneManager.OpenScene(HomeScenePath, OpenSceneMode.Additive);
+
+                SceneManager.SetActiveScene(homeScene);
+                Canvas canvas = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    .FirstOrDefault(item => item.gameObject.scene == homeScene);
+                FigmaHomeController controller = Object.FindObjectsByType<FigmaHomeController>(
+                        FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    .FirstOrDefault(item => item.gameObject.scene == homeScene);
+                Transform profile = canvas != null ? canvas.transform.Find("profile") : null;
+
+                if (canvas == null || controller == null || profile == null)
+                {
+                    Debug.LogError("HomeProfileShopAuthoring: could not install profile login UI; Home scene references are missing.");
+                    return;
+                }
+
+                RTLTextMeshPro fontSource = Object.FindObjectsByType<RTLTextMeshPro>(
+                        FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    .FirstOrDefault(item => item.gameObject.scene == homeScene && item.font != null);
+                ChatUiFactory.Font = fontSource != null ? fontSource.font : TMP_Settings.defaultFontAsset;
+
+                BuildProfile(profile, controller);
+                EditorSceneManager.MarkSceneDirty(homeScene);
+                EditorSceneManager.SaveScene(homeScene);
+                Debug.Log("HomeProfileShopAuthoring: profile email login UI installed.");
+            }
+            finally
+            {
+                if (previousActiveScene.IsValid() && previousActiveScene.isLoaded)
+                    SceneManager.SetActiveScene(previousActiveScene);
+                if (openedForInstall && homeScene.IsValid() && homeScene.isLoaded)
+                    EditorSceneManager.CloseScene(homeScene, true);
+            }
+        }
 
         public static void Build(Transform canvas, Transform profilePanel, Transform shopPanel,
             FigmaHomeController controller)
@@ -43,6 +94,13 @@ namespace NinjaBattle.UI.Editor
             Button avatarButton = GetReference<Button>(serialized, "avatarButton");
             Button saveButton = GetReference<Button>(serialized, "saveButton");
             AvatarPopupManager avatarPopup = GetReference<AvatarPopupManager>(serialized, "avatarPopupManager");
+            EmailLoginPanel emailLoginPanel = Object.FindObjectsByType<EmailLoginPanel>(
+                    FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(item => item.gameObject.scene == profilePanel.gameObject.scene);
+
+            Transform legacyLoginButton = profilePanel.Find("Button login");
+            if (legacyLoginButton != null)
+                Undo.DestroyObjectImmediate(legacyLoginButton.gameObject);
 
             Transform oldLayout = profilePanel.Find("FigmaProfileLayout");
             if (oldLayout != null)
@@ -71,7 +129,7 @@ namespace NinjaBattle.UI.Editor
             dim.raycastTarget = false;
 
             Image modal = ChatUiFactory.Panel("ProfileCard", layout, Cream);
-            SetFigmaRect(modal.rectTransform, 105, 315, 870, 1720);
+            SetFigmaRect(modal.rectTransform, 105, 315, 870, 1900);
             AddDepth(modal.gameObject);
 
             RTLTextMeshPro title = CreateText("Title", modal.transform, "پروفایل", 64, Brown);
@@ -107,14 +165,126 @@ namespace NinjaBattle.UI.Editor
             SetTopLeft(linkStatus.rectTransform, 90, 1720, 690, 60);
             SetReference(serialized, "linkEmailStatus", linkStatus);
 
+            if (emailLoginPanel != null)
+            {
+                Button loginButton = CreateButton("OpenEmailLoginButton", modal.transform, Orange,
+                    "ورود به حساب کاربری", 32);
+                SetTopLeft((RectTransform)loginButton.transform, 185, 1785, 500, 105);
+                OpenEmailLoginButton opener = loginButton.gameObject.AddComponent<OpenEmailLoginButton>();
+                SerializedObject openerSerialized = new SerializedObject(opener);
+                SetReference(openerSerialized, "emailLoginPanel", emailLoginPanel);
+                openerSerialized.ApplyModifiedPropertiesWithoutUndo();
+
+                StyleEmailLoginPopup(emailLoginPanel, profilePanel);
+            }
+
             if (avatarPopup != null)
                 StyleAvatarPopup(avatarPopup);
 
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(manager);
             layout.SetAsLastSibling();
+            if (emailLoginPanel != null)
+                emailLoginPanel.transform.SetAsLastSibling();
             if (avatarPopup != null)
                 avatarPopup.transform.SetAsLastSibling();
+        }
+
+        private static void StyleEmailLoginPopup(EmailLoginPanel loginPanel, Transform profilePanel)
+        {
+            SerializedObject serialized = new SerializedObject(loginPanel);
+            GameObject panel = GetReference<GameObject>(serialized, "panel");
+            TMP_InputField email = GetReference<TMP_InputField>(serialized, "emailInput");
+            TMP_InputField password = GetReference<TMP_InputField>(serialized, "passwordInput");
+            Button login = GetReference<Button>(serialized, "loginButton");
+            Button back = GetReference<Button>(serialized, "backButton");
+            RTLTextMeshPro status = GetReference<RTLTextMeshPro>(serialized, "statusText");
+
+            if (panel == null)
+                return;
+
+            panel.transform.SetParent(profilePanel, false);
+            RectTransform panelRect = panel.GetComponent<RectTransform>();
+            if (panelRect != null)
+                Stretch(panelRect);
+
+            Image backdrop = panel.GetComponent<Image>();
+            if (backdrop != null)
+            {
+                backdrop.sprite = null;
+                backdrop.color = new Color(0.08f, 0.04f, 0.01f, 0.72f);
+                backdrop.raycastTarget = true;
+                backdrop.raycastPadding = Vector4.zero;
+            }
+
+            Transform oldCard = panel.transform.Find("EmailLoginCard");
+            if (oldCard != null)
+            {
+                ReparentIfInside(email, oldCard, panel.transform);
+                ReparentIfInside(password, oldCard, panel.transform);
+                ReparentIfInside(login, oldCard, panel.transform);
+                ReparentIfInside(back, oldCard, panel.transform);
+                ReparentIfInside(status, oldCard, panel.transform);
+                Undo.DestroyObjectImmediate(oldCard.gameObject);
+            }
+
+            Image card = ChatUiFactory.Panel("EmailLoginCard", panel.transform, Cream);
+            SetFigmaRect(card.rectTransform, 120, 600, 840, 1050);
+            AddDepth(card.gameObject);
+
+            RTLTextMeshPro title = CreateText("Title", card.transform, "ورود به حساب", 54, Brown);
+            SetTopLeft(title.rectTransform, 150, 70, 540, 90);
+            RTLTextMeshPro description = CreateText("Description", card.transform,
+                "ایمیل و رمز عبور حساب خود را وارد کنید", 28, Brown);
+            description.fontStyle = FontStyles.Normal;
+            SetTopLeft(description.rectTransform, 90, 165, 660, 75);
+
+            PlaceInput(email, card.transform, 280, "ایمیل");
+            if (email != null)
+            {
+                email.contentType = TMP_InputField.ContentType.EmailAddress;
+                email.keyboardType = TouchScreenKeyboardType.EmailAddress;
+            }
+
+            PlaceInput(password, card.transform, 440, "رمز عبور");
+            if (password != null)
+                password.contentType = TMP_InputField.ContentType.Password;
+
+            if (status != null)
+            {
+                status.transform.SetParent(card.transform, false);
+                SetTopLeft(status.rectTransform, 90, 570, 660, 80);
+                status.color = Brown;
+                status.fontSize = 27;
+                status.raycastTarget = false;
+            }
+
+            if (login != null)
+            {
+                RemovePopupOpener(login);
+                login.transform.SetParent(card.transform, false);
+                SetTopLeft((RectTransform)login.transform, 170, 690, 500, 120);
+                StylePrimaryButton(login, "ورود");
+            }
+
+            if (back != null)
+            {
+                RemovePopupOpener(back);
+                back.transform.SetParent(card.transform, false);
+                SetTopLeft((RectTransform)back.transform, 170, 835, 500, 105);
+                StyleSecondaryButton(back, "انصراف");
+            }
+
+            panel.SetActive(false);
+            panelRect?.SetAsLastSibling();
+            EditorUtility.SetDirty(loginPanel);
+        }
+
+        private static void RemovePopupOpener(Button button)
+        {
+            OpenEmailLoginButton opener = button.GetComponent<OpenEmailLoginButton>();
+            if (opener != null)
+                Undo.DestroyObjectImmediate(opener);
         }
 
         private static void BuildShop(Transform shopPanel)

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Nakama.Helpers;
 using NinjaBattle.Game;
 using RTLTMPro;
@@ -12,6 +13,7 @@ namespace NinjaBattle.UI
     public class MissionsUI : MonoBehaviour
     {
         [Header("Mission Panel")]
+        [SerializeField] private GameObject missionPanel;
         [SerializeField] private Button openButton;
         [SerializeField] private Button closeButton;
         [SerializeField] private RectTransform missionContainer;
@@ -27,6 +29,8 @@ namespace NinjaBattle.UI
         private readonly List<MissionItemView> _missionItems = new List<MissionItemView>();
         private MissionManager _missionManager;
         private PlayerProgressionManager _progressionManager;
+        private CanvasGroup _panelCanvasGroup;
+        private RectTransform _panelContentRect;
 
         private void Awake()
         {
@@ -39,7 +43,34 @@ namespace NinjaBattle.UI
             if (closeButton != null)
                 closeButton.onClick.AddListener(ClosePanel);
 
-            ClosePanel();
+            ResolveMissionPanel();
+            if (missionPanel != null)
+                missionPanel.SetActive(false);
+        }
+
+        private void ResolveMissionPanel()
+        {
+            if (missionPanel == null)
+            {
+                Transform found = transform.Find("MissionPanel");
+                if (found != null)
+                    missionPanel = found.gameObject;
+            }
+
+            if (missionPanel != null)
+            {
+                _panelCanvasGroup = missionPanel.GetComponent<CanvasGroup>();
+                if (_panelCanvasGroup == null)
+                    _panelCanvasGroup = missionPanel.AddComponent<CanvasGroup>();
+
+                Transform journal = missionPanel.transform.Find("JournalBackground");
+                if (journal != null)
+                    _panelContentRect = journal as RectTransform;
+                else if (missionPanel.transform.childCount > 0)
+                    _panelContentRect = missionPanel.transform.GetChild(0) as RectTransform;
+                else
+                    _panelContentRect = missionPanel.GetComponent<RectTransform>();
+            }
         }
 
         private IEnumerator Start()
@@ -62,20 +93,60 @@ namespace NinjaBattle.UI
             if (closeButton != null)
                 closeButton.onClick.RemoveListener(ClosePanel);
 
+            if (_panelCanvasGroup != null)
+                _panelCanvasGroup.DOKill();
+            if (_panelContentRect != null)
+                _panelContentRect.DOKill();
+
             UnbindManagers();
         }
 
         public void OpenPanel()
         {
+            ResolveMissionPanel();
+            if (missionPanel == null)
+                return;
 
+            missionPanel.SetActive(true);
+
+            if (_panelCanvasGroup != null)
+            {
+                _panelCanvasGroup.DOKill();
+                _panelCanvasGroup.alpha = 0f;
+                _panelCanvasGroup.DOFade(1f, 0.25f).SetUpdate(true);
+            }
+
+            if (_panelContentRect != null)
+            {
+                _panelContentRect.DOKill();
+                _panelContentRect.localScale = Vector3.one * 0.82f;
+                _panelContentRect.DOScale(Vector3.one, 0.32f).SetEase(Ease.OutBack).SetUpdate(true);
+            }
+
+            if (_missionManager != null)
+                RefreshMissions(_missionManager.Missions);
         }
 
         public void ClosePanel()
         {
+            if (missionPanel == null || !missionPanel.activeSelf)
+                return;
 
+            if (_panelCanvasGroup != null && _panelContentRect != null)
+            {
+                _panelCanvasGroup.DOKill();
+                _panelContentRect.DOKill();
+                _panelContentRect.DOScale(Vector3.one * 0.85f, 0.18f).SetEase(Ease.InBack).SetUpdate(true);
+                _panelCanvasGroup.DOFade(0f, 0.18f).SetUpdate(true).OnComplete(() =>
+                {
+                    missionPanel.SetActive(false);
+                });
+            }
+            else
+            {
+                missionPanel.SetActive(false);
+            }
         }
-
-
 
         private void BindManagers()
         {
@@ -165,14 +236,14 @@ namespace NinjaBattle.UI
             float ratio = isMaxLevel ? 1f : Mathf.Clamp01((float)xpInsideLevel / xpSpan);
 
             if (levelText != null)
-                levelText.text = $"سطح {(currentLevel)}";
+                levelText.text = $"سطح {ToPersianDigits(currentLevel)}";
             if (titleText != null)
                 titleText.text = string.IsNullOrWhiteSpace(currentTitle) ? "بازیکن" : currentTitle;
             if (xpText != null)
             {
                 xpText.text = isMaxLevel
                     ? "بالاترین سطح"
-                    : $"{(xpInsideLevel)} از {(xpSpan)} امتیاز";
+                    : $"{ToPersianDigits(xpInsideLevel)} از {ToPersianDigits(xpSpan)} امتیاز";
             }
             if (xpFill != null)
                 xpFill.fillAmount = ratio;
@@ -207,10 +278,15 @@ namespace NinjaBattle.UI
             {
                 missionSummaryText.text = totalCount == 0
                     ? "در حال دریافت مأموریت‌ها..."
-                    : $"{(completedCount)} از {(totalCount)} انجام شده";
+                    : $"{ToPersianDigits(completedCount)} از {ToPersianDigits(totalCount)} انجام شده";
             }
         }
 
-
+        private static string ToPersianDigits(int value)
+        {
+            return value.ToString().Replace('0', '۰').Replace('1', '۱').Replace('2', '۲')
+                .Replace('3', '۳').Replace('4', '۴').Replace('5', '۵').Replace('6', '۶')
+                .Replace('7', '۷').Replace('8', '۸').Replace('9', '۹');
+        }
     }
 }

@@ -52,6 +52,20 @@ function InitModule(ctx, logger, nk, initializer) {
             }]);
         logger.info("App version config seeded with defaults.");
     }
+    // Seed default Cafe Bazaar IAP token if not present
+    var defaultBazaarToken = "eyJhbGciOiJIUzI1NiIsImtpZCI6ImFuY2llbnQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJuYXNoZXItcGlzaGtoYW4tYXBpIiwiaWF0IjoxNzkwMDkyNzkxLCJleHAiOjQ5NDM2OTI3OTEsImFwaV9hZ2VudF9pZCI6OTQ3NX0.tw7wdMgTogBG6ydZ0NSdle-53slQ_O6g-EzWwGS4DWY";
+    var existingBazaar = nk.storageRead([{ collection: CollectionConfig, key: KeyCafeBazaarToken, userId: SystemUserId }]);
+    if (existingBazaar.length === 0) {
+        nk.storageWrite([{
+                collection: CollectionConfig,
+                key: KeyCafeBazaarToken,
+                userId: SystemUserId,
+                value: { token: defaultBazaarToken },
+                permissionRead: 0,
+                permissionWrite: 0,
+            }]);
+        logger.info("Cafe Bazaar IAP token seeded with default.");
+    }
     // Leaderboard reset → distribute rewards
     initializer.registerLeaderboardReset(onLeaderboardReset);
     // Match handler
@@ -136,7 +150,7 @@ function createDefaultMissionDefinitions() {
             incrementBy: 1,
             target: 20,
             rewardXp: 80,
-            isRepeatable: true,
+            isRepeatable: false,
             enabled: true,
         },
         {
@@ -149,7 +163,7 @@ function createDefaultMissionDefinitions() {
             incrementBy: "clearedTiles",
             target: 12,
             rewardXp: 70,
-            isRepeatable: true,
+            isRepeatable: false,
             enabled: true,
         },
         {
@@ -165,7 +179,7 @@ function createDefaultMissionDefinitions() {
             incrementBy: 1,
             target: 1,
             rewardXp: 150,
-            isRepeatable: true,
+            isRepeatable: false,
             enabled: true,
         },
         {
@@ -181,7 +195,7 @@ function createDefaultMissionDefinitions() {
             incrementBy: 1,
             target: 1,
             rewardXp: 180,
-            isRepeatable: true,
+            isRepeatable: false,
             enabled: true,
         },
         {
@@ -196,7 +210,7 @@ function createDefaultMissionDefinitions() {
             incrementBy: 1,
             target: 10,
             rewardXp: 120,
-            isRepeatable: true,
+            isRepeatable: false,
             enabled: true,
         },
         {
@@ -211,7 +225,7 @@ function createDefaultMissionDefinitions() {
             incrementBy: 1,
             target: 1,
             rewardXp: 140,
-            isRepeatable: true,
+            isRepeatable: false,
             enabled: true,
         },
         {
@@ -226,7 +240,7 @@ function createDefaultMissionDefinitions() {
             incrementBy: 1,
             target: 1,
             rewardXp: 130,
-            isRepeatable: true,
+            isRepeatable: false,
             enabled: true,
         },
         {
@@ -241,7 +255,7 @@ function createDefaultMissionDefinitions() {
             incrementBy: 1,
             target: 3,
             rewardXp: 200,
-            isRepeatable: true,
+            isRepeatable: false,
             enabled: true,
         },
     ];
@@ -267,6 +281,9 @@ function upgradeLegacyMissionDefinitions(existingDefinitions) {
         var existingKeys = Object.keys(existing);
         for (var keyIndex = 0; keyIndex < existingKeys.length; keyIndex++)
             merged[existingKeys[keyIndex]] = existing[existingKeys[keyIndex]];
+        if (fallback) {
+            merged.isRepeatable = Boolean(fallback.isRepeatable);
+        }
         upgraded.push(merged);
         seen[existing.missionId] = true;
     }
@@ -285,7 +302,7 @@ function loadOrSeedMissionDefinitions(nakama, logger) {
         var definitions = Array.isArray(storedValue)
             ? storedValue
             : (storedValue && Array.isArray(storedValue.missions) ? storedValue.missions : null);
-        if (definitions && definitions.length > 0 && storedValue.schemaVersion === 2)
+        if (definitions && definitions.length > 0 && storedValue.schemaVersion === 3)
             return definitions;
         if (definitions && definitions.length > 0) {
             var upgraded = upgradeLegacyMissionDefinitions(definitions);
@@ -293,14 +310,14 @@ function loadOrSeedMissionDefinitions(nakama, logger) {
                 collection: CollectionMissionDefinitions,
                 key: KeyMissionDefinitions,
                 userId: SystemUserId,
-                value: { schemaVersion: 2, missions: upgraded },
+                value: { schemaVersion: 3, missions: upgraded },
                 permissionRead: 2,
                 permissionWrite: 0,
                 version: stored[0].version,
             };
             try {
                 nakama.storageWrite([upgradeRequest]);
-                logger.info("Upgraded mission definitions storage to schema version 2.");
+                logger.info("Upgraded mission definitions storage to schema version 3.");
             }
             catch (e) {
                 logger.warn("Mission definitions migration write failed: " + e);
@@ -315,7 +332,7 @@ function loadOrSeedMissionDefinitions(nakama, logger) {
             collection: CollectionMissionDefinitions,
             key: KeyMissionDefinitions,
             userId: SystemUserId,
-            value: { schemaVersion: 2, missions: definitions },
+            value: { schemaVersion: 3, missions: definitions },
             permissionRead: 2,
             permissionWrite: 0,
         }]);
@@ -962,8 +979,10 @@ function marketplaceError(raw, code) {
     return "Marketplace validation failed: HTTP " + code;
 }
 function validateCafeBazaarPurchase(context, nakama, input) {
+    var defaultToken = "eyJhbGciOiJIUzI1NiIsImtpZCI6ImFuY2llbnQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJuYXNoZXItcGlzaGtoYW4tYXBpIiwiaWF0IjoxNzkwMDkyNzkxLCJleHAiOjQ5NDM2OTI3OTEsImFwaV9hZ2VudF9pZCI6OTQ3NX0.tw7wdMgTogBG6ydZ0NSdle-53slQ_O6g-EzWwGS4DWY";
     var token = configFirst(nakama, [KeyCafeBazaarToken, KeyBazaarToken]) ||
-        envFirst(context, ["CAFEBAZAAR_PISHKHAN_API_SECRET", "BAZAAR_PISHKHAN_API_SECRET", "CAFEBAZAAR_API_SECRET"]);
+        envFirst(context, ["CAFEBAZAAR_PISHKHAN_API_SECRET", "BAZAAR_PISHKHAN_API_SECRET", "CAFEBAZAAR_API_SECRET"]) ||
+        defaultToken;
     var packageResult = getMarketplacePackageName(context, "cafebazaar", input);
     if (!token)
         return invalidValidation("cafebazaar", packageResult.packageName, "Missing config/cafebazaar_iap_token or CAFEBAZAAR_PISHKHAN_API_SECRET", 0, {});

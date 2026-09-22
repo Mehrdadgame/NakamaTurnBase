@@ -2,6 +2,7 @@ using RTLTMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace NinjaBattle.UI
 {
@@ -32,6 +33,17 @@ namespace NinjaBattle.UI
             }
             if (panel != null) panel.color = won || draw ? winColor : lossColor;
             if (trophy != null) trophy.color = won || draw ? Color.white : new Color(0.72f, 0.72f, 0.72f, 1f);
+
+            transform.DOKill();
+            transform.localScale = Vector3.zero;
+            transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack).SetUpdate(true);
+
+            if (trophy != null)
+            {
+                trophy.rectTransform.DOKill();
+                trophy.rectTransform.localScale = Vector3.one;
+                trophy.rectTransform.DOPunchScale(Vector3.one * 0.25f, 0.45f, 5, 0.5f).SetDelay(0.2f).SetUpdate(true);
+            }
         }
 
         public void ReturnHome()

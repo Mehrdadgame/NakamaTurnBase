@@ -46,10 +46,11 @@ namespace NinjaBattle.General
 
         public void PlayMusic(AudioClip clip, bool loop = true)
         {
+            if (clip == null) return;
             StopMusic();
             musicChannel.clip = clip;
             musicChannel.loop = loop;
-            musicChannel.Stop();
+            musicChannel.Play();
         }
 
         public void StopMusic()
