@@ -10,7 +10,7 @@
     }
   ],
   "dependencies": {
-    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
+    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.14.1",
     "com.google.external-dependency-manager": "1.2.188",
     "com.unity.2d.animation": "16.0.1",
     "com.unity.2d.psdimporter": "15.0.1",

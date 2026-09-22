@@ -19,9 +19,18 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
     /// <param name="eventData"></param>
     public void OnPointerDown(PointerEventData eventData)
     {
-
-        if (!MultiplayerManager.Instance.isTurn || GameManager.Instance.diceRoller.currrentDie == -1 || isLock || GameManager.Instance.diceRoller.isRolling)
+        DiceRoller diceRoller = GameManager.Instance.diceRoller;
+        if (!MultiplayerManager.Instance.isTurn || !diceRoller.dieRolled ||
+            diceRoller.currrentDie == -1 || isLock || diceRoller.isRolling)
             return;
+
+        TutorialManager tutorial = TutorialManager.Instance;
+        if (tutorial != null && !tutorial.CanPlaceCell(this))
+        {
+            tutorial.NotifyInvalidCell(this);
+            return;
+        }
+
         SetDataInCell();
     }
 
@@ -39,7 +48,7 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
         MultiplayerManager.Instance.isTurn = false;
         GameManager.Instance.diceRoller.currrentDie = -1;
         isLock = true;
-       
+
     }
 
 

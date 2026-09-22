@@ -21,17 +21,17 @@ interface LeagueConfig {
 const LEAGUES: { [mode: string]: LeagueConfig } = {
     "ThreeByThree": {
         displayName:  "SHOWDOWN DICE",
-        entryFee:     50,
-        winnerReward: 80,
-        drawRefund:   25,
-        rankPoints:   50,
+        entryFee:     750,
+        winnerReward: 1260,
+        drawRefund:   375,
+        rankPoints:   750,
     },
     "FourByThree": {
         displayName:  "DICEPUNK LEAGUE",
-        entryFee:     150,
-        winnerReward: 250,
-        drawRefund:   75,
-        rankPoints:   120,
+        entryFee:     500,
+        winnerReward: 840,
+        drawRefund:   250,
+        rankPoints:   500,
     },
     "VerticalAndHorizontal": {
         displayName:  "DICE MASTER",

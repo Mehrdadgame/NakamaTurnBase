@@ -15,8 +15,8 @@ namespace Nakama.Helpers
 
         private const int TickRate = 5;
         private const float SendRate = 1f / (float)TickRate;
-        private const string JoinOrCreateMatchRpc  = "JoinOrCreateMatchRpc";
-        private const string JoinTutorialMatchRpc  = "JoinTutorialMatchRpc";
+        private const string JoinOrCreateMatchRpc = "JoinOrCreateMatchRpc";
+        private const string JoinTutorialMatchRpc = "JoinTutorialMatchRpc";
         private const string LogFormat = "{0} with code {1}:\n{2}";
         private const string SendingDataLog = "Sending data";
         private const string ReceivedDataLog = "Received data";
@@ -76,14 +76,14 @@ namespace Nakama.Helpers
                     colTable = 3; ;
                     break;
                 case ModeGame.VerticalAndHorizontal:
-                    rowTable =3;
+                    rowTable = 3;
                     colTable = 3; ;
                     break;
                 default:
                     break;
             }
-           
-           
+
+
         }
         public async void JoinMatchAsync(ModeGame mode)
         {
@@ -119,7 +119,7 @@ namespace Nakama.Helpers
 
             var stringProperties = new Dictionary<string, string>()
             {
-                { "mode", ModeGame.ThreeByThree.ToString() }
+                { "mode", GameManager.Instance.modeGame.ToString() }
             };
             match = await NakamaManager.Instance.Socket.JoinMatchAsync(matchId, stringProperties);
 

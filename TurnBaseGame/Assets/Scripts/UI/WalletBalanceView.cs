@@ -50,7 +50,7 @@ namespace NinjaBattle.UI
         private void Refresh(int amount)
         {
             if (valueText != null)
-                valueText.text = PersianTextUtils.FormatNumber(amount);
+                valueText.text = PersianTextUtils.FormatNumberStandalone(amount);
         }
     }
 }

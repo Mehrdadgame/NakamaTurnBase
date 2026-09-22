@@ -47,6 +47,36 @@ public static class PersianTextUtils
     }
 
     /// <summary>
+    /// Formats a number for labels that contain ONLY the number (e.g. the home
+    /// coin counter). RTLTextMeshPro does not reorder digit groups when the text
+    /// has no surrounding RTL words, so groups must stay in normal
+    /// (most-significant-first) order — unlike FormatNumber, which pre-reverses.
+    /// Example: 19520 → "۱۹,۵۲۰"
+    /// </summary>
+    public static string FormatNumberStandalone(long amount)
+    {
+        if (amount < 0)
+            return "‏-" + FormatNumberStandalone(-amount);
+
+        string digits = amount.ToString();
+        int len = digits.Length;
+        if (len <= 3)
+            return ToPersianDigits(digits);
+
+        var sb = new StringBuilder();
+        int firstGroup = len % 3;
+        if (firstGroup > 0)
+            sb.Append(digits.Substring(0, firstGroup));
+        for (int i = firstGroup; i < len; i += 3)
+        {
+            if (sb.Length > 0)
+                sb.Append(ThousandsSep);
+            sb.Append(digits.Substring(i, 3));
+        }
+        return ToPersianDigits(sb.ToString());
+    }
+
+    /// <summary>
     /// Fixes a pre-formatted price string for RTLTextMeshPro.
     /// RTLTextMeshPro reverses group order, so "۱۱۹,۰۰۰ ت" displays as "۰۰۰,۱۱۹ ت".
     /// This method reverses the digit groups in-place so after RTL rendering they appear correctly.

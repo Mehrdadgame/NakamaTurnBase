@@ -4,8 +4,9 @@ let matchInit: nkruntime.MatchInitFunction = function (
     context, logger, nakama,
     params: { [key: string]: string }
 ) {
-    let value = "";
-    for (let key in params) value = params[key];
+    // Read the mode explicitly — iterating params picked the LAST key, so a
+    // tutorial match ({ mode, tutorial }) ended up with mode "true".
+    let value = params.mode || "";
 
     const label: MatchLabel = { open: true, game_mode: value };
     const [arrayFirst, arraySecond, vertical] = buildGrids(value);

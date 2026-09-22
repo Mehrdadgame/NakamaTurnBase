@@ -107,7 +107,7 @@ namespace Game
             if (_displayedCoins < 0)
             {
                 _displayedCoins = amount;
-                Cointext.text = PersianTextUtils.FormatNumber(amount);
+                Cointext.text = PersianTextUtils.FormatNumberStandalone(amount);
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace Game
                 x =>
                 {
                     counter = x;
-                    Cointext.text = PersianTextUtils.FormatNumber(Mathf.RoundToInt(x));
+                    Cointext.text = PersianTextUtils.FormatNumberStandalone(Mathf.RoundToInt(x));
                 },
                 amount,
                 0.8f

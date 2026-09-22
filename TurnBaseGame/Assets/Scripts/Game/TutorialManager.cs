@@ -15,7 +15,7 @@ using UnityEngine.UI;
 ///   Step 3 — Scoring rules
 ///   Step 4 — Elimination mechanic
 ///   Step 5 — Opponent turn and bot move
-///   Step 6 — Place 2 near your 3 for bonus value
+///   Step 6 — Place another 3 in the same line to create a double
 ///   Step 7 — Speed and win condition
 ///   Step 8 — Final summary → CompleteTutorial
 /// </summary>
@@ -60,6 +60,15 @@ public class TutorialManager : MonoBehaviour
     private bool _waitingCell = false;
     private bool _waitingBotMove = false;   // waiting for bot to play before showing step 5
     private int _firstCellLine = -1;       // row where player placed first cell
+    private int _firstCellRow = -1;
+    private bool _firstAnchorRemoved = false;
+
+    private Canvas _interactionCanvas;
+    private GraphicRaycaster _interactionRaycaster;
+    private bool _addedInteractionCanvas;
+    private bool _addedInteractionRaycaster;
+    private bool _previousOverrideSorting;
+    private int _previousSortingOrder;
 
     private const int TotalSteps = 9;
 
@@ -87,8 +96,8 @@ public class TutorialManager : MonoBehaviour
         if (nextButton != null) nextButton.onClick.AddListener(OnNext);
         if (skipButton != null) skipButton.onClick.AddListener(OnSkip);
 
-        // Wait for player entry animations (~2.75 s) then block interaction with step 0
-        StartCoroutine(DelayedStart(8.5f));
+        // Wait only for the battle entry animation, then start teaching immediately.
+        StartCoroutine(DelayedStart(3f));
     }
 
     // ── Public game events ────────────────────────────────────────────────────
@@ -100,11 +109,16 @@ public class TutorialManager : MonoBehaviour
         AdvanceTo(_step + 1);
     }
 
-    /// <param name="line">Grid row where the player placed (from UiManager).</param>
-    public void OnCellPlaced(int line = -1)
+    /// <param name="line">Grid line where the player placed (from UiManager).</param>
+    /// <param name="row">Grid row where the player placed (from UiManager).</param>
+    public void OnCellPlaced(int line = -1, int row = -1)
     {
         if (!_active || !_waitingCell) return;
-        if (_step == 2 && line >= 0) _firstCellLine = line;
+        if (_step == 2 && line >= 0)
+        {
+            _firstCellLine = line;
+            _firstCellRow = row;
+        }
         _waitingCell = false;
         AdvanceTo(_step + 1);
     }
@@ -114,8 +128,8 @@ public class TutorialManager : MonoBehaviour
     {
         if (!_active || !_waitingBotMove) return;
         _waitingBotMove = false;
-        // Force dice value 2 so the player's next roll is scripted
-        GameManager.Instance?.diceRoller?.ForceNextValue(2);
+        // Repeat the first value so the next placement visibly creates a double.
+        GameManager.Instance?.diceRoller?.ForceNextValue(3);
         StartCoroutine(ShowStepDelayed(5, 0.8f));
     }
 
@@ -125,25 +139,58 @@ public class TutorialManager : MonoBehaviour
         ShowStep(4);
     }
 
-    public void OnEliminationOccurred()
+    public void OnEliminationOccurred(int line, int row)
     {
-        if (!_active || _step != 6) return;
-        ShowStep(6);
+        if (!_active) return;
+        if (line == _firstCellLine && row == _firstCellRow)
+            _firstAnchorRemoved = true;
+    }
+
+    public bool CanRollDice()
+    {
+        return TutorialInputRules.CanRoll(_active, _waitingDice);
+    }
+
+    public bool CanPlaceCell(ClickInCell cell)
+    {
+        if (cell == null)
+            return false;
+
+        return TutorialInputRules.CanPlace(
+            _active,
+            _waitingCell,
+            _step,
+            _firstCellLine,
+            _firstAnchorRemoved,
+            cell.numberLine);
+    }
+
+    public void NotifyInvalidCell(ClickInCell cell)
+    {
+        if (!_active || !_waitingCell)
+            return;
+
+        if (_step == 6 && !_firstAnchorRemoved && cell != null && cell.numberLine != _firstCellLine)
+            messageText.text = "برای ساخت دابل، تاس ۳ دوم را در همان ردیف تاس ۳ قبلی قرار بده.";
+        else
+            messageText.text = "اول تاس را بینداز، سپس یکی از خانه‌های روشن صفحه خودت را انتخاب کن.";
+
+        bubbleRect?.DOShakeAnchorPos(0.35f, 12f, 12, 70f, false, true);
     }
 
     // ── Fly bubble ────────────────────────────────────────────────────────────
 
     /// <summary>
     /// Animates a dice-value bubble flying between the two grids.
-    /// playerToOpp=true  → dice button → opponent grid (player placed).
-    /// playerToOpp=false → opponent area → player grid (bot placed).
+    /// isLocalMove=true  → dice button → local grid.
+    /// isLocalMove=false → dice button → opponent grid.
     /// </summary>
-    public void ShowDiceFlyBubble(int diceValue, bool playerToOpp)
+    public void ShowDiceFlyBubble(int diceValue, bool isLocalMove)
     {
         if (!_active || flyBubbleRect == null) return;
 
-        RectTransform from = playerToOpp ? diceBtnRect : oppGridRect;
-        RectTransform to = playerToOpp ? oppGridRect : myGridRect;
+        RectTransform from = diceBtnRect;
+        RectTransform to = isLocalMove ? myGridRect : oppGridRect;
         if (from == null || to == null) return;
 
         if (flyBubbleText != null) flyBubbleText.text = diceValue.ToString();
@@ -171,6 +218,17 @@ public class TutorialManager : MonoBehaviour
     private IEnumerator DelayedStart(float delay)
     {
         yield return new WaitForSeconds(delay);
+
+        // UiManager is enabled by GameManager only after the battle entry
+        // animation finishes — start teaching once the board is interactable.
+        float timeout = 10f;
+        while (timeout > 0f && (UiManager.instance == null || !UiManager.instance.enabled))
+        {
+            timeout -= Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.35f);
+
         ShowStep(0);
     }
 
@@ -225,11 +283,27 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(seconds);
         if (_active && _waitingBotMove)
         {
-            Debug.LogWarning("[Tutorial] Bot move timeout — forcing step 5");
-            _waitingBotMove = false;
-            GameManager.Instance?.diceRoller?.ForceNextValue(2);
-            _step = 5;
-            ShowStep(5);
+            PlayersManager.Instance?.ApplyPendingBotMessage();
+            if (MultiplayerManager.Instance != null && MultiplayerManager.Instance.isTurn)
+            {
+                _waitingBotMove = false;
+                GameManager.Instance?.diceRoller?.ForceNextValue(3);
+                _step = 5;
+                ShowStep(5);
+                yield break;
+            }
+
+            Debug.LogWarning("[Tutorial] Bot move is delayed; keeping gameplay input locked.");
+            UpdateBubble(
+                "حرکت حریف آموزشی کمی طول کشیده است. اتصال را بررسی کن؛ به محض رسیدن حرکت، آموزش خودکار ادامه پیدا می‌کند.",
+                "در انتظار حریف...",
+                4,
+                true);
+            UpdateHighlight(oppGridRect);
+            ShowOverlay();
+
+            // Keep polling — if the connection recovers the tutorial resumes on its own.
+            StartCoroutine(BotMoveTimeoutFallback(4f));
         }
     }
 
@@ -250,11 +324,9 @@ public class TutorialManager : MonoBehaviour
             // ── 0: Board intro ────────────────────────────────────────────────
             case 0:
                 msg = "به آموزش بازی تاس خوش اومدی!\n\n" +
-                      "این بازی ترکیبی از سرعت، استراتژی و مدیریت ریسک است.\n\n" +
-                      "در بالا: خانه‌های حریف\n" +
-                      "در پایین: خانه‌های تو\n" +
-                      "در وسط: دکمه تاس\n\n" +
-                      "هدف اصلی اینه که سریع‌تر از حریف، خانه‌های خودت رو پر کنی.";
+                      "صفحه پایین برای تو و صفحه بالا برای حریف است.\n" +
+                      "دکمه تاس وسط صفحه قرار دارد.\n\n" +
+                      "در هر نوبت فقط دو کار انجام می‌دهی: تاس می‌اندازی و عدد را در یکی از خانه‌های خودت می‌گذاری.";
                 highlight = myGridRect;
                 btnLabel = "بریم";
                 break;
@@ -269,9 +341,8 @@ public class TutorialManager : MonoBehaviour
                     TimerTurn.instance.TimerRunning = false; // controlled by IsTurn events
                 }
                 msg = "نوبت توست!\n\n" +
-                      "اولین کار اینه که دکمه تاس رو فشار بدی.\n" +
-                      "یک عدد تصادفی بهت می‌ده؛ بعد باید آن را در صفحه‌ی خودت قرار بدی.\n\n" +
-                      "روی دکمه تاس کلیک کن.";
+                        "دکمه‌ای که حرکت می‌کند آماده کلیک است.\n" +
+                        "روی تاس بزن؛ برای این تمرین عدد ۳ می‌آید.";
                 highlight = diceBtnRect;
                 btnLabel = "باشه";
                 _waitingDice = true;
@@ -283,9 +354,8 @@ public class TutorialManager : MonoBehaviour
                 // is guaranteed to be buffered (don't wait for step 3)
                 IsBotMoveSuppressed = true;
                 msg = "عدد 3 گرفتی!\n\n" +
-                      "حالا باید این عدد رو روی یکی از خانه‌های خودت بگذاری.\n" +
-                      "می‌تونی هر خانه‌ای رو انتخاب کنی؛ مهم اینه که در آینده، موقعیتش رو برای امتیاز و دفاع از خودت حساب کنی.\n\n" +
-                      "روی یک خانه کلیک کن.";
+                        "خانه‌های روشن پایین، انتخاب‌های مجاز تو هستند.\n" +
+                        "تاس ۳ را روی یکی از آن‌ها بگذار. جای آن را به خاطر می‌گیریم تا بعداً دابل بسازیم.";
                 highlight = myGridRect;
                 _waitingCell = true;
                 break;
@@ -294,13 +364,10 @@ public class TutorialManager : MonoBehaviour
             case 3:
                 IsBotMoveSuppressed = true;
                 msg = "امتیازدهی بازی خیلی مهمه!\n\n" +
-                      "- اعداد متفاوت: جمع معمولی اعداد\n" +
-                      "  مثال: [2، 4، 6] = 12\n\n" +
-                      "- دو عدد یکسان: امتیاز بیشتری می‌دهد\n" +
-                      "  مثال: [3، 3، 5] = 17\n\n" +
-                      "- سه عدد یکسان: بیشترین امتیاز را می‌دهد\n" +
-                      "  مثال: [4، 4، 4] = 36\n\n" +
-                      "پس قرار دادن اعداد تکراری می‌تواند خیلی پرامتیاز باشد.";
+                        "اعداد متفاوت با هم جمع می‌شوند.\n" +
+                        "دو عدد یکسان، چهار برابر ارزش تاس امتیاز می‌دهند: [۳، ۳] = ۱۲.\n" +
+                        "سه عدد یکسان، نه برابر ارزش تاس هستند: [۴، ۴، ۴] = ۳۶.\n\n" +
+                        "وقتی دابل یا تریپل بسازی، پارتیکل رنگی زیر همان تاس‌ها روشن می‌شود.";
                 highlight = scoreAreaRect;
                 break;
 
@@ -308,56 +375,47 @@ public class TutorialManager : MonoBehaviour
             case 4:
                 IsBotMoveSuppressed = true;
                 msg = "یکی از مهم‌ترین مکانیک‌ها، حذف است!\n\n" +
-                      "اگر دوستت در ردیف روبه‌رو، یک عدد مشابه قرار بدهد،\n" +
-                      "همه‌ی اعداد مشابه تو در آن ردیف پاک می‌شوند.\n\n" +
-                      "یعنی هم امتیاز تو از بین می‌رود و هم فضای صفحه برایت سخت‌تر می‌شود.\n\n" +
-                      "این یعنی باید بین امتیاز گرفتن و حفاظت از خودت تعادل داشته باشی.";
-                highlight = null;
+                        "اگر حریف در خط روبه‌رو عددی برابر با تاس تو بگذارد، تاس‌های هم‌عدد تو از آن خط حذف می‌شوند.\n\n" +
+                        "این کار امتیاز حریف را کم می‌کند و دوباره برای تو جا باز می‌کند. حالا حرکت حریف آموزشی را ببین.";
+                highlight = oppGridRect;
                 break;
 
             // ── 5: Opponent turn and bot move ────────────────────────────────
             case 5:
-                msg = "حالا نوبت حریفه!\n\n" +
-                      "او هم مثل تو تاس می‌اندازد و عددی را در صفحه‌ی خودش قرار می‌دهد.\n\n" +
-                      "وقتی این مرحله تمام شد، دوباره نوبت تو خواهد بود.\n\n" +
-                      "روی دکمه تاس کلیک کن.";
+                msg = "حریف حرکتش را انجام داد!\n\n" +
+                        "دیدی که تاسش را در صفحه بالا گذاشت. حالا دوباره نوبت توست.\n" +
+                        "برای تمرین دابل، این بار هم عدد ۳ می‌آید. روی دکمه تاس کلیک کن.";
                 highlight = diceBtnRect;
                 btnLabel = "باشه";
                 _waitingDice = true;
                 break;
 
-            // ── 6: Place 2 next to the 3 (double score) ──────────────────────
+            // ── 6: Place the repeated 3 in the original line ─────────────────
             case 6:
-                msg = "عدد 2 گرفتی!\n\n" +
-                      "اگر این عدد را در همان ردیفی که 3 داری بگذاری،\n" +
-                      "امتیاز آن ردیف خیلی بیشتر می‌شود.\n\n" +
-                      "اما مراقب باش؛ اگر حریف هم در آن ردیف عدد مشابهی بگذارد،\n" +
-                      "می‌تواند آن بخش را از تو پاک کند.\n\n" +
-                      "روی خانه‌ای کلیک کن.";
+                msg = _firstAnchorRemoved
+                    ? "عدد ۳ گرفتی. حریف تاس قبلی تو را حذف کرد؛ این نمونه واقعی مکانیک حذف بود. حالا ۳ جدید را در یکی از خانه‌های روشن بگذار."
+                    : "عدد ۳ گرفتی! آن را در همان ردیف تاس ۳ قبلی بگذار تا دابل ساخته شود. خانه‌های ردیف‌های دیگر فعلاً قبول نمی‌شوند.";
                 highlight = myGridRect;
                 _waitingCell = true;
                 break;
 
             // ── 7: Speed and win condition ───────────────────────────────────
             case 7:
-                msg = "هدف بازی خیلی ساده است:\n\n" +
-                      "اولین بازیکنی که همه‌ی خانه‌های خود را پر کند، برنده است!\n\n" +
-                      "پس در این بازی باید هم سریع حرکت کنی،\n" +
-                      "هم امتیاز جمع‌آوری کنی،\n" +
-                      "و هم از حذف شدن توسط حریف جلوگیری کنی.\n\n" +
-                      "این تعادل، کلید پیروزی است.";
+                msg = _firstAnchorRemoved
+                    ? "حالا هم رول‌کردن، جای‌گذاری و حذف را در عمل دیدی. برای امتیاز بیشتر، در نوبت‌های بعدی عددهای یکسان را در یک خط کنار هم بساز."
+                    : "عالی! دابل ۳ ساخته شد؛ امتیاز این جفت ۱۲ است و پارتیکل رنگی زیر هر دو تاس باید روشن باشد. تریپل همان عدد، امتیاز بیشتری می‌دهد.";
                 btnLabel = "ادامه";
-                highlight = null;
+                highlight = scoreAreaRect;
                 break;
 
             // ── 8: Final summary ─────────────────────────────────────────────
             case 8:
                 msg = "حالا بازی را خوب فهمیدی!\n\n" +
-                      "تاس بگیر، عدد را در صفحه‌ی خود قرار بده،\n" +
-                      "امتیاز جمع کن، از حذف جلوگیری کن،\n" +
-                      "و زودتر از حریف خانه‌ها را کامل کن.\n\n" +
-                      "آماده‌ای که بازی را شروع کنی؟";
-                btnLabel = "شروع بازی";
+                        "در نوبت خودت: تاس بینداز و آن را روی صفحه پایین قرار بده.\n" +
+                        "عددهای یکسان را هم‌خط کن تا دابل و تریپل بسازی.\n" +
+                        "با عدد مساوی، تاس‌های خط روبه‌روی حریف را حذف کن.\n\n" +
+                        "آماده‌ای همین بازی با بات را ادامه بدهی؟";
+                btnLabel = "ادامه بازی با بات";
                 highlight = null;
                 break;
         }
@@ -403,13 +461,15 @@ public class TutorialManager : MonoBehaviour
 
         if (overlayGroup != null)
         {
-            // Pass clicks through to game elements when player must interact
-            bool block = !_waitingDice && !_waitingCell;
-            overlayGroup.blocksRaycasts = block;
-            overlayGroup.interactable = block;
+            // Keep the overlay blocking everything; only the requested target is
+            // lifted into a temporary higher canvas by ExposeInteractionTarget.
+            overlayGroup.blocksRaycasts = true;
+            overlayGroup.interactable = true;
             overlayGroup.alpha = 0f;
             overlayGroup.DOFade(0.72f, 0.25f);
         }
+
+        ExposeInteractionTarget(_waitingDice ? diceBtnRect : _waitingCell ? myGridRect : null);
         if (bubbleRect != null)
         {
             bubbleRect.localScale = Vector3.one * 0.85f;
@@ -462,6 +522,7 @@ public class TutorialManager : MonoBehaviour
 
     private void HideOverlay()
     {
+        RestoreInteractionTarget();
         highlightRect?.DOKill();
         arrowImage?.DOKill();
 
@@ -478,6 +539,8 @@ public class TutorialManager : MonoBehaviour
     {
         _active = false;
         IsBotMoveSuppressed = false;
+        if (PlayersManager.Instance != null && PlayersManager.Instance.HasPendingBotMessage)
+            PlayersManager.Instance.ApplyPendingBotMessage();
         AnalyticsTracker.SendDesign("tutorial_complete");
         PlayerPrefs.SetInt(WelcomePopup.TutorialDoneKey, 1);
         PlayerPrefs.SetInt(WelcomePopup.TutorialModeKey, 0);
@@ -490,5 +553,86 @@ public class TutorialManager : MonoBehaviour
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerRunning = MultiplayerManager.Instance?.isTurn ?? false;
         }
+    }
+
+    private void ExposeInteractionTarget(RectTransform target)
+    {
+        RestoreInteractionTarget();
+        if (target == null)
+            return;
+
+        Canvas parentCanvas = target.parent != null ? target.parent.GetComponentInParent<Canvas>() : null;
+        _interactionCanvas = target.GetComponent<Canvas>();
+        _addedInteractionCanvas = _interactionCanvas == null;
+        if (_addedInteractionCanvas)
+            _interactionCanvas = target.gameObject.AddComponent<Canvas>();
+        else
+        {
+            _previousOverrideSorting = _interactionCanvas.overrideSorting;
+            _previousSortingOrder = _interactionCanvas.sortingOrder;
+        }
+
+        _interactionCanvas.overrideSorting = true;
+        _interactionCanvas.sortingOrder = (parentCanvas != null ? parentCanvas.sortingOrder : 0) + 50;
+
+        _interactionRaycaster = target.GetComponent<GraphicRaycaster>();
+        _addedInteractionRaycaster = _interactionRaycaster == null;
+        if (_addedInteractionRaycaster)
+            _interactionRaycaster = target.gameObject.AddComponent<GraphicRaycaster>();
+    }
+
+    private void RestoreInteractionTarget()
+    {
+        if (_interactionRaycaster != null && _addedInteractionRaycaster)
+            Destroy(_interactionRaycaster);
+
+        if (_interactionCanvas != null)
+        {
+            if (_addedInteractionCanvas)
+                Destroy(_interactionCanvas);
+            else
+            {
+                _interactionCanvas.overrideSorting = _previousOverrideSorting;
+                _interactionCanvas.sortingOrder = _previousSortingOrder;
+            }
+        }
+
+        _interactionCanvas = null;
+        _interactionRaycaster = null;
+        _addedInteractionCanvas = false;
+        _addedInteractionRaycaster = false;
+    }
+
+    private void OnDestroy()
+    {
+        RestoreInteractionTarget();
+        bubbleRect?.DOKill();
+        highlightRect?.DOKill();
+        arrowImage?.DOKill();
+        flyBubbleRect?.DOKill();
+        if (nextButton != null) nextButton.onClick.RemoveListener(OnNext);
+        if (skipButton != null) skipButton.onClick.RemoveListener(OnSkip);
+        if (Instance == this) Instance = null;
+    }
+}
+
+public static class TutorialInputRules
+{
+    public static bool CanRoll(bool tutorialActive, bool waitingForDice)
+    {
+        return !tutorialActive || waitingForDice;
+    }
+
+    public static bool CanPlace(bool tutorialActive, bool waitingForCell, int step,
+        int firstCellLine, bool firstAnchorRemoved, int candidateLine)
+    {
+        if (!tutorialActive)
+            return true;
+        if (!waitingForCell)
+            return false;
+        if (step != 6 || firstAnchorRemoved || firstCellLine < 0)
+            return true;
+
+        return candidateLine == firstCellLine;
     }
 }

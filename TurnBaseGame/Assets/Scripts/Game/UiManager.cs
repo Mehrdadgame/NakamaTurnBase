@@ -9,6 +9,7 @@ using System.Linq;
 using UnityEngine.U2D;
 using Unity.VisualScripting;
 using RTLTMPro;
+using DG.Tweening;
 
 public class UiManager : MonoBehaviour
 {
@@ -54,6 +55,11 @@ public class UiManager : MonoBehaviour
     public SpriteAtlas AllAssets;
     public Color colroParticlewhite;
 
+    private DG.Tweening.Sequence rollAttentionSequence;
+    private RectTransform rollAttentionTarget;
+    private Vector3 rollAttentionBaseScale;
+    private Vector3 rollAttentionBaseEuler;
+
     private void Start()
     {
         instance = this;
@@ -63,6 +69,7 @@ public class UiManager : MonoBehaviour
 
         if (MultiplayerManager.Instance.isTurn)
         {
+            GameManager.Instance.diceRoller.PrepareForTurn();
             dicRollButton.interactable = true;
             dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
             TextTurnYou.Play("YouTurn", 0, 0);
@@ -79,6 +86,8 @@ public class UiManager : MonoBehaviour
         }
 
         SetInitialCellParticles();
+        if (MultiplayerManager.Instance.isTurn)
+            StartRollAttention();
     }
 
     /// در شروع بازی: particle زمین خودم روشن، particle زمین حریف خاموش
@@ -116,6 +125,7 @@ public class UiManager : MonoBehaviour
         PlayersManager.Instance.onRematch += Instance_onRematch;
         PlayersManager.Instance.IsTurn += Instance_IsTurn;
         GameManager.Instance.diceRoller.RollUp += ShowHighLight;
+        GameManager.Instance.diceRoller.RollStarted += StopRollAttention;
         TimerTurn.instance.TimerStop += Instance_TimerStop;
         PlayersManager.Instance.LeftPlayer += Instance_LeftPlayer;
     }
@@ -145,8 +155,14 @@ public class UiManager : MonoBehaviour
         PlayersManager.Instance.onSetDataInRowOpp -= Instance_onSetDataInRowOpp;
         PlayersManager.Instance.IsTurn -= Instance_IsTurn;
         PlayersManager.Instance.onRematch -= Instance_onRematch;
+        if (GameManager.Instance != null && GameManager.Instance.diceRoller != null)
+        {
+            GameManager.Instance.diceRoller.RollUp -= ShowHighLight;
+            GameManager.Instance.diceRoller.RollStarted -= StopRollAttention;
+        }
         TimerTurn.instance.TimerStop -= Instance_TimerStop;
         PlayersManager.Instance.LeftPlayer -= Instance_LeftPlayer;
+        StopRollAttention();
     }
     private void Instance_onRematch(RematchData obj)
     {
@@ -265,9 +281,9 @@ public class UiManager : MonoBehaviour
 
             TutorialManager.Instance?.OnDiceRolled();
 
-            // Fly bubble: player's dice value travels toward opponent's grid
+            // Fly bubble: player's dice value travels to the local grid.
             int diceVal = GameManager.Instance.diceRoller.currrentDie + 1;
-            TutorialManager.Instance?.ShowDiceFlyBubble(diceVal, playerToOpp: true);
+            TutorialManager.Instance?.ShowDiceFlyBubble(diceVal, isLocalMove: true);
         }
         else
         {
@@ -306,7 +322,7 @@ public class UiManager : MonoBehaviour
         ScoreTextMe.text = obj.ToString();
 
     }
-   
+
     int Count;
     [UnityEngine.ContextMenu("sum")]
     public void RowSum()
@@ -328,32 +344,32 @@ public class UiManager : MonoBehaviour
             calc.StopParticlesMe(calc.clickInCells2);
 
             // Rows (activate row-match particles)
-            arryRowSumOpp[0].text = calc.TilesOpp(calc.tileDataOpps,  out Count, skipClear: true).ToString();
+            arryRowSumOpp[0].text = calc.TilesOpp(calc.tileDataOpps, out Count, skipClear: true).ToString();
             arryRowSumOpp[1].text = calc.TilesOpp(calc.tileDataOpps2, out Count, skipClear: true).ToString();
             arryRowSumOpp[2].text = calc.TilesOpp(calc.tileDataOpps3, out Count, skipClear: true).ToString();
-            arryRowSumMe[0].text  = calc.TileMe(calc.clickInCells,  out Count, skipClear: true).ToString();
-            arryRowSumMe[1].text  = calc.TileMe(calc.clickInCells1, out Count, skipClear: true).ToString();
-            arryRowSumMe[2].text  = calc.TileMe(calc.clickInCells2, out Count, skipClear: true).ToString();
+            arryRowSumMe[0].text = calc.TileMe(calc.clickInCells, out Count, skipClear: true).ToString();
+            arryRowSumMe[1].text = calc.TileMe(calc.clickInCells1, out Count, skipClear: true).ToString();
+            arryRowSumMe[2].text = calc.TileMe(calc.clickInCells2, out Count, skipClear: true).ToString();
 
             // Columns (activate column-match particles — without stopping row matches)
-            arryRowSumOppCal[0].text = calc.TilesOpp(calc.tileDataOppsCal,   out Count, skipClear: true).ToString();
-            arryRowSumOppCal[1].text = calc.TilesOpp(calc.tileDataOpps2Cal,  out Count, skipClear: true).ToString();
-            arryRowSumOppCal[2].text = calc.TilesOpp(calc.tileDataOpps3Cal,  out Count, skipClear: true).ToString();
-            arryRowSumMeCal[0].text  = calc.TileMe(calc.clickInCellsCal,   out Count, skipClear: true).ToString();
-            arryRowSumMeCal[1].text  = calc.TileMe(calc.clickInCells1Cal,  out Count, skipClear: true).ToString();
-            arryRowSumMeCal[2].text  = calc.TileMe(calc.clickInCells2Cal,  out Count, skipClear: true).ToString();
+            arryRowSumOppCal[0].text = calc.TilesOpp(calc.tileDataOppsCal, out Count, skipClear: true).ToString();
+            arryRowSumOppCal[1].text = calc.TilesOpp(calc.tileDataOpps2Cal, out Count, skipClear: true).ToString();
+            arryRowSumOppCal[2].text = calc.TilesOpp(calc.tileDataOpps3Cal, out Count, skipClear: true).ToString();
+            arryRowSumMeCal[0].text = calc.TileMe(calc.clickInCellsCal, out Count, skipClear: true).ToString();
+            arryRowSumMeCal[1].text = calc.TileMe(calc.clickInCells1Cal, out Count, skipClear: true).ToString();
+            arryRowSumMeCal[2].text = calc.TileMe(calc.clickInCells2Cal, out Count, skipClear: true).ToString();
         }
         else
         {
             // Normal modes: each row owns its cells exclusively — no overlap, no issue.
-            arryRowSumOpp[0].text = calc.TilesOpp(calc.tileDataOpps,  out Count).ToString();
+            arryRowSumOpp[0].text = calc.TilesOpp(calc.tileDataOpps, out Count).ToString();
             arryRowSumOpp[1].text = calc.TilesOpp(calc.tileDataOpps2, out Count).ToString();
             arryRowSumOpp[2].text = calc.TilesOpp(calc.tileDataOpps3, out Count).ToString();
-            arryRowSumMe[0].text  = calc.TileMe(calc.clickInCells,  out Count).ToString();
-            arryRowSumMe[1].text  = calc.TileMe(calc.clickInCells1, out Count).ToString();
-            arryRowSumMe[2].text  = calc.TileMe(calc.clickInCells2, out Count).ToString();
-            arryRowSumOpp[3].text = calc.TilesOpp(calc.tileDataOpps4,  out Count).ToString();
-            arryRowSumMe[3].text  = calc.TileMe(calc.clickInCells3, out Count).ToString();
+            arryRowSumMe[0].text = calc.TileMe(calc.clickInCells, out Count).ToString();
+            arryRowSumMe[1].text = calc.TileMe(calc.clickInCells1, out Count).ToString();
+            arryRowSumMe[2].text = calc.TileMe(calc.clickInCells2, out Count).ToString();
+            arryRowSumOpp[3].text = calc.TilesOpp(calc.tileDataOpps4, out Count).ToString();
+            arryRowSumMe[3].text = calc.TileMe(calc.clickInCells3, out Count).ToString();
         }
 
         CheckShowLight();
@@ -388,12 +404,11 @@ public class UiManager : MonoBehaviour
     /// <param name="arg2"></param>
     private void Instance_onSetDataInRowMe(int arg1, int arg2)
     {
-        TutorialManager.Instance?.OnEliminationOccurred();
-
         var meCell = tileDataMe.Find(r => r.numberLine == arg1 && r.numberRow == arg2 && r.isLock);
 
         if (meCell != null)
         {
+            TutorialManager.Instance?.OnEliminationOccurred(arg1, arg2);
 
             meCell.SpriteDice.sprite = null;
             meCell.ValueTile = 0;
@@ -423,8 +438,8 @@ public class UiManager : MonoBehaviour
         {
             if (!obj.EndGame)
                 TextTurnOpp.Play("OppTurn", 0, 0);
-            TutorialManager.Instance?.OnCellPlaced(obj.NumberLine);
             RowSum();
+            TutorialManager.Instance?.OnCellPlaced(obj.NumberLine, obj.NumberRow);
 
             TimerTurn.instance.TimerRunning = false;
             TimerTurn.instance.TimerText.text = "-";
@@ -462,8 +477,8 @@ public class UiManager : MonoBehaviour
         TimerTurn.instance.TimerCount = 30;
         TimerTurn.instance.TimerText.color = Color.white;
 
-        // Fly bubble: bot's dice value travels toward player's grid
-        TutorialManager.Instance?.ShowDiceFlyBubble(obj.NumberTile + 1, playerToOpp: false);
+        // Fly bubble: bot's dice value travels to the opponent grid.
+        TutorialManager.Instance?.ShowDiceFlyBubble(obj.NumberTile + 1, isLocalMove: false);
 
         RowSum();
 
@@ -476,7 +491,7 @@ public class UiManager : MonoBehaviour
         Debug.Log(CalculterRowScore.instance.DuobleScore1.Count + " Count");
         Debug.Log(CalculterRowScore.instance.DuobleScore2.Count + " Count 2");
 
-      
+
         CalculterRowScore.instance.DuobleScore2.Clear();
         CalculterRowScore.instance.DuobleScore1.Clear();
     }
@@ -485,6 +500,7 @@ public class UiManager : MonoBehaviour
     {
         if (obj)
         {
+            GameManager.Instance.diceRoller.PrepareForTurn();
             dicRollButton.interactable = true;
             dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
             MultiplayerManager.Instance.isTurn = true;
@@ -493,10 +509,12 @@ public class UiManager : MonoBehaviour
             _ = Task.Delay(1000);
             TimerTurn.instance.TimerPause = false;
             TimerTurn.instance.TimerRunning = true;
+            StartRollAttention();
 
         }
         else
         {
+            StopRollAttention();
             TextTurnOpp.Play("OppTurn", 0, 0);
             dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[1];
             dicRollButton.interactable = false;
@@ -511,13 +529,60 @@ public class UiManager : MonoBehaviour
     private void Instance_onTurnMe()
     {
 
+        GameManager.Instance.diceRoller.PrepareForTurn();
         dicRollButton.interactable = true;
         dicRollButton.GetComponent<Image>().sprite = DiceRollsSprite[0];
         TextTurnYou.Play("YouTurn", 0, 0);
         GameManager.Instance.diceRoller.Rotation(false);
-
-
+        StartRollAttention();
     }
+
+    private void StartRollAttention()
+    {
+        if (dicRollButton == null || !dicRollButton.interactable)
+            return;
+
+        if (rollAttentionTarget == null)
+        {
+            rollAttentionTarget = dicRollButton.transform.parent as RectTransform;
+            if (rollAttentionTarget == null)
+                return;
+
+            rollAttentionBaseScale = rollAttentionTarget.localScale;
+            rollAttentionBaseEuler = rollAttentionTarget.localEulerAngles;
+        }
+
+        StopRollAttention();
+        rollAttentionSequence = DOTween.Sequence()
+            .Append(rollAttentionTarget.DOScale(rollAttentionBaseScale * 1.09f, 0.38f).SetEase(Ease.OutBack))
+            .Join(rollAttentionTarget.DOLocalRotate(rollAttentionBaseEuler + new Vector3(0f, 0f, -3.5f), 0.38f)
+                .SetEase(Ease.OutSine))
+            .Append(rollAttentionTarget.DOScale(rollAttentionBaseScale * 0.98f, 0.22f).SetEase(Ease.InOutSine))
+            .Join(rollAttentionTarget.DOLocalRotate(rollAttentionBaseEuler + new Vector3(0f, 0f, 3.5f), 0.22f)
+                .SetEase(Ease.InOutSine))
+            .Append(rollAttentionTarget.DOScale(rollAttentionBaseScale, 0.25f).SetEase(Ease.OutQuad))
+            .Join(rollAttentionTarget.DOLocalRotate(rollAttentionBaseEuler, 0.25f).SetEase(Ease.OutQuad))
+            .AppendInterval(0.45f)
+            .SetLoops(-1)
+            .SetUpdate(true)
+            .SetLink(gameObject);
+    }
+
+    private void StopRollAttention()
+    {
+        if (rollAttentionSequence != null)
+        {
+            rollAttentionSequence.Kill(false);
+            rollAttentionSequence = null;
+        }
+
+        if (rollAttentionTarget != null)
+        {
+            rollAttentionTarget.localScale = rollAttentionBaseScale;
+            rollAttentionTarget.localEulerAngles = rollAttentionBaseEuler;
+        }
+    }
+
     public void Leave()
     {
         MultiplayerManager.Instance.LeaveMatchAsync();

@@ -12,6 +12,7 @@ public class DiceRoller : MonoBehaviour
 {
 
     public Action<bool> RollUp;
+    public event Action RollStarted;
     public Sprite[] Dice;
     public int rolls;
     public int rollValue;
@@ -45,11 +46,18 @@ public class DiceRoller : MonoBehaviour
 
     public void Init()
     {
+        PrepareForTurn();
+    }
+
+    public void PrepareForTurn()
+    {
         totalTime = 0.0f;
         intervalTime = 0.0f;
-        currrentDie = 0;
+        currrentDie = -1;
         dieRolled = false;
-        die.sprite = Dice[currrentDie];
+        isRolling = false;
+        if (die != null && Dice != null && Dice.Length > 0)
+            die.sprite = Dice[0];
     }
 
     void Update()
@@ -94,18 +102,16 @@ public class DiceRoller : MonoBehaviour
 
     public void DieImage_Click(Button button)
     {
-        if (!dieRolled)
-        {
-            isRolling = true;
-        }
+        if (isRolling || dieRolled)
+            return;
 
-        if (!isRolling)
-        {
-            Init();
-            isRolling = true;
-        }
+        TutorialManager tutorial = TutorialManager.Instance;
+        if (tutorial != null && !tutorial.CanRollDice())
+            return;
+
+        RollStarted?.Invoke();
+        isRolling = true;
         button.interactable = false;
-      
     }
 
     public void PanelTestButton_Click()
@@ -141,8 +147,8 @@ public class DiceRoller : MonoBehaviour
         // Tutorial: if a forced value was set, use it instead of random
         if (_forcedValue > 0)
         {
-            currrentDie  = _forcedValue - 1;  // convert to 0-based index
-            die.sprite   = Dice[currrentDie];
+            currrentDie = _forcedValue - 1;  // convert to 0-based index
+            die.sprite = Dice[currrentDie];
             _forcedValue = -1;
         }
 

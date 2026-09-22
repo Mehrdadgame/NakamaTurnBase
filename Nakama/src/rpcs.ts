@@ -13,7 +13,10 @@ let joinTutorialMatchRpc: nkruntime.RpcFunction = function (
     context, logger, nakama, payload
 ): string {
     const matchId = nakama.matchCreate(MatchModuleName, {
-        mode:     "ThreeByThree",
+        // Must match the scene the tutorial client loads (WelcomePopup sets
+        // ModeGame.VerticalAndHorizontal → 3x3 board). A mismatched mode makes
+        // server scores diverge and the match can never end (grid never fills).
+        mode:     "VerticalAndHorizontal",
         tutorial: "true",
     });
     logger.info("Tutorial match created: " + matchId + " for userId=" + context.userId);

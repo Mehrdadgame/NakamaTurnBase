@@ -1,0 +1,1391 @@
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 2568)
+VBCSCompiler prewarm took 7.36 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Mehrd" at "2026-09-22T10:43:03.711812Z"
+Built from '6000.6/staging' branch; Version is '6000.6.2f1 (770e33f6875c) revision 7802419'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 11  (10.0.26200) Professional' Language: 'en' Physical Memory: 32665 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-09-22T10:43:03Z
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 19736, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              6c959faca0a54cf785137e0017f2720f
+  Correlation Id:          6270aa6e42f7c89612a946338be4b596
+  External correlation Id: 518444292533218039
+  Machine Id:              LLi83TJ174DFWLRF66il+HzWVns=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-Mehrd" (connect: 0.00s, validation: 0.00s, handshake: 0.04s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Mehrd-notifications" at "2026-09-22T10:43:03.7554252Z"
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated the access token SIl2IONJny...
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 9071205919754-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.05s
+
+COMMAND LINE ARGUMENTS:
+H:\Unity`s\6000.6.2f1\Editor\Unity.exe
+-batchmode
+-quit
+-projectPath
+H:\unity project\NakamaTurnBase\TurnBaseGame
+-executeMethod
+NinjaBattle.Editor.GameplayRegressionValidator.ValidateGameplayChanges
+-logFile
+H:/unity project/NakamaTurnBase/validate.log
+-hubSessionId
+e5ed4bbc-4209-41b3-91b7-64a4ee03952e
+-accessToken
+SIl2IONJnygXMsVx2Sr0ukw9fxpiT1ZuTVI4Rd-heIg008f
+Successfully changed project path to: H:\unity project\NakamaTurnBase\TurnBaseGame
+H:/unity project/NakamaTurnBase/TurnBaseGame
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [2456]  Target information:
+
+Player connection [2456]  * "[IP] 169.254.83.107 [Port] 55504 [Flags] 2 [Guid] 1298777127 [EditorId] 1298777127 [Version] 1048832 [Id] WindowsEditor(7,Mehrdad) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [2456]  * "[IP] 192.168.20.172 [Port] 55504 [Flags] 2 [Guid] 1298777127 [EditorId] 1298777127 [Version] 1048832 [Id] WindowsEditor(7,Mehrdad) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [2456] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [2456] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-31976" after 0.3 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Initialising UDS system complete:
+  - System type: Client
+  - Resource namespace: c92513403621ffb70855a3e75f67cdd2
+  - Shared memory size: 1073741824
+  - Command buffer id: 1052576
+  - Command buffer size: 8192
+  - Hashmap size: 4194304
+  - Service connected: false
+Launching Unity Data Store - H:/Unity`s/6000.6.2f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = H:/unity project/NakamaTurnBase/TurnBaseGame[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Active build profile path: `Assets/Settings/Build Profiles/Android™.asset`
+Unity Data Store running and initialised
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+[Licensing::Client] Successfully resolved entitlement details
+Got setting from build profile YAML, name `m_BuildTarget`, value `13`
+Got setting from build profile YAML, name `m_Subtarget`, value `0`
+Initialize engine version: 6000.6.2f1 (770e33f6875c)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=1048576, entitiesPerBlock=256, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path H:/Unity`s/6000.6.2f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path H:/unity project/NakamaTurnBase/TurnBaseGame/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3060 Ti (ID=0x24c9)
+    Vendor:   NVIDIA
+    VRAM:     8024 MB
+    Driver:   32.0.15.9579
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Initialize mono
+Mono path[0] = 'H:/Unity`s/6000.6.2f1/Editor/Data/Managed'
+Mono path[1] = 'H:/Unity`s/6000.6.2f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'H:/Unity`s/6000.6.2f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'H:/Unity`s/6000.6.2f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56976
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: H:/Unity`s/6000.6.2f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Register platform support module: H:/Unity`s/6000.6.2f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+Registered in 0.001401 seconds.
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Got setting from build profile YAML, name `m_BuildSubtarget`, value `0`
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Got setting from build profile YAML, name `Color Space`, value `0`
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  0.727 seconds
+Domain Reload Profiling: 1307ms
+	BeginReloadAssembly (141ms)
+		CreateAndSetChildDomain (18ms)
+	RebuildCommonClasses (5ms)
+	RebuildNativeTypeToScriptingClass (17ms)
+	initialDomainReloadingComplete (60ms)
+	LoadAllAssembliesAndSetupDomain (356ms)
+		LoadAssemblies (122ms)
+		TypeCache.Refresh (254ms)
+			TypeCache.ScanAssembly (240ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (729ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (8ms)
+			BeforeProcessingInitializeOnLoad (110ms)
+			ProcessInitializeOnLoadAttributes (146ms)
+			ProcessInitializeOnLoadMethodAttributes (241ms)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Got setting from build profile YAML, name `Color Space`, value `0`
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 68 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.2d.animation@16.0.1 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.animation@899988b542b9)
+    com.unity.2d.psdimporter@15.0.1 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.psdimporter@e02a9153d8d9)
+    com.unity.2d.spriteshape@16.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.spriteshape@42798c9d35d3)
+    com.unity.ai.navigation@2.0.14 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.ai.navigation@134dd6a3b97b)
+    com.unity.collab-proxy@2.13.6 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.collab-proxy@4628d2ba6ea4)
+    com.unity.ide.rider@3.0.39 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.ide.rider@4504839d03f7)
+    com.unity.ide.visualstudio@2.0.27 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.ide.visualstudio@dc1ddd4f09b6)
+    com.unity.mobile.android-logcat@1.4.7 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.mobile.android-logcat@a8a404f035b3)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64)
+    com.unity.visualscripting@1.9.12 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.visualscripting@4edfcc09512f)
+    com.unity.2d.pixel-perfect@6.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.pixel-perfect@a860cb24a0cc)
+    com.unity.2d.tilemap.extras@9.0.1 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.tilemap.extras@9446f3c60919)
+    com.unity.2d.aseprite@6.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.aseprite@ab909e3e9b5f)
+    com.unity.2d.tooling@4.0.1 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.tooling@4e93af4036ee)
+    com.unity.2d.common@15.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.common@b779c433ed47)
+    com.unity.nuget.mono-cecil@1.11.6 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+  Built-in packages:
+    com.unity.feature.2d@2.0.2 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.feature.2d@11724ae7e5b5)
+    com.unity.multiplayer.center@2.0.1 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.multiplayer.center@549886182930)
+    com.unity.test-framework@1.8.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.test-framework@7a3849e09bd0)
+    com.unity.timeline@6.6.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.timeline@c56d56b0070b)
+    com.unity.ugui@2.6.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.ugui@0f30cee369f3)
+    com.unity.modules.accessibility@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.accessibility)
+    com.unity.modules.adaptiveperformance@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.adaptiveperformance)
+    com.unity.modules.ai@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.physicscore2d@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.modules.screencapture@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.terrainphysics)
+    com.unity.modules.tetgen@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.tetgen)
+    com.unity.modules.tilemap@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.timelinefoundation@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.timelinefoundation)
+    com.unity.modules.ui@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vectorgraphics@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.vectorgraphics)
+    com.unity.modules.vehicles@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.wind@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.wind)
+    com.unity.modules.xr@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.xr)
+    com.unity.modules.subsystems@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.subsystems)
+    com.unity.modules.hierarchycore@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.ext.nunit@2.1.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.2d.sprite@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.sprite@947350d67f82)
+    com.unity.2d.tilemap@1.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.2d.tilemap@2c6966496615)
+    com.unity.mathematics@1.4.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.mathematics@8306a64d0cd6)
+    com.unity.collections@6.6.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.collections@10fff0607388)
+    com.unity.burst@2.0.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.test-framework.performance@6.6.0 (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.unity.test-framework.performance@0a60b857a52e)
+  Embedded packages:
+    com.google.external-dependency-manager@file:H:\unity project\NakamaTurnBase\TurnBaseGame\Packages\com.google.external-dependency-manager (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Packages\com.google.external-dependency-manager)
+  Git packages:
+    com.coffee.ui-particle@https://github.com/mob-sakai/ParticleEffectForUGUI.git (location: H:\unity project\NakamaTurnBase\TurnBaseGame\Library\PackageCache\com.coffee.ui-particle@92fb173507ec)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Starting: H:\Unity`s\6000.6.2f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: H:/unity project/NakamaTurnBase/TurnBaseGame
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 1s788ms
+[ 788/1019  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[1011/1019  1s] Csc Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp.dll (+2 others)
+Assets\Scripts\Game\SelfReconnectHandler.cs(48,25): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+
+Assets\HONETi\mobile_cartoon_GUI\Scripts\switch_scenes.cs(14,33): warning CS0618: 'Application.LoadLevel(string)' is obsolete: 'Use SceneManager.LoadScene'
+
+Assets\Scripts\Game\ReconnectPopup.cs(174,62): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+
+Assets\Scripts\Game\ReconnectPopup.cs(180,63): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+
+Assets\Scripts\Manager\DiceRoller.cs(145,23): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Chat\ChatBootstrap.cs(27,17): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+
+Assets\Scripts\Chat\ChatManager.cs(342,26): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+
+Assets\Scripts\Chat\ChatManager.cs(344,26): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+
+Assets\Scripts\Game\GameManager.cs(92,13): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+
+Assets\Scripts\Game\GameManager.cs(93,13): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+
+Assets\Scripts\Game\GameManager.cs(156,28): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\General\LobbyManager.cs(17,45): warning CS0414: The field 'LobbyManager.waitingText' is assigned but its value is never used
+
+Assets\Scripts\General\LobbyManager.cs(18,40): warning CS0414: The field 'LobbyManager.timer' is assigned but its value is never used
+
+Assets\Scripts\Nakama\MultiplayerManager.cs(35,29): warning CS0414: The field 'MultiplayerManager.onLocalTick' is assigned but its value is never used
+
+Assets\Scripts\Nakama\MultiplayerManager.cs(36,29): warning CS0414: The field 'MultiplayerManager.onTurnMe' is assigned but its value is never used
+
+Assets\Scripts\Nakama\NakamaLeaderboard.cs(11,38): warning CS0414: The field 'NakamaLeaderboard.recordsPerPage' is assigned but its value is never used
+
+Assets\Scripts\Game\CalculterRowScore.cs(31,32): warning UAC1001: Field 'DuobleScore1' type 'SaveShowLight' is skipped by serialization (missing the [Serializable] attribute). Refer to the Serialization rules analyzer reference. (https://docs.unity3d.com/6000.6/Documentation/Manual/script-serialization-analyzer.html#uac1001)
+
+Assets\Scripts\Game\CalculterRowScore.cs(32,32): warning UAC1001: Field 'DuobleScore2' type 'SaveShowLight' is skipped by serialization (missing the [Serializable] attribute). Refer to the Serialization rules analyzer reference. (https://docs.unity3d.com/6000.6/Documentation/Manual/script-serialization-analyzer.html#uac1001)
+
+Assets\Scripts\UI Juicer ΓÇô One-Click UI Animator\UiJuiceAnimator.cs(724,21): warning UAC0009: DEVELOPMENT_BUILD preprocessor directive has been deprecated. Please use one of the managed code variant directives (such as DEBUG, UNITY_ENABLE_CHECKS or UNITY_INCLUDE_INSTRUMENTATION) if different code paths are desired for different managed code variants. Checking for development build is possible at runtime using Debug.isDebugBuild. See the Conditional Compilation manual page for more details.
+[1013/1019  0s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp-Editor.dll, with 155 defines and 392 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[1014/1019  0s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Assembly-CSharp.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp.dll, with 154 defines and 361 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[1016/1019  0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
+[1017/1019  0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
+*** Tundra build success (1.75 seconds), 6 items updated, 1019 evaluated
+Assets\Scripts\Game\SelfReconnectHandler.cs(48,25): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+Assets\HONETi\mobile_cartoon_GUI\Scripts\switch_scenes.cs(14,33): warning CS0618: 'Application.LoadLevel(string)' is obsolete: 'Use SceneManager.LoadScene'
+Assets\Scripts\Game\ReconnectPopup.cs(174,62): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+Assets\Scripts\Game\ReconnectPopup.cs(180,63): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+Assets\Scripts\Manager\DiceRoller.cs(145,23): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Chat\ChatBootstrap.cs(27,17): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+Assets\Scripts\Chat\ChatManager.cs(342,26): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+Assets\Scripts\Chat\ChatManager.cs(344,26): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+Assets\Scripts\Game\GameManager.cs(92,13): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+Assets\Scripts\Game\GameManager.cs(93,13): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindAnyObjectByType instead.'
+Assets\Scripts\Game\GameManager.cs(156,28): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\General\LobbyManager.cs(17,45): warning CS0414: The field 'LobbyManager.waitingText' is assigned but its value is never used
+Assets\Scripts\General\LobbyManager.cs(18,40): warning CS0414: The field 'LobbyManager.timer' is assigned but its value is never used
+Assets\Scripts\Nakama\MultiplayerManager.cs(35,29): warning CS0414: The field 'MultiplayerManager.onLocalTick' is assigned but its value is never used
+Assets\Scripts\Nakama\MultiplayerManager.cs(36,29): warning CS0414: The field 'MultiplayerManager.onTurnMe' is assigned but its value is never used
+Assets\Scripts\Nakama\NakamaLeaderboard.cs(11,38): warning CS0414: The field 'NakamaLeaderboard.recordsPerPage' is assigned but its value is never used
+Assets\Scripts\Game\CalculterRowScore.cs(31,32): warning UAC1001: Field 'DuobleScore1' type 'SaveShowLight' is skipped by serialization (missing the [Serializable] attribute). Refer to the Serialization rules analyzer reference. (https://docs.unity3d.com/6000.6/Documentation/Manual/script-serialization-analyzer.html#uac1001)
+Assets\Scripts\Game\CalculterRowScore.cs(32,32): warning UAC1001: Field 'DuobleScore2' type 'SaveShowLight' is skipped by serialization (missing the [Serializable] attribute). Refer to the Serialization rules analyzer reference. (https://docs.unity3d.com/6000.6/Documentation/Manual/script-serialization-analyzer.html#uac1001)
+Assets\Scripts\UI Juicer – One-Click UI Animator\UiJuiceAnimator.cs(724,21): warning UAC0009: DEVELOPMENT_BUILD preprocessor directive has been deprecated. Please use one of the managed code variant directives (such as DEBUG, UNITY_ENABLE_CHECKS or UNITY_INCLUDE_INSTRUMENTATION) if different code paths are desired for different managed code variants. Checking for development build is possible at runtime using Debug.isDebugBuild. See the Conditional Compilation manual page for more details.
+AssetDatabase: script compilation time: 2.316722s
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Begin MonoManager ReloadAssembly
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Symbol file LoadedFromMemory is not a mono symbol file
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Refreshing native plugins compatible for Editor in 2.56 ms, found 5 plugins.
+Native extension for WindowsStandalone target not found
+Native extension for Android target not found
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3087ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :      12ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+UnityEditor.U2D.Tooling.Analyzer.EditorSpriteInfo, Unity.2D.Tooling.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::CalculateMeshArea(Unity.Collections.NativeArray`1[[UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[System.UInt16, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3073ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :       2ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Exclusion(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Subtract(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Divide(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Darken(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ExclusionChannel(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Hue(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ColorDodge(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Addition(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::DodgeChannel(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Lighten(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Multiply(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ColorBurn(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::BurnChannel(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Saturation(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Overlay(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SoftLightChannel(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::HardLight(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Difference(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Normal(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::HardLightChannel(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Screen(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::DifferenceChannel(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SoftLight(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ColorBlend(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::DivideChannel(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3072ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :       1ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+UnityEngine.U2D.Common.TriangulationUtility, Unity.2D.Triangulation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SubdivideBurst(Unity.Collections.Allocator, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.int2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.float2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.int2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.int3*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEngine.U2D.Common.TriangulateJob, Unity.2D.Triangulation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Common.TriangulateJob&, Unity.2D.Triangulation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Common.TriangulationUtility, Unity.2D.Triangulation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ValidateCollinear(Unity.Mathematics.float2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Common.TriangulationUtility, Unity.2D.Triangulation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::TessellateBurst(Unity.Collections.Allocator, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.int2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.float2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.int2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.int3*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEngine.U2D.Common.TessellateJob, Unity.2D.Triangulation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Common.TessellateJob&, Unity.2D.Triangulation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Common.TriangulationUtility, Unity.2D.Triangulation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::TessellateMainThreadBurst(Unity.Collections.Allocator, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3072ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :       0ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEditor.U2D.Common.SpriteAtlasPacker.DefaultPack.UPack+SpriteRaster, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEditor.U2D.Common.SpriteAtlasPacker.DefaultPack.UPack+SpriteRaster&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Common.SpriteAtlasPacker.DefaultPack.UPack, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ApplyMask(UnityEditor.U2D.Common.SpriteAtlasPacker.DefaultPack.UPackConfig&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEditor.U2D.Common.SpriteAtlasPacker.DefaultPack.AtlasMask&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEditor.U2D.Common.SpriteAtlasPacker.DefaultPack.PixelMask&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.int4&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Common.SpriteAtlasPacker.GeometryPack.UPack, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Pack(UnityEditor.U2D.Common.SpriteAtlasPacker.GeometryPack.UPackConfig&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEditor.U2D.Common.SpriteAtlasPacker.GeometryPack.AtlasMask&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEditor.U2D.Common.SpriteAtlasPacker.GeometryPack.ConvexMask&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEditor.U2D.Common.SpriteAtlasPacker.GeometryPack.UPack+SpriteRaster, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEditor.U2D.Common.SpriteAtlasPacker.GeometryPack.UPack+SpriteRaster&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEditor.U2D.Common.SpriteAtlasPacker.GeometryPack.UPack+SpriteFitter, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEditor.U2D.Common.SpriteAtlasPacker.GeometryPack.UPack+SpriteFitter&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEditor.U2D.Common.SpriteAtlasPacker.DefaultPack.UPack+SpriteFitter, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEditor.U2D.Common.SpriteAtlasPacker.DefaultPack.UPack+SpriteFitter&, ScriptablePacker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3072ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :       1ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+UnityEditor.U2D.Animation.BoundedBiharmonicWeightsGenerator, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::TriangulateSamplers_(Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Animation.BoundedBiharmonicWeightsGenerator, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::CalculateInternal_(Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[UnityEngine.BoneWeight, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Animation.BoundedBiharmonicWeightsGenerator, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SampleBones_(Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Animation.BatchedDrawing, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::CreateSolidArcWithOutlineVertices(Unity.Collections.LowLevel.Unsafe.UnsafeList`1[[Unity.Mathematics.float3, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[Unity.Mathematics.float3, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Animation.BatchedDrawing, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SetDiscSectionPoints(Unity.Collections.NativeArray`1[[Unity.Mathematics.float3, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Animation.BoundedBiharmonicWeightsGenerator, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::TriangulateInternal_(Unity.Collections.NativeArray`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Animation.BatchedDrawing, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::CreateSolidArcVertices(Unity.Collections.LowLevel.Unsafe.UnsafeList`1[[Unity.Mathematics.float3, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[Unity.Mathematics.float3, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEditor.U2D.Animation.BiharmonicsJob, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEditor.U2D.Animation.BiharmonicsJob&, Unity.2D.Animation.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3087ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :      12ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+UnityEngine.U2D.SpriteShapeGenerator, Unity.2D.SpriteShape.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::UTessellator(UnityEngine.U2D.SpriteShapeSegment&, UnityEngine.SpriteShapeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.float2*, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.UInt16*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.Allocator, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEngine.U2D.SpriteShapeGenerator, Unity.2D.SpriteShape.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.SpriteShapeGenerator&, Unity.2D.SpriteShape.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3072ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :       1ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+UnityEngine.U2D.IK.FABRIK2D, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Solve(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.CCD2D, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::RotatePositionFrom(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.FABRIK2D, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Forward(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.FabrikSolver2D, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Solve(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float4x4&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float3, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.IKMathUtility, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Angle(Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.IKMathUtility, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SignedAngle(Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float3&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.CCD2D, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::DoIteration(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.IKMathUtility, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Angle(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.FABRIK2D, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Backward(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.CCD2D, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Solve(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[Unity.Mathematics.float2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.IK.IKMathUtility, Unity.2D.IK.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SignedAngle(Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.float2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3087ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :      12ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEditor.U2D.PSD.FlattenImageTask+FlattenImageInternalJob, Unity.2D.Psdimporter.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEditor.U2D.PSD.FlattenImageTask+FlattenImageInternalJob&, Unity.2D.Psdimporter.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEditor.U2D.PSD.ExtractLayerTask+ConvertBufferJob, Unity.2D.Psdimporter.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEditor.U2D.PSD.ExtractLayerTask+ConvertBufferJob&, Unity.2D.Psdimporter.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3087ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :      12ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+Unity.Jobs.IJobExtensions+JobStruct`1[[PaintDotNet.Data.PhotoshopFileType.PDNAlphaMaskJob, PsdPlugin, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(PaintDotNet.Data.PhotoshopFileType.PDNAlphaMaskJob&, PsdPlugin, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[PaintDotNet.Data.PhotoshopFileType.PDNDecoderJob, PsdPlugin, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(PaintDotNet.Data.PhotoshopFileType.PDNDecoderJob&, PsdPlugin, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3087ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :      12ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEditor.U2D.Common.FindTightRectJob, Unity.2D.Common.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEditor.U2D.Common.FindTightRectJob&, Unity.2D.Common.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Common.ImagePacker, Unity.2D.Common.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::BurstedBlit(Unity.Collections.NativeArray`1[[UnityEngine.Color32, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.int4&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Mathematics.int4&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.NativeArray`1[[UnityEngine.Color32, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Timings:
+ - All                                      :      50ms
+   - Discover Methods to Compile            :    3073ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :       2ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+UnityEngine.U2D.Animation.SkinDeformBatchedJob`1[[UnityEngine.U2D.Animation.CpuDeformationMode, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::CopyBuffer(System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Animation.MeshUtilities, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::AddToEdgeMap(System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.LowLevel.Unsafe.UnsafeHashMap`2[[System.UInt64, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.Jobs.IJobParallelForTransformExtensions+TransformParallelForLoopStruct`1[[UnityEngine.U2D.Animation.LocalToWorldAndChangeDetectionTransformAccessJob, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.LocalToWorldAndChangeDetectionTransformAccessJob&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEngine.U2D.Animation.CopySpriteRendererBuffersJob, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.CopySpriteRendererBuffersJob&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Animation.MeshUtilities, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::GetOutlineEdgesFallback(Unity.Collections.NativeArray`1[[System.UInt16, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.Jobs.IJobParallelForTransformExtensions+TransformParallelForLoopStruct`1[[UnityEngine.U2D.Animation.WorldToLocalTransformAccessJob, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.WorldToLocalTransformAccessJob&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Animation.BurstedSpriteSkinUtilities, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ValidateBoneWeights(UnityEngine.U2D.Animation.NativeCustomSlice`1[[UnityEngine.BoneWeight, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEngine.U2D.Animation.PrepareDeformJob, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.PrepareDeformJob&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEngine.U2D.Animation.CalculateBoneTransformIndicesJob, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.CalculateBoneTransformIndicesJob&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEngine.U2D.Animation.SkinDeformBatchedJob`1[[UnityEngine.U2D.Animation.GpuDeformationMode, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.SkinDeformBatchedJob`1[[UnityEngine.U2D.Animation.GpuDeformationMode, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Animation.SkinDeformBatchedJob`1[[UnityEngine.U2D.Animation.GpuDeformationMode, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::CopyBuffer(System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Animation.MeshUtilities, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SortEdges(Unity.Collections.NativeArray`1[[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEngine.U2D.Animation.BurstedSpriteSkinUtilities, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SetVertexPositionFromByteBuffer(Unity.Collections.NativeArray`1[[System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEngine.U2D.Animation.FillPerSkinJobSingleThread, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.FillPerSkinJobSingleThread&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEngine.U2D.Animation.BoneDeformBatchedJob, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.BoneDeformBatchedJob&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEngine.U2D.Animation.MeshUtilities, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::GenerateUTessOutline(Unity.Collections.NativeArray`1[[System.UInt16, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[Unity.Mathematics.int2, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEngine.U2D.Animation.BoneTransformsChangeDetectionJob, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.BoneTransformsChangeDetectionJob&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEngine.U2D.Animation.SkinDeformBatchedJob`1[[UnityEngine.U2D.Animation.CpuDeformationMode, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.SkinDeformBatchedJob`1[[UnityEngine.U2D.Animation.CpuDeformationMode, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[UnityEngine.U2D.Animation.UpdateBoundJob, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.U2D.Animation.UpdateBoundJob&, Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Timings:
+ - All                                      :       5ms
+   - Discover Methods to Compile            :    3072ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :       1ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::MultiplyUnsignedByte(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::GetLuminosity(System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.TextureTasks, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::GetCombinedRect(Unity.Collections.NativeArray`1[[UnityEngine.RectInt, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.RectInt&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.TextureTasks, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::FlipTextureY(UnityEngine.Color32*, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.int2&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.ImportUtilities, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::IsEmptyImage(Unity.Collections.NativeArray`1[[UnityEngine.Color32, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SetSaturation(System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ScreenUnsignedByte(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::MinRef(System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::DivideUnsignedByte(System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::SetLuminosity(System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Luminosity(UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.Color32&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::GetSaturation(System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::ClipColor(System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.TextureTasks, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::MergeTextures(Unity.Collections.NativeArray`1[[System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[UnityEngine.RectInt, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Collections.NativeArray`1[[UnityEditor.U2D.Aseprite.BlendModes, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEditor.U2D.Aseprite.TextureTasks+MergeOutput&, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.TextureTasks, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::FitRectInsideRect(UnityEngine.RectInt&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|UnityEngine.RectInt&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+UnityEditor.U2D.Aseprite.TextureTasks, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::AddOpacity(Unity.Collections.NativeArray`1[[UnityEngine.Color32, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+UnityEditor.U2D.Aseprite.PixelBlends, Unity.2D.Aseprite.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::MaxRef(System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Single&, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Timings:
+ - All                                      :       7ms
+   - Discover Methods to Compile            :    3072ms
+     - Find Entrypoints                     :   32139ms
+     - Group Entrypoints                    :      11ms
+     - Calculate Hash of C# IL              :       1ms
+   - C# IL -> LLVM IR module                :       0ms
+     - Parse C# IL from assemblies          :       0ms
+     - Transform C# IL                      :       0ms
+     - Produce LLVM IR module               :       0ms
+   - LLVM IR module transformations         :       0ms
+     - Add target CPU info to module        :       0ms
+     - Optimizations on module              :       0ms
+     - Cleanup module                       :       0ms
+     - Verify module is valid               :       0ms
+   - Extract used static readonly variables :       0ms
+   - LLVM IR module -> DLL                  :       0ms
+     - Splice into per-entry-point modules  :       0ms
+     - LLVM IR modules -> object files      :       0ms
+     - Get objects from object cache        :       0ms
+     - Link object files -> DLL             :       0ms
+     - Add objects to object cache          :       0ms
+   - Dump                                   :       0ms
+
+Counters:
+- Number of Functions                      :         0
+  - Entry Points (job or function pointer) :         0
+  - Declaring Type or Function is Generic  :         0
+- Number of Instructions                   :         0
+
+
+While compiling job:
+Unity.Collections.xxHash3, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Hash64Long(System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int64, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Collections.xxHash3, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Hash128Long(System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Int64, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.Byte*, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Mathematics.uint4&, UnityEngine.MathematicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeBitArrayDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeBitArrayDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeListDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeListDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.LowLevel.Unsafe.UnsafeParallelHashMapDataDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.LowLevel.Unsafe.UnsafeParallelHashMapDataDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeReferenceDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeReferenceDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.LowLevel.Unsafe.UnsafeStream+ConstructJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.LowLevel.Unsafe.UnsafeStream+ConstructJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeStreamDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeStreamDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.LowLevel.Unsafe.UnsafeParallelHashMapDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.LowLevel.Unsafe.UnsafeParallelHashMapDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeQueueDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeQueueDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeHashMapDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeHashMapDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.LowLevel.Unsafe.UnsafeStream+ConstructJobList, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.LowLevel.Unsafe.UnsafeStream+ConstructJobList&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Collections.RewindableAllocator, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Try(System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.AllocatorManager+Block&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.UnsafeQueueDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.UnsafeQueueDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeRingQueueDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeRingQueueDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Collections.AllocatorManager+SlabAllocator, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Try(System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.AllocatorManager+Block&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Collections.AllocatorManager+StackAllocator, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Try(System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.AllocatorManager+Block&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeStream+ConstructJobArray, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeStream+ConstructJobArray&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeTextDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeTextDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.CollectionHelper+DummyJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.CollectionHelper+DummyJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeStream+ConstructJobList, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeStream+ConstructJobList&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Collections.AutoFreeAllocator, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Try(System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Collections.AllocatorManager+Block&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.LowLevel.Unsafe.UnsafeStream+DisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.LowLevel.Unsafe.UnsafeStream+DisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.LowLevel.Unsafe.UnsafeDisposeJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.LowLevel.Unsafe.UnsafeDisposeJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+Unity.Jobs.IJobExtensions+JobStruct`1[[Unity.Collections.NativeStream+ConstructJob, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(Unity.Collections.NativeStream+ConstructJob&, Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.089 seconds
+Domain Reload Profiling: 3360ms
+	BeginReloadAssembly (419ms)
+		DisableScriptedObjects (57ms)
+		CreateAndSetChildDomain (165ms)
+	RebuildCommonClasses (10ms)
+	RebuildNativeTypeToScriptingClass (19ms)
+	initialDomainReloadingComplete (70ms)
+	LoadAllAssembliesAndSetupDomain (753ms)
+		LoadAssemblies (447ms)
+		TypeCache.Refresh (188ms)
+			TypeCache.ScanAssembly (169ms)
+		AnalyzeDomain (71ms)
+			BuildScriptInfoCaches (66ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (2090ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (8ms)
+			BeforeProcessingInitializeOnLoad (122ms)
+			ProcessInitializeOnLoadAttributes (1620ms)
+			ProcessInitializeOnLoadMethodAttributes (55ms)
+		AwakeInstancesAfterBackupRestoration (26ms)
+Starting new worker id: 0 with log in H:/unity project/NakamaTurnBase/TurnBaseGame/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=b51d5a86cd550df4db68082c059196c5): Total: 6.435 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2548 ms
+		Asset DB Callback time: managed=157 ms, native=30 ms
+		Scripting: domain reloads=1, domain reload time=1331 ms, compile time=2318 ms, other=48 ms
+		Project Asset Count: scripts=1288, non-scripts=2443
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 27.018ms
+	ApplyChangesToAssetFolders: 0.668ms
+	Scan: 110.172ms
+	Collect global state as custom dependencies: 13.025ms
+	OnSourceAssetsModified: 0.632ms
+	CategorizeScriptCompilationAssets: 47.155ms
+	ProcessAssetsWithTransientArtifactChanges: 75.444ms
+	CategorizeAssets: 44.104ms
+	CompileScripts: 2318.097ms
+	ImportOutOfDateAssets: 2109.287ms (2098.148ms without children)
+		UnloadImportedAssets: 0.141ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.634ms
+		ImportSchedulerStart: 10.353ms
+	PostProcessAllAssets: 159.228ms
+		VCAutoAddAssetPostprocess 0.865ms
+		XRBuildSystem.XRAssetImported 0.528ms
+		MonoPostProcessAllAssets: 157.317ms
+			AssetPostprocessor.OnPostprocessAllAssets 79.764ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 16.263ms
+			SyncVS.PostprocessSyncProject 11.818ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 7.376ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 6.751ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 2.649ms
+			VersionHandlerImpl.OnPostprocessAllAssets 2.443ms
+			ValidatorPostprocessor.OnPostprocessAllAssets 2.163ms
+			Postprocessor.OnPostprocessAllAssets 1.776ms
+			AssetChangedListener.OnPostprocessAllAssets 1.694ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.498ms
+			PlayServicesResolver.OnPostprocessAllAssets 0.970ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 0.947ms
+			PackageManagerResolver.OnPostprocessAllAssets 0.835ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.774ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.748ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.606ms
+			UtilityWindowPostProcessor.OnPostprocessAllAssets 0.556ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.507ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.438ms
+			UVCSAssetPostprocessor.OnPostprocessAllAssets 0.408ms
+			SpriteShapeAssetPostProcessor.OnPostprocessAllAssets 0.376ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.333ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.330ms
+			IOSResolver.OnPostprocessAllAssets 0.300ms
+			AssetProcessor.OnPostprocessAllAssets 0.282ms
+			AssetEvents.OnPostprocessAllAssets 0.263ms
+			SpriteLibraryAssetPostprocessor.OnPostprocessAllAssets 0.212ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.211ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.175ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.174ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.171ms
+			PSDImportPostProcessor.OnPostprocessAllAssets 0.163ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.139ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.123ms
+			AssetReloadNotifier.OnPostprocessAllAssets 0.116ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.112ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.108ms
+			PSDImporterAssetPostProcessor.OnPostprocessAllAssets 0.094ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.082ms
+	PostAssetChangesProfiler: 3.172ms
+	UnloadStreamsBegin: 1.619ms
+	PersistCurrentRevisions: 0.145ms
+	GenerateScriptTypeHashes: 3.320ms
+	GenerateScriptTypeSerializationHashes: 6.064ms
+	Untracked: 1501.698ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 2.286ms
+Initializing Unity extensions:
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+Serialized file "Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta" contains a PluginImporter object at version 1, below the supported minimum (2). Open and re-save the file to upgrade.
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-تاس زن
+GetVirtualKey: Could not map char: z (122) to any virtual key
+GetVirtualKey: Could not map char: y (121) to any virtual key
+GetVirtualKey: Could not map char: x (120) to any virtual key
+GetVirtualKey: Could not map char: c (99) to any virtual key
+GetVirtualKey: Could not map char: v (118) to any virtual key
+GetVirtualKey: Could not map char: V (86) to any virtual key
+GetVirtualKey: Could not map char: d (100) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: a (97) to any virtual key
+GetVirtualKey: Could not map char: d (100) to any virtual key
+GetVirtualKey: Could not map char: c (99) to any virtual key
+GetVirtualKey: Could not map char: r (114) to any virtual key
+GetVirtualKey: Could not map char: i (105) to any virtual key
+GetVirtualKey: Could not map char: l (108) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: k (107) to any virtual key
+GetVirtualKey: Could not map char: p (112) to any virtual key
+GetVirtualKey: Could not map char: p (112) to any virtual key
+GetVirtualKey: Could not map char: p (112) to any virtual key
+GetVirtualKey: Could not map char: c (99) to any virtual key
+GetVirtualKey: Could not map char: r (114) to any virtual key
+GetVirtualKey: Could not map char: P (80) to any virtual key
+GetVirtualKey: Could not map char: n (110) to any virtual key
+GetVirtualKey: Could not map char: n (110) to any virtual key
+GetVirtualKey: Could not map char: g (103) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: a (97) to any virtual key
+GetVirtualKey: Could not map char: a (97) to any virtual key
+GetVirtualKey: Could not map char: n (110) to any virtual key
+GetVirtualKey: Could not map char: o (111) to any virtual key
+GetVirtualKey: Could not map char: s (115) to any virtual key
+GetVirtualKey: Could not map char: s (115) to any virtual key
+GetVirtualKey: Could not map char: b (98) to any virtual key
+GetVirtualKey: Could not map char: b (98) to any virtual key
+GetVirtualKey: Could not map char: c (99) to any virtual key
+GetVirtualKey: Could not map char: u (117) to any virtual key
+Unloading 36 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 5244 unused Assets / (4.5 MB). Loaded Objects now: 6085.
+Memory consumption went from 380.4 MB to 375.8 MB.
+Total: 23.933300 ms (FindLiveObjects: 0.746800 ms CreateObjectMapping: 0.417500 ms MarkObjects: 18.027700 ms  DeleteObjects: 4.496800 ms)
+
+GetVirtualKey: Could not map char: z (122) to any virtual key
+GetVirtualKey: Could not map char: y (121) to any virtual key
+GetVirtualKey: Could not map char: x (120) to any virtual key
+GetVirtualKey: Could not map char: c (99) to any virtual key
+GetVirtualKey: Could not map char: v (118) to any virtual key
+GetVirtualKey: Could not map char: V (86) to any virtual key
+GetVirtualKey: Could not map char: d (100) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: a (97) to any virtual key
+GetVirtualKey: Could not map char: d (100) to any virtual key
+GetVirtualKey: Could not map char: c (99) to any virtual key
+GetVirtualKey: Could not map char: r (114) to any virtual key
+GetVirtualKey: Could not map char: i (105) to any virtual key
+GetVirtualKey: Could not map char: l (108) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: k (107) to any virtual key
+GetVirtualKey: Could not map char: p (112) to any virtual key
+GetVirtualKey: Could not map char: p (112) to any virtual key
+GetVirtualKey: Could not map char: p (112) to any virtual key
+GetVirtualKey: Could not map char: c (99) to any virtual key
+GetVirtualKey: Could not map char: r (114) to any virtual key
+GetVirtualKey: Could not map char: P (80) to any virtual key
+GetVirtualKey: Could not map char: n (110) to any virtual key
+GetVirtualKey: Could not map char: n (110) to any virtual key
+GetVirtualKey: Could not map char: g (103) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: f (102) to any virtual key
+GetVirtualKey: Could not map char: a (97) to any virtual key
+GetVirtualKey: Could not map char: a (97) to any virtual key
+GetVirtualKey: Could not map char: n (110) to any virtual key
+GetVirtualKey: Could not map char: o (111) to any virtual key
+GetVirtualKey: Could not map char: s (115) to any virtual key
+GetVirtualKey: Could not map char: s (115) to any virtual key
+GetVirtualKey: Could not map char: b (98) to any virtual key
+GetVirtualKey: Could not map char: b (98) to any virtual key
+GetVirtualKey: Could not map char: c (99) to any virtual key
+GetVirtualKey: Could not map char: u (117) to any virtual key
+GameplayRegressionValidator: match particle checks passed.
+Opening scene 'Assets/-Scenes/4-VerticalAndHorizontal.unity'
+Unloading 32 Unused Serialized files (Serialized files now loaded: 0)
+Worker ready: AssetImportWorkerHW0 0
+Loaded scene 'Assets/-Scenes/4-VerticalAndHorizontal.unity'
+	Deserialize:            330.270 ms
+	Integration:            305.177 ms
+	Integration of assets:  2.343 ms
+	Thread Wait Time:       0.013 ms
+	Total Operation Time:   637.802 ms
+Unloading 9 unused Assets / (0.5 MB). Loaded Objects now: 8924.
+Memory consumption went from 432.1 MB to 431.6 MB.
+Total: 20.171200 ms (FindLiveObjects: 1.127200 ms CreateObjectMapping: 0.401100 ms MarkObjects: 18.192000 ms  DeleteObjects: 0.137200 ms)
+
+Opening scene 'Assets/-Scenes/5-FourByThree1.unity'
+Serialized reference type mismatch: field 'TimerText' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ScoreTextOpp' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ScoreTextMe' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'messageLeftPalyerInRematch' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ResultText' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ScoreMe' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ScoreOpp' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'NameOpp' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Unloading 55 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/-Scenes/5-FourByThree1.unity'
+	Deserialize:            26.470 ms
+	Integration:            45.627 ms
+	Integration of assets:  0.426 ms
+	Thread Wait Time:       0.052 ms
+	Total Operation Time:   72.576 ms
+Unloading 42 unused Assets / (5.4 MB). Loaded Objects now: 8713.
+Memory consumption went from 430.1 MB to 424.7 MB.
+Total: 21.290500 ms (FindLiveObjects: 0.800500 ms CreateObjectMapping: 0.318700 ms MarkObjects: 19.558100 ms  DeleteObjects: 0.297200 ms)
+
+Opening scene 'Assets/-Scenes/6-FourByFour1.unity'
+Serialized reference type mismatch: field 'TimerText' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ScoreTextOpp' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ScoreTextMe' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'messageLeftPalyerInRematch' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ResultText' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ScoreMe' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'ScoreOpp' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Serialized reference type mismatch: field 'NameOpp' expects 'RTLTextMeshPro' but the stored reference is a 'MonoBehaviour'. The reference is treated as null (and serialized as null in player builds). Re-assign the field in the Inspector to fix it.
+Unloading 10 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/-Scenes/6-FourByFour1.unity'
+	Deserialize:            32.125 ms
+	Integration:            40.798 ms
+	Integration of assets:  0.189 ms
+	Thread Wait Time:       0.015 ms
+	Total Operation Time:   73.128 ms
+Unloading 8 unused Assets / (1.0 MB). Loaded Objects now: 8913.
+Memory consumption went from 426.1 MB to 425.0 MB.
+Total: 20.653400 ms (FindLiveObjects: 0.902500 ms CreateObjectMapping: 0.231800 ms MarkObjects: 18.796300 ms  DeleteObjects: 0.423600 ms)
+
+GameplayRegressionValidator: all gameplay checks passed.
+Batchmode quit successfully invoked - shutting down!
+Killing ADB server in 2.0896077 seconds.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-Mehrd-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-Mehrd channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+Shut down UDS service system complete
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+abort_threads: Failed aborting id: 0000000000006214, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000006F30, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000006214, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000006F30, mono_thread_manage will ignore it
+
+debugger-agent: Unable to listen on 3928
+Exiting batchmode successfully now!
+[ExitDontLaunchBugReporter] Exiting without the bug reporter. Application will exit with return code 0

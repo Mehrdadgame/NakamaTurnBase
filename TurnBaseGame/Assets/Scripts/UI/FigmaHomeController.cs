@@ -97,7 +97,10 @@ namespace NinjaBattle.UI
         public void SelectProfessionalMode() => LaunchMode(professionalModeButton);
         public void SelectMasterMode() => LaunchMode(masterModeButton);
 
-        public void OpenChest() => chestButton?.onClick.Invoke();
+        public void OpenChest()
+        {
+            navigationItems[5].gameObject.SetActive(true);
+        }
 
         public void SelectStore()
         {

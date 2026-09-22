@@ -77,7 +77,10 @@ var joinOrCreateMatch = function (context, logger, nakama, payload) {
 // Lobby countdown is 3 s so the client has time to load the game scene before ChangeScene fires.
 var joinTutorialMatchRpc = function (context, logger, nakama, payload) {
     var matchId = nakama.matchCreate(MatchModuleName, {
-        mode: "ThreeByThree",
+        // Must match the scene the tutorial client loads (WelcomePopup sets
+        // ModeGame.VerticalAndHorizontal → 3x3 board). A mismatched mode makes
+        // server scores diverge and the match can never end (grid never fills).
+        mode: "VerticalAndHorizontal",
         tutorial: "true",
     });
     logger.info("Tutorial match created: " + matchId + " for userId=" + context.userId);
@@ -1382,9 +1385,9 @@ function CreateLeaderboards(context, logger, nakama) {
 }
 // ─── Match Lifecycle ──────────────────────────────────────────────────────────
 var matchInit = function (context, logger, nakama, params) {
-    var value = "";
-    for (var key in params)
-        value = params[key];
+    // Read the mode explicitly — iterating params picked the LAST key, so a
+    // tutorial match ({ mode, tutorial }) ended up with mode "true".
+    var value = params.mode || "";
     var label = { open: true, game_mode: value };
     var _a = buildGrids(value), arrayFirst = _a[0], arraySecond = _a[1], vertical = _a[2];
     var gameState = {
@@ -2271,17 +2274,17 @@ var KeyTrophies = "Trophies";
 var LEAGUES = {
     "ThreeByThree": {
         displayName: "SHOWDOWN DICE",
-        entryFee: 50,
-        winnerReward: 80,
-        drawRefund: 25,
-        rankPoints: 50,
+        entryFee: 750,
+        winnerReward: 1260,
+        drawRefund: 375,
+        rankPoints: 750,
     },
     "FourByThree": {
         displayName: "DICEPUNK LEAGUE",
-        entryFee: 150,
-        winnerReward: 250,
-        drawRefund: 75,
-        rankPoints: 120,
+        entryFee: 500,
+        winnerReward: 840,
+        drawRefund: 250,
+        rankPoints: 500,
     },
     "VerticalAndHorizontal": {
         displayName: "DICE MASTER",

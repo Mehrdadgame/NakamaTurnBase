@@ -154,7 +154,7 @@ namespace Nakama.Helpers
                 {
                     counter = x;
                     if (coinText != null)
-                        coinText.text = Mathf.RoundToInt(x).ToString();
+                        coinText.text = PersianTextUtils.FormatNumberStandalone(Mathf.RoundToInt(x));
                 },
                 endCoins,
                 1.0f

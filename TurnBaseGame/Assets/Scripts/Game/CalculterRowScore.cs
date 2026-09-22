@@ -56,21 +56,13 @@ public class CalculterRowScore : MonoBehaviour
     public void StopParticlesOpp(List<TileDataOpp> cell)
     {
         foreach (var item in cell)
-        {
-            item.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
-        }
+            StopMatchParticle(item.GetComponentInChildren<ParticleSystem>());
     }
 
     public void StopParticlesMe(List<ClickInCell> cell)
     {
         foreach (var item in cell)
-        {
-            item.GetComponentInChildren<ParticleSystem>().Stop();
-            ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
-            settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
-        }
+            StopMatchParticle(item.GetComponentInChildren<ParticleSystem>());
     }
 
     // skipClear: true = don't stop particles first (used when caller already cleared them)
@@ -85,33 +77,16 @@ public class CalculterRowScore : MonoBehaviour
         if (!skipClear)
         {
             foreach (var item in cell)
-            {
-                item.GetComponentInChildren<ParticleSystem>().Stop();
-                ParticleSystem.MainModule settings = item.GetComponentInChildren<ParticleSystem>().main;
-                settings.startColor = new ParticleSystem.MinMaxGradient(CalculterRowScore.instance.whitecolor);
-            }
+                StopMatchParticle(item.GetComponentInChildren<ParticleSystem>());
         }
-       
+
         var placeCell = cell.GroupBy(x => x.ValueTile).Where(g => g.Count() > 1).ToDictionary(x => x.Key, x => x.ToArray());
         foreach (var item in placeCell)
         {
             var lockedCells = item.Value.Where(c => c.IsLock).ToArray();
             for (int i = 0; i < lockedCells.Length; i++)
             {
-                lockedCells[i].GetComponentInChildren<ParticleSystem>().Play();
-                ParticleSystem.MainModule settings = lockedCells[i].GetComponentInChildren<ParticleSystem>().main;
-                if (lockedCells.Length == 4)
-                {
-                    settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(4));
-                }
-                else if (lockedCells.Length == 3)
-                {
-                    settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(3));
-                }
-                else if (lockedCells.Length == 2)
-                {
-                    settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(2));
-                }
+                PlayMatchParticle(lockedCells[i].GetComponentInChildren<ParticleSystem>(), lockedCells.Length);
 
                 SaveShowLight show = new()
                 {
@@ -134,7 +109,7 @@ public class CalculterRowScore : MonoBehaviour
             if (item.Value > 3)
             {
                 count = 4;
-                return item.Key * 16 ;
+                return item.Key * 16;
 
             }
             else if (item.Value == 3)
@@ -198,11 +173,7 @@ public class CalculterRowScore : MonoBehaviour
         if (!skipClear)
         {
             foreach (var itemm in cell)
-            {
-                itemm.GetComponentInChildren<ParticleSystem>().Stop();
-                ParticleSystem.MainModule settings = itemm.GetComponentInChildren<ParticleSystem>().main;
-                settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
-            }
+                StopMatchParticle(itemm.GetComponentInChildren<ParticleSystem>());
         }
 
 
@@ -213,20 +184,7 @@ public class CalculterRowScore : MonoBehaviour
             var lockedCells = item.Value.Where(c => c.isLock).ToArray();
             for (int i = 0; i < lockedCells.Length; i++)
             {
-                lockedCells[i].GetComponentInChildren<ParticleSystem>().Play();
-                ParticleSystem.MainModule settings = lockedCells[i].GetComponentInChildren<ParticleSystem>().main;
-                if (lockedCells.Length == 4)
-                {
-                    settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(4));
-                }
-                else if (lockedCells.Length == 3)
-                {
-                    settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(3));
-                }
-                else if (lockedCells.Length == 2)
-                {
-                    settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(2));
-                }
+                PlayMatchParticle(lockedCells[i].GetComponentInChildren<ParticleSystem>(), lockedCells.Length);
                 SaveShowLight show = new()
                 {
                     line = lockedCells[i].numberLine,
@@ -297,9 +255,28 @@ public class CalculterRowScore : MonoBehaviour
         }
         count = 1;
         return cell.Where(r => r.ValueTile > -1).Sum(c => c.ValueTile);
+    }
 
+    private void StopMatchParticle(ParticleSystem particle)
+    {
+        if (particle == null)
+            return;
 
+        particle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        ParticleSystem.MainModule settings = particle.main;
+        settings.startColor = new ParticleSystem.MinMaxGradient(whitecolor);
+    }
 
+    private void PlayMatchParticle(ParticleSystem particle, int matchCount)
+    {
+        if (particle == null || matchCount < 2)
+            return;
 
+        // Existing availability particles are white. Clear them before changing
+        // color so a double/triple starts immediately with its match color.
+        particle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        ParticleSystem.MainModule settings = particle.main;
+        settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(matchCount));
+        particle.Play(true);
     }
 }
