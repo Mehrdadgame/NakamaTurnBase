@@ -1,10 +1,14 @@
 ﻿<Solution>
+  <Project Path="Rive.Runtime.Components.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Rive.Editor.Components.csproj" />
+  <Project Path="Rive.Runtime.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="NakamaEditor.csproj" />
   <Project Path="RTLTMPro.csproj" />
   <Project Path="Assembly-CSharp-firstpass.csproj" />
-  <Project Path="Assembly-CSharp-Editor.csproj" />
-  <Project Path="RTLTMPro-Editor.csproj" />
-  <Project Path="NakamaRuntime.csproj" />
+  <Project Path="Rive.Editor.csproj" />
   <Project Path="RTLTMPro-Tests.csproj" />
+  <Project Path="NakamaRuntime.csproj" />
+  <Project Path="RTLTMPro-Editor.csproj" />
 </Solution>

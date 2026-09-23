@@ -128,6 +128,13 @@ namespace Game
                 amount,
                 0.8f
             ).SetEase(amount > from ? Ease.OutQuad : Ease.InQuad);
+
+            if (amount > from)
+            {
+                Cointext.rectTransform.DOKill();
+                Cointext.rectTransform.localScale = Vector3.one;
+                Cointext.rectTransform.DOPunchScale(Vector3.one * 0.22f, 0.35f, 5, 0.5f).SetUpdate(true);
+            }
         }
 
         private void RefreshAvatarDisplay(string avatarId)

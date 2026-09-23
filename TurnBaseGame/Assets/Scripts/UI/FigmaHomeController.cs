@@ -125,8 +125,10 @@ namespace NinjaBattle.UI
             startCta?.DOKill();
             startCta?.DOPunchScale(Vector3.one * -0.055f, 0.2f, 5, 0.5f).SetUpdate(true);
             popupTween?.Kill();
+            modePopup.DOKill();
             modePopup.gameObject.SetActive(true);
-            modePopup.localScale = Vector3.one;
+            modePopup.localScale = Vector3.one * 0.88f;
+            modePopup.DOScale(Vector3.one, 0.24f).SetEase(Ease.OutBack).SetUpdate(true);
             if (modePopupCanvasGroup != null)
                 modePopupCanvasGroup.alpha = 0f;
 
@@ -141,13 +143,15 @@ namespace NinjaBattle.UI
                 return;
 
             popupTween?.Kill();
+            modePopup.DOKill();
+            modePopup.DOScale(Vector3.one * 0.88f, 0.15f).SetEase(Ease.InQuad).SetUpdate(true);
             if (modePopupCanvasGroup == null)
             {
                 modePopup.gameObject.SetActive(false);
                 return;
             }
 
-            popupTween = modePopupCanvasGroup.DOFade(0f, 0.14f)
+            popupTween = modePopupCanvasGroup.DOFade(0f, 0.15f)
                 .SetEase(Ease.InQuad)
                 .SetUpdate(true)
                 .OnComplete(() => modePopup.gameObject.SetActive(false));
@@ -159,7 +163,18 @@ namespace NinjaBattle.UI
 
         public void OpenChest()
         {
-            navigationItems[5].gameObject.SetActive(true);
+            if (chestButton != null)
+            {
+                chestButton.onClick.Invoke();
+            }
+            else if (ChestManager.Instance != null)
+            {
+                ChestManager.Instance.gameObject.SetActive(true);
+            }
+            else if (navigationItems != null && navigationItems.Length > 5 && navigationItems[5] != null)
+            {
+                navigationItems[5].gameObject.SetActive(true);
+            }
         }
 
         public void SelectStore()

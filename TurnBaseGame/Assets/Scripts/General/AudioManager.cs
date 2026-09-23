@@ -17,7 +17,8 @@ namespace NinjaBattle.General
         private AudioSource soundChannel = null;
         private List<AudioClip> currentSoundClips = new();
         private List<AudioClip> playingSoundClips = new();
-       
+        [SerializeField] private AudioClip defaultClickSound;
+
         #endregion
 
         #region PROPERTIES
@@ -30,7 +31,7 @@ namespace NinjaBattle.General
 
         private void Awake()
         {
-           
+
             Instance = this;
             musicChannel = gameObject.AddComponent<AudioSource>();
             musicChannelCrossFadeHelper = gameObject.AddComponent<AudioSource>();
@@ -50,6 +51,7 @@ namespace NinjaBattle.General
             StopMusic();
             musicChannel.clip = clip;
             musicChannel.loop = loop;
+            musicChannel.volume = 0.5f;
             musicChannel.Play();
         }
 
@@ -68,6 +70,18 @@ namespace NinjaBattle.General
             currentSoundClips.Add(clip);
             StartCoroutine(SoundCooldown(clip, CooldownForSounds));
             StartCoroutine(Dispose(clip, clip.length));
+        }
+
+        public void PlayClickSound()
+        {
+            if (defaultClickSound == null)
+            {
+                defaultClickSound = Resources.Load<AudioClip>("Audio/Sounds/Jump");
+            }
+            if (defaultClickSound != null)
+            {
+                PlaySound(defaultClickSound);
+            }
         }
 
         public IEnumerator SoundCooldown(AudioClip clip, float cooldown)

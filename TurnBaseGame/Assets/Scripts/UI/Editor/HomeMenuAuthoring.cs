@@ -672,6 +672,7 @@ namespace NinjaBattle.UI.Editor
                 Button uiButton = rect.gameObject.AddComponent<Button>();
                 uiButton.targetGraphic = image;
                 uiButton.transition = Selectable.Transition.ColorTint;
+                UIButtonJuice.Attach(rect.gameObject, 0.93f);
             }
             return rect;
         }
@@ -681,6 +682,7 @@ namespace NinjaBattle.UI.Editor
             Image image = ChatUiFactory.Panel(name, parent, color);
             Button button = image.gameObject.AddComponent<Button>();
             button.targetGraphic = image;
+            UIButtonJuice.Attach(image.gameObject, 0.92f);
             return image.rectTransform;
         }
 
@@ -692,6 +694,7 @@ namespace NinjaBattle.UI.Editor
             Button button = rect.gameObject.AddComponent<Button>();
             button.targetGraphic = image;
             button.transition = Selectable.Transition.None;
+            UIButtonJuice.Attach(rect.gameObject, 0.94f);
             return rect;
         }
 

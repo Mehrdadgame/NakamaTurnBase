@@ -37,11 +37,11 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Button exitButton;
 
     [SerializeField] private Image loading;
-    public TextMeshProUGUI[] arryRowSumMe;
-    public TextMeshProUGUI[] arryRowSumMeCal;
-    public TextMeshProUGUI[] arryRowSumOpp;
-    public TextMeshProUGUI[] arryRowSumOppCal;
-    public TextMeshProUGUI NameOpp;
+    public RTLTextMeshPro[] arryRowSumMe;
+    public RTLTextMeshPro[] arryRowSumMeCal;
+    public RTLTextMeshPro[] arryRowSumOpp;
+    public RTLTextMeshPro[] arryRowSumOppCal;
+    public RTLTextMeshPro NameOpp;
     public ParticleSystem WowPar;
     public static UiManager instance;
 
@@ -308,7 +308,7 @@ public class UiManager : MonoBehaviour
         }
         if (ScoreTextOpp != null)
         {
-            ScoreTextOpp.text = obj.ToString();
+            ScoreTextOpp.text = PersianTextUtils.FormatNumberStandalone(obj);
             ScoreTextOpp.rectTransform.DOKill();
             ScoreTextOpp.rectTransform.localScale = Vector3.one;
             ScoreTextOpp.rectTransform.DOPunchScale(Vector3.one * 0.28f, 0.25f, 4, 0.5f).SetUpdate(true);
@@ -320,7 +320,7 @@ public class UiManager : MonoBehaviour
         if (mines > 0)
         {
             var tmp = TextValueMines.GetComponent<TextMeshProUGUI>();
-            if (tmp != null) tmp.text = "-" + mines;
+            if (tmp != null) tmp.text = "-" + PersianTextUtils.ToPersianDigits(mines.ToString());
             TextValueMines.Play("Mines", 0, 0);
             TextValueMines.transform.DOKill();
             TextValueMines.transform.localScale = Vector3.one;
@@ -330,7 +330,7 @@ public class UiManager : MonoBehaviour
         }
         if (ScoreTextMe != null)
         {
-            ScoreTextMe.text = obj.ToString();
+            ScoreTextMe.text = PersianTextUtils.FormatNumberStandalone(obj);
             ScoreTextMe.rectTransform.DOKill();
             ScoreTextMe.rectTransform.localScale = Vector3.one;
             ScoreTextMe.rectTransform.DOPunchScale(Vector3.one * 0.28f, 0.25f, 4, 0.5f).SetUpdate(true);
@@ -340,7 +340,7 @@ public class UiManager : MonoBehaviour
     private void SetRowSumText(TextMeshProUGUI label, int newScore)
     {
         if (label == null) return;
-        string newText = newScore.ToString();
+        string newText = PersianTextUtils.FormatNumberStandalone(newScore);
         if (label.text != newText)
         {
             label.text = newText;
