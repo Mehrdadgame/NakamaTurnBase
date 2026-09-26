@@ -163,11 +163,7 @@ namespace NinjaBattle.UI
 
         public void OpenChest()
         {
-            if (chestButton != null)
-            {
-                chestButton.onClick.Invoke();
-            }
-            else if (ChestManager.Instance != null)
+            if (ChestManager.Instance != null)
             {
                 ChestManager.Instance.gameObject.SetActive(true);
             }
