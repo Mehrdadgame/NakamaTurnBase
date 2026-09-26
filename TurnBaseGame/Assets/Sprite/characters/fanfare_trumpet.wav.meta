@@ -1,5 +1,10 @@
 fileFormatVersion: 2
 guid: 8199e775429e9d04594ec3fdc1eb479f
+importerOverride:
+  nativeImporterType: 2089858483
+  scriptedImporterType:
+    serializedVersion: 2
+    Hash: 04da9f7e3dd3ae2d9afd2b584d5c6e4c
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8

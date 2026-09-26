@@ -210,17 +210,17 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("شما بردی", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی";
+                        SetRewardText("‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی");
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("شما باختی", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی";
+                        SetRewardText("‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی");
                     }
                     else
                     {
                         ShowResultEndGame("مساوی شدید", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی";
+                        SetRewardText("‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی");
                     }
                     multiplayerManager.isTurn = false;
                     onMatchEnded?.Invoke(new MatchResult
@@ -264,17 +264,17 @@ namespace NinjaBattle.Game
                     if (ScoreMe < ScoreOpp)
                     {
                         ShowResultEndGame("شما بردی", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی";
+                        SetRewardText("‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی");
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
                         ShowResultEndGame("شما باختی", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی";
+                        SetRewardText("‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی");
                     }
                     else
                     {
                         ShowResultEndGame("مساوی شدید", ScoreOpp, ScoreMe);
-                        UiManager.instance.TasiWin.text = "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی";
+                        SetRewardText("‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی");
                     }
                     multiplayerManager.isTurn = false;
                     onMatchEnded?.Invoke(new MatchResult
@@ -341,6 +341,17 @@ namespace NinjaBattle.Game
             UpdateOpponentNameCache();
 
         }
+        /// <summary>
+        /// The reward label only exists in some battle scenes; the new result panel
+        /// replaced it elsewhere. Never let a missing label break the endgame flow.
+        /// </summary>
+        private static void SetRewardText(string value)
+        {
+            var ui = UiManager.instance;
+            if (ui != null && ui.TasiWin != null)
+                ui.TasiWin.text = value;
+        }
+
         private void ShowResultEndGame(string resutlText, int score1, int score2)
         {
             ActionEndGame.instance.ResultPanel.SetActive(true);

@@ -159,7 +159,7 @@ public class ReconnectPopup : MonoBehaviour
         ActionEndGame.instance.ResultText.text = "شما بردی";
 
         var league = ClientLeagues.Get(GameManager.Instance.modeGame);
-        if (UiManager.instance != null)
+        if (UiManager.instance != null && UiManager.instance.TasiWin != null)
             UiManager.instance.TasiWin.text =
                 "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی";
 

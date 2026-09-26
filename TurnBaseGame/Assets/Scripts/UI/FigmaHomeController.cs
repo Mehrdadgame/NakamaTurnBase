@@ -57,6 +57,9 @@ namespace NinjaBattle.UI
 
         private void Start()
         {
+            if (modePopup != null && modePopup.gameObject.activeSelf)
+                modePopup.gameObject.SetActive(false);
+
             ApplyAudioState();
             if (ProfileService.Instance != null)
             {
@@ -119,6 +122,12 @@ namespace NinjaBattle.UI
 
         public void OpenModePopup()
         {
+            if (CastleEntranceTransitionController.Instance != null)
+            {
+                CastleEntranceTransitionController.Instance.PlayEntranceSequence();
+                return;
+            }
+
             if (modePopup == null)
                 return;
 
@@ -139,6 +148,12 @@ namespace NinjaBattle.UI
 
         public void CloseModePopup()
         {
+            if (CastleEntranceTransitionController.Instance != null && CastleEntranceTransitionController.Instance.IsEntranceOpen)
+            {
+                CastleEntranceTransitionController.Instance.ReturnToHomeSequence();
+                return;
+            }
+
             if (modePopup == null || !modePopup.gameObject.activeSelf)
                 return;
 

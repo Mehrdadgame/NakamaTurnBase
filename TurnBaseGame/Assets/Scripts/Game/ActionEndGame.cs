@@ -20,10 +20,15 @@ public class ActionEndGame : MonoBehaviour
     public Button BackToHome;
     public GameResultPresentation ResultPresentation;
 
-    private void Start()
+    private void Awake()
     {
         instance = this;
-        NameOpp.text = PlayerPrefs.GetString("Opp", "Opponent");
+    }
+
+    private void Start()
+    {
+        if (NameOpp != null && string.IsNullOrEmpty(NameOpp.text))
+            NameOpp.text = PlayerPrefs.GetString("Opp", "sohrab ۱");
     }
 
     private void OnDestroy()
@@ -34,7 +39,10 @@ public class ActionEndGame : MonoBehaviour
 
     public void RefreshResultPresentation()
     {
+        // RTLTextMeshPro's .text getter returns the RESHAPED glyph string (reversed,
+        // presentation forms), so Contains("برد") never matched and the panel always
+        // showed the lose state. OriginalText is the raw string that was assigned.
         if (ResultPresentation != null)
-            ResultPresentation.Refresh(ResultText != null ? ResultText.text : string.Empty);
+            ResultPresentation.Refresh(ResultText != null ? ResultText.OriginalText : string.Empty);
     }
 }

@@ -96,10 +96,26 @@ namespace Nakama.Helpers
                 return;
             }
 
-            GameManager.Instance.modeGame = mode;
+            if (GameManager.Instance != null)
+                GameManager.Instance.modeGame = mode;
+
             if (button != null)
                 button.interactable = false;
             _isJoining = true;
+
+            // Check if Castle Entrance cinematic controller is present and entrance is open
+            var transitionController = NinjaBattle.UI.CastleEntranceTransitionController.Instance;
+            if (transitionController != null && transitionController.IsEntranceOpen)
+            {
+                transitionController.PlayBattleLaunchSequence(mode, button, () =>
+                {
+                    if (MultiplayerManager.Instance != null && NakamaManager.Instance != null && NakamaManager.Instance.Socket != null)
+                    {
+                        MultiplayerManager.Instance.JoinMatchAsync(mode);
+                    }
+                });
+                return;
+            }
 
             PlayCoinAnimation(fee, () => MultiplayerManager.Instance.JoinMatchAsync(mode));
         }
