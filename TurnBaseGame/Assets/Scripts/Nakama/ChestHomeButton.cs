@@ -109,7 +109,7 @@ namespace Nakama.Helpers
 
         private void ShowReady()
         {
-            if (timerText != null) timerText.text = "آماده!";
+            if (timerText != null) timerText.text = Localization.L("آماده!", "Ready!");
             SetReady(true);
         }
 

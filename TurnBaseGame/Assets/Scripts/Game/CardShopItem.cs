@@ -24,18 +24,18 @@ public class CardShopItem : MonoBehaviour
         if (iconImage != null && cardData.icon != null) iconImage.sprite = cardData.icon;
         if (nameText  != null) nameText.text = cardData.cardName;
         if (descText  != null) descText.text = cardData.description;
-        if (costText  != null) costText.text = PersianTextUtils.FormatNumber(cardData.cost) + " کوین";
+        if (costText  != null) costText.text = PersianTextUtils.FormatNumber(cardData.cost) + Localization.L(" کوین", " coins");
 
         selectButton.onClick.RemoveAllListeners();
 
         if (alreadySelected)
         {
-            if (buttonLabel != null) buttonLabel.text = "انتخاب شده";
+            if (buttonLabel != null) buttonLabel.text = Localization.L("انتخاب شده", "Selected");
             selectButton.interactable = false;
         }
         else
         {
-            if (buttonLabel != null) buttonLabel.text = "انتخاب  " + PersianTextUtils.FormatNumber(cardData.cost);
+            if (buttonLabel != null) buttonLabel.text = Localization.L("انتخاب  ", "Select  ") + PersianTextUtils.FormatNumber(cardData.cost);
             selectButton.interactable = true;
             selectButton.onClick.AddListener(() => onSelect?.Invoke(card.id));
         }

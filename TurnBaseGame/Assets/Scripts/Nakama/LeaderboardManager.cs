@@ -15,8 +15,8 @@ namespace Nakama.Helpers
         public string leaderboardId;
         public string ownerId;
         public string username;
-        public long   score;
-        public long   rank;
+        public long score;
+        public long rank;
         public string avatarId;
     }
 
@@ -24,8 +24,8 @@ namespace Nakama.Helpers
     public class LeaderboardResponse
     {
         public List<LeaderboardRecord> records;
-        public LeaderboardRecord       ownRecord;
-        public long[]                  rewards;   // جدول جوایز از سرور — index 0 = رتبه ۱
+        public LeaderboardRecord ownRecord;
+        public long[] rewards;   // جدول جوایز از سرور — index 0 = رتبه ۱
     }
 
     public class LeaderboardManager : MonoBehaviour
@@ -42,7 +42,7 @@ namespace Nakama.Helpers
 
         // ── Context list ──────────────────────────────────────────────────────────
         [Header("Context List  (4 above + self + 4 below)")]
-        [SerializeField] private Transform  rowContainer;
+        [SerializeField] private Transform rowContainer;
         [SerializeField] private GameObject rowPrefab;      // must have LeaderboardRowUI
         [SerializeField] private ScrollRect leaderboardScroll;
 
@@ -134,7 +134,7 @@ namespace Nakama.Helpers
 
             if (_loadWhenReadyCo != null)
                 StopCoroutine(_loadWhenReadyCo);
-            ShowState("در حال دریافت رتبه‌ها...", true);
+            ShowState(Localization.L("در حال دریافت رتبه‌ها...", "Loading rankings..."), true);
             _loadWhenReadyCo = StartCoroutine(LoadWhenReady(_currentType));
         }
 
@@ -149,7 +149,7 @@ namespace Nakama.Helpers
             if (NakamaManager.Instance == null || NakamaManager.Instance.Session == null)
             {
                 Debug.LogWarning("[LeaderboardManager] Nakama session was not ready before timeout.");
-                ShowState("اتصال به سرور برقرار نشد\nبرای تلاش دوباره لمس کنید", true);
+                ShowState(Localization.L("اتصال به سرور برقرار نشد\nبرای تلاش دوباره لمس کنید", "Could not reach the server\nTap to retry"), true);
                 yield break;
             }
 
@@ -169,7 +169,7 @@ namespace Nakama.Helpers
             {
                 if (NakamaManager.Instance == null)
                 {
-                    ShowState("اتصال به سرور در دسترس نیست", true);
+                    ShowState(Localization.L("اتصال به سرور در دسترس نیست", "Server unavailable"), true);
                     return;
                 }
 
@@ -182,14 +182,14 @@ namespace Nakama.Helpers
                 if (result == null || string.IsNullOrEmpty(result.Payload))
                 {
                     Debug.LogWarning("[LeaderboardManager] Empty response for " + type + " leaderboard.");
-                    ShowState("پاسخی از سرور دریافت نشد\nبرای تلاش دوباره لمس کنید", true);
+                    ShowState(Localization.L("پاسخی از سرور دریافت نشد\nبرای تلاش دوباره لمس کنید", "No response from server\nTap to retry"), true);
                     return;
                 }
 
                 var data = result.Payload.Deserialize<LeaderboardResponse>();
                 if (data == null)
                 {
-                    ShowState("اطلاعات جدول قابل خواندن نیست", true);
+                    ShowState(Localization.L("اطلاعات جدول قابل خواندن نیست", "Couldn't read leaderboard data"), true);
                     return;
                 }
 
@@ -202,12 +202,12 @@ namespace Nakama.Helpers
                 BuildPodium(records);
                 BuildContextList(records, data.ownRecord);
                 UpdateOwnBar(data.ownRecord);
-                ShowState(records.Count == 0 ? "هنوز رتبه‌ای ثبت نشده است" : "", records.Count == 0);
+                ShowState(records.Count == 0 ? Localization.L("هنوز رتبه‌ای ثبت نشده است", "No rankings yet") : "", records.Count == 0);
             }
             catch (Exception e)
             {
                 Debug.LogWarning("[LeaderboardManager] " + e.Message);
-                ShowState("دریافت جدول ناموفق بود\nبرای تلاش دوباره لمس کنید", true);
+                ShowState(Localization.L("دریافت جدول ناموفق بود\nبرای تلاش دوباره لمس کنید", "Failed to load leaderboard\nTap to retry"), true);
             }
         }
 
@@ -264,7 +264,7 @@ namespace Nakama.Helpers
                     avatarImg.sprite = null;
                     avatarImg.color = Color.clear;
                 }
-                if (nameText != null) nameText.text = "رتبه " + (index + 1);
+                if (nameText != null) nameText.text = Localization.L("رتبه ", "Rank ") + (index + 1);
                 if (rewardText != null) rewardText.gameObject.SetActive(false);
                 return;
             }
@@ -283,7 +283,7 @@ namespace Nakama.Helpers
                 bool hasReward = rewards != null && index >= 0 && index < rewards.Length;
                 rewardText.gameObject.SetActive(hasReward);
                 if (hasReward)
-                    rewardText.text = "تاسی :" + PersianTextUtils.FormatNumber(rewards[index]);
+                    rewardText.text = Localization.L("تاسی :", "Tasi: ") + (rewards[index]);
             }
         }
 
@@ -312,16 +312,16 @@ namespace Nakama.Helpers
             int index = 0;
             foreach (var rec in slice)
             {
-                var go  = Instantiate(rowPrefab, rowContainer);
+                var go = Instantiate(rowPrefab, rowContainer);
                 go.SetActive(true);
                 var row = go.GetComponent<LeaderboardRowUI>();
 
                 if (row != null)
                 {
-                    if (row.avatarImage  != null) row.avatarImage.sprite = GetSprite(rec.avatarId);
-                    if (row.rankText     != null) row.rankText.text      = "#" + rec.rank;
-                    if (row.nameText     != null) row.nameText.text      = rec.username ?? "???";
-                    if (row.scoreText != null) row.scoreText.text = PersianTextUtils.FormatNumber(rec.score) + " دایسو";
+                    if (row.avatarImage != null) row.avatarImage.sprite = GetSprite(rec.avatarId);
+                    if (row.rankText != null) row.rankText.text = "#" + rec.rank;
+                    if (row.nameText != null) row.nameText.text = rec.username ?? "???";
+                    if (row.scoreText != null) row.scoreText.text = (rec.score) + Localization.L(" دایسو", " pts");
 
                     // نمایش جایزه برای رتبه‌های ۱ تا ۱۰ (از سرور)
                     if (row.rewardText != null)
@@ -330,7 +330,7 @@ namespace Nakama.Helpers
                         if (rankIndex >= 0 && rankIndex < _currentRewards.Length)
                         {
                             row.rewardText.gameObject.SetActive(true);
-                            row.rewardText.text = "تاسی: " + PersianTextUtils.FormatNumber(_currentRewards[rankIndex]);
+                            row.rewardText.text = Localization.L("تاسی: ", "Tasi: ") + (_currentRewards[rankIndex]);
                         }
                         else
                         {
@@ -351,14 +351,14 @@ namespace Nakama.Helpers
                     var rtlTexts = go.GetComponentsInChildren<RTLTextMeshPro>(true);
                     if (rtlTexts.Length >= 1) rtlTexts[0].text = "#" + rec.rank;
                     if (rtlTexts.Length >= 2) rtlTexts[1].text = rec.username ?? "???";
-                    if (rtlTexts.Length >= 3) rtlTexts[2].text = PersianTextUtils.FormatNumber(rec.score) + " دایسو";
+                    if (rtlTexts.Length >= 3) rtlTexts[2].text = (rec.score) + Localization.L(" دایسو", " pts");
 
                     if (rtlTexts.Length == 0)
                     {
                         var tmpTexts = go.GetComponentsInChildren<TextMeshProUGUI>(true);
                         if (tmpTexts.Length >= 1) tmpTexts[0].text = "#" + rec.rank;
                         if (tmpTexts.Length >= 2) tmpTexts[1].text = rec.username ?? "???";
-                        if (tmpTexts.Length >= 3) tmpTexts[2].text = rec.score + " دایسو";
+                        if (tmpTexts.Length >= 3) tmpTexts[2].text = rec.score + Localization.L(" دایسو", " pts");
                     }
                 }
 
@@ -394,7 +394,7 @@ namespace Nakama.Helpers
             int below = 2;
 
             int start = Mathf.Max(0, myIndex - above);
-            int end   = Mathf.Min(all.Count - 1, myIndex + below);
+            int end = Mathf.Min(all.Count - 1, myIndex + below);
 
             // Expand to always fill the five visible Figma rows when possible.
             int count = end - start + 1;
@@ -432,12 +432,12 @@ namespace Nakama.Helpers
         {
             if (own == null)
             {
-                if (myRankText  != null) myRankText.text  = "شما: -";
-                if (myScoreText != null) myScoreText.text = "۰ دایسو";
+                if (myRankText != null) myRankText.text = Localization.L("شما: -", "You: -");
+                if (myScoreText != null) myScoreText.text = Localization.L("۰ دایسو", "0 pts");
                 return;
             }
-            if (myRankText  != null) myRankText.text  = "#" + PersianTextUtils.ToPersianDigits(own.rank.ToString());
-            if (myScoreText != null) myScoreText.text = PersianTextUtils.FormatNumber(own.score) + " دایسو";
+            if (myRankText != null) myRankText.text = "#" + (own.rank.ToString());
+            if (myScoreText != null) myScoreText.text = (own.score) + Localization.L(" دایسو", " pts");
         }
 
         // ── Reset Timers ──────────────────────────────────────────────────────────
@@ -462,9 +462,9 @@ namespace Nakama.Helpers
             if (resetTimerText == null) return;
             var now = DateTime.UtcNow;
             if (_currentType == "monthly")
-                resetTimerText.text = "ریست ماهانه\n" + FormatTimeLeft(GetNextMonthlyReset(now));
+                resetTimerText.text = Localization.L("ریست ماهانه\n", "Monthly reset\n") + FormatTimeLeft(GetNextMonthlyReset(now));
             else
-                resetTimerText.text = "ریست هفتگی\n" + FormatTimeLeft(GetNextWeeklyReset(now));
+                resetTimerText.text = Localization.L("ریست هفتگی\n", "Weekly reset\n") + FormatTimeLeft(GetNextWeeklyReset(now));
         }
 
         /// دوشنبه بعدی ساعت ۰۰:۰۰ UTC
@@ -488,9 +488,11 @@ namespace Nakama.Helpers
         private static string FormatTimeLeft(DateTime target)
         {
             var ts = target - DateTime.UtcNow;
-            if (ts.TotalSeconds <= 0) return "به زودی";
+            if (ts.TotalSeconds <= 0) return Localization.L("به زودی", "Soon");
             if (ts.TotalDays >= 1)
-                return $"{(int)ts.TotalDays}روز {ts.Hours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
+                return Localization.IsPersian
+                ? $"{(int)ts.TotalDays}روز {ts.Hours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}"
+                : $"{(int)ts.TotalDays}d {ts.Hours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
             return $"{ts.Hours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
         }
 

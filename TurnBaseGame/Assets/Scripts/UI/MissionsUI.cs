@@ -247,14 +247,16 @@ namespace NinjaBattle.UI
             float ratio = isMaxLevel ? 1f : Mathf.Clamp01((float)xpInsideLevel / xpSpan);
 
             if (levelText != null)
-                levelText.text = $"سطح {ToPersianDigits(currentLevel)}";
+                levelText.text = Localization.IsPersian ? $"سطح {ToPersianDigits(currentLevel)}" : $"Level {currentLevel}";
             if (titleText != null)
-                titleText.text = string.IsNullOrWhiteSpace(currentTitle) ? "بازیکن" : currentTitle;
+                titleText.text = string.IsNullOrWhiteSpace(currentTitle) ? Localization.L("بازیکن", "Player") : currentTitle;
             if (xpText != null)
             {
                 xpText.text = isMaxLevel
-                    ? "بالاترین سطح"
-                    : $"{ToPersianDigits(xpInsideLevel)} از {ToPersianDigits(xpSpan)} امتیاز";
+                    ? Localization.L("بالاترین سطح", "Max level")
+                    : Localization.IsPersian
+                        ? $"{ToPersianDigits(xpInsideLevel)} از {ToPersianDigits(xpSpan)} امتیاز"
+                        : $"{xpInsideLevel} of {xpSpan} XP";
             }
             if (xpFill != null)
                 xpFill.fillAmount = ratio;
@@ -288,14 +290,17 @@ namespace NinjaBattle.UI
             if (missionSummaryText != null)
             {
                 missionSummaryText.text = totalCount == 0
-                    ? "در حال دریافت مأموریت‌ها..."
-                    : $"{ToPersianDigits(completedCount)} از {ToPersianDigits(totalCount)} انجام شده";
+                    ? Localization.L("در حال دریافت مأموریت‌ها...", "Loading missions...")
+                    : Localization.IsPersian
+                        ? $"{ToPersianDigits(completedCount)} از {ToPersianDigits(totalCount)} انجام شده"
+                        : $"{completedCount} of {totalCount} completed";
             }
         }
 
         private static string ToPersianDigits(int value)
         {
-            return value.ToString().Replace('0', '۰').Replace('1', '۱').Replace('2', '۲')
+            if (!Localization.IsPersian) return value.ToString();
+        return value.ToString().Replace('0', '۰').Replace('1', '۱').Replace('2', '۲')
                 .Replace('3', '۳').Replace('4', '۴').Replace('5', '۵').Replace('6', '۶')
                 .Replace('7', '۷').Replace('8', '۸').Replace('9', '۹');
         }

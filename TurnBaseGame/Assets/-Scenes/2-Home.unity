@@ -11785,11 +11785,11 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
-  preserveNumbers: 1
+  preserveNumbers: 0
   farsi: 1
   originalText: "-- \u062F\u0627\u06CC\u0633\u0648"
   fixTags: 1
-  forceFix: 0
+  forceFix: 1
 --- !u!222 &416464191
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -25119,6 +25119,11 @@ MonoBehaviour:
   rimColor: {r: 0.95, g: 0.78, b: 0.25, a: 0.85}
   feather: 0.025
   rimWidth: 0.018
+  autoPlayIrisInOnStart: 0
+  autoPlayDelay: 0.08
+  autoPlayDuration: 0.65
+  autoPlayCenter: {x: 0.5, y: 0.46}
+  openWhooshSound: {fileID: 0}
 --- !u!82 &1105493550
 AudioSource:
   m_ObjectHideFlags: 0
@@ -36244,7 +36249,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1622203447}
-  - component: {fileID: 1622203446}
   m_Layer: 0
   m_Name: PlayMusic
   m_TagString: Untagged
@@ -36252,19 +36256,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1622203446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1622203445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 227493aa6425f47e888180756e30f479, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: 92866b820e7ac4af685e3aefdc69165e, type: 3}
 --- !u!4 &1622203447
 Transform:
   m_ObjectHideFlags: 0

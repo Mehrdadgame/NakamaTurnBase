@@ -117,7 +117,9 @@ namespace Nakama.Helpers
 
                 // Show popup
                 if (rewardText != null)
-                    rewardText.text = "+" + PersianTextUtils.FormatNumber(result.coinsAwarded) + " تاسی بردی!";
+                    rewardText.text = Localization.IsPersian
+                        ? "+" + PersianTextUtils.FormatNumber(result.coinsAwarded) + " تاسی بردی!"
+                        : "You won +" + PersianTextUtils.FormatNumber(result.coinsAwarded) + " Tasi!";
 
                 if (rewardPopup != null) rewardPopup.SetActive(true);
 
@@ -134,6 +136,7 @@ namespace Nakama.Helpers
 
         private async void OnClaimClicked()
         {
+            NinjaBattle.General.GameSfx.PlayCoin();
             if (rewardPopup != null) rewardPopup.SetActive(false);
 
             // Add coins immediately to local display
@@ -187,7 +190,7 @@ namespace Nakama.Helpers
         private void ShowReady()
         {
             _ready = true;
-            if (timerText != null) timerText.text = "آماده!";
+            if (timerText != null) timerText.text = Localization.L("آماده!", "Ready!");
             SetButtonReady(true);
         }
 

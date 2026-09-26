@@ -100,7 +100,9 @@ namespace Nakama.Helpers
             }
 
             if (messageText != null)
-                messageText.text = "نسخه جدیدی از بازی موجود است.\nبرای ادامه بازی لطفا بازی را به‌روزرسانی کنید.";
+                messageText.text = Localization.L(
+                    "نسخه جدیدی از بازی موجود است.\nبرای ادامه بازی لطفا بازی را به‌روزرسانی کنید.",
+                    "A new version of the game is available.\nPlease update to keep playing.");
 
             popupPanel.SetActive(true);
 

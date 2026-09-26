@@ -133,7 +133,7 @@ public class UiManager : MonoBehaviour
     private void Instance_LeftPlayer(string obj)
     {
         PanelLeftPalyer.SetActive(true);
-        NamePalyerLeft.text = obj + " از بازی خارج شد";
+        NamePalyerLeft.text = Localization.IsPersian ? obj + " از بازی خارج شد" : obj + " left the game";
     }
 
     private void Instance_TimerStop()
@@ -185,7 +185,7 @@ public class UiManager : MonoBehaviour
         }
         if (obj.Answer == "left")
         {
-            messageLeftPalyerInRematch.text = "متاسفانه بازیکن از بازی خارج شد.";
+            messageLeftPalyerInRematch.text = Localization.L("متاسفانه بازیکن از بازی خارج شد.", "Unfortunately the player left the game.");
             acceptRematchButton.gameObject.SetActive(true);
             acceptRematchButton.gameObject.SetActive(false);
             exitRematchButton.gameObject.SetActive(false);
@@ -197,7 +197,7 @@ public class UiManager : MonoBehaviour
         }
         if (obj.Answer == "no")
         {
-            messageLeftPalyerInRematch.text = "حریف قبول نکرد";
+            messageLeftPalyerInRematch.text = Localization.L("حریف قبول نکرد", "Opponent declined");
             loading.gameObject.SetActive(false);
             exitButton.gameObject.SetActive(true);
             AniamtionManager.instance.AnimGoToUpMe.gameObject.SetActive(false);
@@ -567,10 +567,7 @@ public class UiManager : MonoBehaviour
 
     private void CheckShowLight()
     {
-        Debug.Log(CalculterRowScore.instance.DuobleScore1.Count + " Count");
-        Debug.Log(CalculterRowScore.instance.DuobleScore2.Count + " Count 2");
-
-
+        CalculterRowScore.instance.CommitMatchAudio();
         CalculterRowScore.instance.DuobleScore2.Clear();
         CalculterRowScore.instance.DuobleScore1.Clear();
     }

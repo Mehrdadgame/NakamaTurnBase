@@ -133,7 +133,7 @@ namespace NinjaBattle.UI
             ChatUiFactory.Stretch(badgeText.rectTransform);
 
             // Title: ماموریت انجام شد
-            _titleText = ChatUiFactory.Text("Title", _toastRect, "ماموریت انجام شد", 22,
+            _titleText = ChatUiFactory.Text("Title", _toastRect, Localization.L("ماموریت انجام شد", "Mission complete"), 22,
                 new Color(1f, 0.85f, 0.38f, 1f), TextAlignmentOptions.MidlineRight);
             _titleText.raycastTarget = false;
             ChatUiFactory.Anchor(_titleText.rectTransform, new Vector2(0f, 0.52f), new Vector2(1f, 0.94f),
@@ -207,7 +207,8 @@ namespace NinjaBattle.UI
 
         private static string ToPersianDigits(int value)
         {
-            return value.ToString().Replace('0', '۰').Replace('1', '۱').Replace('2', '۲')
+            if (!Localization.IsPersian) return value.ToString();
+        return value.ToString().Replace('0', '۰').Replace('1', '۱').Replace('2', '۲')
                 .Replace('3', '۳').Replace('4', '۴').Replace('5', '۵').Replace('6', '۶')
                 .Replace('7', '۷').Replace('8', '۸').Replace('9', '۹');
         }

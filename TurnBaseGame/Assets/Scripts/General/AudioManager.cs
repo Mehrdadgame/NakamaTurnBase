@@ -72,11 +72,21 @@ namespace NinjaBattle.General
             StartCoroutine(Dispose(clip, clip.length));
         }
 
+        public bool IsMusicPlaying(AudioClip clip)
+        {
+            return clip != null && musicChannel != null &&
+                   musicChannel.clip == clip && musicChannel.isPlaying;
+        }
+
         public void PlayClickSound()
         {
             if (defaultClickSound == null)
             {
+                // Legacy path first, then the casual clip set (the legacy Jump clip
+                // was never inside a Resources folder, so clicks were silent).
                 defaultClickSound = Resources.Load<AudioClip>("Audio/Sounds/Jump");
+                if (defaultClickSound == null)
+                    defaultClickSound = GameSfx.ClickClip;
             }
             if (defaultClickSound != null)
             {

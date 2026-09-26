@@ -168,19 +168,19 @@ namespace NinjaBattle.Game
         {
             switch (Mathf.Clamp(level, 1, 12))
             {
-                case 1: return "توریست";
-                case 2: return "دست‌گرمی";
-                case 3: return "امید به خدا";
-                case 4: return "جویای نام";
-                case 5: return "خوش‌شانس";
-                case 6: return "پر ادعا";
-                case 7: return "جفت‌شش‌زن";
-                case 8: return "رویِ دورِ بُرد";
-                case 9: return "اعصاب‌خردکن";
-                case 10: return "قاتلِ میز";
-                case 11: return "کابوسِ حریف";
-                case 12: return "خدایگانِ تاس";
-                default: return "توریست";
+                case 1: return Localization.L("توریست", "Tourist");
+                case 2: return Localization.L("دست‌گرمی", "Warm-Up");
+                case 3: return Localization.L("امید به خدا", "Hopeful");
+                case 4: return Localization.L("جویای نام", "Rising Star");
+                case 5: return Localization.L("خوش‌شانس", "Lucky One");
+                case 6: return Localization.L("پر ادعا", "Big Talker");
+                case 7: return Localization.L("جفت‌شش‌زن", "Double-Six Ace");
+                case 8: return Localization.L("رویِ دورِ بُرد", "On a Roll");
+                case 9: return Localization.L("اعصاب‌خردکن", "Nerve-Wrecker");
+                case 10: return Localization.L("قاتلِ میز", "Table Killer");
+                case 11: return Localization.L("کابوسِ حریف", "Opponent's Nightmare");
+                case 12: return Localization.L("خدایگانِ تاس", "Dice God");
+                default: return Localization.L("توریست", "Tourist");
             }
         }
 

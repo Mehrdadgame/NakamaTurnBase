@@ -172,7 +172,7 @@ public class SelfReconnectHandler : MonoBehaviour
     {
         _isHandling = false;
         if (messageText != null)
-            messageText.text = "زمان تموم شد!\nباختی...";
+            messageText.text = Localization.L("زمان تموم شد!\nباختی...", "Time's up!\nYou lost...");
         SetCountdown(0);
         StartCoroutine(ShowLossAndGoHome());
     }
@@ -203,7 +203,7 @@ public class SelfReconnectHandler : MonoBehaviour
     {
         if (popupPanel == null) return;
         if (messageText != null)
-            messageText.text = "اینترنت قطع شد!\nبرای ادامه بازی اتصال را برقرار کنید...";
+            messageText.text = Localization.L("اینترنت قطع شد!\nبرای ادامه بازی اتصال را برقرار کنید...", "Connection lost!\nReconnect to keep playing...");
 
         popupPanel.SetActive(true);
         if (canvasGroup != null)

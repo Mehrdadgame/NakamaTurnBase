@@ -18,6 +18,10 @@ public static class PersianTextUtils
     /// </summary>
     public static string FormatNumber(long amount)
     {
+        // English UI: standard Western formatting, no RTL tricks needed.
+        if (!Localization.IsPersian)
+            return amount.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+
         if (amount < 0)
             return "‏-" + FormatNumber(-amount);
 
@@ -55,6 +59,9 @@ public static class PersianTextUtils
     /// </summary>
     public static string FormatNumberStandalone(long amount)
     {
+        if (!Localization.IsPersian)
+            return amount.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+
         if (amount < 0)
             return "‏-" + FormatNumberStandalone(-amount);
 
@@ -84,7 +91,7 @@ public static class PersianTextUtils
     /// </summary>
     public static string FixRTLPriceLabel(string input)
     {
-        if (string.IsNullOrEmpty(input)) return input;
+        if (string.IsNullOrEmpty(input) || !Localization.IsPersian) return input;
 
         // Match a number that contains at least one comma (e.g. ۱۱۹,۰۰۰ or 119,000)
         return System.Text.RegularExpressions.Regex.Replace(
@@ -99,10 +106,14 @@ public static class PersianTextUtils
         );
     }
 
-    /// <summary>Converts ASCII digits 0-9 to Persian digits ۰-۹.</summary>
+    /// <summary>
+    /// Converts ASCII digits 0-9 to Persian digits ۰-۹.
+    /// When the game language is English, returns the input unchanged so every
+    /// caller automatically shows Western digits.
+    /// </summary>
     public static string ToPersianDigits(string input)
     {
-        if (string.IsNullOrEmpty(input)) return input;
+        if (string.IsNullOrEmpty(input) || !Localization.IsPersian) return input;
         var sb = new StringBuilder(input.Length);
         foreach (char c in input)
             sb.Append(c >= '0' && c <= '9' ? (char)(c - '0' + '۰') : c);

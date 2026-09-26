@@ -871,6 +871,12 @@ namespace Nakama.Helpers
             if (open) SetUnread(0);
             if (drawer == null || backdrop == null) return;
 
+            // The authored scenes ship with ChatRoot saved INACTIVE (so it does not cover
+            // the board while editing) and nothing ever re-activated it — the button "did
+            // nothing" even though the click and the tween both ran. Activate it on open.
+            if (open && root != null && !root.gameObject.activeSelf)
+                root.gameObject.SetActive(true);
+
             drawer.DOKill();
             backdrop.DOKill();
 

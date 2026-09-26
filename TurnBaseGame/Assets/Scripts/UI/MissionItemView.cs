@@ -71,7 +71,7 @@ namespace NinjaBattle.UI
             if (progressText != null)
             {
                 progressText.text = mission.IsCompleted
-                    ? "تکمیل شد"
+                    ? Localization.L("تکمیل شد", "Completed")
                     : $"{ToPersianDigits(mission.CurrentProgress)} / {ToPersianDigits(mission.Target)}";
                 progressText.color = mission.IsCompleted
                     ? new Color(0.45f, 1f, 0.58f, 1f)
@@ -97,7 +97,7 @@ namespace NinjaBattle.UI
 
             if (actionButtonText != null)
             {
-                actionButtonText.text = mission.IsCompleted ? "انجام شده" : "شروع بازی";
+                actionButtonText.text = mission.IsCompleted ? Localization.L("انجام شده", "Done") : Localization.L("شروع بازی", "Play");
                 actionButtonText.color = mission.IsCompleted ? new Color(0.9f, 1f, 0.9f, 0.9f) : Color.white;
             }
 
@@ -145,7 +145,8 @@ namespace NinjaBattle.UI
 
         private static string ToPersianDigits(int value)
         {
-            return value.ToString().Replace('0', '۰').Replace('1', '۱').Replace('2', '۲')
+            if (!Localization.IsPersian) return value.ToString();
+        return value.ToString().Replace('0', '۰').Replace('1', '۱').Replace('2', '۲')
                 .Replace('3', '۳').Replace('4', '۴').Replace('5', '۵').Replace('6', '۶')
                 .Replace('7', '۷').Replace('8', '۸').Replace('9', '۹');
         }

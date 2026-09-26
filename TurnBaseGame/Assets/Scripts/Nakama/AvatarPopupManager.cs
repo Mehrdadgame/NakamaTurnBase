@@ -118,9 +118,11 @@ namespace Nakama.Helpers
             if (confirmLabel != null)
             {
                 if (serverPrice == 0 || owned)
-                    confirmLabel.text = "انتخاب";
+                    confirmLabel.text = Localization.L("انتخاب", "Select");
                 else
-                    confirmLabel.text = "خرید و انتخاب  " + PersianTextUtils.FormatNumber(serverPrice) + " کوین";
+                    confirmLabel.text = Localization.IsPersian
+                    ? "خرید و انتخاب  " + PersianTextUtils.FormatNumber(serverPrice) + " کوین"
+                    : "Buy & Select  " + PersianTextUtils.FormatNumber(serverPrice) + " coins";
             }
 
             if (confirmButton != null)
@@ -135,7 +137,7 @@ namespace Nakama.Helpers
             if (_pendingAvatar == null || _busy) return;
             _busy = true;
 
-            SetStatus("در حال پردازش...", Color.white);
+            SetStatus(Localization.L("در حال پردازش...", "Processing..."), Color.white);
             if (confirmButton != null) confirmButton.interactable = false;
 
             try
@@ -144,11 +146,11 @@ namespace Nakama.Helpers
                 var rpc = await NakamaManager.Instance.SendRPC(SelectAvatarRpcId, payload);
 
                 if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
-                { SetStatus("پاسخی از سرور دریافت نشد.", Color.red); return; }
+                { SetStatus(Localization.L("پاسخی از سرور دریافت نشد.", "No response from server."), Color.red); return; }
 
                 var result = rpc.Payload.Deserialize<SelectAvatarResult>();
                 if (result == null || !result.success)
-                { SetStatus(!string.IsNullOrEmpty(result?.error) ? result.error : "عملیات ناموفق بود.", Color.red); return; }
+                { SetStatus(!string.IsNullOrEmpty(result?.error) ? result.error : Localization.L("عملیات ناموفق بود.", "Operation failed."), Color.red); return; }
 
                 // Update cached avatar + owned list → fires events → UiManagerHome + ProfileManager refresh
                 if (ProfileService.Instance != null)
@@ -165,7 +167,7 @@ namespace Nakama.Helpers
                 if (selectedPrice > 0 && WalletManager.Instance != null)
                     await WalletManager.Instance.RefreshAsync();
 
-                SetStatus("آواتار بروزرسانی شد!", new Color(0.25f, 1f, 0.25f));
+                SetStatus(Localization.L("آواتار بروزرسانی شد!", "Avatar updated!"), new Color(0.25f, 1f, 0.25f));
                 BuildGrid();
 
                 DOTween.Sequence()
@@ -175,7 +177,7 @@ namespace Nakama.Helpers
             catch (Exception e)
             {
                 Debug.LogWarning("[AvatarPopup] " + e.Message);
-                SetStatus("خطا: " + e.Message, Color.red);
+                SetStatus(Localization.L("خطا: ", "Error: ") + e.Message, Color.red);
             }
             finally
             {

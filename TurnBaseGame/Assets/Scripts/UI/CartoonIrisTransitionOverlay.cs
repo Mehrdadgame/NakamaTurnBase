@@ -173,6 +173,8 @@ namespace NinjaBattle.UI
             overlayImage.enabled = true;
             overlayImage.raycastTarget = true;
 
+            NinjaBattle.General.GameSfx.PlayIrisClose();
+
             float p = 0f;
             activeTween = DOTween.To(() => p, x =>
             {
@@ -218,6 +220,10 @@ namespace NinjaBattle.UI
                 var audioSrc = GetComponent<AudioSource>();
                 if (audioSrc != null)
                     audioSrc.PlayOneShot(openWhooshSound, 0.75f);
+            }
+            else
+            {
+                NinjaBattle.General.GameSfx.PlayIrisOpen();
             }
 
             float p = 1f;

@@ -80,7 +80,7 @@ namespace Nakama.Helpers
             string message = messageInput != null ? messageInput.text.Trim() : "";
             if (string.IsNullOrEmpty(message))
             {
-                ShowStatus("لطفاً پیام خود را بنویسید.", Color.yellow);
+                ShowStatus(Localization.L("لطفاً پیام خود را بنویسید.", "Please write your message."), Color.yellow);
                 return;
             }
 
@@ -100,14 +100,14 @@ namespace Nakama.Helpers
                 await NakamaManager.Instance.SendRPC(SendContactRpc, payload);
 
                 SetLoading(false);
-                ShowStatus("✅ پیام شما با موفقیت ارسال شد!", Color.green);
+                ShowStatus(Localization.L("✅ پیام شما با موفقیت ارسال شد!", "✅ Your message was sent successfully!"), Color.green);
                 Debug.Log("[ContactUs] پیام با موفقیت ارسال شد.");
                 StartCoroutine(CloseAfterDelay(2f));
             }
             catch (Exception e)
             {
                 SetLoading(false);
-                ShowStatus("❌ ارسال ناموفق بود. دوباره تلاش کنید.", Color.red);
+                ShowStatus(Localization.L("❌ ارسال ناموفق بود. دوباره تلاش کنید.", "❌ Sending failed. Please try again."), Color.red);
                 Debug.LogWarning("[ContactUs] SendRPC failed: " + e.Message);
             }
         }

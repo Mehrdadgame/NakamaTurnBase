@@ -187,6 +187,7 @@ namespace NinjaBattle.UI
         private static string ToPersianDigits(string input)
         {
             if (string.IsNullOrEmpty(input)) return "";
+            if (!Localization.IsPersian) return input;
             return input.Replace('0', '۰')
                         .Replace('1', '۱')
                         .Replace('2', '۲')
@@ -225,7 +226,7 @@ namespace NinjaBattle.UI
 
             if (resultTitle != null)
             {
-                resultTitle.text = isWin ? "برنده شدی!" : "باختی!";
+                resultTitle.text = isWin ? Localization.L("برنده شدی!", "You Win!") : Localization.L("باختی!", "You Lost!");
                 resultTitle.color = isWin ? new Color32(109, 62, 12, 255) : new Color32(80, 42, 22, 255);
                 resultTitle.rectTransform.localScale = Vector3.one;
             }
@@ -271,8 +272,8 @@ namespace NinjaBattle.UI
         {
             KillAllTweens();
 
-            bool isWin = result != null && (result.Contains("برد") || result.Contains("VICTORY") || result.Contains("برنده"));
-            bool isDraw = result != null && (result.Contains("مساوی") || result.Contains("DRAW"));
+            bool isWin = result != null && (result.Contains("برد") || result.Contains("VICTORY") || result.Contains("برنده") || result.Contains("Win"));
+            bool isDraw = result != null && (result.Contains("مساوی") || result.Contains("DRAW") || result.Contains("Draw"));
             bool isLose = !isWin && !isDraw;
 
             // Update title text and color
@@ -280,17 +281,17 @@ namespace NinjaBattle.UI
             {
                 if (isWin)
                 {
-                    resultTitle.text = "برنده شدی!";
+                    resultTitle.text = Localization.L("برنده شدی!", "You Win!");
                     resultTitle.color = new Color32(109, 62, 12, 255);
                 }
                 else if (isDraw)
                 {
-                    resultTitle.text = "بازی مساوی شد";
+                    resultTitle.text = Localization.L("بازی مساوی شد", "It's a Draw");
                     resultTitle.color = new Color32(90, 50, 10, 255);
                 }
                 else
                 {
-                    resultTitle.text = "باختی!";
+                    resultTitle.text = Localization.L("باختی!", "You Lost!");
                     resultTitle.color = new Color32(80, 42, 22, 255);
                 }
             }
@@ -354,7 +355,7 @@ namespace NinjaBattle.UI
             int currentOpp = 0;
             if (player1Score != null)
             {
-                player1Score.text = "۰";
+                player1Score.text = ToPersianDigits("0");
                 player1Score.color = new Color32(74, 46, 8, 255);
                 seq.Insert(0.25f, DOTween.To(() => currentMe, x =>
                 {
@@ -364,7 +365,7 @@ namespace NinjaBattle.UI
             }
             if (player2Score != null)
             {
-                player2Score.text = "۰";
+                player2Score.text = ToPersianDigits("0");
                 player2Score.color = new Color32(74, 46, 8, 255);
                 seq.Insert(0.25f, DOTween.To(() => currentOpp, x =>
                 {

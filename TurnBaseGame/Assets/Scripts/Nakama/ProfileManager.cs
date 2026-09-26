@@ -147,7 +147,7 @@ namespace Nakama.Helpers
                 yield return null;
 
             SetSaveInteractable(false);
-            SetStatus("در حال بارگذاری...", Color.white);
+            SetStatus(Localization.L("در حال بارگذاری...", "Loading..."), Color.white);
             LoadProfileAsync();
         }
 
@@ -158,7 +158,7 @@ namespace Nakama.Helpers
                 var rpc = await NakamaManager.Instance.SendRPC(GetProfileRpcId, "{}");
                 if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
                 {
-                    SetStatus("بارگذاری پروفایل ناموفق بود.", Color.red);
+                    SetStatus(Localization.L("بارگذاری پروفایل ناموفق بود.", "Failed to load profile."), Color.red);
                     SetSaveInteractable(true);
                     return;
                 }
@@ -183,7 +183,7 @@ namespace Nakama.Helpers
             catch (Exception e)
             {
                 Debug.LogWarning("[ProfileManager] Load error: " + e.Message);
-                SetStatus("خطا در بارگذاری پروفایل.", Color.red);
+                SetStatus(Localization.L("خطا در بارگذاری پروفایل.", "Error loading profile."), Color.red);
             }
             finally
             {
@@ -259,22 +259,22 @@ namespace Nakama.Helpers
             // Validation
             if (name.Length == 0 && email.Length == 0 && phone.Length == 0)
             {
-                SetStatus("چیزی برای ذخیره وجود ندارد.", Color.yellow);
+                SetStatus(Localization.L("چیزی برای ذخیره وجود ندارد.", "Nothing to save."), Color.yellow);
                 return;
             }
             if (email.Length > 0 && !email.Contains("@"))
             {
-                SetStatus("آدرس ایمیل نامعتبر است.", Color.red);
+                SetStatus(Localization.L("آدرس ایمیل نامعتبر است.", "Invalid email address."), Color.red);
                 return;
             }
             if (phone.Length > 0 && phone.Length < 7)
             {
-                SetStatus("شماره همراه خیلی کوتاه است.", Color.red);
+                SetStatus(Localization.L("شماره همراه خیلی کوتاه است.", "Phone number is too short."), Color.red);
                 return;
             }
 
             SetSaveInteractable(false);
-            SetStatus("در حال ذخیره...", Color.white);
+            SetStatus(Localization.L("در حال ذخیره...", "Saving..."), Color.white);
             SaveAsync(name, email, phone);
         }
 
@@ -295,7 +295,7 @@ namespace Nakama.Helpers
 
                 if (rpc == null || string.IsNullOrEmpty(rpc.Payload))
                 {
-                    SetStatus("پاسخی از سرور دریافت نشد.", Color.red);
+                    SetStatus(Localization.L("پاسخی از سرور دریافت نشد.", "No response from server."), Color.red);
                     return;
                 }
 
@@ -304,7 +304,7 @@ namespace Nakama.Helpers
                 var result = rpc.Payload.Deserialize<UpdateProfileResult>();
                 if (result == null)
                 {
-                    SetStatus("خطا در خواندن پاسخ سرور.", Color.red);
+                    SetStatus(Localization.L("خطا در خواندن پاسخ سرور.", "Error reading server response."), Color.red);
                     return;
                 }
 
@@ -318,7 +318,7 @@ namespace Nakama.Helpers
                     phoneLocked = result.phoneLocked,
                 });
 
-                SetStatus("پروفایل ذخیره شد!", new Color(0.25f, 1f, 0.25f));
+                SetStatus(Localization.L("پروفایل ذخیره شد!", "Profile saved!"), new Color(0.25f, 1f, 0.25f));
 
                 // Coin bonus
                 if (result.coinsAwarded > 0)
@@ -331,7 +331,7 @@ namespace Nakama.Helpers
             catch (Exception e)
             {
                 Debug.LogWarning("[ProfileManager] Save error: " + e.Message);
-                SetStatus("ذخیره ناموفق بود.", Color.red);
+                SetStatus(Localization.L("ذخیره ناموفق بود.", "Save failed."), Color.red);
             }
             finally
             {
@@ -350,30 +350,30 @@ namespace Nakama.Helpers
 
             if (string.IsNullOrEmpty(email) || !email.Contains("@"))
             {
-                SetLinkStatus("ایمیل معتبر وارد کنید.", Color.red);
+                SetLinkStatus(Localization.L("ایمیل معتبر وارد کنید.", "Enter a valid email."), Color.red);
                 return;
             }
             if (password.Length < 6)
             {
-                SetLinkStatus("رمز عبور باید حداقل ۶ کاراکتر باشد.", Color.red);
+                SetLinkStatus(Localization.L("رمز عبور باید حداقل ۶ کاراکتر باشد.", "Password must be at least 6 characters."), Color.red);
                 return;
             }
 
             if (linkEmailButton != null) linkEmailButton.interactable = false;
-            SetLinkStatus("در حال تنظیم...", Color.white);
+            SetLinkStatus(Localization.L("در حال تنظیم...", "Setting up..."), Color.white);
 
             try
             {
                 await NakamaManager.Instance.LinkEmailAsync(email, password);
-                SetLinkStatus("ورود با ایمیل فعال شد!", new Color(0.25f, 1f, 0.25f));
+                SetLinkStatus(Localization.L("ورود با ایمیل فعال شد!", "Email login enabled!"), new Color(0.25f, 1f, 0.25f));
                 if (passwordInput != null) passwordInput.text = "";
             }
             catch (Exception e)
             {
                 if (e.Message.Contains("already") || e.Message.Contains("4"))
-                    SetLinkStatus("این ایمیل قبلاً ثبت شده است.", Color.yellow);
+                    SetLinkStatus(Localization.L("این ایمیل قبلاً ثبت شده است.", "This email is already registered."), Color.yellow);
                 else
-                    SetLinkStatus("خطا: لطفاً دوباره امتحان کنید.", Color.red);
+                    SetLinkStatus(Localization.L("خطا: لطفاً دوباره امتحان کنید.", "Error: please try again."), Color.red);
                 Debug.LogWarning("[ProfileManager] LinkEmail error: " + e.Message);
             }
             finally
@@ -409,7 +409,9 @@ namespace Nakama.Helpers
         {
             if (coinBonusPopup == null) return;
 
-            coinBonusPopup.text = "‏+" + PersianTextUtils.FormatNumber(amount) + " کوین!";
+            coinBonusPopup.text = Localization.IsPersian
+                ? "‏+" + PersianTextUtils.FormatNumber(amount) + " کوین!"
+                : "+" + PersianTextUtils.FormatNumber(amount) + " coins!";
             coinBonusPopup.color = new Color(1f, 0.85f, 0.2f, 1f);
             coinBonusPopup.gameObject.SetActive(true);
 

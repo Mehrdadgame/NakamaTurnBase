@@ -1322,7 +1322,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 170}
+  m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &80241297
 MonoBehaviour:
@@ -5162,7 +5162,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 253769881}
-  - component: {fileID: 253769880}
   m_Layer: 0
   m_Name: PlayMusic
   m_TagString: Untagged
@@ -5170,19 +5169,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &253769880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 253769879}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 227493aa6425f47e888180756e30f479, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: 38497319f0c7844268029ff252651181, type: 3}
 --- !u!4 &253769881
 Transform:
   m_ObjectHideFlags: 0
@@ -14788,8 +14774,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -50}
-  m_SizeDelta: {x: -36, y: -136}
+  m_AnchoredPosition: {x: 0, y: -84.4}
+  m_SizeDelta: {x: -36, y: -204.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &795098976
 GameObject:
@@ -16323,7 +16309,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 8, y: 100}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &860538707
 MonoBehaviour:
@@ -18478,7 +18464,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1007094315
 RectTransform:
   m_ObjectHideFlags: 0
@@ -31121,7 +31107,7 @@ MonoBehaviour:
   irisShader: {fileID: 0}
   overlayColor: {r: 0, g: 0, b: 0, a: 1}
   rimColor: {r: 0.95, g: 0.78, b: 0.25, a: 0.85}
-  feather: 0.0025
+  feather: 0.025
   rimWidth: 0.018
   autoPlayIrisInOnStart: 1
   autoPlayDelay: 0.5
@@ -38047,7 +38033,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -6.0999756, y: 0}
-  m_SizeDelta: {x: -46.1, y: 16}
+  m_SizeDelta: {x: -46.1, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1959856047
 MonoBehaviour:

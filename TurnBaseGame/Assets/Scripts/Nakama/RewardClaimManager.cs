@@ -113,10 +113,14 @@ namespace Nakama.Helpers
 
             var reward = pendingQueue[queueIndex];
 
-            string leagueName = reward.type == "monthly" ? "لیدربورد ماهانه" : "لیدربورد هفتگی";
-            if (typeText   != null) typeText.text   = leagueName + " به پایان رسید!";
-            if (rankText   != null) rankText.text   = "رتبه: #" + PersianTextUtils.ToPersianDigits(reward.rank.ToString());
-            if (rewardText != null) rewardText.text = "جایزه: " + PersianTextUtils.FormatNumber(reward.reward) + " تاسی";
+            string leagueName = reward.type == "monthly"
+                ? Localization.L("لیدربورد ماهانه", "Monthly leaderboard")
+                : Localization.L("لیدربورد هفتگی", "Weekly leaderboard");
+            if (typeText   != null) typeText.text   = Localization.IsPersian ? leagueName + " به پایان رسید!" : leagueName + " has ended!";
+            if (rankText   != null) rankText.text   = Localization.L("رتبه: #", "Rank: #") + PersianTextUtils.ToPersianDigits(reward.rank.ToString());
+            if (rewardText != null) rewardText.text = Localization.IsPersian
+                ? "جایزه: " + PersianTextUtils.FormatNumber(reward.reward) + " تاسی"
+                : "Reward: " + PersianTextUtils.FormatNumber(reward.reward) + " Tasi";
 
             if (popupPanel != null) popupPanel.SetActive(true);
         }

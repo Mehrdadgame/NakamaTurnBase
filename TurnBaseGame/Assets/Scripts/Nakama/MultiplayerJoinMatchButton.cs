@@ -125,7 +125,9 @@ namespace Nakama.Helpers
             if (insufficientCoinsText != null)
             {
                 insufficientCoinsText.text =
-                    $"مقدار کافی تاسی نداری {requiredCoins}, شما دارید {currentCoins} تاسی. یا تاسی بخر یا تبلغ ببین.";
+                    Localization.IsPersian
+                ? $"مقدار کافی تاسی نداری {requiredCoins}, شما دارید {currentCoins} تاسی. یا تاسی بخر یا تبلغ ببین."
+                : $"Not enough Tasi — you need {requiredCoins} but have {currentCoins}. Buy Tasi or watch an ad.";
             }
 
             if (insufficientCoinsPopup != null)
@@ -179,7 +181,9 @@ namespace Nakama.Helpers
             // ── Popup "-N Coin" pops in, floats up, fades out ─────────────────
             if (costPopupText != null && fee > 0)
             {
-                costPopupText.text  = "‏-" + PersianTextUtils.FormatNumber(fee) + " تاسی";
+                costPopupText.text  = Localization.IsPersian
+                ? "‏-" + PersianTextUtils.FormatNumber(fee) + " تاسی"
+                : "-" + PersianTextUtils.FormatNumber(fee) + " Tasi";
                 costPopupText.color = new Color(1f, 0.35f, 0.35f, 1f);
                 costPopupText.gameObject.SetActive(true);
 

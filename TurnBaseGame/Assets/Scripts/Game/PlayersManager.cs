@@ -209,18 +209,24 @@ namespace NinjaBattle.Game
 
                     if (ScoreMe < ScoreOpp)
                     {
-                        ShowResultEndGame("شما بردی", ScoreOpp, ScoreMe);
-                        SetRewardText("‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی");
+                        ShowResultEndGame(Localization.L("شما بردی", "You Win!"), ScoreOpp, ScoreMe);
+                        SetRewardText(Localization.IsPersian
+                ? "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی"
+                : "+" + PersianTextUtils.FormatNumber(league.winnerReward) + " Tasi");
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
-                        ShowResultEndGame("شما باختی", ScoreOpp, ScoreMe);
-                        SetRewardText("‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی");
+                        ShowResultEndGame(Localization.L("شما باختی", "You Lost"), ScoreOpp, ScoreMe);
+                        SetRewardText(Localization.IsPersian
+                ? "‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی"
+                : "-" + PersianTextUtils.FormatNumber(league.entryFee) + " Tasi");
                     }
                     else
                     {
-                        ShowResultEndGame("مساوی شدید", ScoreOpp, ScoreMe);
-                        SetRewardText("‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی");
+                        ShowResultEndGame(Localization.L("مساوی شدید", "It's a Draw"), ScoreOpp, ScoreMe);
+                        SetRewardText(Localization.IsPersian
+                ? "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی"
+                : "+" + PersianTextUtils.FormatNumber(league.drawRefund) + " Tasi");
                     }
                     multiplayerManager.isTurn = false;
                     onMatchEnded?.Invoke(new MatchResult
@@ -263,18 +269,24 @@ namespace NinjaBattle.Game
 
                     if (ScoreMe < ScoreOpp)
                     {
-                        ShowResultEndGame("شما بردی", ScoreOpp, ScoreMe);
-                        SetRewardText("‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی");
+                        ShowResultEndGame(Localization.L("شما بردی", "You Win!"), ScoreOpp, ScoreMe);
+                        SetRewardText(Localization.IsPersian
+                ? "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی"
+                : "+" + PersianTextUtils.FormatNumber(league.winnerReward) + " Tasi");
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
-                        ShowResultEndGame("شما باختی", ScoreOpp, ScoreMe);
-                        SetRewardText("‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی");
+                        ShowResultEndGame(Localization.L("شما باختی", "You Lost"), ScoreOpp, ScoreMe);
+                        SetRewardText(Localization.IsPersian
+                ? "‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی"
+                : "-" + PersianTextUtils.FormatNumber(league.entryFee) + " Tasi");
                     }
                     else
                     {
-                        ShowResultEndGame("مساوی شدید", ScoreOpp, ScoreMe);
-                        SetRewardText("‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی");
+                        ShowResultEndGame(Localization.L("مساوی شدید", "It's a Draw"), ScoreOpp, ScoreMe);
+                        SetRewardText(Localization.IsPersian
+                ? "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی"
+                : "+" + PersianTextUtils.FormatNumber(league.drawRefund) + " Tasi");
                     }
                     multiplayerManager.isTurn = false;
                     onMatchEnded?.Invoke(new MatchResult

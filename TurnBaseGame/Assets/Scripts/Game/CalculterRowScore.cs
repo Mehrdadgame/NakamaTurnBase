@@ -278,5 +278,34 @@ public class CalculterRowScore : MonoBehaviour
         ParticleSystem.MainModule settings = particle.main;
         settings.startColor = new ParticleSystem.MinMaxGradient(SetColorParticle(matchCount));
         particle.Play(true);
+
+        RegisterMatchForAudio(particle.GetEntityId().ToString(), matchCount);
+    }
+
+    // ── Match audio (new matches only) ─────────────────────────────────────────
+    // RowSum replays every existing match particle on every recalculation, so the
+    // sound must fire only for cells that were NOT matched in the previous pass.
+
+    private readonly HashSet<string> _matchedNow = new();
+    private HashSet<string> _matchedPrev = new();
+    private int _newMatchBest;
+
+    private void RegisterMatchForAudio(string key, int matchCount)
+    {
+        _matchedNow.Add(key);
+        if (!_matchedPrev.Contains(key))
+            _newMatchBest = Mathf.Max(_newMatchBest, matchCount);
+    }
+
+    /// <summary>Called by UiManager once per full RowSum pass.</summary>
+    public void CommitMatchAudio()
+    {
+        if (_newMatchBest >= 2)
+            NinjaBattle.General.GameSfx.PlayMatch(_newMatchBest);
+
+        _matchedPrev.Clear();
+        _matchedPrev.UnionWith(_matchedNow);
+        _matchedNow.Clear();
+        _newMatchBest = 0;
     }
 }

@@ -47,10 +47,12 @@ public class WelcomePopup : MonoBehaviour
     {
         if (popupPanel == null) return;
 
-        if (titleText != null) titleText.text = "به بازی تاس زن خوش اومدی!";
-        if (descText != null) descText.text =
+        if (titleText != null) titleText.text = Localization.L("به بازی تاس زن خوش اومدی!", "Welcome to Tas Zan!");
+        if (descText != null) descText.text = Localization.L(
             "یه آموزش سریع داریم تا قوانین بازی، امتیازها و مکانیک حذف را کامل بفهمی.\n" +
-            "می‌خوای قبل از بازی شروع، قوانین بازی را با هم مرور کنیم؟";
+            "می‌خوای قبل از بازی شروع، قوانین بازی را با هم مرور کنیم؟",
+            "We have a quick tutorial that covers the rules, scoring and the elimination mechanic.\n" +
+            "Want to go over the rules together before your first match?");
         if (statusText != null) statusText.gameObject.SetActive(false);
 
         popupPanel.SetActive(true);
@@ -83,7 +85,7 @@ public class WelcomePopup : MonoBehaviour
         if (statusText != null)
         {
             statusText.gameObject.SetActive(true);
-            statusText.text = "در حال پیدا کردن حریف برای آموزش... 🤖";
+            statusText.text = Localization.L("در حال پیدا کردن حریف برای آموزش... 🤖", "Finding a practice opponent... 🤖");
         }
 
         // ذخیره وضعیت tutorial

@@ -88,22 +88,22 @@ namespace Nakama.Helpers
 
             if (string.IsNullOrEmpty(email) || !email.Contains("@"))
             {
-                SetStatus("آدرس ایمیل نامعتبر است.", Color.red);
+                SetStatus(Localization.L("آدرس ایمیل نامعتبر است.", "Invalid email address."), Color.red);
                 return;
             }
             if (password.Length < 6)
             {
-                SetStatus("رمز عبور باید حداقل ۶ کاراکتر باشد.", Color.red);
+                SetStatus(Localization.L("رمز عبور باید حداقل ۶ کاراکتر باشد.", "Password must be at least 6 characters."), Color.red);
                 return;
             }
 
             if (NakamaManager.Instance == null)
             {
-                SetStatus("سرویس ورود در دسترس نیست.", Color.red);
+                SetStatus(Localization.L("سرویس ورود در دسترس نیست.", "Login service unavailable."), Color.red);
                 return;
             }
 
-            SetStatus("در حال ورود...", Color.white);
+            SetStatus(Localization.L("در حال ورود...", "Signing in..."), Color.white);
             SetInteractable(false);
             IsWaitingForLogin = true;
             NakamaManager.Instance.LoginWithEmail(email, password);
@@ -113,7 +113,7 @@ namespace Nakama.Helpers
         {
             if (!IsWaitingForLogin) return;
             IsWaitingForLogin = false;
-            SetStatus("ایمیل یا رمز عبور اشتباه است.", Color.red);
+            SetStatus(Localization.L("ایمیل یا رمز عبور اشتباه است.", "Wrong email or password."), Color.red);
             SetInteractable(true);
         }
 
@@ -121,7 +121,7 @@ namespace Nakama.Helpers
         {
             if (!IsWaitingForLogin) return;
             IsWaitingForLogin = false;
-            SetStatus("ورود موفق!", new Color(0.25f, 1f, 0.25f));
+            SetStatus(Localization.L("ورود موفق!", "Signed in!"), new Color(0.25f, 1f, 0.25f));
             SetInteractable(false);
             StartCoroutine(ReloadHomeAfterDelay());
         }

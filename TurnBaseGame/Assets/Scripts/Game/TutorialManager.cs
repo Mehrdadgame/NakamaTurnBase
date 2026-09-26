@@ -171,9 +171,13 @@ public class TutorialManager : MonoBehaviour
             return;
 
         if (_step == 6 && !_firstAnchorRemoved && cell != null && cell.numberLine != _firstCellLine)
-            messageText.text = "برای ساخت دابل، تاس ۳ دوم را در همان ردیف تاس ۳ قبلی قرار بده.";
+            messageText.text = Localization.L(
+                "برای ساخت دابل، تاس ۳ دوم را در همان ردیف تاس ۳ قبلی قرار بده.",
+                "To make a double, place the second 3 in the same row as your first 3.");
         else
-            messageText.text = "اول تاس را بینداز، سپس یکی از خانه‌های روشن صفحه خودت را انتخاب کن.";
+            messageText.text = Localization.L(
+                "اول تاس را بینداز، سپس یکی از خانه‌های روشن صفحه خودت را انتخاب کن.",
+                "Roll the dice first, then pick one of the highlighted cells on your board.");
 
         bubbleRect?.DOShakeAnchorPos(0.35f, 12f, 12, 70f, false, true);
     }
@@ -295,8 +299,10 @@ public class TutorialManager : MonoBehaviour
 
             Debug.LogWarning("[Tutorial] Bot move is delayed; keeping gameplay input locked.");
             UpdateBubble(
-                "حرکت حریف آموزشی کمی طول کشیده است. اتصال را بررسی کن؛ به محض رسیدن حرکت، آموزش خودکار ادامه پیدا می‌کند.",
-                "در انتظار حریف...",
+                Localization.L(
+                    "حرکت حریف آموزشی کمی طول کشیده است. اتصال را بررسی کن؛ به محض رسیدن حرکت، آموزش خودکار ادامه پیدا می‌کند.",
+                    "The practice opponent's move is taking a while. Check your connection — the tutorial resumes automatically once the move arrives."),
+                Localization.L("در انتظار حریف...", "Waiting for opponent..."),
                 4,
                 true);
             UpdateHighlight(oppGridRect);
@@ -316,19 +322,24 @@ public class TutorialManager : MonoBehaviour
         _waitingCell = false;
 
         string msg = "";
-        string btnLabel = "متوجه شدم";
+        string btnLabel = Localization.L("متوجه شدم", "Got it");
         RectTransform highlight = null;
 
         switch (step)
         {
             // ── 0: Board intro ────────────────────────────────────────────────
             case 0:
-                msg = "به آموزش بازی تاس خوش اومدی!\n\n" +
+                msg = Localization.L(
+                      "به آموزش بازی تاس خوش اومدی!\n\n" +
                       "صفحه پایین برای تو و صفحه بالا برای حریف است.\n" +
                       "دکمه تاس وسط صفحه قرار دارد.\n\n" +
-                      "در هر نوبت فقط دو کار انجام می‌دهی: تاس می‌اندازی و عدد را در یکی از خانه‌های خودت می‌گذاری.";
+                      "در هر نوبت فقط دو کار انجام می‌دهی: تاس می‌اندازی و عدد را در یکی از خانه‌های خودت می‌گذاری.",
+                      "Welcome to the dice tutorial!\n\n" +
+                      "The bottom board is yours, the top one is your opponent's.\n" +
+                      "The dice button sits in the middle of the screen.\n\n" +
+                      "Each turn you do just two things: roll the dice, then place the number on one of your cells.");
                 highlight = myGridRect;
-                btnLabel = "بریم";
+                btnLabel = Localization.L("بریم", "Let's go");
                 break;
 
             // ── 1: Roll dice (forced 3) ───────────────────────────────────────
@@ -340,11 +351,15 @@ public class TutorialManager : MonoBehaviour
                     TimerTurn.instance.TimerPause = false;
                     TimerTurn.instance.TimerRunning = false; // controlled by IsTurn events
                 }
-                msg = "نوبت توست!\n\n" +
+                msg = Localization.L(
+                        "نوبت توست!\n\n" +
                         "دکمه‌ای که حرکت می‌کند آماده کلیک است.\n" +
-                        "روی تاس بزن؛ برای این تمرین عدد ۳ می‌آید.";
+                        "روی تاس بزن؛ برای این تمرین عدد ۳ می‌آید.",
+                        "Your turn!\n\n" +
+                        "The bouncing button is ready to tap.\n" +
+                        "Roll the dice — for this practice it will land on 3.");
                 highlight = diceBtnRect;
-                btnLabel = "باشه";
+                btnLabel = Localization.L("باشه", "OK");
                 _waitingDice = true;
                 break;
 
@@ -353,9 +368,13 @@ public class TutorialManager : MonoBehaviour
                 // Suppress bot moves NOW so any move arriving after the player places
                 // is guaranteed to be buffered (don't wait for step 3)
                 IsBotMoveSuppressed = true;
-                msg = "عدد 3 گرفتی!\n\n" +
+                msg = Localization.L(
+                        "عدد 3 گرفتی!\n\n" +
                         "خانه‌های روشن پایین، انتخاب‌های مجاز تو هستند.\n" +
-                        "تاس ۳ را روی یکی از آن‌ها بگذار. جای آن را به خاطر می‌گیریم تا بعداً دابل بسازیم.";
+                        "تاس ۳ را روی یکی از آن‌ها بگذار. جای آن را به خاطر می‌گیریم تا بعداً دابل بسازیم.",
+                        "You rolled a 3!\n\n" +
+                        "The highlighted cells below are your legal moves.\n" +
+                        "Place the 3 on one of them — we'll remember its spot to build a double later.");
                 highlight = myGridRect;
                 _waitingCell = true;
                 break;
@@ -363,38 +382,56 @@ public class TutorialManager : MonoBehaviour
             // ── 3: Scoring rules ──────────────────────────────────────────────
             case 3:
                 IsBotMoveSuppressed = true;
-                msg = "امتیازدهی بازی خیلی مهمه!\n\n" +
+                msg = Localization.L(
+                        "امتیازدهی بازی خیلی مهمه!\n\n" +
                         "اعداد متفاوت با هم جمع می‌شوند.\n" +
                         "دو عدد یکسان، چهار برابر ارزش تاس امتیاز می‌دهند: [۳، ۳] = ۱۲.\n" +
                         "سه عدد یکسان، نه برابر ارزش تاس هستند: [۴، ۴، ۴] = ۳۶.\n\n" +
-                        "وقتی دابل یا تریپل بسازی، پارتیکل رنگی زیر همان تاس‌ها روشن می‌شود.";
+                        "وقتی دابل یا تریپل بسازی، پارتیکل رنگی زیر همان تاس‌ها روشن می‌شود.",
+                        "Scoring matters a lot!\n\n" +
+                        "Different numbers simply add up.\n" +
+                        "Two matching dice score four times the value: [3, 3] = 12.\n" +
+                        "Three matching dice score nine times the value: [4, 4, 4] = 36.\n\n" +
+                        "When you make a double or triple, colored particles light up under those dice.");
                 highlight = scoreAreaRect;
                 break;
 
             // ── 4: Elimination mechanic ───────────────────────────────────────
             case 4:
                 IsBotMoveSuppressed = true;
-                msg = "یکی از مهم‌ترین مکانیک‌ها، حذف است!\n\n" +
+                msg = Localization.L(
+                        "یکی از مهم‌ترین مکانیک‌ها، حذف است!\n\n" +
                         "اگر حریف در خط روبه‌رو عددی برابر با تاس تو بگذارد، تاس‌های هم‌عدد تو از آن خط حذف می‌شوند.\n\n" +
-                        "این کار امتیاز حریف را کم می‌کند و دوباره برای تو جا باز می‌کند. حالا حرکت حریف آموزشی را ببین.";
+                        "این کار امتیاز حریف را کم می‌کند و دوباره برای تو جا باز می‌کند. حالا حرکت حریف آموزشی را ببین.",
+                        "One of the most important mechanics: elimination!\n\n" +
+                        "If your opponent places a number matching your dice in the facing line, your matching dice are removed from that line.\n\n" +
+                        "It cuts their score and frees up space for you. Now watch the practice opponent's move.");
                 highlight = oppGridRect;
                 break;
 
             // ── 5: Opponent turn and bot move ────────────────────────────────
             case 5:
-                msg = "حریف حرکتش را انجام داد!\n\n" +
+                msg = Localization.L(
+                        "حریف حرکتش را انجام داد!\n\n" +
                         "دیدی که تاسش را در صفحه بالا گذاشت. حالا دوباره نوبت توست.\n" +
-                        "برای تمرین دابل، این بار هم عدد ۳ می‌آید. روی دکمه تاس کلیک کن.";
+                        "برای تمرین دابل، این بار هم عدد ۳ می‌آید. روی دکمه تاس کلیک کن.",
+                        "The opponent made their move!\n\n" +
+                        "You saw their dice land on the top board. Now it's your turn again.\n" +
+                        "To practice a double, you'll roll another 3. Tap the dice button.");
                 highlight = diceBtnRect;
-                btnLabel = "باشه";
+                btnLabel = Localization.L("باشه", "OK");
                 _waitingDice = true;
                 break;
 
             // ── 6: Place the repeated 3 in the original line ─────────────────
             case 6:
                 msg = _firstAnchorRemoved
-                    ? "عدد ۳ گرفتی. حریف تاس قبلی تو را حذف کرد؛ این نمونه واقعی مکانیک حذف بود. حالا ۳ جدید را در یکی از خانه‌های روشن بگذار."
-                    : "عدد ۳ گرفتی! آن را در همان ردیف تاس ۳ قبلی بگذار تا دابل ساخته شود. خانه‌های ردیف‌های دیگر فعلاً قبول نمی‌شوند.";
+                    ? Localization.L(
+                        "عدد ۳ گرفتی. حریف تاس قبلی تو را حذف کرد؛ این نمونه واقعی مکانیک حذف بود. حالا ۳ جدید را در یکی از خانه‌های روشن بگذار.",
+                        "You rolled a 3. The opponent eliminated your previous dice — that was the elimination mechanic in action. Now place the new 3 on a highlighted cell.")
+                    : Localization.L(
+                        "عدد ۳ گرفتی! آن را در همان ردیف تاس ۳ قبلی بگذار تا دابل ساخته شود. خانه‌های ردیف‌های دیگر فعلاً قبول نمی‌شوند.",
+                        "You rolled a 3! Place it in the same row as your first 3 to make a double. Other rows won't accept it for now.");
                 highlight = myGridRect;
                 _waitingCell = true;
                 break;
@@ -402,20 +439,30 @@ public class TutorialManager : MonoBehaviour
             // ── 7: Speed and win condition ───────────────────────────────────
             case 7:
                 msg = _firstAnchorRemoved
-                    ? "حالا هم رول‌کردن، جای‌گذاری و حذف را در عمل دیدی. برای امتیاز بیشتر، در نوبت‌های بعدی عددهای یکسان را در یک خط کنار هم بساز."
-                    : "عالی! دابل ۳ ساخته شد؛ امتیاز این جفت ۱۲ است و پارتیکل رنگی زیر هر دو تاس باید روشن باشد. تریپل همان عدد، امتیاز بیشتری می‌دهد.";
-                btnLabel = "ادامه";
+                    ? Localization.L(
+                        "حالا هم رول‌کردن، جای‌گذاری و حذف را در عمل دیدی. برای امتیاز بیشتر، در نوبت‌های بعدی عددهای یکسان را در یک خط کنار هم بساز.",
+                        "You've now seen rolling, placing and elimination in action. For bigger scores, line up matching numbers in the same row on future turns.")
+                    : Localization.L(
+                        "عالی! دابل ۳ ساخته شد؛ امتیاز این جفت ۱۲ است و پارتیکل رنگی زیر هر دو تاس باید روشن باشد. تریپل همان عدد، امتیاز بیشتری می‌دهد.",
+                        "Great! You made a double 3 — the pair scores 12, and colored particles should be glowing under both dice. A triple of the same number scores even more.");
+                btnLabel = Localization.L("ادامه", "Continue");
                 highlight = scoreAreaRect;
                 break;
 
             // ── 8: Final summary ─────────────────────────────────────────────
             case 8:
-                msg = "حالا بازی را خوب فهمیدی!\n\n" +
+                msg = Localization.L(
+                        "حالا بازی را خوب فهمیدی!\n\n" +
                         "در نوبت خودت: تاس بینداز و آن را روی صفحه پایین قرار بده.\n" +
                         "عددهای یکسان را هم‌خط کن تا دابل و تریپل بسازی.\n" +
                         "با عدد مساوی، تاس‌های خط روبه‌روی حریف را حذف کن.\n\n" +
-                        "آماده‌ای همین بازی با بات را ادامه بدهی؟";
-                btnLabel = "ادامه بازی با بات";
+                        "آماده‌ای همین بازی با بات را ادامه بدهی؟",
+                        "Now you know the game!\n\n" +
+                        "On your turn: roll the dice and place it on the bottom board.\n" +
+                        "Line up matching numbers to build doubles and triples.\n" +
+                        "Match the opponent's facing line to eliminate their dice.\n\n" +
+                        "Ready to keep playing this match against the bot?");
+                btnLabel = Localization.L("ادامه بازی با بات", "Keep playing vs bot");
                 highlight = null;
                 break;
         }
@@ -485,7 +532,9 @@ public class TutorialManager : MonoBehaviour
     private void UpdateBubble(string msg, string btnLabel, int step, bool waitingInput)
     {
         if (messageText != null) messageText.text = msg;
-        if (stepText != null) stepText.text = $"مرحله {step + 1} از {TotalSteps}";
+        if (stepText != null) stepText.text = Localization.IsPersian
+            ? $"مرحله {step + 1} از {TotalSteps}"
+            : $"Step {step + 1} of {TotalSteps}";
         if (nextButtonText != null) nextButtonText.text = btnLabel;
         if (nextButton != null) nextButton.gameObject.SetActive(!waitingInput);
     }

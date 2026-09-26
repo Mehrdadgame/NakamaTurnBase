@@ -82,10 +82,10 @@ namespace Nakama.Helpers
             if (string.IsNullOrEmpty(cafeBazaarRsaPublicKey))
                 Debug.LogError("[CoinShop] کلید عمومی RSA بازار تنظیم نشده است.");
 
-            SetStatus("در حال اتصال به بازار...", Color.white);
+            SetStatus(Localization.L("در حال اتصال به بازار...", "Connecting to Bazaar..."), Color.white);
             _ = InitializeBazaarAsync();
 #else
-            SetStatus("خرید بازار فقط روی اندروید در دسترس است.", Color.yellow);
+            SetStatus(Localization.L("خرید بازار فقط روی اندروید در دسترس است.", "Bazaar purchases are only available on Android."), Color.yellow);
 #endif
         }
 
@@ -121,13 +121,13 @@ namespace Nakama.Helpers
                 }
 
                 _connected = false;
-                SetStatus("اتصال به بازار ناموفق بود.", Color.red);
+                SetStatus(Localization.L("اتصال به بازار ناموفق بود.", "Could not connect to Bazaar."), Color.red);
                 Debug.LogWarning("[CoinShop] Bazaar connect failed: " + FormatResult(result));
             }
             catch (Exception e)
             {
                 _connected = false;
-                SetStatus("اتصال به بازار ناموفق بود.", Color.red);
+                SetStatus(Localization.L("اتصال به بازار ناموفق بود.", "Could not connect to Bazaar."), Color.red);
                 Debug.LogWarning("[CoinShop] Bazaar connect error: " + e.Message);
             }
         }
@@ -138,7 +138,7 @@ namespace Nakama.Helpers
         {
             if (!_connected)
             {
-                SetStatus("اتصال به بازار برقرار نیست.", Color.red);
+                SetStatus(Localization.L("اتصال به بازار برقرار نیست.", "Not connected to Bazaar."), Color.red);
                 return;
             }
             if (_busy) return;
@@ -146,13 +146,13 @@ namespace Nakama.Helpers
             var product = GetProduct(index);
             if (product == null || string.IsNullOrEmpty(product.productId))
             {
-                SetStatus("شناسه محصول بازار تنظیم نشده است.", Color.red);
+                SetStatus(Localization.L("شناسه محصول بازار تنظیم نشده است.", "Bazaar product ID is not configured."), Color.red);
                 return;
             }
 
             _busy = true;
             SetButtonsInteractable(false);
-            SetStatus("در حال خرید...", Color.white);
+            SetStatus(Localization.L("در حال خرید...", "Purchasing..."), Color.white);
             SetLoading(true);
 
             try
@@ -166,20 +166,20 @@ namespace Nakama.Helpers
 
                 if (result.status == Status.Success && result.data != null)
                 {
-                    SetStatus("در حال تایید خرید...", Color.white);
+                    SetStatus(Localization.L("در حال تایید خرید...", "Verifying purchase..."), Color.white);
                     await VerifyAndConsume(result.data, isRecovery: false);
                     return;
                 }
 
                 bool canceled = result.status == Status.Canceled;
-                SetStatus(canceled ? "خرید لغو شد." : "خرید ناموفق بود.",
+                SetStatus(canceled ? Localization.L("خرید لغو شد.", "Purchase canceled.") : Localization.L("خرید ناموفق بود.", "Purchase failed."),
                           canceled ? Color.yellow : Color.red);
                 Debug.LogWarning("[CoinShop] Bazaar purchase failed: " + FormatResult(result));
                 EndBusy();
             }
             catch (Exception e)
             {
-                SetStatus("خرید ناموفق بود.", Color.red);
+                SetStatus(Localization.L("خرید ناموفق بود.", "Purchase failed."), Color.red);
                 Debug.LogWarning("[CoinShop] Bazaar purchase error: " + e.Message);
                 EndBusy();
             }
@@ -278,7 +278,9 @@ namespace Nakama.Helpers
                         await WalletManager.Instance.RefreshAsync();
 
                     if (!isRecovery)
-                        SetStatus("+" + FormatCoins(res.coinsAwarded) + " کوین دریافت شد!",
+                        SetStatus(Localization.IsPersian
+                        ? "+" + FormatCoins(res.coinsAwarded) + " کوین دریافت شد!"
+                        : "+" + FormatCoins(res.coinsAwarded) + " coins received!",
                                   new Color(0.25f, 1f, 0.25f));
                 }
                 else
@@ -295,19 +297,19 @@ namespace Nakama.Helpers
                             await WalletManager.Instance.RefreshAsync();
 
                         if (!isRecovery)
-                            SetStatus("این خرید قبلاً ثبت شده بود.", Color.yellow);
+                            SetStatus(Localization.L("این خرید قبلاً ثبت شده بود.", "This purchase was already recorded."), Color.yellow);
                         return;
                     }
 
                     if (!isRecovery)
-                        SetStatus("تایید خرید ناموفق بود.", Color.red);
+                        SetStatus(Localization.L("تایید خرید ناموفق بود.", "Purchase verification failed."), Color.red);
                     Debug.LogWarning("[CoinShop] Server verify failed: " + err);
                 }
             }
             catch (Exception e)
             {
                 Debug.LogWarning("[CoinShop] VerifyAndConsume error: " + e.Message);
-                if (!isRecovery) SetStatus("خطا در ارتباط با سرور.", Color.red);
+                if (!isRecovery) SetStatus(Localization.L("خطا در ارتباط با سرور.", "Server connection error."), Color.red);
             }
             finally
             {
@@ -400,7 +402,7 @@ namespace Nakama.Helpers
 #if UNITY_ANDROID
             _ = PurchaseAsync(index);
 #else
-            SetStatus("خرید بازار فقط روی اندروید در دسترس است.", Color.yellow);
+            SetStatus(Localization.L("خرید بازار فقط روی اندروید در دسترس است.", "Bazaar purchases are only available on Android."), Color.yellow);
 #endif
         }
 

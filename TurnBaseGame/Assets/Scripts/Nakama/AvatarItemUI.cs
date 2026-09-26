@@ -56,11 +56,11 @@ namespace Nakama.Helpers
             if (priceLabel != null)
             {
                 if (price == 0)
-                    priceLabel.text = "مجانی";
+                    priceLabel.text = Localization.L("مجانی", "Free");
                 else if (isOwned)
-                    priceLabel.text = "خریدی";
+                    priceLabel.text = Localization.L("خریدی", "Owned");
                 else
-                    priceLabel.text = PersianTextUtils.FormatNumber(price) + " تاسی";
+                    priceLabel.text = PersianTextUtils.FormatNumber(price) + Localization.L(" تاسی", " Tasi");
             }
 
             if (selectedRing != null) selectedRing.SetActive(isSelected);

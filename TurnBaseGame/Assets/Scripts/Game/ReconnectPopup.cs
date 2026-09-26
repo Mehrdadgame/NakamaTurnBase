@@ -156,12 +156,14 @@ public class ReconnectPopup : MonoBehaviour
         }
 
         ActionEndGame.instance.ResultPanel.SetActive(true);
-        ActionEndGame.instance.ResultText.text = "شما بردی";
+        ActionEndGame.instance.ResultText.text = Localization.L("شما بردی", "You Win!");
 
         var league = ClientLeagues.Get(GameManager.Instance.modeGame);
         if (UiManager.instance != null && UiManager.instance.TasiWin != null)
             UiManager.instance.TasiWin.text =
-                "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی";
+                Localization.IsPersian
+                        ? "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی"
+                        : "+" + PersianTextUtils.FormatNumber(league.winnerReward) + " Tasi";
 
         if (TimerTurn.instance != null)
         {
@@ -189,7 +191,7 @@ public class ReconnectPopup : MonoBehaviour
     {
         if (popupPanel == null) return;
         if (messageText != null)
-            messageText.text = "حریف قطع شد!\nمنتظر بازگشت...";
+            messageText.text = Localization.L("حریف قطع شد!\nمنتظر بازگشت...", "Opponent disconnected!\nWaiting for them to return...");
 
         popupPanel.SetActive(true);
         if (canvasGroup != null)
