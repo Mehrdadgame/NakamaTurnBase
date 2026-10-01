@@ -14,7 +14,7 @@ namespace NinjaBattle.General
 
         private void Start()
         {
-            AudioManager.Instance.PlayMusic(music);
+            AudioManager.Instance.PlayMusic(music,true);
         }
 
         #endregion
