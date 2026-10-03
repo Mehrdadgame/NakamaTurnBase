@@ -50,7 +50,7 @@ namespace NinjaBattle.UI
         private void Refresh(int amount)
         {
             if (valueText != null)
-                valueText.text = amount.ToString("N0");
+                valueText.text = amount.ToString();
         }
     }
 }

@@ -870,7 +870,7 @@ var PaymentCollection = "payment";
 var KeyMyketToken = "myket_iap_token";
 var KeyCafeBazaarToken = "cafebazaar_iap_token";
 var KeyBazaarToken = "bazaar_iap_token";
-var MarketplaceHttpTimeoutMs = 5000;
+var MarketplaceHttpTimeoutMs = 10000;
 var MyketValidationBaseUrl = "https://developer.myket.ir/api/applications";
 var CafeBazaarValidationBaseUrl = "https://pardakht.cafebazaar.ir/devapi/v2/api/validate";
 function normalizePaymentStore(rawStore) {
@@ -943,15 +943,15 @@ function getInputPackageName(input) {
     return purchaseJson ? stringField(purchaseJson["packageName"]) : "";
 }
 function getMarketplacePackageName(context, store, input) {
+    var defaultPackage = "com.goodvillains.TasZan";
     var envPackage = store === "cafebazaar"
-        ? envFirst(context, ["CAFEBAZAAR_PACKAGE_NAME", "BAZAAR_PACKAGE_NAME", "APP_PACKAGE_NAME"])
-        : envFirst(context, ["MYKET_PACKAGE_NAME", "APP_PACKAGE_NAME"]);
-    var inputPackage = getInputPackageName(input);
-    var packageName = envPackage || inputPackage;
-    if (!packageName)
-        return { packageName: "", error: "Missing package name config" };
-    if (envPackage && inputPackage && envPackage !== inputPackage)
-        return { packageName: packageName, error: "Package name mismatch" };
+        ? (envFirst(context, ["CAFEBAZAAR_PACKAGE_NAME", "BAZAAR_PACKAGE_NAME", "APP_PACKAGE_NAME"]) || defaultPackage)
+        : (envFirst(context, ["MYKET_PACKAGE_NAME", "APP_PACKAGE_NAME"]) || defaultPackage);
+    var inputPackage = getInputPackageName(input) || (input && input.packageName);
+    var packageName = inputPackage || envPackage;
+    if (store === "cafebazaar" && packageName && packageName.toLowerCase() === "com.goodvillains.taszan") {
+        packageName = "com.goodvillains.TasZan";
+    }
     return { packageName: packageName, error: "" };
 }
 function httpGetJson(nakama, url, headers) {
@@ -988,10 +988,11 @@ function validateCafeBazaarPurchase(context, nakama, input) {
         return invalidValidation("cafebazaar", packageResult.packageName, "Missing config/cafebazaar_iap_token or CAFEBAZAAR_PISHKHAN_API_SECRET", 0, {});
     if (packageResult.error)
         return invalidValidation("cafebazaar", packageResult.packageName, packageResult.error, 0, {});
-    var url = CafeBazaarValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/inapp/" + encodeURIComponent(input.productId || "") + "/purchases/" + encodeURIComponent(input.purchaseToken || "") + "/";
+    var url = CafeBazaarValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/inapp/" + encodeURIComponent(input.productId || "") + "/purchases/" + encodeURIComponent(input.purchaseToken || "");
     var response = httpGetJson(nakama, url, {
         "Accept": "application/json",
         "CAFEBAZAAR-PISHKHAN-API-SECRET": token,
+        "Authorization": "Bearer " + token,
     });
     if (response.error)
         return invalidValidation("cafebazaar", packageResult.packageName, response.error, response.code, response.raw);

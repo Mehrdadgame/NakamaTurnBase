@@ -1,5 +1,8 @@
 H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/CMakeFiles/edit_cache.dir
 H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/GameActivity/CMakeFiles/game.dir
+H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/GameActivity/CMakeFiles/edit_cache.dir
+H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/GameActivity/CMakeFiles/rebuild_cache.dir
 H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
 H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
 H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir

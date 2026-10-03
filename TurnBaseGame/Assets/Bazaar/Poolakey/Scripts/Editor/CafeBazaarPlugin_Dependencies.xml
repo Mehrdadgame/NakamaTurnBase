@@ -5,6 +5,6 @@
         <repository>https://jitpack.io</repository>
       </repositories>
     </androidPackage>
-    <androidPackage spec="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10"/>
+    <androidPackage spec="org.jetbrains.kotlin:kotlin-stdlib:1.9.10"/>
   </androidPackages>
 </dependencies>

@@ -1,7 +1,8 @@
 {
   "buildFiles": [
     "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\CMakeLists.txt",
-    "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\FramePacing\\CMakeLists.txt"
+    "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\FramePacing\\CMakeLists.txt",
+    "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\GameActivity\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
@@ -18,6 +19,13 @@
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
+    "game::@d02bb112ea9f9c2ed29f": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "game",
+      "output": "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\build\\intermediates\\cxx\\RelWithDebInfo\\4nl4b1o6\\obj\\armeabi-v7a\\libgame.so",
+      "runtimeFiles": []
+    },
     "swappywrapper::@7e25bd1f32ce224db4e9": {
       "toolchain": "toolchain",
       "abi": "armeabi-v7a",

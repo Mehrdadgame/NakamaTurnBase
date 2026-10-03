@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c1084ae42d6e4d5ca28887f1fd41c92, type: 3}
   m_Name: Connection Rasstar
   m_EditorClassIdentifier: 
-  scheme: https
-  host: taaszan.rastar.ir
-  port: 443
+  scheme: http
+  host: 87.107.130.114
+  port: 7350
   serverKey: defaultkey

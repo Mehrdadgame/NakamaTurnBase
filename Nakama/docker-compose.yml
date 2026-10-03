@@ -37,11 +37,11 @@ services:
         --runtime.path /nakama/modules
     restart: unless-stopped
     environment:
-      - APP_PACKAGE_NAME=${APP_PACKAGE_NAME:-com.PGS.DiceWar}
-      - MYKET_PACKAGE_NAME=${MYKET_PACKAGE_NAME:-com.PGS.DiceWar}
+      - APP_PACKAGE_NAME=${APP_PACKAGE_NAME:-com.goodvillains.TasZan}
+      - MYKET_PACKAGE_NAME=${MYKET_PACKAGE_NAME:-com.goodvillains.TasZan}
       - MYKET_ACCESS_TOKEN=${MYKET_ACCESS_TOKEN:-}
-      - CAFEBAZAAR_PACKAGE_NAME=${CAFEBAZAAR_PACKAGE_NAME:-com.PGS.DiceWar}
-      - CAFEBAZAAR_PISHKHAN_API_SECRET=${CAFEBAZAAR_PISHKHAN_API_SECRET:-}
+      - CAFEBAZAAR_PACKAGE_NAME=${CAFEBAZAAR_PACKAGE_NAME:-com.goodvillains.TasZan}
+      - CAFEBAZAAR_PISHKHAN_API_SECRET=${CAFEBAZAAR_PISHKHAN_API_SECRET:-eyJhbGciOiJIUzI1NiIsImtpZCI6ImFuY2llbnQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJuYXNoZXItcGlzaGtoYW4tYXBpIiwiaWF0IjoxNzkwMDkyNzkxLCJleHAiOjQ5NDM2OTI3OTEsImFwaV9hZ2VudF9pZCI6OTQ3NX0.tw7wdMgTogBG6ydZ0NSdle-53slQ_O6g-EzWwGS4DWY}
     depends_on:
       cockroachdb:
         condition: service_healthy

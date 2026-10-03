@@ -11,7 +11,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "armeabi-v7a"
+			"value" : "arm64-v8a"
 		},
 		{
 			"name" : "ANDROID_NDK",
@@ -87,7 +87,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "armeabi-v7a"
+			"value" : "arm64-v8a"
 		},
 		{
 			"name" : "CMAKE_ANDROID_NDK",
@@ -175,7 +175,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "h:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a"
+			"value" : "h:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/arm64-v8a"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -647,7 +647,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\.utmp\\RelWithDebInfo\\4nl4b1o6\\prefab\\armeabi-v7a\\prefab"
+			"value" : "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\.utmp\\RelWithDebInfo\\4nl4b1o6\\prefab\\arm64-v8a\\prefab"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -743,7 +743,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\build\\intermediates\\cxx\\RelWithDebInfo\\4nl4b1o6\\obj\\armeabi-v7a"
+			"value" : "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\build\\intermediates\\cxx\\RelWithDebInfo\\4nl4b1o6\\obj\\arm64-v8a"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -879,7 +879,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "2"
+			"value" : "3"
 		},
 		{
 			"name" : "CMAKE_OBJCOPY",
@@ -1015,7 +1015,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\build\\intermediates\\cxx\\RelWithDebInfo\\4nl4b1o6\\obj\\armeabi-v7a"
+			"value" : "H:\\unity project\\NakamaTurnBase\\TurnBaseGame\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\build\\intermediates\\cxx\\RelWithDebInfo\\4nl4b1o6\\obj\\arm64-v8a"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1287,7 +1287,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a"
+			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/arm64-v8a"
 		},
 		{
 			"name" : "Unity_IS_TOP_LEVEL",
@@ -1314,6 +1314,66 @@
 			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp"
 		},
 		{
+			"name" : "game-activity_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for game-activity."
+				}
+			],
+			"type" : "PATH",
+			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/game-activity"
+		},
+		{
+			"name" : "game_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/arm64-v8a/GameActivity"
+		},
+		{
+			"name" : "game_IS_TOP_LEVEL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "OFF"
+		},
+		{
+			"name" : "game_LIB_DEPENDS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Dependencies for the target"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "general;android;general;game-activity::game-activity_static;general;log;general;c++;"
+		},
+		{
+			"name" : "game_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/GameActivity"
+		},
+		{
 			"name" : "games-frame-pacing_DIR",
 			"properties" : 
 			[
@@ -1323,7 +1383,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/prefab/armeabi-v7a/prefab/lib/arm-linux-androideabi/cmake/games-frame-pacing"
+			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/games-frame-pacing"
 		},
 		{
 			"name" : "swappywrapper_BINARY_DIR",
@@ -1335,7 +1395,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/armeabi-v7a/FramePacing"
+			"value" : "H:/unity project/NakamaTurnBase/TurnBaseGame/.utmp/RelWithDebInfo/4nl4b1o6/arm64-v8a/FramePacing"
 		},
 		{
 			"name" : "swappywrapper_IS_TOP_LEVEL",

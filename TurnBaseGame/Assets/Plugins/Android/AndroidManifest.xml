@@ -11,7 +11,7 @@
         </intent>
     </queries>
 
-    <application>
+    <application android:usesCleartextTraffic="true">
         <!-- Used when Application Entry is set to Activity, otherwise remove this activity block -->
         <activity android:name="com.unity3d.player.UnityPlayerActivity"
                   android:theme="@style/UnityThemeSelector"
