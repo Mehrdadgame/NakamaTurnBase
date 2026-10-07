@@ -1,22 +1,12 @@
-using System;
+﻿using System;
 using System.Collections;
+using DG.Tweening;
 using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Nakama.Helpers
 {
-    /// <summary>
-    /// Free chest that recharges every 3 hours.
-    ///
-    /// Inspector wiring:
-    ///   chestButton     — دکمه‌ی باز کردن صندوق
-    ///   chestReadyFX    — افکت/انیمیشن وقتی آماده‌ست (مثلاً glow)
-    ///   timerText       — متن تایمر معکوس "02:45:10"
-    ///   rewardPopup     — پنل پاپ‌آپ جایزه
-    ///   rewardText      — متن "+500 تاسی بردی!"
-    ///   claimButton     — دکمه "دریافت جایزه"
-    /// </summary>
     public class ChestManager : MonoBehaviour
     {
         public static ChestManager Instance { get; private set; }
@@ -34,24 +24,50 @@ namespace Nakama.Helpers
         private const string ClaimChestRpcId    = "ClaimChestRpc";
         private const string GetChestStatusRpcId = "GetChestStatusRpc";
 
-        /// <summary>پنل چست باز شد — ChestHomeButton باید مخفی بشه.</summary>
+        /// <summary>Panel opened event</summary>
         public static event Action OnPanelOpened;
-        /// <summary>پنل چست بسته شد — ChestHomeButton باید دوباره نشون داده بشه.</summary>
+        /// <summary>Panel closed event</summary>
         public static event Action OnPanelClosed;
-        /// <summary>جایزه گرفته شد — remainingSeconds تایمر بعدی رو میده.</summary>
+        /// <summary>Chest claimed event</summary>
         public static event Action<int> OnChestClaimed;
 
         private int _remainingSeconds;
         private bool _ready;
         private int _pendingReward;
         private Coroutine _countdownCoroutine;
+        private Coroutine _shakeCoroutine;
+        private Vector3 _originalChestScale = Vector3.one;
+        private Quaternion _originalChestRotation = Quaternion.identity;
 
-        // ── Unity ─────────────────────────────────────────────────────────────
+        // Unity -----------------------------------------------------------------------
 
-        private void Awake() => Instance = this;
+        private void Awake()
+        {
+            Instance = this;
+            if (chestButton != null)
+            {
+                _originalChestScale = chestButton.transform.localScale;
+                _originalChestRotation = chestButton.transform.localRotation;
+            }
+        }
 
-        private void OnEnable()  => OnPanelOpened?.Invoke();
-        private void OnDisable() => OnPanelClosed?.Invoke();
+        private void OnEnable()
+        {
+            OnPanelOpened?.Invoke();
+            if (_ready) StartShake();
+        }
+
+        private void OnDisable()
+        {
+            OnPanelClosed?.Invoke();
+            StopShake();
+        }
+
+        private void OnDestroy()
+        {
+            StopShake();
+            if (chestButton != null) chestButton.transform.DOKill();
+        }
 
         private void Start()
         {
@@ -73,7 +89,7 @@ namespace Nakama.Helpers
             yield return new WaitUntil(() => task.IsCompleted);
         }
 
-        // ── Server calls ──────────────────────────────────────────────────────
+        // Server calls ----------------------------------------------------------------
 
         private async System.Threading.Tasks.Task FetchStatus()
         {
@@ -93,7 +109,14 @@ namespace Nakama.Helpers
         private async void OnChestClicked()
         {
             if (!_ready) return;
+            StopShake();
             SetButtonReady(false);
+
+            if (chestButton != null)
+            {
+                chestButton.transform.DOKill();
+                chestButton.transform.DOPunchScale(Vector3.one * -0.08f, 0.2f, 6, 0.5f).SetUpdate(true);
+            }
 
             try
             {
@@ -108,7 +131,7 @@ namespace Nakama.Helpers
 
                 if (!result.success)
                 {
-                    // Race condition — restart timer
+                    // Race condition -> restart timer
                     ApplyTimer(result.remainingSeconds);
                     return;
                 }
@@ -118,10 +141,16 @@ namespace Nakama.Helpers
                 // Show popup
                 if (rewardText != null)
                     rewardText.text = Localization.IsPersian
-                        ? "+" + PersianTextUtils.FormatNumber(result.coinsAwarded) + " تاسی بردی!"
+                        ? "+" + PersianTextUtils.FormatNumber(result.coinsAwarded) + " تاسی برنده شدید!"
                         : "You won +" + PersianTextUtils.FormatNumber(result.coinsAwarded) + " Tasi!";
 
-                if (rewardPopup != null) rewardPopup.SetActive(true);
+                if (rewardPopup != null)
+                {
+                    rewardPopup.SetActive(true);
+                    rewardPopup.transform.DOKill();
+                    rewardPopup.transform.localScale = Vector3.one * 0.85f;
+                    rewardPopup.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack).SetUpdate(true);
+                }
 
                 // Start next cooldown + notify home button
                 ApplyTimer(result.remainingSeconds);
@@ -150,7 +179,7 @@ namespace Nakama.Helpers
                 await WalletManager.Instance.RefreshAsync();
         }
 
-        // ── Timer ─────────────────────────────────────────────────────────────
+        // Timer -----------------------------------------------------------------------
 
         private void ApplyTimer(int seconds)
         {
@@ -198,9 +227,70 @@ namespace Nakama.Helpers
         {
             if (chestButton != null) chestButton.interactable = on;
             if (chestReadyFX != null) chestReadyFX.SetActive(on);
+
+            if (on && gameObject.activeInHierarchy)
+                StartShake();
+            else
+                StopShake();
         }
 
-        // ── Data models ───────────────────────────────────────────────────────
+        // Piggy-bank shake loop (تکون خوردن مثل قلک هر چند ثانیه) ---------------------------
+
+        private void StartShake()
+        {
+            if (_shakeCoroutine != null || chestButton == null) return;
+            _shakeCoroutine = StartCoroutine(PiggyBankShakeLoop());
+        }
+
+        private void StopShake()
+        {
+            if (_shakeCoroutine != null)
+            {
+                StopCoroutine(_shakeCoroutine);
+                _shakeCoroutine = null;
+            }
+            if (chestButton != null)
+            {
+                chestButton.transform.localRotation = _originalChestRotation;
+                chestButton.transform.localScale = _originalChestScale;
+            }
+        }
+
+        private IEnumerator PiggyBankShakeLoop()
+        {
+            yield return new WaitForSeconds(0.8f);
+
+            while (_ready && chestButton != null)
+            {
+                float duration = 0.45f;
+                float elapsed = 0f;
+                Transform targetTransform = chestButton.transform;
+
+                while (elapsed < duration)
+                {
+                    elapsed += Time.deltaTime;
+                    float t = elapsed / duration;
+
+                    // Decaying tilt wobble
+                    float angle = Mathf.Sin(t * Mathf.PI * 6f) * (1f - t) * 7.5f;
+                    targetTransform.localRotation = _originalChestRotation * Quaternion.Euler(0f, 0f, angle);
+
+                    // Subtle squash/stretch bounce
+                    float bounce = Mathf.Sin(t * Mathf.PI * 4f) * (1f - t) * 0.055f;
+                    targetTransform.localScale = new Vector3(_originalChestScale.x * (1f - bounce * 0.5f),
+                                                           _originalChestScale.y * (1f + bounce),
+                                                           _originalChestScale.z);
+                    yield return null;
+                }
+
+                targetTransform.localRotation = _originalChestRotation;
+                targetTransform.localScale = _originalChestScale;
+
+                yield return new WaitForSeconds(2.8f);
+            }
+        }
+
+        // Data models -----------------------------------------------------------------
 
         [Serializable]
         private class ChestStatus

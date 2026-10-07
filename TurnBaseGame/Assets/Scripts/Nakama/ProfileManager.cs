@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections;
+using System.Linq;
 using DG.Tweening;
 using RTLTMPro;
 using TMPro;
@@ -59,7 +60,6 @@ namespace Nakama.Helpers
         [SerializeField] private UnityEngine.UI.Image avatarImage;  // shows current avatar sprite
         [SerializeField] private Button avatarButton; // opens the popup
         [SerializeField] private AvatarPopupManager avatarPopupManager;
-        // AvatarPopupManager is a Singleton — no Inspector reference needed
 
         [Header("Buttons & Feedback")]
         [SerializeField] private Button saveButton;
@@ -83,13 +83,14 @@ namespace Nakama.Helpers
         private void Awake()
         {
             if (saveButton != null) saveButton.onClick.AddListener(OnSaveClicked);
-            if (avatarButton != null) avatarButton.onClick.AddListener(OnAvatarButtonClicked);
+            BindAvatarButtons();
             if (linkEmailButton != null && linkEmailButton != saveButton)
                 linkEmailButton.onClick.AddListener(OnLinkEmailClicked);
         }
 
         private void OnEnable()
         {
+            BindAvatarButtons();
             SetStatus("", Color.white);
             RefreshDisplayNameLabel(null);
             StartCoroutine(WaitAndLoad());
@@ -97,6 +98,7 @@ namespace Nakama.Helpers
             // Subscribe to avatar changes so the button image stays in sync
             if (ProfileService.Instance != null)
             {
+                ProfileService.Instance.onAvatarChanged -= OnAvatarChanged;
                 ProfileService.Instance.onAvatarChanged += OnAvatarChanged;
                 // Show current avatar immediately if already loaded
                 if (ProfileService.Instance.IsLoaded)
@@ -109,6 +111,44 @@ namespace Nakama.Helpers
             StopAllCoroutines();
             if (ProfileService.Instance != null)
                 ProfileService.Instance.onAvatarChanged -= OnAvatarChanged;
+        }
+
+        private void OnDestroy()
+        {
+            if (avatarButton != null) avatarButton.transform.DOKill();
+            if (saveButton != null) saveButton.transform.DOKill();
+        }
+
+        private void BindAvatarButtons()
+        {
+            if (avatarButton != null)
+            {
+                avatarButton.onClick.RemoveListener(OnAvatarButtonClicked);
+                avatarButton.onClick.AddListener(OnAvatarButtonClicked);
+
+                // Also find and bind any child Button (e.g. edit pencil icon)
+                var childButtons = avatarButton.GetComponentsInChildren<Button>(true);
+                foreach (var btn in childButtons)
+                {
+                    if (btn != null && btn != avatarButton)
+                    {
+                        btn.onClick.RemoveListener(OnAvatarButtonClicked);
+                        btn.onClick.AddListener(OnAvatarButtonClicked);
+                    }
+                }
+
+                // If "Button edit" child exists but has no Button component, add one so clicks work reliably
+                Transform editChild = avatarButton.transform.Find("Button edit");
+                if (editChild != null)
+                {
+                    Button editBtn = editChild.GetComponent<Button>();
+                    if (editBtn == null)
+                        editBtn = editChild.gameObject.AddComponent<Button>();
+
+                    editBtn.onClick.RemoveListener(OnAvatarButtonClicked);
+                    editBtn.onClick.AddListener(OnAvatarButtonClicked);
+                }
+            }
         }
 
         private void OnAvatarChanged(string avatarId)
@@ -126,14 +166,34 @@ namespace Nakama.Helpers
 
         private void OnAvatarButtonClicked()
         {
+            if (avatarButton != null)
+            {
+                avatarButton.transform.DOKill();
+                avatarButton.transform.DOPunchScale(Vector3.one * -0.07f, 0.18f, 5, 0.5f).SetUpdate(true);
+            }
+
             var popup = AvatarPopupManager.Instance != null
                 ? AvatarPopupManager.Instance
                 : avatarPopupManager;
 
+            if (popup == null)
+            {
+                popup = FindFirstObjectByType<AvatarPopupManager>(FindObjectsInactive.Include);
+                if (popup == null)
+                {
+                    popup = Resources.FindObjectsOfTypeAll<AvatarPopupManager>()
+                        .FirstOrDefault(p => p != null && p.gameObject.scene.IsValid());
+                }
+            }
+
             if (popup != null)
-                popup.Open();   // NOT SetActive — must call Open() so grid + fade runs
+            {
+                popup.Open();
+            }
             else
+            {
                 Debug.LogWarning("[ProfileManager] AvatarPopupManager not found.");
+            }
         }
 
         #endregion
@@ -168,7 +228,7 @@ namespace Nakama.Helpers
                 {
                     ApplyToUI(data);
 
-                    // Use avatarId from server response — most up-to-date source
+                    // Use avatarId from server response
                     var avatarId = string.IsNullOrEmpty(data.avatarId) ? "avatar_0" : data.avatarId;
                     RefreshAvatarImage(avatarId);
 
@@ -234,6 +294,11 @@ namespace Nakama.Helpers
             if (userManager != null && userManager.LoadingFinished)
             {
                 var user = userManager.User;
+                if (user != null && !string.IsNullOrWhiteSpace(user.DisplayName))
+                {
+                    displayName.text = user.DisplayName.Trim();
+                    return;
+                }
                 if (user != null)
                 {
                     displayName.text = !string.IsNullOrWhiteSpace(user.Username)
@@ -252,6 +317,12 @@ namespace Nakama.Helpers
 
         public void OnSaveClicked()
         {
+            if (saveButton != null)
+            {
+                saveButton.transform.DOKill();
+                saveButton.transform.DOPunchScale(Vector3.one * -0.06f, 0.18f, 5, 0.5f).SetUpdate(true);
+            }
+
             var name = displayNameInput != null ? displayNameInput.text.Trim() : "";
             var email = emailInput != null ? emailInput.text.Trim() : "";
             var phone = phoneInput != null ? phoneInput.text.Trim() : "";
@@ -371,9 +442,9 @@ namespace Nakama.Helpers
             catch (Exception e)
             {
                 if (e.Message.Contains("already") || e.Message.Contains("4"))
-                    SetLinkStatus(Localization.L("این ایمیل قبلاً ثبت شده است.", "This email is already registered."), Color.yellow);
+                    SetLinkStatus(Localization.L("این ایمیل قبلا ثبت شده است.", "This email is already registered."), Color.yellow);
                 else
-                    SetLinkStatus(Localization.L("خطا: لطفاً دوباره امتحان کنید.", "Error: please try again."), Color.red);
+                    SetLinkStatus(Localization.L("خطا: لطفا دوباره امتحان کنید.", "Error: please try again."), Color.red);
                 Debug.LogWarning("[ProfileManager] LinkEmail error: " + e.Message);
             }
             finally
@@ -410,7 +481,7 @@ namespace Nakama.Helpers
             if (coinBonusPopup == null) return;
 
             coinBonusPopup.text = Localization.IsPersian
-                ? "‏+" + PersianTextUtils.FormatNumber(amount) + " کوین!"
+                ? "🎁+" + PersianTextUtils.FormatNumber(amount) + " کوین!"
                 : "+" + PersianTextUtils.FormatNumber(amount) + " coins!";
             coinBonusPopup.color = new Color(1f, 0.85f, 0.2f, 1f);
             coinBonusPopup.gameObject.SetActive(true);

@@ -1,3 +1,4 @@
+﻿using DG.Tweening;
 using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,9 +8,9 @@ namespace Nakama.Helpers
     /// <summary>
     /// One cell in the avatar selection popup grid.
     /// States:
-    ///   - Free / Owned  → selectable, label shows "Free" or "Owned"
-    ///   - Not Owned     → selectable (will buy on confirm), label shows "{price} Coin"
-    ///   - Selected ring → shown on the active avatar
+    ///   - Free / Owned  -> selectable, label shows "Free" or "Owned"
+    ///   - Not Owned     -> selectable (will buy on confirm), label shows "{price} Coin"
+    ///   - Selected ring -> shown on the active avatar
     /// </summary>
     public class AvatarItemUI : MonoBehaviour
     {
@@ -17,7 +18,7 @@ namespace Nakama.Helpers
         [SerializeField] private Image           avatarImage;
         [SerializeField] private RTLTextMeshPro priceLabel;
         [SerializeField] private GameObject      selectedRing;   // orange/gold border when selected
-        [SerializeField] private GameObject      ownedBadge;     // small "✓" badge (optional)
+        [SerializeField] private GameObject      ownedBadge;     // small badge (optional)
         [SerializeField] private Button          selectButton;
 
         private AvatarData         _data;
@@ -56,9 +57,9 @@ namespace Nakama.Helpers
             if (priceLabel != null)
             {
                 if (price == 0)
-                    priceLabel.text = Localization.L("مجانی", "Free");
+                    priceLabel.text = Localization.L("رایگان", "Free");
                 else if (isOwned)
-                    priceLabel.text = Localization.L("خریدی", "Owned");
+                    priceLabel.text = Localization.L("خریداری شده", "Owned");
                 else
                     priceLabel.text = PersianTextUtils.FormatNumber(price) + Localization.L(" تاسی", " Tasi");
             }
@@ -78,6 +79,16 @@ namespace Nakama.Helpers
             if (selectedRing != null) selectedRing.SetActive(selected);
         }
 
-        private void OnClicked() => _popup?.OnAvatarItemClicked(_data);
+        private void OnClicked()
+        {
+            transform.DOKill();
+            transform.DOPunchScale(Vector3.one * -0.08f, 0.18f, 5, 0.5f).SetUpdate(true);
+            _popup?.OnAvatarItemClicked(_data);
+        }
+
+        private void OnDestroy()
+        {
+            transform.DOKill();
+        }
     }
 }

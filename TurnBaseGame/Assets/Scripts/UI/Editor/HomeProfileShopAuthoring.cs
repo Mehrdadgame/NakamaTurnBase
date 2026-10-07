@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Nakama.Helpers;
 using RTLTMPro;
 using TMPro;
@@ -393,7 +393,7 @@ namespace NinjaBattle.UI.Editor
                 SetReference(serialized, "statusText", status);
             }
 
-            serialized.FindProperty("maxVisibleAvatars").intValue = 8;
+            serialized.FindProperty("maxVisibleAvatars").intValue = 0;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(popup);
         }
