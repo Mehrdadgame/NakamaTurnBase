@@ -109,6 +109,7 @@ namespace NinjaBattle.Game
                 UiManager.instance.StickerOpp.GetComponent<Image>().sprite = UiManager.instance.AllAssets.GetSprite(nameSticker.StickerName);
 
                 UiManager.instance.StickerOpp.GetComponent<Animator>().Play("StickerOpp", 0, 0);
+                NinjaBattle.General.GameSfx.PlaySticker();
 
 
             }
@@ -209,6 +210,7 @@ namespace NinjaBattle.Game
 
                     if (ScoreMe < ScoreOpp)
                     {
+                        NinjaBattle.General.GameSfx.PlayVictory();
                         ShowResultEndGame(Localization.L("شما بردی", "You Win!"), ScoreOpp, ScoreMe);
                         SetRewardText(Localization.IsPersian
                 ? "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی"
@@ -216,6 +218,7 @@ namespace NinjaBattle.Game
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
+                        NinjaBattle.General.GameSfx.PlayDefeat();
                         ShowResultEndGame(Localization.L("شما باختی", "You Lost"), ScoreOpp, ScoreMe);
                         SetRewardText(Localization.IsPersian
                 ? "‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی"
@@ -223,6 +226,7 @@ namespace NinjaBattle.Game
                     }
                     else
                     {
+                        NinjaBattle.General.GameSfx.PlayDraw();
                         ShowResultEndGame(Localization.L("مساوی شدید", "It's a Draw"), ScoreOpp, ScoreMe);
                         SetRewardText(Localization.IsPersian
                 ? "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی"
@@ -269,6 +273,7 @@ namespace NinjaBattle.Game
 
                     if (ScoreMe < ScoreOpp)
                     {
+                        NinjaBattle.General.GameSfx.PlayVictory();
                         ShowResultEndGame(Localization.L("شما بردی", "You Win!"), ScoreOpp, ScoreMe);
                         SetRewardText(Localization.IsPersian
                 ? "‏+" + PersianTextUtils.FormatNumber(league.winnerReward) + " تاسی"
@@ -276,6 +281,7 @@ namespace NinjaBattle.Game
                     }
                     else if (ScoreMe > ScoreOpp)
                     {
+                        NinjaBattle.General.GameSfx.PlayDefeat();
                         ShowResultEndGame(Localization.L("شما باختی", "You Lost"), ScoreOpp, ScoreMe);
                         SetRewardText(Localization.IsPersian
                 ? "‏-" + PersianTextUtils.FormatNumber(league.entryFee) + " تاسی"
@@ -283,6 +289,7 @@ namespace NinjaBattle.Game
                     }
                     else
                     {
+                        NinjaBattle.General.GameSfx.PlayDraw();
                         ShowResultEndGame(Localization.L("مساوی شدید", "It's a Draw"), ScoreOpp, ScoreMe);
                         SetRewardText(Localization.IsPersian
                 ? "‏+" + PersianTextUtils.FormatNumber(league.drawRefund) + " تاسی"

@@ -59,6 +59,7 @@ public class TimerTurn : MonoBehaviour
                         TimerText.rectTransform.DOKill();
                         TimerText.rectTransform.localScale = Vector3.one;
                         TimerText.rectTransform.DOPunchScale(Vector3.one * 0.35f, 0.35f, 5, 0.5f).SetUpdate(true);
+                        NinjaBattle.General.GameSfx.PlayTimerTick(currentSecond);
                     }
                 }
                 else
@@ -69,6 +70,7 @@ public class TimerTurn : MonoBehaviour
 
             if (TimerCount <= 0)
             {
+                NinjaBattle.General.GameSfx.PlayTimerTimeout();
                 TimerStop?.Invoke();
                 TimerCount = 30;
                 TimerRunning = false;

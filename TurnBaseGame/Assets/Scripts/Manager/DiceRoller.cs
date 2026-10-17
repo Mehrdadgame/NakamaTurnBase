@@ -121,6 +121,7 @@ public class DiceRoller : MonoBehaviour
             // The die pops in with an elastic spin to signal the player's turn
             _dieRt.localScale = Vector3.zero;
             _dieRt.localEulerAngles = new Vector3(0f, 0f, 180f);
+            NinjaBattle.General.GameSfx.PlayDiceArrive();
 
             _arrivalSequence = DOTween.Sequence()
                 .Append(_dieRt.DOScale(_dieBaseScale * 1.15f, 0.32f).SetEase(Ease.OutBack))

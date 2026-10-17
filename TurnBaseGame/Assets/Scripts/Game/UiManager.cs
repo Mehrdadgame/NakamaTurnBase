@@ -304,7 +304,12 @@ public class UiManager : MonoBehaviour
             TextValueMines.transform.localScale = Vector3.one;
             TextValueMines.transform.DOPunchScale(Vector3.one * 0.35f, 0.3f, 5, 0.5f).SetUpdate(true);
             if (WowPar != null) WowPar.Play();
+            NinjaBattle.General.GameSfx.PlayMineExplode();
             mines = 0;
+        }
+        else
+        {
+            NinjaBattle.General.GameSfx.PlayScore();
         }
         if (ScoreTextOpp != null)
         {
@@ -326,7 +331,12 @@ public class UiManager : MonoBehaviour
             TextValueMines.transform.localScale = Vector3.one;
             TextValueMines.transform.DOPunchScale(Vector3.one * 0.35f, 0.3f, 5, 0.5f).SetUpdate(true);
             if (WowPar != null) WowPar.Play();
+            NinjaBattle.General.GameSfx.PlayMineExplode();
             mines = 0;
+        }
+        else
+        {
+            NinjaBattle.General.GameSfx.PlayScore();
         }
         if (ScoreTextMe != null)
         {

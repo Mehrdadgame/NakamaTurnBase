@@ -61,15 +61,55 @@ namespace NinjaBattle.General
             musicChannel.Stop();
         }
 
+        private AudioSource loopChannel = null;
+
         public void PlaySound(AudioClip clip)
+        {
+            PlaySound(clip, 1f, 1f);
+        }
+
+        public void PlaySound(AudioClip clip, float volumeScale, float pitch = 1f)
         {
             if (clip == null || currentSoundClips.Contains(clip))
                 return;
 
-            soundChannel.PlayOneShot(clip);
+            if (soundChannel != null)
+            {
+                soundChannel.pitch = pitch;
+                soundChannel.PlayOneShot(clip, volumeScale);
+            }
             currentSoundClips.Add(clip);
             StartCoroutine(SoundCooldown(clip, CooldownForSounds));
             StartCoroutine(Dispose(clip, clip.length));
+        }
+
+        public void PlaySoundRandomPitch(AudioClip clip, float minPitch = 0.94f, float maxPitch = 1.06f, float volumeScale = 1f)
+        {
+            PlaySound(clip, volumeScale, Random.Range(minPitch, maxPitch));
+        }
+
+        public void StartLoopSound(AudioClip clip, float volume = 0.7f, float pitch = 1f)
+        {
+            if (clip == null) return;
+            if (loopChannel == null)
+            {
+                loopChannel = gameObject.AddComponent<AudioSource>();
+                loopChannel.loop = true;
+            }
+            loopChannel.clip = clip;
+            loopChannel.volume = volume;
+            loopChannel.pitch = pitch;
+            if (!loopChannel.isPlaying)
+                loopChannel.Play();
+        }
+
+        public void StopLoopSound()
+        {
+            if (loopChannel != null && loopChannel.isPlaying)
+            {
+                loopChannel.Stop();
+                loopChannel.clip = null;
+            }
         }
 
         public bool IsMusicPlaying(AudioClip clip)
@@ -90,7 +130,7 @@ namespace NinjaBattle.General
             }
             if (defaultClickSound != null)
             {
-                PlaySound(defaultClickSound);
+                PlaySoundRandomPitch(defaultClickSound, 0.95f, 1.05f);
             }
         }
 

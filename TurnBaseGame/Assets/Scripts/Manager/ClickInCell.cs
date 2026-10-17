@@ -24,15 +24,20 @@ public class ClickInCell : MonoBehaviour, IPointerDownHandler
         DiceRoller diceRoller = GameManager.Instance.diceRoller;
         if (!MultiplayerManager.Instance.isTurn || !diceRoller.dieRolled ||
             diceRoller.currrentDie == -1 || isLock || diceRoller.isRolling)
+        {
+            NinjaBattle.General.GameSfx.PlayTileInvalid();
             return;
+        }
 
         TutorialManager tutorial = TutorialManager.Instance;
         if (tutorial != null && !tutorial.CanPlaceCell(this))
         {
+            NinjaBattle.General.GameSfx.PlayTileInvalid();
             tutorial.NotifyInvalidCell(this);
             return;
         }
 
+        NinjaBattle.General.GameSfx.PlayTilePlace();
         SetDataInCell();
     }
 
