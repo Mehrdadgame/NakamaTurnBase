@@ -14,6 +14,7 @@ using System.Collections;
 using Nakama.Helpers;
 using UnityEngine;
 
+#if UNITY_EDITOR
 namespace TempDebug
 {
     public class UserIdLogger : MonoBehaviour
@@ -25,8 +26,8 @@ namespace TempDebug
 
         static UserIdLogger _instance;
 
-        // ─── راه‌اندازی خودکار ───
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        // ─── راه‌اندازی خودکار غیرفعال شد تا روی گوشی کلیپ‌بورد را اشغال نکند ───
+        // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void AutoSpawn()
         {
             if (_instance != null) return;
@@ -164,13 +165,11 @@ namespace TempDebug
 
             Debug.Log(sb.ToString());
 
-            try { GUIUtility.systemCopyBuffer = userId; }
-            catch { /* روی بعضی پلتفرم‌ها در دسترس نیست */ }
+            // GUIUtility.systemCopyBuffer = userId; // غیرفعال شد تا متن به کلیپ‌بورد کاربر کپی نشود
         }
     }
 }
 
-#if UNITY_EDITOR
 namespace TempDebug
 {
     public static class UserIdLoggerMenu
