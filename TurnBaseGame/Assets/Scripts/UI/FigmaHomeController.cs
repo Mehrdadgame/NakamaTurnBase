@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using Nakama.Helpers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -66,6 +66,61 @@ namespace NinjaBattle.UI
                 ProfileService.Instance.onAvatarChanged += HandleAvatarChanged;
                 RefreshAvatar();
             }
+
+            CheckReturnToMenuPopups();
+        }
+
+        private void CheckReturnToMenuPopups()
+        {
+            if (PlayerPrefs.GetInt("ReturningFromMatch", 0) != 1)
+                return;
+
+            // Reset transition flag
+            PlayerPrefs.SetInt("ReturningFromMatch", 0);
+
+            // Increment persistent counter for matches returned to home
+            int returnCount = PlayerPrefs.GetInt("MenuReturnMatchCount", 0) + 1;
+            PlayerPrefs.SetInt("MenuReturnMatchCount", returnCount);
+            PlayerPrefs.Save();
+
+            StartCoroutine(ShowMenuReturnPopupDelayed(returnCount));
+        }
+
+        private System.Collections.IEnumerator ShowMenuReturnPopupDelayed(int returnCount)
+        {
+            // Pacing: Wait for scene transition and widgets to settle smoothly
+            yield return new WaitForSecondsRealtime(0.75f);
+
+            // Wait if mode popup or another modal is active
+            while (modePopup != null && modePopup.gameObject.activeSelf)
+                yield return new WaitForSecondsRealtime(0.4f);
+
+            // 3rd time returning: open Profile popup
+            if (returnCount == 3 || (returnCount > 4 && returnCount % 4 == 3))
+            {
+                OpenProfile();
+                NinjaBattle.General.GameSfx.PlayPopupOpen();
+                AnimatePopupEntrance(profilePanel);
+            }
+            // 4th time returning: open Leaderboard popup
+            else if (returnCount == 4 || (returnCount > 4 && returnCount % 4 == 0))
+            {
+                SelectLeaderboard();
+                NinjaBattle.General.GameSfx.PlayPopupOpen();
+                AnimatePopupEntrance(leaderboardPanel);
+            }
+        }
+
+        private void AnimatePopupEntrance(GameObject panel)
+        {
+            if (panel == null) return;
+            RectTransform rt = panel.GetComponent<RectTransform>();
+            if (rt == null) return;
+
+            rt.DOKill();
+            Vector3 targetScale = Vector3.one;
+            rt.localScale = targetScale * 0.88f;
+            rt.DOScale(targetScale, 0.32f).SetEase(Ease.OutBack, 1.15f).SetUpdate(true);
         }
 
         public void ToggleAudio()

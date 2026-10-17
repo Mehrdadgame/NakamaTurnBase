@@ -663,39 +663,32 @@ function generateBotMove(gameState: GameState, logger: nkruntime.Logger): BotMov
     const botGrid    = gameState.array3DPlayerSecend;
     const playerGrid = gameState.array3DPlayerFirst;
     const numRows    = botGrid.length;
-    const numCols    = botGrid[0].length;
-    const maxTile    = numCols - 1;
-    const difficulty = gameState.botDifficulty;
-
-    const emptyCells: { line: number; col: number }[] = [];
-    for (let i = 0; i < numRows; i++)
-        for (let j = 0; j < numCols; j++)
-            if (botGrid[i][j] === -1) emptyCells.push({ line: i, col: j });
-
-    if (emptyCells.length === 0) return null;
+    // Roll a fair 6-sided die (0 to 5, representing dice faces 1 to 6)
+    const rolledTile = Math.floor(Math.random() * 6);
 
     if (difficulty === 0 || (difficulty === 1 && Math.random() < 0.5)) {
         const cell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-        return { line: cell.line, col: cell.col, tile: Math.floor(Math.random() * (maxTile + 1)) };
+        return { line: cell.line, col: cell.col, tile: rolledTile };
     }
 
     let bestScore = -1;
-    let bestMove: BotMove = { line: emptyCells[0].line, col: emptyCells[0].col, tile: Math.floor(Math.random() * (maxTile + 1)) };
+    let bestCell = emptyCells[0];
 
     for (const cell of emptyCells) {
-        for (let tile = 0; tile <= maxTile; tile++) {
-            const tempBot = botGrid.map((r: any[]) => r.slice());
-            tempBot[cell.line][cell.col] = tile;
+        const tempBot = botGrid.map((r: any[]) => r.slice());
+        tempBot[cell.line][cell.col] = rolledTile;
 
-            let mineHits = (playerGrid[cell.line] as number[]).filter((v: number) => v === tile).length;
-            if (gameState.VerticalMode) {
-                for (let r = 0; r < numRows; r++) if (playerGrid[r][cell.col] === tile) mineHits++;
-            }
-            const moveScore = simulateTotalScore(tempBot, gameState.VerticalMode) + mineHits * 6;
-            if (moveScore > bestScore) { bestScore = moveScore; bestMove = { line: cell.line, col: cell.col, tile }; }
+        let mineHits = (playerGrid[cell.line] as number[]).filter((v: number) => v === rolledTile).length;
+        if (gameState.VerticalMode) {
+            for (let r = 0; r < numRows; r++) if (playerGrid[r][cell.col] === rolledTile) mineHits++;
+        }
+        const moveScore = simulateTotalScore(tempBot, gameState.VerticalMode) + mineHits * 6;
+        if (moveScore > bestScore) {
+            bestScore = moveScore;
+            bestCell = cell;
         }
     }
-    return bestMove;
+    return { line: bestCell.line, col: bestCell.col, tile: rolledTile };
 }
 
 function simulateTotalScore(grid: any[][], verticalMode: boolean): number {

@@ -595,6 +595,9 @@ namespace NinjaBattle.UI
             if (General.AudioManager.Instance != null)
                 General.AudioManager.Instance.PlayClickSound();
 
+            PlayerPrefs.SetInt("ReturningFromMatch", 1);
+            PlayerPrefs.Save();
+
             if (CartoonIrisTransitionOverlay.Instance != null)
             {
                 CartoonIrisTransitionOverlay.Instance.PlayIrisOut(0.55f, new Vector2(0.5f, 0.46f), () =>

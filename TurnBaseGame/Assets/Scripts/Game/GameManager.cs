@@ -190,6 +190,8 @@ namespace NinjaBattle.Game
 
         private void GoToHome()
         {
+            PlayerPrefs.SetInt("ReturningFromMatch", 1);
+            PlayerPrefs.Save();
             AnalyticsTracker.SendDesign("scene_transition", 1f, new Dictionary<string, object>
             {
                 ["from"] = SceneManager.GetActiveScene().name,

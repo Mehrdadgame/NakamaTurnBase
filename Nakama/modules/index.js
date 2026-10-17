@@ -2085,6 +2085,7 @@ function generateBotMove(gameState, logger) {
 
     // Roll a fair 6-sided die (0 to 5, representing dice faces 1 to 6)
     var rolledTile = Math.floor(Math.random() * 6);
+    logger.info("Bot rolled fair die: " + rolledTile + " (face " + (rolledTile + 1) + ")");
 
     if (difficulty === 0 || (difficulty === 1 && Math.random() < 0.5)) {
         var cell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
