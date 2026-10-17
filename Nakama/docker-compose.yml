@@ -49,34 +49,15 @@ services:
       - ./modules:/nakama/modules
     networks:
       - taaszan-internal
-      - dokploy-network
-    expose:
-      - "7350"
-      - "7361"
-      - "7349"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=dokploy-network"
-
-      # API Router + Service
-      - "traefik.http.routers.nakama-api.rule=Host(`taaszan.rastar.ir`)"
-      - "traefik.http.routers.nakama-api.entrypoints=websecure"
-      - "traefik.http.routers.nakama-api.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.nakama-api.service=nakama-api-svc"
-      - "traefik.http.services.nakama-api-svc.loadbalancer.server.port=7350"
-
-      # Console Router + Service
-      - "traefik.http.routers.nakama-console.rule=Host(`taaszan-admin.rastar.ir`)"
-      - "traefik.http.routers.nakama-console.entrypoints=websecure"
-      - "traefik.http.routers.nakama-console.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.nakama-console.service=nakama-console-svc"
-      - "traefik.http.services.nakama-console-svc.loadbalancer.server.port=7361"
+    ports:
+      - "7350:7350"
+      - "7349:7349"
+      - "7351:7361"
+      - "7361:7361"
 
 networks:
   taaszan-internal:
     driver: bridge
-  dokploy-network:
-    external: true
 
 volumes:
   cockroach-tz-data:
