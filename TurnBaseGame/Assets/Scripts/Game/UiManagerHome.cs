@@ -40,6 +40,7 @@ namespace Game
                 WalletManager.Instance.onCoinsChanged += RefreshCoinsDisplay;
                 // Wallet may have already loaded before we subscribed — show current value immediately
                 RefreshCoinsDisplay(WalletManager.Instance.Coins);
+                _ = WalletManager.Instance.RefreshAsync();
             }
             else
             {
@@ -84,6 +85,7 @@ namespace Game
                 yield return null;
             WalletManager.Instance.onCoinsChanged += RefreshCoinsDisplay;
             RefreshCoinsDisplay(WalletManager.Instance.Coins);
+            _ = WalletManager.Instance.RefreshAsync();
         }
 
         private System.Collections.IEnumerator WaitForProfileService()
@@ -134,6 +136,7 @@ namespace Game
                 Cointext.rectTransform.DOKill();
                 Cointext.rectTransform.localScale = Vector3.one;
                 Cointext.rectTransform.DOPunchScale(Vector3.one * 0.22f, 0.35f, 5, 0.5f).SetUpdate(true);
+                NinjaBattle.General.GameSfx.PlayCoin();
             }
         }
 

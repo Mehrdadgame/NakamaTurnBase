@@ -598,6 +598,9 @@ namespace NinjaBattle.UI
             PlayerPrefs.SetInt("ReturningFromMatch", 1);
             PlayerPrefs.Save();
 
+            if (WalletManager.Instance != null)
+                _ = WalletManager.Instance.RefreshAsync();
+
             if (CartoonIrisTransitionOverlay.Instance != null)
             {
                 CartoonIrisTransitionOverlay.Instance.PlayIrisOut(0.55f, new Vector2(0.5f, 0.46f), () =>

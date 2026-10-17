@@ -1848,26 +1848,29 @@ function awardMatchResult(gameState, nakama, winnerId, logger) {
     var league = LEAGUES[gameState.ModeText];
     if (!league)
         return;
-    var updates = [];
     for (var i = 0; i < gameState.players.length; i++) {
         var player = gameState.players[i];
         if (!player || player.isBot)
             continue;
         if (winnerId === "") {
             // Draw — return 50%
-            updates.push({
-                userId: player.presence.userId,
-                changeset: { coins: league.drawRefund },
-                metadata: { source: "draw_refund" },
-            });
+            try {
+                nakama.walletUpdate(player.presence.userId, { coins: league.drawRefund }, { source: "draw_refund" }, true);
+                logger.info("Refunded " + league.drawRefund + " coins for draw to: " + player.presence.userId);
+            }
+            catch (e) {
+                logger.warn("walletUpdate drawRefund failed: " + e);
+            }
         }
         else if (player.presence.userId === winnerId) {
-            // Win
-            updates.push({
-                userId: player.presence.userId,
-                changeset: { coins: league.winnerReward },
-                metadata: { source: "match_win", league: gameState.ModeText },
-            });
+            // Win — award winnerReward
+            try {
+                nakama.walletUpdate(player.presence.userId, { coins: league.winnerReward }, { source: "match_win", league: gameState.ModeText }, true);
+                logger.info("Awarded " + league.winnerReward + " coins for win to: " + player.presence.userId);
+            }
+            catch (e) {
+                logger.warn("walletUpdate match_win failed: " + e);
+            }
             // Record rank points in both leaderboards
             try {
                 nakama.leaderboardRecordWrite(LeaderboardWeekly, player.presence.userId, player.displayName, league.rankPoints);
@@ -1878,14 +1881,6 @@ function awardMatchResult(gameState, nakama, winnerId, logger) {
             }
         }
         // Lose: entry fee already deducted on join, nothing extra
-    }
-    if (updates.length > 0) {
-        try {
-            nakama.walletsUpdate(updates, false);
-        }
-        catch (e) {
-            logger.warn("walletsUpdate failed: " + e);
-        }
     }
 }
 // ─── Leaderboard Reset Hook ───────────────────────────────────────────────────
