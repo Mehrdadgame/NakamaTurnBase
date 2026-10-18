@@ -5,20 +5,11 @@ var CheckPendingRewardsRpc = "CheckPendingRewardsRpc";
 var GetLeaderboardRpc = "GetLeaderboardRpc";
 var GetProfileRpc = "GetProfileRpc";
 var UpdateProfileRpc = "UpdateProfileRpc";
-var SaveProgressionRpc = "SaveProgressionRpc";
 var SelectAvatarRpc = "SelectAvatarRpc";
 var GetAppVersionRpc = "GetAppVersionRpc";
-var SendContactMessageRpc = "SendContactMessageRpc";
-var ClaimChestRpc = "ClaimChestRpc";
-var GetChestStatusRpc = "GetChestStatusRpc";
-var GetChatConfigRpc = "GetChatConfigRpc";
-var AdminStatsRpc = "AdminStatsRpc";
-var SetConfigRpc = "SetConfigRpc";
 var VerifyCoinPurchaseRpc = "VerifyCoinPurchaseRpc";
 var LogicLoadedLoggerInfo = "Custom logic loaded.";
 var MatchModuleName = "match";
-var CollectionMissionDefinitions = "MissionDefinitions";
-var KeyMissionDefinitions = "mission_definitions";
 function InitModule(ctx, logger, nk, initializer) {
     // Create leaderboards (idempotent — skips if already exist)
     CreateLeaderboards(ctx, logger, nk);
@@ -28,17 +19,10 @@ function InitModule(ctx, logger, nk, initializer) {
     initializer.registerRpc(CheckPendingRewardsRpc, checkPendingRewardsRpc);
     initializer.registerRpc(GetLeaderboardRpc, getLeaderboardRpc);
     initializer.registerRpc(GetProfileRpc, getProfileRpc);
-    initializer.registerRpc(SaveProgressionRpc, saveProgressionRpc);
     initializer.registerRpc(UpdateProfileRpc, updateProfileRpc);
     initializer.registerRpc(SelectAvatarRpc, selectAvatarRpc);
     initializer.registerRpc(GetAppVersionRpc, getAppVersionRpc);
     initializer.registerRpc(VerifyCoinPurchaseRpc, verifyCoinPurchaseRpc);
-    initializer.registerRpc(ClaimChestRpc, claimChestRpc);
-    initializer.registerRpc(GetChestStatusRpc, getChestStatusRpc);
-    initializer.registerRpc(SendContactMessageRpc, sendContactMessageRpc);
-    initializer.registerRpc(GetChatConfigRpc, getChatConfigRpc);
-    initializer.registerRpc(AdminStatsRpc, adminStatsRpc);
-    initializer.registerRpc(SetConfigRpc, setConfigRpc);
     // Seed default app version config if it doesn't exist yet
     var existing = nk.storageRead([{ collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId }]);
     if (existing.length === 0) {
@@ -51,20 +35,6 @@ function InitModule(ctx, logger, nk, initializer) {
                 permissionWrite: 0,
             }]);
         logger.info("App version config seeded with defaults.");
-    }
-    // Seed default Cafe Bazaar IAP token if not present
-    var defaultBazaarToken = "eyJhbGciOiJIUzI1NiIsImtpZCI6ImFuY2llbnQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJuYXNoZXItcGlzaGtoYW4tYXBpIiwiaWF0IjoxNzkwMDkyNzkxLCJleHAiOjQ5NDM2OTI3OTEsImFwaV9hZ2VudF9pZCI6OTQ3NX0.tw7wdMgTogBG6ydZ0NSdle-53slQ_O6g-EzWwGS4DWY";
-    var existingBazaar = nk.storageRead([{ collection: CollectionConfig, key: KeyCafeBazaarToken, userId: SystemUserId }]);
-    if (existingBazaar.length === 0) {
-        nk.storageWrite([{
-                collection: CollectionConfig,
-                key: KeyCafeBazaarToken,
-                userId: SystemUserId,
-                value: { token: defaultBazaarToken },
-                permissionRead: 0,
-                permissionWrite: 0,
-            }]);
-        logger.info("Cafe Bazaar IAP token seeded with default.");
     }
     // Leaderboard reset → distribute rewards
     initializer.registerLeaderboardReset(onLeaderboardReset);
@@ -109,434 +79,6 @@ function createDefaultProfile() {
         ownedAvatars: [],
         welcomeBonusClaimed: false,
     };
-}
-function createDefaultMissionDefinitions() {
-    return [
-        {
-            missionId: "play_first_match",
-            title: "اولین مبارزه",
-            description: "یک مسابقه انجام بده.",
-            goalType: "PlayMatches",
-            trigger: "match_finished",
-            conditions: [],
-            incrementBy: 1,
-            target: 1,
-            rewardXp: 50,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "win_first_match",
-            title: "اولین پیروزی",
-            description: "یک مسابقه را ببرید.",
-            goalType: "WinMatches",
-            trigger: "match_finished",
-            conditions: [
-                { field: "won", operator: "eq", value: "true" },
-            ],
-            incrementBy: 1,
-            target: 1,
-            rewardXp: 100,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "place_20_tiles",
-            title: "یک بازیکن پرتلاش",
-            description: "۲۰ خانه روی صفحه قرار بده.",
-            goalType: "PlaceTiles",
-            trigger: "tile_placed",
-            conditions: [],
-            incrementBy: 1,
-            target: 20,
-            rewardXp: 80,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "clear_12_tiles",
-            title: "پاکسازی تاس",
-            description: "۱۲ خانه از صفحه بردار.",
-            goalType: "ClearTiles",
-            trigger: "tiles_cleared",
-            conditions: [],
-            incrementBy: "clearedTiles",
-            target: 12,
-            rewardXp: 70,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "win_by_50",
-            title: "پیروزی قاطع",
-            description: "با حداقل ۵۰ امتیاز اختلاف برنده شو.",
-            goalType: "WinByMargin",
-            trigger: "match_finished",
-            conditions: [
-                { field: "won", operator: "eq", value: "true" },
-                { field: "scoreMargin", operator: "gte", value: "50" },
-            ],
-            incrementBy: 1,
-            target: 1,
-            rewardXp: 150,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "three_sixes_in_row",
-            title: "سه شش طلایی",
-            description: "سه تاس ۶ را در یک ردیف قرار بده.",
-            goalType: "SameValueInRow",
-            trigger: "tile_placed",
-            conditions: [
-                { field: "tileValue", operator: "eq", value: "6" },
-                { field: "sameValueInRow", operator: "gte", value: "3" },
-            ],
-            incrementBy: 1,
-            target: 1,
-            rewardXp: 180,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "place_10_sixes",
-            title: "عاشق شش",
-            description: "۱۰ تاس با عدد ۶ قرار بده.",
-            goalType: "PlaceDiceValue",
-            trigger: "tile_placed",
-            conditions: [
-                { field: "tileValue", operator: "eq", value: "6" },
-            ],
-            incrementBy: 1,
-            target: 10,
-            rewardXp: 120,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "clear_3_in_one_move",
-            title: "ضربه سنگین",
-            description: "در یک حرکت حداقل ۳ تاس حریف را حذف کن.",
-            goalType: "ClearTilesInMove",
-            trigger: "tiles_cleared",
-            conditions: [
-                { field: "clearedTiles", operator: "gte", value: "3" },
-            ],
-            incrementBy: 1,
-            target: 1,
-            rewardXp: 140,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "score_100",
-            title: "صدتایی",
-            description: "مسابقه را با حداقل ۱۰۰ امتیاز تمام کن.",
-            goalType: "ReachMatchScore",
-            trigger: "match_finished",
-            conditions: [
-                { field: "localScore", operator: "gte", value: "100" },
-            ],
-            incrementBy: 1,
-            target: 1,
-            rewardXp: 130,
-            isRepeatable: false,
-            enabled: true,
-        },
-        {
-            missionId: "win_3_matches",
-            title: "فرمانروای میدان",
-            description: "۳ مسابقه را برنده شو.",
-            goalType: "WinMatches",
-            trigger: "match_finished",
-            conditions: [
-                { field: "won", operator: "eq", value: "true" },
-            ],
-            incrementBy: 1,
-            target: 3,
-            rewardXp: 200,
-            isRepeatable: false,
-            enabled: true,
-        },
-    ];
-}
-function upgradeLegacyMissionDefinitions(existingDefinitions) {
-    var defaults = createDefaultMissionDefinitions();
-    var defaultsById = {};
-    for (var defaultIndex = 0; defaultIndex < defaults.length; defaultIndex++)
-        defaultsById[defaults[defaultIndex].missionId] = defaults[defaultIndex];
-    var upgraded = [];
-    var seen = {};
-    for (var existingIndex = 0; existingIndex < existingDefinitions.length; existingIndex++) {
-        var existing = existingDefinitions[existingIndex];
-        if (!existing || !existing.missionId || seen[existing.missionId])
-            continue;
-        var merged = {};
-        var fallback = defaultsById[existing.missionId];
-        if (fallback) {
-            var fallbackKeys = Object.keys(fallback);
-            for (var fallbackIndex = 0; fallbackIndex < fallbackKeys.length; fallbackIndex++)
-                merged[fallbackKeys[fallbackIndex]] = fallback[fallbackKeys[fallbackIndex]];
-        }
-        var existingKeys = Object.keys(existing);
-        for (var keyIndex = 0; keyIndex < existingKeys.length; keyIndex++)
-            merged[existingKeys[keyIndex]] = existing[existingKeys[keyIndex]];
-        if (fallback) {
-            merged.isRepeatable = Boolean(fallback.isRepeatable);
-        }
-        upgraded.push(merged);
-        seen[existing.missionId] = true;
-    }
-    for (var appendIndex = 0; appendIndex < defaults.length; appendIndex++) {
-        if (!seen[defaults[appendIndex].missionId])
-            upgraded.push(defaults[appendIndex]);
-    }
-    return upgraded;
-}
-function loadOrSeedMissionDefinitions(nakama, logger) {
-    var stored = nakama.storageRead([
-        { collection: CollectionMissionDefinitions, key: KeyMissionDefinitions, userId: SystemUserId },
-    ]);
-    if (stored.length > 0) {
-        var storedValue = stored[0].value;
-        var definitions = Array.isArray(storedValue)
-            ? storedValue
-            : (storedValue && Array.isArray(storedValue.missions) ? storedValue.missions : null);
-        if (definitions && definitions.length > 0 && storedValue.schemaVersion === 3)
-            return definitions;
-        if (definitions && definitions.length > 0) {
-            var upgraded = upgradeLegacyMissionDefinitions(definitions);
-            var upgradeRequest = {
-                collection: CollectionMissionDefinitions,
-                key: KeyMissionDefinitions,
-                userId: SystemUserId,
-                value: { schemaVersion: 3, missions: upgraded },
-                permissionRead: 2,
-                permissionWrite: 0,
-                version: stored[0].version,
-            };
-            try {
-                nakama.storageWrite([upgradeRequest]);
-                logger.info("Upgraded mission definitions storage to schema version 3.");
-            }
-            catch (e) {
-                logger.warn("Mission definitions migration write failed: " + e);
-            }
-            return upgraded;
-        }
-    }
-    if (stored.length > 0 && stored[0].value)
-        logger.warn("Mission definitions storage record is not a non-empty array; reseeding defaults.");
-    var definitions = createDefaultMissionDefinitions();
-    nakama.storageWrite([{
-            collection: CollectionMissionDefinitions,
-            key: KeyMissionDefinitions,
-            userId: SystemUserId,
-            value: { schemaVersion: 3, missions: definitions },
-            permissionRead: 2,
-            permissionWrite: 0,
-        }]);
-    logger.info("Seeded default mission definitions.");
-    return definitions;
-}
-function getMissionTrigger(definition) {
-    if (definition && typeof definition.trigger === "string" && definition.trigger.length > 0)
-        return definition.trigger;
-    switch (definition && definition.goalType) {
-        case "PlayMatches": return "match_finished";
-        case "WinMatches": return "match_finished";
-        case "PlaceTiles": return "tile_placed";
-        case "ClearTiles": return "tiles_cleared";
-        default: return "";
-    }
-}
-function getMissionConditions(definition) {
-    if (definition && Array.isArray(definition.conditions))
-        return definition.conditions;
-    if (definition && !definition.trigger && definition.goalType === "WinMatches")
-        return [{ field: "won", operator: "eq", value: "true" }];
-    return [];
-}
-function normalizeMissionExpectedValue(rawValue, actualValue) {
-    if (typeof actualValue === "boolean")
-        return String(rawValue).toLowerCase() === "true";
-    if (typeof actualValue === "number") {
-        var parsed = Number(rawValue);
-        return isNaN(parsed) ? null : parsed;
-    }
-    return rawValue === null || rawValue === undefined ? "" : String(rawValue);
-}
-function missionConditionMatches(facts, condition) {
-    if (!condition || typeof condition.field !== "string" ||
-        !Object.prototype.hasOwnProperty.call(facts, condition.field))
-        return false;
-    var actual = facts[condition.field];
-    var expected = normalizeMissionExpectedValue(condition.value, actual);
-    if (expected === null)
-        return false;
-    var operator = String(condition.operator || "eq").toLowerCase();
-    switch (operator) {
-        case "eq": return actual === expected;
-        case "neq": return actual !== expected;
-        case "gt": return typeof actual === "number" && actual > expected;
-        case "gte": return typeof actual === "number" && actual >= expected;
-        case "lt": return typeof actual === "number" && actual < expected;
-        case "lte": return typeof actual === "number" && actual <= expected;
-        default: return false;
-    }
-}
-function missionRuleMatches(definition, missionEvent) {
-    if (!definition || definition.enabled === false ||
-        getMissionTrigger(definition) !== missionEvent.trigger)
-        return false;
-    var conditions = getMissionConditions(definition);
-    for (var i = 0; i < conditions.length; i++) {
-        if (!missionConditionMatches(missionEvent.facts, conditions[i]))
-            return false;
-    }
-    return true;
-}
-function resolveMissionIncrement(definition, facts) {
-    var incrementBy = definition.incrementBy;
-    if (incrementBy === null || incrementBy === undefined || incrementBy === "")
-        incrementBy = definition.goalType === "ClearTiles" ? "clearedTiles" : 1;
-    if (typeof incrementBy === "number")
-        return Math.max(0, Math.floor(incrementBy));
-    if (Object.prototype.hasOwnProperty.call(facts, incrementBy))
-        return Math.max(0, Math.floor(numberField(facts[incrementBy], 0)));
-    return Math.max(0, Math.floor(numberField(incrementBy, 0)));
-}
-function getProgressionLevel(currentXp) {
-    var level = 1;
-    for (var candidate = 2; candidate <= 12; candidate++) {
-        var threshold = 100 * candidate + 50 * (candidate - 1) * (candidate - 1);
-        if (currentXp < threshold)
-            break;
-        level = candidate;
-    }
-    return level;
-}
-function applyMissionEvents(nakama, logger, userId, missionEvents) {
-    if (!userId || !Array.isArray(missionEvents) || missionEvents.length === 0)
-        return null;
-    var definitions = loadOrSeedMissionDefinitions(nakama, logger);
-    for (var attempt = 0; attempt < 3; attempt++) {
-        var stored = nakama.storageRead([
-            { collection: CollectionProfile, key: KeyProfileData, userId: userId },
-        ]);
-        var profileObj = stored.length > 0 ? stored[0] : null;
-        var profile = profileObj ? profileObj.value : createDefaultProfile();
-        var progression = profile.progression || { currentXp: 0, currentLevel: 1, missions: [] };
-        if (!Array.isArray(progression.missions))
-            progression.missions = [];
-        var progressById = {};
-        for (var progressIndex = 0; progressIndex < progression.missions.length; progressIndex++) {
-            var savedProgress = progression.missions[progressIndex];
-            if (savedProgress && savedProgress.missionId)
-                progressById[savedProgress.missionId] = savedProgress;
-        }
-        var changed = false;
-        var xpEarned = 0;
-        var missionUpdates = [];
-        for (var eventIndex = 0; eventIndex < missionEvents.length; eventIndex++) {
-            xpEarned += Math.max(0, Math.floor(numberField(missionEvents[eventIndex].baseXp, 0)));
-        }
-        if (xpEarned > 0)
-            changed = true;
-        var seenMissionIds = {};
-        for (var definitionIndex = 0; definitionIndex < definitions.length; definitionIndex++) {
-            var definition = definitions[definitionIndex];
-            var missionId = definition && stringField(definition.missionId);
-            if (!missionId || seenMissionIds[missionId] || definition.enabled === false)
-                continue;
-            seenMissionIds[missionId] = true;
-            var target = Math.max(1, Math.floor(numberField(definition.target, 1)));
-            var repeatable = Boolean(definition.isRepeatable);
-            var state = progressById[missionId];
-            if (!state) {
-                state = {
-                    missionId: missionId,
-                    currentProgress: 0,
-                    isCompleted: false,
-                    completionCount: 0,
-                };
-            }
-            if (state.isCompleted && !repeatable)
-                continue;
-            var addedProgress = 0;
-            for (var matchingEventIndex = 0; matchingEventIndex < missionEvents.length; matchingEventIndex++) {
-                var missionEvent = missionEvents[matchingEventIndex];
-                if (missionRuleMatches(definition, missionEvent))
-                    addedProgress += resolveMissionIncrement(definition, missionEvent.facts);
-            }
-            if (addedProgress <= 0)
-                continue;
-            // Legacy clients could submit arbitrary progress, so only retain a valid
-            // incomplete remainder when switching to server-authoritative tracking.
-            var previousProgress = Math.max(0, Math.min(target - 1,
-                Math.floor(numberField(state.currentProgress, 0))));
-            var totalProgress = previousProgress + addedProgress;
-            var completions = 0;
-            if (repeatable) {
-                completions = Math.floor(totalProgress / target);
-                state.currentProgress = totalProgress % target;
-                state.isCompleted = false;
-            }
-            else if (totalProgress >= target) {
-                completions = 1;
-                state.currentProgress = target;
-                state.isCompleted = true;
-            }
-            else {
-                state.currentProgress = totalProgress;
-                state.isCompleted = false;
-            }
-            state.completionCount = Math.max(0, Math.floor(numberField(state.completionCount, 0))) + completions;
-            if (!progressById[missionId]) {
-                progression.missions.push(state);
-                progressById[missionId] = state;
-            }
-            if (completions > 0) {
-                var rewardXp = Math.max(0, Math.floor(numberField(definition.rewardXp, 0)));
-                xpEarned += rewardXp * completions;
-                logger.info("Mission completed: userId=" + userId + " missionId=" + missionId + " count=" + completions);
-            }
-            missionUpdates.push({
-                missionId: missionId,
-                currentProgress: state.currentProgress,
-                isCompleted: state.isCompleted,
-                completionCount: state.completionCount,
-                completionsAwarded: completions,
-            });
-            changed = true;
-        }
-        if (!changed)
-            return { progression: progression, missionUpdates: [], xpEarned: 0 };
-        progression.currentXp = Math.max(0, Math.min(100000000,
-            Math.floor(numberField(progression.currentXp, 0)) + xpEarned));
-        progression.currentLevel = getProgressionLevel(progression.currentXp);
-        profile.progression = progression;
-        var writeRequest = {
-            collection: CollectionProfile,
-            key: KeyProfileData,
-            userId: userId,
-            value: profile,
-            permissionRead: 1,
-            permissionWrite: 0,
-        };
-        writeRequest.version = profileObj && profileObj.version ? profileObj.version : "*";
-        try {
-            nakama.storageWrite([writeRequest]);
-            return { progression: progression, missionUpdates: missionUpdates, xpEarned: xpEarned };
-        }
-        catch (e) {
-            if (attempt === 2)
-                logger.error("Mission progression write failed for userId=" + userId + ": " + e);
-            else
-                logger.warn("Mission progression write conflict; retrying for userId=" + userId);
-        }
-    }
-    return null;
 }
 function grantFirstLoginBonusIfNeeded(userId, profileObj, profile, logger, nakama) {
     if (profile.welcomeBonusClaimed)
@@ -618,9 +160,7 @@ var checkPendingRewardsRpc = function (context, logger, nakama, payload) {
 var getLeaderboardRpc = function (context, logger, nakama, payload) {
     var _a;
     var data = JSON.parse(payload || "{}");
-    var isMonthly = data.type === "monthly";
-    var lbId = isMonthly ? LeaderboardMonthly : LeaderboardWeekly;
-    var rewards = isMonthly ? MONTHLY_REWARDS : WEEKLY_REWARDS;
+    var lbId = data.type === "monthly" ? LeaderboardMonthly : LeaderboardWeekly;
     var limit = data.limit || 100;
     var userId = context.userId;
     var records = [];
@@ -679,7 +219,7 @@ var getLeaderboardRpc = function (context, logger, nakama, payload) {
         rank: ownRecord.rank,
         avatarId: ((_a = profileMap[ownRecord.ownerId]) === null || _a === void 0 ? void 0 : _a.avatarId) || "avatar_0",
     } : null;
-    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn, rewards: rewards });
+    return JSON.stringify({ records: enriched, ownRecord: enrichedOwn });
 };
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 var selectAvatarRpc = function (context, logger, nakama, payload) {
@@ -769,22 +309,7 @@ var getProfileRpc = function (context, logger, nakama, payload) {
         avatarId: profile.avatarId || "avatar_0",
         ownedAvatars: effectiveOwned,
         avatarPrices: avatarPriceList,
-        missionDefinitions: loadOrSeedMissionDefinitions(nakama, logger),
-        progression: profile.progression || { currentXp: 0, currentLevel: 1, missions: [] },
     });
-};
-var saveProgressionRpc = function (context, logger, nakama, payload) {
-    var userId = context.userId;
-    if (!userId)
-        throw new Error("Not authenticated");
-    var stored = nakama.storageRead([
-        { collection: CollectionProfile, key: KeyProfileData, userId: userId },
-    ]);
-    var profile = stored.length > 0 ? stored[0].value : createDefaultProfile();
-    var progression = profile.progression || { currentXp: 0, currentLevel: 1, missions: [] };
-    // Progress and XP are server-authoritative. Legacy clients may still call this RPC,
-    // but their payload must never overwrite mission rewards calculated by the match.
-    return JSON.stringify({ success: true, progression: progression, serverAuthoritative: true });
 };
 var updateProfileRpc = function (context, logger, nakama, payload) {
     var userId = context.userId;
@@ -867,10 +392,7 @@ var COIN_PACKS = {
     "Empire_TasZan": 100000, // امپراتور
 };
 var PaymentCollection = "payment";
-var KeyMyketToken = "myket_iap_token";
-var KeyCafeBazaarToken = "cafebazaar_iap_token";
-var KeyBazaarToken = "bazaar_iap_token";
-var MarketplaceHttpTimeoutMs = 10000;
+var MarketplaceHttpTimeoutMs = 5000;
 var MyketValidationBaseUrl = "https://developer.myket.ir/api/applications";
 var CafeBazaarValidationBaseUrl = "https://pardakht.cafebazaar.ir/devapi/v2/api/validate";
 function normalizePaymentStore(rawStore) {
@@ -888,22 +410,6 @@ function envFirst(context, keys) {
         if (value && value.length > 0)
             return value;
     }
-    return "";
-}
-function configFirst(nakama, keys) {
-    var reads = [];
-    for (var i = 0; i < keys.length; i++)
-        reads.push({ collection: CollectionConfig, key: keys[i], userId: SystemUserId });
-    try {
-        var records = nakama.storageRead(reads);
-        for (var i = 0; i < records.length; i++) {
-            var value = records[i].value || {};
-            var token = stringField(value.token || value.accessToken || value.apiToken || value.secret);
-            if (token)
-                return token;
-        }
-    }
-    catch (e) { }
     return "";
 }
 function parseJsonObject(json) {
@@ -943,15 +449,15 @@ function getInputPackageName(input) {
     return purchaseJson ? stringField(purchaseJson["packageName"]) : "";
 }
 function getMarketplacePackageName(context, store, input) {
-    var defaultPackage = "com.goodvillains.TasZan";
     var envPackage = store === "cafebazaar"
-        ? (envFirst(context, ["CAFEBAZAAR_PACKAGE_NAME", "BAZAAR_PACKAGE_NAME", "APP_PACKAGE_NAME"]) || defaultPackage)
-        : (envFirst(context, ["MYKET_PACKAGE_NAME", "APP_PACKAGE_NAME"]) || defaultPackage);
-    var inputPackage = getInputPackageName(input) || (input && input.packageName);
-    var packageName = inputPackage || envPackage;
-    if (store === "cafebazaar" && packageName && packageName.toLowerCase() === "com.goodvillains.taszan") {
-        packageName = "com.goodvillains.TasZan";
-    }
+        ? envFirst(context, ["CAFEBAZAAR_PACKAGE_NAME", "BAZAAR_PACKAGE_NAME", "APP_PACKAGE_NAME"])
+        : envFirst(context, ["MYKET_PACKAGE_NAME", "APP_PACKAGE_NAME"]);
+    var inputPackage = getInputPackageName(input);
+    var packageName = envPackage || inputPackage;
+    if (!packageName)
+        return { packageName: "", error: "Missing package name config" };
+    if (envPackage && inputPackage && envPackage !== inputPackage)
+        return { packageName: packageName, error: "Package name mismatch" };
     return { packageName: packageName, error: "" };
 }
 function httpGetJson(nakama, url, headers) {
@@ -979,20 +485,16 @@ function marketplaceError(raw, code) {
     return "Marketplace validation failed: HTTP " + code;
 }
 function validateCafeBazaarPurchase(context, nakama, input) {
-    var defaultToken = "eyJhbGciOiJIUzI1NiIsImtpZCI6ImFuY2llbnQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJuYXNoZXItcGlzaGtoYW4tYXBpIiwiaWF0IjoxNzkwMDkyNzkxLCJleHAiOjQ5NDM2OTI3OTEsImFwaV9hZ2VudF9pZCI6OTQ3NX0.tw7wdMgTogBG6ydZ0NSdle-53slQ_O6g-EzWwGS4DWY";
-    var token = configFirst(nakama, [KeyCafeBazaarToken, KeyBazaarToken]) ||
-        envFirst(context, ["CAFEBAZAAR_PISHKHAN_API_SECRET", "BAZAAR_PISHKHAN_API_SECRET", "CAFEBAZAAR_API_SECRET"]) ||
-        defaultToken;
+    var token = envFirst(context, ["CAFEBAZAAR_PISHKHAN_API_SECRET", "BAZAAR_PISHKHAN_API_SECRET", "CAFEBAZAAR_API_SECRET"]);
     var packageResult = getMarketplacePackageName(context, "cafebazaar", input);
     if (!token)
-        return invalidValidation("cafebazaar", packageResult.packageName, "Missing config/cafebazaar_iap_token or CAFEBAZAAR_PISHKHAN_API_SECRET", 0, {});
+        return invalidValidation("cafebazaar", packageResult.packageName, "Missing CAFEBAZAAR_PISHKHAN_API_SECRET", 0, {});
     if (packageResult.error)
         return invalidValidation("cafebazaar", packageResult.packageName, packageResult.error, 0, {});
-    var url = CafeBazaarValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/inapp/" + encodeURIComponent(input.productId || "") + "/purchases/" + encodeURIComponent(input.purchaseToken || "");
+    var url = CafeBazaarValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/inapp/" + encodeURIComponent(input.productId || "") + "/purchases/" + encodeURIComponent(input.purchaseToken || "") + "/";
     var response = httpGetJson(nakama, url, {
         "Accept": "application/json",
         "CAFEBAZAAR-PISHKHAN-API-SECRET": token,
-        "Authorization": "Bearer " + token,
     });
     if (response.error)
         return invalidValidation("cafebazaar", packageResult.packageName, response.error, response.code, response.raw);
@@ -1014,11 +516,10 @@ function validateCafeBazaarPurchase(context, nakama, input) {
     };
 }
 function validateMyketPurchase(context, nakama, input) {
-    var token = configFirst(nakama, [KeyMyketToken]) ||
-        envFirst(context, ["MYKET_ACCESS_TOKEN", "MYKET_API_TOKEN"]);
+    var token = envFirst(context, ["MYKET_ACCESS_TOKEN", "MYKET_API_TOKEN"]);
     var packageResult = getMarketplacePackageName(context, "myket", input);
     if (!token)
-        return invalidValidation("myket", packageResult.packageName, "Missing config/myket_iap_token or MYKET_ACCESS_TOKEN", 0, {});
+        return invalidValidation("myket", packageResult.packageName, "Missing MYKET_ACCESS_TOKEN", 0, {});
     if (packageResult.error)
         return invalidValidation("myket", packageResult.packageName, packageResult.error, 0, {});
     var url = MyketValidationBaseUrl + "/" + encodeURIComponent(packageResult.packageName) + "/purchases/products/" + encodeURIComponent(input.productId || "") + "/tokens/" + encodeURIComponent(input.purchaseToken || "");
@@ -1147,67 +648,6 @@ var verifyCoinPurchaseRpc = function (context, logger, nakama, payload) {
 // ─── Force Update ─────────────────────────────────────────────────────────────
 // Returns { requiredVersion, updateUrl } stored under the system config collection.
 // Admin updates the value via Nakama console → Storage → collection "config", key "app_version".
-// ΓöÇΓöÇΓöÇ Chest Reward System ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-var CHEST_COOLDOWN_SEC = 3 * 60 * 60; // 3 hours
-// Reward table ΓÇö weights sum to 100
-var CHEST_REWARDS = [
-    { coins: 50,   weight: 38 },
-    { coins: 100,  weight: 25 },
-    { coins: 200,  weight: 17 },
-    { coins: 300,  weight: 10 },
-    { coins: 500,  weight: 6  },
-    { coins: 750,  weight: 3  },
-    { coins: 1000, weight: 1  },
-];
-function rollChest() {
-    var roll = Math.random() * 100;
-    var cumulative = 0;
-    for (var i = 0; i < CHEST_REWARDS.length; i++) {
-        cumulative += CHEST_REWARDS[i].weight;
-        if (roll < cumulative) return CHEST_REWARDS[i].coins;
-    }
-    return 50;
-}
-var getChestStatusRpc = function (context, logger, nakama, payload) {
-    var userId = context.userId;
-    if (!userId) throw new Error("Not authenticated");
-    var now = Date.now();
-    var records = nakama.storageRead([{ collection: "chest", key: "last_claim", userId: userId }]);
-    var lastClaimAt = records.length > 0 ? (records[0].value.lastClaimAt || 0) : 0;
-    var elapsed = now - lastClaimAt;
-    var cooldownMs = CHEST_COOLDOWN_SEC * 1000;
-    var remainingSec = elapsed >= cooldownMs ? 0 : Math.ceil((cooldownMs - elapsed) / 1000);
-    return JSON.stringify({ remainingSeconds: remainingSec, ready: remainingSec <= 0 });
-};
-var claimChestRpc = function (context, logger, nakama, payload) {
-    var userId = context.userId;
-    if (!userId) throw new Error("Not authenticated");
-    var now = Date.now();
-    var cooldownMs = CHEST_COOLDOWN_SEC * 1000;
-    var records = nakama.storageRead([{ collection: "chest", key: "last_claim", userId: userId }]);
-    var lastClaimAt = records.length > 0 ? (records[0].value.lastClaimAt || 0) : 0;
-    var elapsed = now - lastClaimAt;
-    if (elapsed < cooldownMs) {
-        var remainingSec = Math.ceil((cooldownMs - elapsed) / 1000);
-        return JSON.stringify({ success: false, error: "not_ready", remainingSeconds: remainingSec });
-    }
-    var coins = rollChest();
-    nakama.walletUpdate(userId, { coins: coins }, { source: "chest" }, true);
-    nakama.storageWrite([{
-        collection: "chest",
-        key: "last_claim",
-        userId: userId,
-        value: { lastClaimAt: now, lastReward: coins },
-        permissionRead: 1,
-        permissionWrite: 0,
-    }]);
-    logger.info("[Chest] userId=" + userId + " won=" + coins + " coins");
-    return JSON.stringify({ success: true, coinsAwarded: coins, remainingSeconds: CHEST_COOLDOWN_SEC });
-};
-
-// ΓöÇΓöÇΓöÇ Force Update ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-// Returns { requiredVersion, updateUrl } stored under the system config collection.
-// Admin updates the value via Nakama console ΓåÆ Storage ΓåÆ collection "config", key "app_version".
 var getAppVersionRpc = function (context, logger, nakama, payload) {
     var stored = nakama.storageRead([
         { collection: CollectionConfig, key: KeyAppVersion, userId: SystemUserId },
@@ -1218,174 +658,6 @@ var getAppVersionRpc = function (context, logger, nakama, payload) {
     }
     return JSON.stringify(stored[0].value);
 };
-// Returns { enabled } stored under the system config collection.
-// Admin toggles via Nakama console ΓåÆ Storage ΓåÆ collection "config", key "chat_enabled",
-// user 00000000-0000-0000-0000-000000000000, value {"enabled": false} to disable chat globally.
-var getChatConfigRpc = function (context, logger, nakama, payload) {
-    var stored = nakama.storageRead([
-        { collection: CollectionConfig, key: KeyChatEnabled, userId: SystemUserId },
-    ]);
-    if (stored.length === 0) {
-        // Default: chat enabled
-        return JSON.stringify({ enabled: true });
-    }
-    return JSON.stringify(stored[0].value);
-};
-// Server-side authoritative check used by the chat relay.
-function isChatEnabled(nakama) {
-    try {
-        var stored = nakama.storageRead([
-            { collection: CollectionConfig, key: KeyChatEnabled, userId: SystemUserId },
-        ]);
-        if (stored.length === 0)
-            return true; // default-on if unseeded
-        return stored[0].value.enabled !== false;
-    }
-    catch (e) {
-        return true;
-    }
-}
-// ΓöÇΓöÇΓöÇ Admin analytics ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-// Call from Nakama Console ΓåÆ API Explorer ΓåÆ Run RPC "AdminStatsRpc" (leave user blank),
-// or via HTTP with the server http_key. Optional payload: {"days":7,"secret":"..."}.
-// Reads the DB directly (sqlQuery) to summarise user behaviour, economy, IAP and fraud signals.
-var adminStatsRpc = function (context, logger, nakama, payload) {
-    var input = {};
-    try { input = JSON.parse(payload || "{}"); } catch (e) {}
-
-    // Admin-only: console/server calls have no userId. A player session is rejected unless it
-    // carries the configured admin secret (config ΓåÆ key "admin_secret" value {"secret":"..."}).
-    var allowed = !context.userId;
-    if (!allowed) {
-        try {
-            var sec = nakama.storageRead([{ collection: CollectionConfig, key: "admin_secret", userId: SystemUserId }]);
-            if (sec.length && sec[0].value && input.secret && input.secret === sec[0].value.secret) allowed = true;
-        } catch (e) {}
-    }
-    if (!allowed) return JSON.stringify({ error: "Admin only" });
-
-    var days = parseInt(input.days, 10);
-    if (!days || days <= 0 || days > 365) days = 7;
-    var WIN = "INTERVAL '" + days + " days'"; // days is a validated int ΓÇö safe to inline
-    var SYS = "'00000000-0000-0000-0000-000000000000'";
-
-    function q(sql) {
-        try { return { ok: true, rows: nakama.sqlQuery(sql, []) }; }
-        catch (e) { return { ok: false, error: String(e) }; }
-    }
-    function num(res, col) {
-        if (!res.ok || !res.rows || res.rows.length === 0) return 0;
-        var n = parseInt(res.rows[0][col], 10);
-        return isNaN(n) ? 0 : n;
-    }
-
-    var report = { generatedAt: new Date().toISOString(), windowDays: days };
-
-    report.users = {
-        total:          num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS), "n"),
-        newToday:       num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND create_time > now() - INTERVAL '1 day'"), "n"),
-        newInWindow:    num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND create_time > now() - " + WIN), "n"),
-        activeInWindow: num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND update_time > now() - " + WIN), "n"),
-        activeToday:    num(q("SELECT count(*)::int AS n FROM users WHERE id <> " + SYS + " AND update_time > now() - INTERVAL '1 day'"), "n"),
-    };
-
-    var econ = q("SELECT coalesce(metadata->>'source','(none)') AS source, count(*)::int AS n, " +
-        "coalesce(sum((changeset->>'coins')::int),0)::int AS coins FROM wallet_ledger GROUP BY 1 ORDER BY 3 DESC");
-    report.economy = {
-        coinsInWallets: num(q("SELECT coalesce(sum((wallet->>'coins')::int),0)::int AS n FROM users"), "n"),
-        bySource: econ.ok ? econ.rows : [],
-        error: econ.ok ? undefined : econ.error,
-    };
-
-    var iapTot = q("SELECT count(*)::int AS n, coalesce(sum((changeset->>'coins')::int),0)::int AS coins, " +
-        "count(DISTINCT user_id)::int AS buyers FROM wallet_ledger WHERE metadata->>'source'='iap'");
-    var byProduct = q("SELECT coalesce(metadata->>'productId','?') AS product, count(*)::int AS n, " +
-        "coalesce(sum((changeset->>'coins')::int),0)::int AS coins FROM wallet_ledger WHERE metadata->>'source'='iap' GROUP BY 1 ORDER BY 2 DESC");
-    report.iap = {
-        totalGrants:      num(iapTot, "n"),
-        totalCoinsSold:   num(iapTot, "coins"),
-        uniqueBuyers:     num(iapTot, "buyers"),
-        unverifiedGrants: num(q("SELECT count(*)::int AS n FROM storage WHERE collection='payment' AND value->>'verified'='false'"), "n"),
-        byProduct: byProduct.ok ? byProduct.rows : [],
-    };
-
-    var topBuyers = q("SELECT user_id, count(*)::int AS grants, coalesce(sum((changeset->>'coins')::int),0)::int AS coins " +
-        "FROM wallet_ledger WHERE metadata->>'source'='iap' GROUP BY user_id ORDER BY 2 DESC LIMIT 15");
-    var fast = q("SELECT l.user_id, count(*)::int AS grants FROM wallet_ledger l JOIN users u ON u.id = l.user_id " +
-        "WHERE l.metadata->>'source'='iap' AND l.create_time < u.create_time + INTERVAL '5 minutes' " +
-        "GROUP BY l.user_id HAVING count(*) >= 2 ORDER BY 2 DESC LIMIT 15");
-    report.fraudSignals = {
-        note: "Purchase records exist only AFTER the IAP security fix was deployed.",
-        topBuyers: topBuyers.ok ? topBuyers.rows : [],
-        manyPurchasesWithin5minOfSignup: fast.ok ? fast.rows : [],
-    };
-
-    report.engagement = {
-        profiles:          num(q("SELECT count(*)::int AS n FROM storage WHERE collection='Profile'"), "n"),
-        entryFeeCharges:   num(q("SELECT count(*)::int AS n FROM wallet_ledger WHERE metadata->>'source'='entry_fee'"), "n"),
-        chestClaimers:     num(q("SELECT count(DISTINCT user_id)::int AS n FROM wallet_ledger WHERE metadata->>'source'='chest'"), "n"),
-        cardOwners:        num(q("SELECT count(*)::int AS n FROM storage WHERE collection='Cards'"), "n"),
-    };
-
-    // Per-mode play volume ΓÇö answers "most played game mode". The mode is recorded on each
-    // entry-fee ledger entry as metadata.league (one row per real-player match join).
-    // NOTE: code mode "ThreeByThree" is actually the 4x4 "FourByFour" scene ΓÇö labels disambiguate.
-    var MODE_LABELS = {
-        "ThreeByThree":          "FourByFour 4x4 (Showdown)",
-        "FourByThree":           "FourByThree 4x3 (Dicepunk)",
-        "VerticalAndHorizontal": "VerticalAndHorizontal 3x3 (Dice Master)",
-    };
-    function labelMode(m) { return MODE_LABELS[m] || m; }
-    var modeAll = q("SELECT coalesce(metadata->>'league','(unknown)') AS mode, count(*)::int AS matches, " +
-        "count(DISTINCT user_id)::int AS players FROM wallet_ledger WHERE metadata->>'source'='entry_fee' GROUP BY 1 ORDER BY 2 DESC");
-    var modeWin = q("SELECT coalesce(metadata->>'league','(unknown)') AS mode, count(*)::int AS matches " +
-        "FROM wallet_ledger WHERE metadata->>'source'='entry_fee' AND create_time > now() - " + WIN + " GROUP BY 1 ORDER BY 2 DESC");
-    if (modeAll.ok) for (var mi = 0; mi < modeAll.rows.length; mi++) modeAll.rows[mi].label = labelMode(modeAll.rows[mi].mode);
-    if (modeWin.ok) for (var mj = 0; mj < modeWin.rows.length; mj++) modeWin.rows[mj].label = labelMode(modeWin.rows[mj].mode);
-    report.gameModes = {
-        note: "Match volume per mode from entry-fee charges. Code mode 'ThreeByThree' = the 4x4 FourByFour scene.",
-        mostPlayedAllTime:  (modeAll.ok && modeAll.rows.length) ? labelMode(modeAll.rows[0].mode) : null,
-        mostPlayedInWindow: (modeWin.ok && modeWin.rows.length) ? labelMode(modeWin.rows[0].mode) : null,
-        breakdownAllTime:   modeAll.ok ? modeAll.rows : [],
-        breakdownInWindow:  modeWin.ok ? modeWin.rows : [],
-        error: modeAll.ok ? undefined : modeAll.error,
-    };
-
-    logger.info("[AdminStats] generated windowDays=" + days);
-    return JSON.stringify(report);
-};
-
-// ΓöÇΓöÇΓöÇ Admin: set a global config value ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-// Stores under collection "config" / SystemUserId. Use for: myket_iap_token,
-// iap_strict, chat_enabled, admin_secret, app_version.
-// Call from Nakama Console ΓåÆ API Explorer ΓåÆ Run RPC "SetConfigRpc" (leave user blank).
-//   {"key":"myket_iap_token","value":{"token":"<X-Access-Token>"}}
-//   {"key":"iap_strict","value":{"enabled":true}}
-var setConfigRpc = function (context, logger, nakama, payload) {
-    var input = {};
-    try { input = JSON.parse(payload || "{}"); } catch (e) { return JSON.stringify({ error: "Bad payload" }); }
-
-    var allowed = !context.userId; // console/server calls have no userId
-    if (!allowed) {
-        try {
-            var sec = nakama.storageRead([{ collection: CollectionConfig, key: "admin_secret", userId: SystemUserId }]);
-            if (sec.length && sec[0].value && input.secret && input.secret === sec[0].value.secret) allowed = true;
-        } catch (e) {}
-    }
-    if (!allowed) return JSON.stringify({ error: "Admin only" });
-
-    var key = (input.key || "").trim();
-    if (!key) return JSON.stringify({ error: "Missing 'key'" });
-    if (input.value === undefined || input.value === null) return JSON.stringify({ error: "Missing 'value'" });
-
-    nakama.storageWrite([{
-        collection: CollectionConfig, key: key, userId: SystemUserId,
-        value: input.value, permissionRead: 2, permissionWrite: 0,
-    }]);
-    logger.info("[SetConfig] admin set config key=" + key);
-    return JSON.stringify({ success: true, key: key, value: input.value });
-};
-
 function CreateLeaderboards(context, logger, nakama) {
     var configs = [
         { id: LeaderboardWeekly, reset: "0 0 * * 1" },
@@ -1690,7 +962,6 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
     gameState.players[moverIndex].ScorePlayer = dataPlayer.Score;
     var opponentIndex = 1 - moverIndex;
     var mineCount = 0;
-    var totalClearedTiles = 0;
     // ── Vertical mines (VerticalAndHorizontal mode only) ────────────────────────
     if (gameState.VerticalMode) {
         var hits = CalculatorArray2DWithVertical(targetGrid, line, row, tile, logger);
@@ -1701,7 +972,6 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
         }
         if (mineCount > 0) {
             applyMineResult(dataPlayer, mineCount, tile, targetGrid, gameState, opponentIndex, logger);
-            totalClearedTiles += mineCount;
         }
         mineCount = 0;
     }
@@ -1714,7 +984,6 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
             mineCount++;
         }
         if (mineCount > 0) {
-            totalClearedTiles += mineCount;
             if (dataPlayer.MinesScore) {
                 // Vertical mines already fired — accumulate horizontal damage on top
                 dataPlayer.ValueMines += (tile + 1) * mineCount * mineCount;
@@ -1726,7 +995,6 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
             }
         }
     }
-    dataPlayer.ClearedTiles = totalClearedTiles;
     dataPlayer.Array2DTilesPlayer = moverGrid;
     dataPlayer.Array2DTilesOtherPlayer = targetGrid;
     var moverFull = ActionWinPlayer(moverGrid);
@@ -1744,93 +1012,6 @@ function processTurn(dataPlayer, moverGrid, targetGrid, gameState, moverIndex, i
         dataPlayer.EndGame = true;
         gameState.BeforeEndGame = true;
         awardMatchResult(gameState, nakama, dataPlayer.PlayerWin, logger);
-    }
-    recordTurnMissionProgress(gameState, moverIndex, moverGrid, tile, line, row, totalClearedTiles, dataPlayer, nakama, logger);
-}
-function countTileValueInRow(grid, line, tile) {
-    if (!Array.isArray(grid) || !Array.isArray(grid[line]))
-        return 0;
-    var count = 0;
-    for (var column = 0; column < grid[line].length; column++) {
-        if (grid[line][column] === tile)
-            count++;
-    }
-    return count;
-}
-function countTileValueInColumn(grid, column, tile) {
-    if (!Array.isArray(grid))
-        return 0;
-    var count = 0;
-    for (var line = 0; line < grid.length; line++) {
-        if (Array.isArray(grid[line]) && grid[line][column] === tile)
-            count++;
-    }
-    return count;
-}
-function createMatchFinishedMissionEvent(gameState, playerIndex, winnerId) {
-    var player = gameState.players[playerIndex];
-    var opponent = gameState.players[1 - playerIndex];
-    var localScore = player ? Math.floor(numberField(player.ScorePlayer, 0)) : 0;
-    var opponentScore = opponent ? Math.floor(numberField(opponent.ScorePlayer, 0)) : 0;
-    var draw = winnerId === "";
-    var won = !draw && player && player.presence.userId === winnerId;
-    return {
-        trigger: "match_finished",
-        baseXp: draw ? 25 : (won ? 100 : 40),
-        facts: {
-            won: Boolean(won),
-            draw: Boolean(draw),
-            localScore: localScore,
-            opponentScore: opponentScore,
-            scoreMargin: localScore - opponentScore,
-            scoreDifference: Math.abs(localScore - opponentScore),
-            gameMode: gameState.ModeText,
-        },
-    };
-}
-function recordTurnMissionProgress(gameState, moverIndex, moverGrid, tile, line, row, clearedTiles, dataPlayer, nakama, logger) {
-    // Tutorial matches are intentionally excluded to prevent farming rewards.
-    if (gameState.isTutorial)
-        return;
-    var mover = gameState.players[moverIndex];
-    if (mover && !mover.isBot) {
-        var moverEvents = [{
-                trigger: "tile_placed",
-                baseXp: 0,
-                facts: {
-                    tileValue: tile + 1,
-                    scoreAfterMove: Math.floor(numberField(dataPlayer.Score, 0)),
-                    sameValueInRow: countTileValueInRow(moverGrid, line, tile),
-                    sameValueInColumn: countTileValueInColumn(moverGrid, row, tile),
-                    gameMode: gameState.ModeText,
-                },
-            }];
-        if (clearedTiles > 0) {
-            moverEvents.push({
-                trigger: "tiles_cleared",
-                baseXp: 0,
-                facts: {
-                    tileValue: tile + 1,
-                    clearedTiles: clearedTiles,
-                    gameMode: gameState.ModeText,
-                },
-            });
-        }
-        if (dataPlayer.EndGame)
-            moverEvents.push(createMatchFinishedMissionEvent(gameState, moverIndex, dataPlayer.PlayerWin));
-        applyMissionEvents(nakama, logger, mover.presence.userId, moverEvents);
-    }
-    if (!dataPlayer.EndGame)
-        return;
-    for (var playerIndex = 0; playerIndex < gameState.players.length; playerIndex++) {
-        if (playerIndex === moverIndex)
-            continue;
-        var player = gameState.players[playerIndex];
-        if (!player || player.isBot)
-            continue;
-        applyMissionEvents(nakama, logger, player.presence.userId, [
-            createMatchFinishedMissionEvent(gameState, playerIndex, dataPlayer.PlayerWin),
-        ]);
     }
 }
 function applyMineResult(dataPlayer, mineCount, tile, targetGrid, gameState, opponentIndex, logger) {
@@ -1863,7 +1044,7 @@ function awardMatchResult(gameState, nakama, winnerId, logger) {
             }
         }
         else if (player.presence.userId === winnerId) {
-            // Win — award winnerReward
+            // Win
             try {
                 nakama.walletUpdate(player.presence.userId, { coins: league.winnerReward }, { source: "match_win", league: gameState.ModeText }, true);
                 logger.info("Awarded " + league.winnerReward + " coins for win to: " + player.presence.userId);
@@ -2071,17 +1252,16 @@ function generateBotMove(gameState, logger) {
     var numCols = botGrid[0].length;
     var difficulty = gameState.botDifficulty;
     var emptyCells = [];
-    for (var i = 0; i < numRows; i++)
-        for (var j = 0; j < numCols; j++)
+    for (var i = 0; i < numRows; i++) {
+        for (var j = 0; j < numCols; j++) {
             if (botGrid[i][j] === -1)
                 emptyCells.push({ line: i, col: j });
+        }
+    }
     if (emptyCells.length === 0)
         return null;
-
     // Roll a fair 6-sided die (0 to 5, representing dice faces 1 to 6)
     var rolledTile = Math.floor(Math.random() * 6);
-    logger.info("Bot rolled fair die: " + rolledTile + " (face " + (rolledTile + 1) + ")");
-
     if (difficulty === 0 || (difficulty === 1 && Math.random() < 0.5)) {
         var cell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         return { line: cell.line, col: cell.col, tile: rolledTile };
@@ -2111,11 +1291,11 @@ function simulateTotalScore(grid, verticalMode) {
     for (var i = 0; i < grid.length; i++)
         score += scoreRow(grid[i]);
     if (verticalMode) {
-        var _loop_2 = function (col) {
+        var _loop_1 = function (col) {
             score += scoreRow(grid.map(function (r) { return r[col]; }));
         };
         for (var col = 0; col < grid[0].length; col++) {
-            _loop_2(col);
+            _loop_1(col);
         }
     }
     return score;
@@ -2150,11 +1330,11 @@ function TotalScore(array2D, logger, mode) {
     for (var i = 0; i < array2D.length; i++)
         score += CalculatorArray(array2D[i], logger);
     if (mode) {
-        var _loop_3 = function (col) {
+        var _loop_2 = function (col) {
             score += CalculatorArray(array2D.map(function (d) { return d[col]; }), logger);
         };
         for (var col = 0; col < array2D[0].length; col++) {
-            _loop_3(col);
+            _loop_2(col);
         }
     }
     return score;
@@ -2309,44 +1489,6 @@ var LEAGUES = {
     },
 };
 // ─── Leaderboards ─────────────────────────────────────────────────────────────
-var CollectionContactMessages = "ContactMessages";
-var sendContactMessageRpc = function (context, logger, nakama, payload) {
-    var userId = context.userId;
-    if (!userId)
-        throw new Error("Not authenticated");
-    var data = JSON.parse(payload || "{}");
-    var subject = (data.subject || "").toString().trim().substring(0, 100);
-    var message = (data.message || "").toString().trim().substring(0, 2000);
-    if (message.length === 0)
-        throw new Error("Message cannot be empty");
-    var username = context.username || userId;
-    var sentAt = Math.floor(Date.now() / 1000);
-    var key = sentAt + "_" + userId.replace(/-/g, "").substring(0, 8);
-    var entry = {
-        fromUserId: userId,
-        fromUsername: username,
-        subject: subject,
-        message: message,
-        sentAt: sentAt,
-        platform: data.platform || "mobile",
-    };
-    try {
-        nakama.storageWrite([{
-                collection: CollectionContactMessages,
-                key: key,
-                userId: SystemUserId,
-                value: entry,
-                permissionRead: 0,
-                permissionWrite: 0,
-            }]);
-        logger.info("[ContactUs] message saved key=" + key + " from=" + username + "(" + userId + ")");
-        return JSON.stringify({ success: true });
-    }
-    catch (e) {
-        logger.warn("[ContactUs] storageWrite failed: " + e);
-        throw new Error("Failed to save message");
-    }
-};
 var LeaderboardWeekly = "weekly_leaderboard";
 var LeaderboardMonthly = "monthly_leaderboard";
 // Top-10 reward tables (index 0 = rank 1)
@@ -2389,7 +1531,6 @@ var KeyPendingRewardMonthly = "pending_monthly";
 // ─── App Version (Force Update) ───────────────────────────────────────────────
 var CollectionConfig = "config";
 var KeyAppVersion = "app_version";
-var KeyChatEnabled = "chat_enabled";
 // System user ID — used to store global config readable by all authenticated users
 var SystemUserId = "00000000-0000-0000-0000-000000000000";
 // ─── Bot ──────────────────────────────────────────────────────────────────────
